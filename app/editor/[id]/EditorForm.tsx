@@ -18,9 +18,15 @@ const inputCls = "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 p
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <label className="block text-sm text-stone-700">{label}{children}</label>;
 }
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
+function Section({ title, n, children }: { title: string; n?: number; children: React.ReactNode }) {
+  const jump = () => {
+    if (!n || !window.matchMedia("(min-width: 1024px)").matches) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelector(`[data-card="${n}"]`)?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+  };
   return (
-    <fieldset className="space-y-3 rounded-xl border border-stone-200 bg-white p-4">
+    <fieldset onFocus={jump} className="space-y-3 rounded-xl border border-stone-200 bg-white p-4">
       <legend className="px-1 font-medium">{title}</legend>
       {children}
     </fieldset>
@@ -136,6 +142,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   }
 
   const set = <K extends keyof Content>(k: K, v: Content[K]) => update((d) => ({ ...d, [k]: v }));
+  const tp = (k: keyof Content["texts"]) => ({
+    value: draft.texts[k],
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => set("texts", { ...draft.texts, [k]: e.target.value }),
+  });
   const stateLabel = { saved: "All changes saved", dirty: "Unsaved changes…", saving: "Saving…", error: "Not saved" }[saveState];
   const editable = status === "draft" || status === "published";
 
@@ -178,16 +188,37 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           )}
 
-          <Section title="The couple">
+          <Section title="Style">
+            <div className="flex flex-wrap items-center gap-2">
+              {THEMES.map((t) => (
+                <button key={t} type="button" onClick={() => set("theme", t)} aria-pressed={draft.theme === t} className={`rounded-full border px-4 py-1.5 text-sm capitalize ${draft.theme === t ? "border-stone-900 bg-stone-900 text-white" : "border-stone-300 bg-white"}`}>{t}</button>
+              ))}
+            </div>
+            <label className="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" checked={draft.decor === "butterfly"} onChange={(e) => set("decor", e.target.checked ? "butterfly" : "none")} />
+              Butterfly decoration (cards 2 and 3)
+            </label>
+          </Section>
+
+          <Section n={1} title="Card 1 · Envelope">
+            <Field label="Wax seal text (up to 4 characters — leave empty to use your initials)">
+              <input className={inputCls} maxLength={4} placeholder="A&O" value={draft.seal.text} onChange={(e) => set("seal", { text: e.target.value })} />
+            </Field>
+          </Section>
+
+          <Section n={2} title="Card 2 · Opening line">
+            <Field label="Text"><input className={inputCls} maxLength={60} {...tp("invited")} /></Field>
+          </Section>
+
+          <Section n={3} title="Card 3 · Names">
+            <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="First name"><input className={inputCls} maxLength={40} value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
               <Field label="Second name"><input className={inputCls} maxLength={40} value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
             </div>
-            <Field label="Opening line"><input className={inputCls} maxLength={60} value={draft.texts.invited} onChange={(e) => set("texts", { ...draft.texts, invited: e.target.value })} /></Field>
-            <Field label="Headline"><input className={inputCls} maxLength={60} value={draft.texts.headline} onChange={(e) => set("texts", { ...draft.texts, headline: e.target.value })} /></Field>
           </Section>
 
-          <Section title="Photo">
+          <Section n={4} title="Card 4 · Photo & date">
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => void onPhoto(e.target.files?.[0])} className="text-sm" />
             {draft.photo && (
               <>
@@ -195,37 +226,37 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <button type="button" onClick={() => set("photo", null)} className="text-xs text-red-700 underline">Remove photo</button>
               </>
             )}
-          </Section>
-
-          <Section title="When & where">
+            <Field label="Line above the date"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Date"><input type="date" className={inputCls} value={draft.event.date} onChange={(e) => set("event", { ...draft.event, date: e.target.value })} /></Field>
               <Field label="Time (e.g. 2:00 PM)"><input className={inputCls} maxLength={30} value={draft.event.time} onChange={(e) => set("event", { ...draft.event, time: e.target.value })} /></Field>
             </div>
-            <Field label="Celebration line"><input className={inputCls} maxLength={80} value={draft.texts.celebration} onChange={(e) => set("texts", { ...draft.texts, celebration: e.target.value })} /></Field>
-            <Field label="After the ceremony"><input className={inputCls} maxLength={80} value={draft.texts.receptionNote} onChange={(e) => set("texts", { ...draft.texts, receptionNote: e.target.value })} /></Field>
+            <Field label="Line below the date"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
+          </Section>
+
+          <Section n={5} title="Card 5 · Timeline">
+            {features.schedule ? (
+              <>
+                <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
+                {draft.timeline.map((t, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} !mt-0 flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                    <input aria-label="Time" placeholder="2:00" className={`${inputCls} !mt-0 w-24`} maxLength={20} value={t.time} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time: e.target.value } : x)))} />
+                    <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="px-2 text-stone-500">✕</button>
+                  </div>
+                ))}
+                {draft.timeline.length < 10 && <button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="text-sm underline">+ Add item</button>}
+              </>
+            ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
+          </Section>
+
+          <Section n={6} title="Card 6 · The details">
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Address"><input className={inputCls} maxLength={200} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} /></Field>
             <Field label="Map link (https://…)"><input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })} /></Field>
-          </Section>
-
-          {features.schedule && (
-            <Section title="Timeline">
-              {draft.timeline.map((t, i) => (
-                <div key={i} className="flex gap-2">
-                  <input aria-label="Time" placeholder="2:00 PM" className={`${inputCls} !mt-0 w-28`} maxLength={20} value={t.time} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time: e.target.value } : x)))} />
-                  <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} !mt-0 flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
-                  <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="px-2 text-stone-500">✕</button>
-                </div>
-              ))}
-              {draft.timeline.length < 10 && <button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="text-sm underline">+ Add item</button>}
-            </Section>
-          )}
-
-          <Section title="Details">
-            {features.registry && (
+            {features.registry ? (
               <div className="space-y-2">
-                <p className="text-sm text-stone-700">Registry links (shown as QR codes)</p>
+                <p className="text-sm text-stone-700">Registry links (shown as QR codes, up to 2)</p>
                 {draft.registry.map((r, i) => (
                   <div key={i} className="flex gap-2">
                     <input aria-label="Label" placeholder="Target" className={`${inputCls} !mt-0 w-28`} maxLength={40} value={r.label} onChange={(e) => set("registry", draft.registry.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
@@ -235,8 +266,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 ))}
                 {draft.registry.length < 2 && <button type="button" onClick={() => set("registry", [...draft.registry, { label: "", url: "" }])} className="text-sm underline">+ Add registry</button>}
               </div>
-            )}
-            {features.dress_code && (
+            ) : <p className="text-sm text-stone-500">Registry QR codes are not included in your plan.</p>}
+            {features.dress_code ? (
               <div className="space-y-2">
                 <Field label="Dress code"><input className={inputCls} maxLength={60} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
                 <div className="flex flex-wrap items-center gap-2">
@@ -249,25 +280,22 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, "#8a9a78"] })} className="text-sm underline">+ Colour</button>}
                 </div>
               </div>
-            )}
+            ) : <p className="text-sm text-stone-500">Dress code is not included in your plan.</p>}
             <Field label="Recommended hotel"><input className={inputCls} maxLength={100} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Hotel address"><input className={inputCls} maxLength={200} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} /></Field>
           </Section>
 
-          <Section title="RSVP information">
+          <Section n={7} title="Card 7 · RSVP">
+            <Field label="Title"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
-            <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include the names of all guests" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
+            <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include the names of all guests attending" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
-          <Section title="Style">
-            <div className="flex gap-2">
-              {THEMES.map((t) => (
-                <button key={t} type="button" onClick={() => set("theme", t)} aria-pressed={draft.theme === t} className={`rounded-full border px-4 py-1.5 text-sm capitalize ${draft.theme === t ? "border-stone-900 bg-stone-900 text-white" : "border-stone-300 bg-white"}`}>{t}</button>
-              ))}
-            </div>
+          <Section n={8} title="Card 8 · Closing">
+            <Field label="Closing text (leave empty to show both names)"><input className={inputCls} maxLength={60} {...tp("closing")} /></Field>
           </Section>
         </div>
 

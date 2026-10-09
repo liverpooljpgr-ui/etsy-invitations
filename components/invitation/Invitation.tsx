@@ -1,6 +1,23 @@
 import type { Content } from "@/lib/content/schema";
 import { Qr } from "./Qr";
 
+const WINGS = (
+  <>
+    <path d="M50 40 C32 4 4 8 8 32 C10 50 30 52 50 42 Z" />
+    <path d="M50 43 C34 48 18 68 30 74 C42 78 50 58 50 45 Z" />
+  </>
+);
+
+function Butterfly() {
+  return (
+    <svg className="butterfly" viewBox="0 0 100 80" aria-hidden="true">
+      <g fill="var(--wing)" stroke="var(--gold)" strokeWidth="0.8" strokeLinejoin="round">{WINGS}</g>
+      <g fill="var(--wing)" stroke="var(--gold)" strokeWidth="0.8" strokeLinejoin="round" transform="translate(100 0) scale(-1 1)">{WINGS}</g>
+      <path d="M50 30 V58 M50 31 C46 22 42 20 40 19 M50 31 C54 22 58 20 60 19" fill="none" stroke="var(--gold)" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const DAYS = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
 
@@ -25,7 +42,8 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
   const first = c.couple.first || (ph ? "First name" : "");
   const second = c.couple.second || (ph ? "Second name" : "");
   const d = parts(c.event.date);
-  const initials = `${(first[0] ?? "").toUpperCase()}&${(second[0] ?? "").toUpperCase()}`;
+  const initials = c.seal.text || `${(first[0] ?? "").toUpperCase()}&${(second[0] ?? "").toUpperCase()}`;
+  const butterfly = c.decor === "butterfly";
   const registry = c.registry.filter((r) => r.url);
   const hasDetails = c.event.venue || registry.length || c.dressCode.label || c.dressCode.colors.length || c.hotel.name || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
@@ -33,22 +51,22 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
   return (
     <div className="inv" data-theme={c.theme}>
       {/* 1 — envelope */}
-      <section className="card card-dark" aria-label="Envelope">
+      <section className="card card-dark" aria-label="Envelope" data-card="1">
         <svg className="env-lines" viewBox="0 0 100 160" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0 0 L50 92 L100 0 M0 160 L50 92 L100 160" fill="none" stroke="currentColor" strokeWidth="0.4" />
         </svg>
-        <div className="seal" aria-hidden="true"><span>{initials}</span></div>
+        <div className="seal" data-len={initials.length} aria-hidden="true"><span>{initials}</span></div>
       </section>
 
       {/* 2 — invited */}
-      <section className="card">
-        <div className="orn" aria-hidden="true">✦</div>
+      <section className="card" data-card="2">
+        {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
         <p className="small">{c.texts.invited || "You're cordially invited"}</p>
       </section>
 
       {/* 3 — names */}
-      <section className="card">
-        <div className="orn" aria-hidden="true">✦</div>
+      <section className="card" data-card="3">
+        {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
         <p className="caps">{c.texts.headline}</p>
         <h1 className="names">
           <span>{first}</span>
@@ -58,7 +76,7 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
       </section>
 
       {/* 4 — photo + date */}
-      <section className="card">
+      <section className="card" data-card="4">
         {c.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img className="arch" src={c.photo.url} alt={c.photo.alt || `${first} and ${second}`} />
@@ -81,8 +99,8 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
 
       {/* 5 — timeline */}
       {(c.timeline.length > 0 || ph) && (
-        <section className="card">
-          <h2 className="script">timeline</h2>
+        <section className="card" data-card="5">
+          <h2 className="script">{c.texts.timelineTitle || "timeline"}</h2>
           {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
           <ul className="tl">
             {c.timeline.map((t, i) => (
@@ -94,7 +112,7 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
 
       {/* 6 — details */}
       {hasDetails && (
-        <section className="card">
+        <section className="card" data-card="6">
           <h2 className="title">The<br /><i>details</i></h2>
           {(c.event.venue || ph) && (
             <div className="blk">
@@ -138,8 +156,8 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
 
       {/* 7 — RSVP */}
       {hasRsvp && (
-        <section className="card">
-          <h2 className="title">please<br />RSVP</h2>
+        <section className="card" data-card="7">
+          <h2 className="title">{c.texts.rsvpTitle || "please RSVP"}</h2>
           {(c.rsvp.deadline || ph) && <p className="val">By {longDate(c.rsvp.deadline) || "date"}</p>}
           {c.rsvp.email && <p className="sub"><a className="link" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
           {c.rsvp.note && <p className="sub note">{c.rsvp.note}</p>}
@@ -147,9 +165,11 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
       )}
 
       {/* 8 — closing */}
-      <section className="card card-dark">
+      <section className="card card-dark" data-card="8">
         <div className="frame">
-          <p className="script big">{first}<br /><span className="amp">&amp;</span><br />{second}</p>
+          {c.texts.closing
+            ? <p className="script big">{c.texts.closing}</p>
+            : <p className="script big">{first}<br /><span className="amp">&amp;</span><br />{second}</p>}
         </div>
       </section>
     </div>

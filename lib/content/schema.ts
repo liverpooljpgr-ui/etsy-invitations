@@ -24,7 +24,18 @@ export const THEMES = ["sage", "ivory", "burgundy"] as const;
 
 export const contentSchema = z.object({
   couple: z.object({ first: text(40), second: text(40) }),
-  texts: z.object({ invited: text(60), headline: text(60), celebration: text(80), receptionNote: text(80) }),
+  // New keys use .default() so drafts saved before they existed still parse.
+  texts: z.object({
+    invited: text(60),
+    headline: text(60),
+    celebration: text(80),
+    receptionNote: text(80),
+    timelineTitle: text(30).default("timeline"),
+    rsvpTitle: text(30).default("please RSVP"),
+    closing: text(60).default(""),
+  }),
+  seal: z.object({ text: text(4) }).default({ text: "" }),
+  decor: z.enum(["butterfly", "none"]).default("butterfly"),
   event: z.object({ date: optDate, time: text(30), venue: text(120), address: text(200), mapUrl: optUrl }),
   photo: z.object({ url: z.string().startsWith(PHOTO_PREFIX).max(500), alt: text(200) }).nullable(),
   timeline: z.array(z.object({ time: text(20), label: text(60) })).max(10),
@@ -44,7 +55,12 @@ export const defaultContent: Content = {
     headline: "We're getting married",
     celebration: "In celebration of our wedding",
     receptionNote: "Reception to follow",
+    timelineTitle: "timeline",
+    rsvpTitle: "please RSVP",
+    closing: "",
   },
+  seal: { text: "" },
+  decor: "butterfly",
   event: { date: "", time: "", venue: "", address: "", mapUrl: "" },
   photo: null,
   timeline: [],

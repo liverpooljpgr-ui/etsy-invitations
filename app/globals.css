@@ -10,10 +10,10 @@ body { background: var(--background); color: var(--foreground); font-family: var
 }
 
 /* ───────── Invitation template: sage-story (static) ───────── */
-.inv { --paper:#f1e9df; --dark:#6e7a5d; --dark-ink:#e8dfc9; --ink:#8b8176; --gold:#b99a55;
+.inv { --wing:#dfe5cc; --paper:#f1e9df; --dark:#6e7a5d; --dark-ink:#e8dfc9; --ink:#8b8176; --gold:#b99a55;
   display:flex; flex-direction:column; align-items:center; gap:18px; padding:8px 0; font-family:var(--font-serif),serif; }
-.inv[data-theme="ivory"]    { --paper:#f7f1e6; --dark:#d9cdb6; --dark-ink:#6b5b43; --ink:#7a6c58; --gold:#a78544; }
-.inv[data-theme="burgundy"] { --paper:#f5ede4; --dark:#5e1f2c; --dark-ink:#ecd9b8; --ink:#7d5a5f; --gold:#c1a35e; }
+.inv[data-theme="ivory"]    { --wing:#efe3c9; --paper:#f7f1e6; --dark:#d9cdb6; --dark-ink:#6b5b43; --ink:#7a6c58; --gold:#a78544; }
+.inv[data-theme="burgundy"] { --wing:#e6c8c8; --paper:#f5ede4; --dark:#5e1f2c; --dark-ink:#ecd9b8; --ink:#7d5a5f; --gold:#c1a35e; }
 
 .inv .card { position:relative; width:min(100%,340px); aspect-ratio:9/15; border-radius:28px; background:var(--paper); color:var(--ink);
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:34px 26px; text-align:center;
@@ -54,3 +54,6 @@ body { background: var(--background); color: var(--foreground); font-family: var
   color:#6b5320; font-family:var(--font-script),cursive; font-size:26px; box-shadow:0 4px 10px rgba(0,0,0,.25), inset 0 0 0 4px rgba(255,255,255,.18); }
 .inv .frame { border:1px solid var(--gold); border-radius:50% / 38%; padding:48px 20px; width:88%; }
 @media (prefers-reduced-motion: no-preference) { .inv .card { transition:transform .2s ease; } }
+.inv .butterfly { width:76px; height:auto; }
+.inv .seal[data-len="3"] { font-size:22px; }
+.inv .seal[data-len="4"] { font-size:18px; }
