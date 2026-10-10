@@ -57,3 +57,40 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .butterfly { width:76px; height:auto; }
 .inv .seal[data-len="3"] { font-size:22px; }
 .inv .seal[data-len="4"] { font-size:18px; }
+
+/* ───────── Envelope animation (published page) ───────── */
+.inv { overflow-x: clip; }
+.inv .stage { position:relative; width:min(100%,340px); aspect-ratio:9/15; }
+.inv .stage > .card { width:100%; height:100%; aspect-ratio:auto; outline:none; }
+
+/* only when driven by the animated experience */
+.inv[data-phase] .stage { margin-top:max(0px, calc((100svh - min(100vw - 2rem, 340px) * 15 / 9) / 2 - 24px)); }
+.inv[data-phase="closed"] .card:not([data-card="2"]) { display:none; }
+.inv[data-phase] .stage > .card[data-card="2"] { transition:opacity .8s ease .35s, transform 1.05s cubic-bezier(.2,.8,.2,1) .35s; }
+.inv[data-phase="closed"] .stage > .card[data-card="2"] { opacity:0; transform:translateY(40px) scale(.94); }
+.inv[data-phase="opening"] .card[data-card]:not([data-card="2"]):not(.in),
+.inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:0; transform:translateY(32px); }
+.inv[data-phase] .card[data-card]:not([data-card="2"]) { transition:opacity .7s ease, transform .8s cubic-bezier(.2,.8,.2,1); }
+
+.inv .env-btn { position:absolute; inset:0; z-index:5; padding:0; border:0; background:none; cursor:pointer; border-radius:20px; -webkit-tap-highlight-color:transparent; }
+.inv .env-btn:focus-visible { outline:2px solid var(--gold); outline-offset:8px; }
+.inv .env-btn:disabled { cursor:default; }
+.inv .env-art { position:absolute; left:50%; top:50%; width:calc(100% * 496 / 476); aspect-ratio:496/680; transform:translate(-50%,-50%); pointer-events:none; }
+.inv .env-art img { position:absolute; display:block; user-select:none; will-change:transform; }
+.inv .env-l { inset:0; width:100%; height:100%; }
+/* the right half is placed so the wax seal sits on the centre of the left panel */
+.inv .env-r { left:34.38%; top:-1.69%; width:69.56%; height:104.41%; }
+.inv .env-l, .inv .env-r { transition:transform 1.15s cubic-bezier(.65,0,.25,1), opacity .5s ease .75s; }
+.inv[data-phase="opening"] .env-l { transform:translateX(-118%); opacity:0; }
+.inv[data-phase="opening"] .env-r { transform:translateX(150%); opacity:0; }
+.inv .env-hint { position:absolute; left:0; right:0; bottom:-38px; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); transition:opacity .3s ease; }
+.inv[data-phase="opening"] .env-hint { opacity:0; }
+@media (prefers-reduced-motion: no-preference) { .inv[data-phase="closed"] .env-hint { animation:hint 2.4s ease-in-out infinite; } }
+@keyframes hint { 0%,100% { opacity:.45; } 50% { opacity:1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .inv[data-phase] .stage > .card[data-card="2"],
+  .inv[data-phase] .card[data-card]:not([data-card="2"]),
+  .inv .env-l, .inv .env-r { transition:none; }
+  .inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:1; transform:none; }
+}

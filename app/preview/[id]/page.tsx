@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { applyPlan, parseContent } from "@/lib/content/schema";
-import { Invitation } from "@/components/invitation/Invitation";
+import { Experience } from "@/components/invitation/Experience";
 
 /** Private preview of the SAVED draft (what Publish would produce). */
 export default async function PreviewPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,8 +18,8 @@ export default async function PreviewPage({ params }: { params: Promise<{ id: st
   if (!row || !plan) notFound();
   return (
     <main className="px-4 py-6">
-      <p className="mb-4 text-center text-sm"><Link className="underline" href={`/editor/${id}`}>← Back to editor</Link> · private preview of your saved draft</p>
-      <Invitation content={applyPlan(parseContent(row.draft), plan.features)} mode="preview" />
+      <p className="mb-4 text-center text-sm"><Link className="underline" href={`/editor/${id}`}>← Back to editor</Link> · private preview of your saved draft — tap the envelope to test the animation</p>
+      <Experience content={applyPlan(parseContent(row.draft), plan.features)} mode="preview" />
     </main>
   );
 }

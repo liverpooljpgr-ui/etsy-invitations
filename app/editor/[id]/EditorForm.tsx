@@ -155,6 +155,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <Link href="/dashboard" className="text-sm text-stone-500 hover:underline">←</Link>
           <h1 className="min-w-0 flex-1 truncate font-medium">{title}</h1>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="hidden text-sm underline sm:inline">Preview animation</a>
           <span role="status" className={`text-xs ${saveState === "error" ? "text-red-700" : "text-stone-500"}`}>{stateLabel}</span>
           <button onClick={onPublish} disabled={busy || !editable} className="rounded-lg bg-stone-900 px-4 py-1.5 text-sm text-white disabled:opacity-50">
             {status === "published" ? "Update published" : "Publish"}
@@ -301,7 +302,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
         <aside className={`${tab === "edit" ? "hidden lg:block" : ""}`}>
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-            <p className="mb-2 text-center text-xs uppercase tracking-widest text-stone-500">Preview — the published page will also be animated</p>
+            <p className="mb-2 text-center text-xs uppercase tracking-widest text-stone-500">Static preview · use “Preview animation” to test the envelope</p>
             <Invitation content={preview} mode="preview" />
           </div>
         </aside>

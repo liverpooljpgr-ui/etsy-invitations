@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createAnonClient } from "@/lib/supabase/admin";
 import { parseContent } from "@/lib/content/schema";
-import { Invitation } from "@/components/invitation/Invitation";
+import { Experience } from "@/components/invitation/Experience";
 
 type Pub = { status: string; title?: string; content?: unknown; hosting_grace?: boolean } | null;
 
@@ -35,7 +35,7 @@ export default async function PublicInvitation({ params }: { params: Promise<{ s
   }
   return (
     <main className="px-4 py-6">
-      <Invitation content={parseContent(inv.content)} mode="public" />
+      <Experience content={parseContent(inv.content)} mode="public" />
     </main>
   );
 }

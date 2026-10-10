@@ -37,7 +37,19 @@ function longDate(iso: string) {
  * Static story-card rendering of the "sage-story" template.
  * mode="preview" shows placeholders for empty fields; "public" hides empty things.
  */
-export function Invitation({ content: c, mode }: { content: Content; mode: "preview" | "public" }) {
+export function Invitation({
+  content: c,
+  mode,
+  phase,
+  envelope,
+}: {
+  content: Content;
+  mode: "preview" | "public";
+  /** Set by the animated experience; omitted for the plain static rendering. */
+  phase?: "closed" | "opening" | "open";
+  /** Animated envelope overlay. When given it replaces static card 1 and sits over card 2. */
+  envelope?: React.ReactNode;
+}) {
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "First name" : "");
   const second = c.couple.second || (ph ? "Second name" : "");
@@ -49,20 +61,25 @@ export function Invitation({ content: c, mode }: { content: Content; mode: "prev
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
 
   return (
-    <div className="inv" data-theme={c.theme}>
-      {/* 1 — envelope */}
-      <section className="card card-dark" aria-label="Envelope" data-card="1">
-        <svg className="env-lines" viewBox="0 0 100 160" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 0 L50 92 L100 0 M0 160 L50 92 L100 160" fill="none" stroke="currentColor" strokeWidth="0.4" />
-        </svg>
-        <div className="seal" data-len={initials.length} aria-hidden="true"><span>{initials}</span></div>
-      </section>
+    <div className="inv" data-theme={c.theme} data-phase={phase}>
+      {/* 1 — envelope (static drawing; the animated overlay replaces it) */}
+      {!phase && (
+        <section className="card card-dark" aria-label="Envelope" data-card="1">
+          <svg className="env-lines" viewBox="0 0 100 160" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 0 L50 92 L100 0 M0 160 L50 92 L100 160" fill="none" stroke="currentColor" strokeWidth="0.4" />
+          </svg>
+          <div className="seal" data-len={initials.length} aria-hidden="true"><span>{initials}</span></div>
+        </section>
+      )}
 
-      {/* 2 — invited */}
-      <section className="card" data-card="2">
-        {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
-        <p className="small">{c.texts.invited || "You're cordially invited"}</p>
-      </section>
+      {/* 2 — invited (the envelope overlay sits on top of this card until opened) */}
+      <div className="stage">
+        <section className="card" data-card="2" tabIndex={-1}>
+          {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
+          <p className="small">{c.texts.invited || "You're cordially invited"}</p>
+        </section>
+        {envelope}
+      </div>
 
       {/* 3 — names */}
       <section className="card" data-card="3">
