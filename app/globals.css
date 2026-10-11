@@ -75,15 +75,15 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .env-btn { position:absolute; inset:0; z-index:5; padding:0; border:0; background:none; cursor:pointer; border-radius:20px; -webkit-tap-highlight-color:transparent; }
 .inv .env-btn:focus-visible { outline:2px solid var(--gold); outline-offset:8px; }
 .inv .env-btn:disabled { cursor:default; }
-.inv .env-art { position:absolute; left:50%; top:50%; width:calc(100% * 496 / 476); aspect-ratio:496/680; transform:translate(-50%,-50%); pointer-events:none; }
+.inv .env-art { position:absolute; left:0; top:50%; width:100%; aspect-ratio:1060/1640; transform:translateY(-50%); pointer-events:none; }
 .inv .env-art img { position:absolute; display:block; user-select:none; will-change:transform; }
 .inv .env-l { inset:0; width:100%; height:100%; }
-/* the right half is placed so the wax seal sits on the centre of the left panel */
-.inv .env-r { left:34.38%; top:-1.69%; width:69.56%; height:104.41%; }
+/* the right half spans the same height; its right edge meets the left panel, so the seal lands at the centre */
+.inv .env-r { left:31.23%; top:0; width:68.77%; height:100%; }
 .inv .env-l, .inv .env-r { transition:transform 1.15s cubic-bezier(.65,0,.25,1), opacity .5s ease .75s; }
 .inv[data-phase="opening"] .env-l { transform:translateX(-118%); opacity:0; }
 .inv[data-phase="opening"] .env-r { transform:translateX(150%); opacity:0; }
-.inv .env-hint { position:absolute; left:0; right:0; bottom:-38px; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); transition:opacity .3s ease; }
+.inv .env-hint { position:absolute; left:0; right:0; bottom:-14px; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); transition:opacity .3s ease; }
 .inv[data-phase="opening"] .env-hint { opacity:0; }
 @media (prefers-reduced-motion: no-preference) { .inv[data-phase="closed"] .env-hint { animation:hint 2.4s ease-in-out infinite; } }
 @keyframes hint { 0%,100% { opacity:.45; } 50% { opacity:1; } }
@@ -94,5 +94,5 @@ body { background: var(--background); color: var(--foreground); font-family: var
   .inv .env-l, .inv .env-r { transition:none; }
   .inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:1; transform:none; }
 }
-.inv .stage.env-static { aspect-ratio:496/680; }
+.inv .stage.env-static { aspect-ratio:1060/1640; }
 .inv { padding-inline:12px; }
