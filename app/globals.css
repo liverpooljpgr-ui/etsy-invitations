@@ -94,3 +94,5 @@ body { background: var(--background); color: var(--foreground); font-family: var
   .inv .env-l, .inv .env-r { transition:none; }
   .inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:1; transform:none; }
 }
+.inv .stage.env-static { aspect-ratio:496/680; }
+.inv { padding-inline:12px; }

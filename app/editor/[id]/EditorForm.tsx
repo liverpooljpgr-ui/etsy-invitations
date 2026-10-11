@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Invitation } from "@/components/invitation/Invitation";
-import { applyPlan, THEMES, type Content, type PlanFeatures } from "@/lib/content/schema";
+import { applyPlan, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
@@ -190,21 +190,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           )}
 
           <Section title="Style">
-            <div className="flex flex-wrap items-center gap-2">
-              {THEMES.map((t) => (
-                <button key={t} type="button" onClick={() => set("theme", t)} aria-pressed={draft.theme === t} className={`rounded-full border px-4 py-1.5 text-sm capitalize ${draft.theme === t ? "border-stone-900 bg-stone-900 text-white" : "border-stone-300 bg-white"}`}>{t}</button>
-              ))}
-            </div>
             <label className="flex items-center gap-2 text-sm text-stone-700">
               <input type="checkbox" checked={draft.decor === "butterfly"} onChange={(e) => set("decor", e.target.checked ? "butterfly" : "none")} />
               Butterfly decoration (cards 2 and 3)
             </label>
-          </Section>
-
-          <Section n={1} title="Card 1 · Envelope">
-            <Field label="Wax seal text (up to 4 characters — leave empty to use your initials)">
-              <input className={inputCls} maxLength={4} placeholder="A&O" value={draft.seal.text} onChange={(e) => set("seal", { text: e.target.value })} />
-            </Field>
           </Section>
 
           <Section n={2} title="Card 2 · Opening line">

@@ -2,12 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Content } from "@/lib/content/schema";
+import { EnvelopeArt } from "./EnvelopeArt";
 import { Invitation } from "./Invitation";
 
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 1500; // keep in sync with the transitions in globals.css
-
-const ART = "/templates/sage-story/v1";
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
@@ -61,12 +60,7 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
   const overlay =
     phase === "open" ? null : (
       <button type="button" className="env-btn" onClick={open} disabled={phase !== "closed"} aria-label="Open the invitation">
-        <span className="env-art" aria-hidden="true">
-          {/* eslint-disable @next/next/no-img-element */}
-          <img className="env-l" src={`${ART}/envelope-left.svg`} alt="" width={496} height={680} decoding="async" draggable={false} />
-          <img className="env-r" src={`${ART}/envelope-right.svg`} alt="" width={345} height={710} decoding="async" draggable={false} />
-          {/* eslint-enable @next/next/no-img-element */}
-        </span>
+        <EnvelopeArt />
         <span className="env-hint" aria-hidden="true">Tap to open</span>
       </button>
     );

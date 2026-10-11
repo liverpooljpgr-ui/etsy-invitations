@@ -1,4 +1,5 @@
 import type { Content } from "@/lib/content/schema";
+import { EnvelopeArt } from "./EnvelopeArt";
 import { Qr } from "./Qr";
 
 const WINGS = (
@@ -54,7 +55,6 @@ export function Invitation({
   const first = c.couple.first || (ph ? "First name" : "");
   const second = c.couple.second || (ph ? "Second name" : "");
   const d = parts(c.event.date);
-  const initials = c.seal.text || `${(first[0] ?? "").toUpperCase()}&${(second[0] ?? "").toUpperCase()}`;
   const butterfly = c.decor === "butterfly";
   const registry = c.registry.filter((r) => r.url);
   const hasDetails = c.event.venue || registry.length || c.dressCode.label || c.dressCode.colors.length || c.hotel.name || ph;
@@ -62,14 +62,11 @@ export function Invitation({
 
   return (
     <div className="inv" data-theme={c.theme} data-phase={phase}>
-      {/* 1 — envelope (static drawing; the animated overlay replaces it) */}
+      {/* 1 — closed envelope (static view; the animated experience overlays the same art on card 2) */}
       {!phase && (
-        <section className="card card-dark" aria-label="Envelope" data-card="1">
-          <svg className="env-lines" viewBox="0 0 100 160" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0 0 L50 92 L100 0 M0 160 L50 92 L100 160" fill="none" stroke="currentColor" strokeWidth="0.4" />
-          </svg>
-          <div className="seal" data-len={initials.length} aria-hidden="true"><span>{initials}</span></div>
-        </section>
+        <div className="stage env-static" data-card="1" role="img" aria-label="Closed envelope">
+          <EnvelopeArt />
+        </div>
       )}
 
       {/* 2 — invited (the envelope overlay sits on top of this card until opened) */}
