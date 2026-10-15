@@ -7,7 +7,10 @@ import { applyPlan, contentSchema, publishMissing } from "@/lib/content/schema";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
-export type SaveResult = { ok: true; version: number } | { ok: false; error: string };
+export type SaveResult =
+  | { ok: true; version: number }
+  // `conflict` = someone/something else changed the stored draft since this tab last saved; it carries the stored copy
+  | { ok: false; error: string; conflict?: { version: number; draft: unknown } };
 export type PublishResult = { ok: true; slug: string } | { ok: false; error: string; missing?: string[] };
 
 /** Autosave: runs as the signed-in user, so RLS + column grants + the content trigger apply. */
@@ -26,7 +29,12 @@ export async function saveDraft(id: string, draft: unknown, expectedVersion: num
     .eq("draft_version", expectedVersion)
     .select("draft_version");
   if (error) return { ok: false, error: "Could not save. Check your connection and try again." };
-  if (!data?.length) return { ok: false, error: "This invitation changed in another tab, or is no longer editable. Reload the page." };
+  if (!data?.length) {
+    // Version mismatch (or the row is no longer visible/editable). Hand the stored copy back so the editor can recover.
+    const { data: cur } = await supabase.from("invitation_content").select("draft, draft_version").eq("invitation_id", id).maybeSingle();
+    if (cur) return { ok: false, error: "This invitation was changed elsewhere.", conflict: { version: cur.draft_version, draft: cur.draft } };
+    return { ok: false, error: "This invitation is no longer editable." };
+  }
   return { ok: true, version: data[0].draft_version };
 }
 

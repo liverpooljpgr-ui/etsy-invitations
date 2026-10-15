@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Invitation } from "@/components/invitation/Invitation";
-import { applyPlan, type Content, type PlanFeatures } from "@/lib/content/schema";
+import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
@@ -54,30 +54,72 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const [conflict, setConflict] = useState<{ version: number; draft: unknown } | null>(null);
+
   const latest = useRef(draft);
   const version = useRef(initialVersion);
   const inFlight = useRef(false);
   const again = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // normalised JSON of what this tab last stored, to tell a harmless version bump from a real change elsewhere
+  const norm = (d: unknown) => JSON.stringify(parseContent(d));
+  const lastSaved = useRef(norm(initialDraft));
 
   const flush = useCallback(async (): Promise<boolean> => {
     if (inFlight.current) { again.current = true; return false; }
     inFlight.current = true;
     setSaveState("saving");
+    let retries = 0;
     try {
       for (;;) {
         const sent = latest.current;
         again.current = false;
         const r = await saveDraft(id, sent, version.current).catch(() => ({ ok: false as const, error: "Network error. Your changes are kept on this page; retrying…" }));
-        if (!r.ok) { setSaveError(r.error); setSaveState("error"); return false; }
-        version.current = r.version;
-        setSaveError("");
-        if (latest.current === sent && !again.current) { setSaveState("saved"); return true; }
+        if (r.ok) {
+          version.current = r.version;
+          lastSaved.current = JSON.stringify(parseContent(sent));
+          setSaveError("");
+          setConflict(null);
+          if (latest.current === sent && !again.current) { setSaveState("saved"); return true; }
+          continue;
+        }
+        if ("conflict" in r && r.conflict) {
+          // Stored content is identical to what we last saved: only the version moved (e.g. a data fix). Safe to retry.
+          if (JSON.stringify(parseContent(r.conflict.draft)) === lastSaved.current && retries++ < 3) {
+            version.current = r.conflict.version;
+            continue;
+          }
+          setConflict(r.conflict);
+          setSaveError("");
+          setSaveState("error");
+          return false;
+        }
+        setSaveError(r.error);
+        setSaveState("error");
+        return false;
       }
     } finally {
       inFlight.current = false;
     }
   }, [id]);
+
+  function keepMine() {
+    if (!conflict) return;
+    version.current = conflict.version;
+    setConflict(null);
+    void flush();
+  }
+  function loadTheirs() {
+    if (!conflict) return;
+    const d = parseContent(conflict.draft);
+    latest.current = d;
+    setDraft(d);
+    lastSaved.current = JSON.stringify(d);
+    version.current = conflict.version;
+    setConflict(null);
+    setSaveError("");
+    setSaveState("saved");
+  }
 
   const update = useCallback((fn: (d: Content) => Content) => {
     setDraft((d) => {
@@ -92,10 +134,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
   // retry after an error, and warn before leaving with unsaved changes
   useEffect(() => {
-    if (saveState !== "error") return;
+    if (saveState !== "error" || conflict) return;
     const t = setTimeout(() => void flush(), 5000);
     return () => clearTimeout(t);
-  }, [saveState, flush]);
+  }, [saveState, flush, conflict]);
   useEffect(() => {
     const h = (e: BeforeUnloadEvent) => { if (saveState !== "saved") e.preventDefault(); };
     window.addEventListener("beforeunload", h);
@@ -168,9 +210,18 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </div>
       </header>
 
-      {(saveError || notice) && (
+      {(saveError || notice || conflict) && (
         <div className="mx-auto max-w-6xl px-4 pt-3">
-          {saveError && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{saveError}</p>}
+          {conflict && (
+            <div role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+              <p>This invitation was changed somewhere else (another tab, or by support) after you opened it. Your latest edits are not saved yet. Which version do you want to keep?</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button type="button" onClick={keepMine} className="rounded bg-amber-900 px-3 py-1.5 text-white">Keep what I&apos;m editing</button>
+                <button type="button" onClick={loadTheirs} className="rounded border border-amber-900 px-3 py-1.5">Load the other version</button>
+              </div>
+            </div>
+          )}
+          {saveError &&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{saveError}</p>}
           {notice && <p role="status" className={`mt-2 rounded-lg p-3 text-sm ${notice.ok ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}>{notice.text}</p>}
         </div>
       )}

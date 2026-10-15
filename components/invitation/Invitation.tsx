@@ -94,12 +94,12 @@ export function Invitation({
             ) : ph ? (
               <div className="arch arch-empty">Photo</div>
             ) : null}
+            {(d || ph) && c.texts.saveTheDate && <p className="save">{c.texts.saveTheDate}</p>}
             {d ? (
               <DateBlock d={d} time={c.event.time} />
             ) : ph ? (
               <div className="dt"><span className="dt-month">Date</span></div>
             ) : null}
-            {(d || ph) && c.texts.saveTheDate && <p className="save">{c.texts.saveTheDate}</p>}
           </div>
         </section>
         {envelope}
