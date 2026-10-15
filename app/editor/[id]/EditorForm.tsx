@@ -196,16 +196,22 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </label>
           </Section>
 
+          <Section n={1} title="Card 1 · Cover (the envelope screen)">
+            <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="First name"><input className={inputCls} maxLength={40} value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
+              <Field label="Second name"><input className={inputCls} maxLength={40} value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
+            </div>
+            <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} /></Field>
+          </Section>
+
           <Section n={2} title="Card 2 · Opening line">
             <Field label="Text"><input className={inputCls} maxLength={60} {...tp("invited")} /></Field>
           </Section>
 
           <Section n={3} title="Card 3 · Names">
             <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="First name"><input className={inputCls} maxLength={40} value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
-              <Field label="Second name"><input className={inputCls} maxLength={40} value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
-            </div>
+            <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
           </Section>
 
           <Section n={4} title="Card 4 · Photo & date">

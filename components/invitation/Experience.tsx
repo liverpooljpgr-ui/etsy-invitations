@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Content } from "@/lib/content/schema";
-import { EnvelopeArt } from "./EnvelopeArt";
+import { CoverInner } from "./Cover";
 import { Invitation } from "./Invitation";
 
 type Phase = "closed" | "opening" | "open";
@@ -59,10 +59,8 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
 
   const overlay =
     phase === "open" ? null : (
-      <button type="button" className="env-btn" onClick={open} disabled={phase !== "closed"} aria-label="Open the invitation">
-        <EnvelopeArt>
-          <span className="env-hint">Tap to open</span>
-        </EnvelopeArt>
+      <button type="button" className="cover env-btn" onClick={open} disabled={phase !== "closed"} aria-label="Open the invitation">
+        <CoverInner content={content} mode={mode} hint />
       </button>
     );
 

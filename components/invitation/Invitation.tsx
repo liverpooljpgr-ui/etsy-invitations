@@ -1,5 +1,5 @@
 import type { Content } from "@/lib/content/schema";
-import { EnvelopeArt } from "./EnvelopeArt";
+import { CoverInner } from "./Cover";
 import { Qr } from "./Qr";
 
 const WINGS = (
@@ -62,11 +62,11 @@ export function Invitation({
 
   return (
     <div className="inv" data-theme={c.theme} data-phase={phase}>
-      {/* 1 — closed envelope (static view; the animated experience overlays the same art on card 2) */}
+      {/* 1 — cover (static view; the animated experience puts the same cover, tappable, over card 2) */}
       {!phase && (
-        <div className="stage env-static" data-card="1" role="img" aria-label="Closed envelope">
-          <EnvelopeArt />
-        </div>
+        <section className="card cover cover-static" data-card="1" aria-label="Cover">
+          <CoverInner content={c} mode={mode} />
+        </section>
       )}
 
       {/* 2 — invited (the envelope overlay sits on top of this card until opened) */}
