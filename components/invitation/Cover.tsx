@@ -62,6 +62,17 @@ export function CoverInner({ content: c, mode, hint }: { content: Content; mode:
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "First name" : "");
   const second = c.couple.second || (ph ? "Second name" : "");
+  // First letter of each name, taken from the names above (works for any alphabet or emoji)
+  const initial = (n: string) => Array.from(n.trim())[0]?.toUpperCase() ?? "";
+  const [i1, i2] = [initial(first), initial(second)];
+  const monogram =
+    i1 || i2 ? (
+      <span className="monogram">
+        {i1 && <span>{i1}</span>}
+        {i1 && i2 && <span className="amp">&amp;</span>}
+        {i2 && <span>{i2}</span>}
+      </span>
+    ) : null;
   return (
     <>
       {c.texts.coverTop && <span className="cover-top">{c.texts.coverTop}</span>}
@@ -71,7 +82,7 @@ export function CoverInner({ content: c, mode, hint }: { content: Content; mode:
         <span>{second}</span>
       </span>
       <span className="cover-env">
-        <EnvelopeArt />
+        <EnvelopeArt monogram={monogram} />
         <span className="magic magic-front" aria-hidden="true">
           <GoldDust />
         </span>

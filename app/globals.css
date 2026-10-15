@@ -84,7 +84,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
   perspective:1100px; pointer-events:none; }
 .inv .env-art img { position:absolute; display:block; user-select:none; backface-visibility:hidden; }
 .inv .env-body { inset:0; width:100%; height:100%; }
-.inv .env-flap-closed { left:.633%; top:-.984%; width:100%; height:78.361%; transform-origin:50% 2.929%;
+.inv .env-flap-closed { position:absolute; display:block; backface-visibility:hidden; left:.633%; top:-.984%; width:100%; height:78.361%; transform-origin:50% 2.929%;
   transition:transform .5s cubic-bezier(.45,0,.85,.6), visibility 0s linear .5s; }
 .inv .env-flap-open { left:.633%; top:-73.279%; width:98.523%; height:76.066%; transform-origin:50% 98.06%;
   transform:rotateX(-90deg); visibility:hidden; transition:transform .75s cubic-bezier(.12,.5,.3,1) .5s, visibility 0s linear .5s; }
@@ -111,7 +111,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .cover-top { font-size:12px; letter-spacing:.32em; text-transform:uppercase; }
 .inv .cover-names { display:flex; flex-wrap:wrap; justify-content:center; align-items:baseline; gap:0 10px; font-family:var(--font-script),cursive; font-size:40px; line-height:1.12; color:var(--ink); }
 .inv .cover-names .amp { font-size:28px; color:var(--gold); }
-.inv .cover-env { position:relative; display:block; width:94%; aspect-ratio:904/566; margin-block:32px; }
+.inv .cover-env { container-type:inline-size; position:relative; display:block; width:94%; aspect-ratio:904/566; margin-block:32px; }
 .inv .cover-bottom { font-size:13px; letter-spacing:.3em; text-transform:uppercase; }
 
 /* on tap: texts fade first, then (after the flap has opened) the whole cover leaves and card 2 rises */
@@ -144,3 +144,11 @@ body { background: var(--background); color: var(--foreground); font-family: var
 @media (prefers-reduced-motion: reduce) {
   .inv .dust { display:none; }
 }
+
+/* ───────── Monogram on the closed flap (initials of the two names) ───────── */
+.inv .env-flap-closed img { inset:0; width:100%; height:100%; }
+.inv .monogram { position:absolute; left:0; right:0; top:60%; transform:translateY(-50%); display:flex; justify-content:center; align-items:baseline; gap:.05em;
+  font-family:var(--font-script),cursive; font-size:15cqw; line-height:1; pointer-events:none;
+  background:linear-gradient(135deg,#e6cd82 0%,#a9812f 52%,#dcbf6c 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.75)) drop-shadow(0 -1px 0 rgba(110,80,25,.25)); }
+.inv .monogram .amp { font-size:.6em; color:inherit; }
