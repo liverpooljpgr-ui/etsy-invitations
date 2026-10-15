@@ -57,7 +57,7 @@ export const contentSchema = z.object({
     coverBottom: text(40).default("you are invited"),
   }),
   decor: z.enum(["butterfly", "none"]).default("butterfly"),
-  event: z.object({ date: optDate, time: text(30), venue: text(120), address: text(200), mapUrl: optUrl }),
+  event: z.object({ date: optDate, time: text(30), venue: text(120), address: text(300), mapUrl: optUrl }),
   photo: z.object({ url: photoUrl, alt: text(200) }).nullable(),
   timeline: z.array(z.object({ time: text(20), label: text(60) })).max(10),
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),

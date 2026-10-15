@@ -72,7 +72,7 @@ export function Invitation({
   const d = parts(c.event.date);
   const butterfly = c.decor === "butterfly";
   const registry = c.registry.filter((r) => r.url);
-  const hasDetails = c.event.venue || registry.length || c.dressCode.label || c.dressCode.colors.length || c.hotel.name || ph;
+  const hasDetails = registry.length || c.dressCode.label || c.dressCode.colors.length || c.hotel.name || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
 
   return (
@@ -105,8 +105,19 @@ export function Invitation({
         {envelope}
       </div>
 
-      {/* 3 — names */}
-      <section className="card" data-card="3">
+      {/* 3 — venue: name, full address, directions link, "reception to follow" */}
+      {(c.event.venue || ph) && (
+        <section className="card card-venue" data-card="3">
+          <p className="venue-name">{c.event.venue || "Venue name"}</p>
+          <span className="venue-rule" aria-hidden="true" />
+          {(c.event.address || ph) && <p className="venue-addr">{c.event.address || "Street address, city"}</p>}
+          {c.event.mapUrl && <a className="link venue-link" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>}
+          {c.texts.receptionNote && <p className="venue-recep">{c.texts.receptionNote}</p>}
+        </section>
+      )}
+
+      {/* 4 — names */}
+      <section className="card" data-card="4">
         {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
         <p className="caps">{c.texts.headline}</p>
         <h1 className="names">
@@ -116,16 +127,15 @@ export function Invitation({
         </h1>
       </section>
 
-      {/* 4 — invitation text */}
-      <section className="card" data-card="4">
+      {/* 5 — invitation text */}
+      <section className="card" data-card="5">
         {c.texts.celebration && <p className="caps tiny">{c.texts.celebration}</p>}
         <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
-        {c.texts.receptionNote && <p className="caps tiny">{c.texts.receptionNote}</p>}
       </section>
 
-      {/* 5 — timeline */}
+      {/* 6 — timeline */}
       {(c.timeline.length > 0 || ph) && (
-        <section className="card" data-card="5">
+        <section className="card" data-card="6">
           <h2 className="script">{c.texts.timelineTitle || "timeline"}</h2>
           {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
           <ul className="tl">
@@ -136,18 +146,10 @@ export function Invitation({
         </section>
       )}
 
-      {/* 6 — details */}
+      {/* 7 — details (registry, dress code, hotel) */}
       {hasDetails && (
-        <section className="card" data-card="6">
+        <section className="card" data-card="7">
           <h2 className="title">The<br /><i>details</i></h2>
-          {(c.event.venue || ph) && (
-            <div className="blk">
-              <p className="caps tiny">Venue</p>
-              <p className="val">{c.event.venue || "Venue name"}</p>
-              {c.event.address && <p className="sub">{c.event.address}</p>}
-              {c.event.mapUrl && <a className="link" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>}
-            </div>
-          )}
           {registry.length > 0 && (
             <div className="blk">
               <p className="caps tiny">Registry</p>
@@ -180,9 +182,9 @@ export function Invitation({
         </section>
       )}
 
-      {/* 7 — RSVP */}
+      {/* 8 — RSVP */}
       {hasRsvp && (
-        <section className="card" data-card="7">
+        <section className="card" data-card="8">
           <h2 className="title">{c.texts.rsvpTitle || "please RSVP"}</h2>
           {(c.rsvp.deadline || ph) && <p className="val">By {longDate(c.rsvp.deadline) || "date"}</p>}
           {c.rsvp.email && <p className="sub"><a className="link" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
@@ -190,8 +192,8 @@ export function Invitation({
         </section>
       )}
 
-      {/* 8 — closing */}
-      <section className="card card-dark" data-card="8">
+      {/* 9 — closing */}
+      <section className="card card-dark" data-card="9">
         <div className="frame">
           {c.texts.closing
             ? <p className="script big">{c.texts.closing}</p>

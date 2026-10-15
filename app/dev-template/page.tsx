@@ -16,7 +16,7 @@ import { defaultContent, type Content } from "@/lib/content/schema";
 const sample: Content = {
   ...defaultContent,
   couple: { first: "Adele", second: "Oliver" },
-  event: { date: "2027-08-24", time: "2:00 PM", venue: "The White Plains Hotel", address: "90 Pine Street, Miami, FL", mapUrl: "https://maps.google.com" },
+  event: { date: "2027-08-24", time: "2:00 PM", venue: "The White Plains Hotel", address: "90 Pine Street, Grand Ballroom\nMiami, FL 33101\nUnited States", mapUrl: "https://maps.google.com" },
   timeline: [
     { label: "Seating begins", time: "1:00" },
     { label: "Ceremony", time: "2:00" },

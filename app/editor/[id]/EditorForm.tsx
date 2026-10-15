@@ -243,7 +243,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Section title="Style">
             <label className="flex items-center gap-2 text-sm text-stone-700">
               <input type="checkbox" checked={draft.decor === "butterfly"} onChange={(e) => set("decor", e.target.checked ? "butterfly" : "none")} />
-              Butterfly decoration (card 3)
+              Butterfly decoration (card 4)
             </label>
           </Section>
 
@@ -272,18 +272,26 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Text under the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
           </Section>
 
-          <Section n={3} title="Card 3 · Names">
+          <Section n={3} title="Card 3 · Venue">
+            <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
+            <Field label="Full address (use Enter for a new line)">
+              <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
+            </Field>
+            <Field label="Map link (https://…)"><input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })} /></Field>
+            <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
+          </Section>
+
+          <Section n={4} title="Card 4 · Names">
             <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
             <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
           </Section>
 
-          <Section n={4} title="Card 4 · Invitation text">
+          <Section n={5} title="Card 5 · Invitation text">
             <Field label="Small line above"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
-            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
-            <Field label="Small line below"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
+            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
           </Section>
 
-          <Section n={5} title="Card 5 · Timeline">
+          <Section n={6} title="Card 6 · Timeline">
             {features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
@@ -299,10 +307,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={6} title="Card 6 · The details">
-            <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
-            <Field label="Address"><input className={inputCls} maxLength={200} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} /></Field>
-            <Field label="Map link (https://…)"><input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })} /></Field>
+          <Section n={7} title="Card 7 · The details (registry, dress code, hotel)">
             {features.registry ? (
               <div className="space-y-2">
                 <p className="text-sm text-stone-700">Registry links (shown as QR codes, up to 2)</p>
@@ -334,7 +339,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Hotel address"><input className={inputCls} maxLength={200} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} /></Field>
           </Section>
 
-          <Section n={7} title="Card 7 · RSVP">
+          <Section n={8} title="Card 8 · RSVP">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
@@ -343,7 +348,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include the names of all guests attending" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
-          <Section n={8} title="Card 8 · Closing">
+          <Section n={9} title="Card 9 · Closing">
             <Field label="Closing text (leave empty to show both names)"><input className={inputCls} maxLength={60} {...tp("closing")} /></Field>
           </Section>
         </div>
