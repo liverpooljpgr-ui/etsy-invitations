@@ -6,7 +6,7 @@ import { EnvelopeArt } from "./EnvelopeArt";
 import { Invitation } from "./Invitation";
 
 type Phase = "closed" | "opening" | "open";
-const OPEN_MS = 1500; // keep in sync with the transitions in globals.css
+const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
@@ -60,8 +60,9 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
   const overlay =
     phase === "open" ? null : (
       <button type="button" className="env-btn" onClick={open} disabled={phase !== "closed"} aria-label="Open the invitation">
-        <EnvelopeArt />
-        <span className="env-hint" aria-hidden="true">Tap to open</span>
+        <EnvelopeArt>
+          <span className="env-hint">Tap to open</span>
+        </EnvelopeArt>
       </button>
     );
 

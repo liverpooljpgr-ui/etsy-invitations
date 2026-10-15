@@ -59,14 +59,16 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .seal[data-len="4"] { font-size:18px; }
 
 /* ───────── Envelope animation (published page) ───────── */
-.inv { overflow-x: clip; }
+/* Timeline (keep OPEN_MS in Experience.tsx in sync): closed flap swings up to edge-on 0–.5s,
+   open flap lands .5–1.25s, envelope fades out 1.25–1.65s, next card rises 1.45–2.35s. */
+.inv { overflow-x: clip; padding-inline: 12px; }
 .inv .stage { position:relative; width:min(100%,340px); aspect-ratio:9/15; }
 .inv .stage > .card { width:100%; height:100%; aspect-ratio:auto; outline:none; }
 
 /* only when driven by the animated experience */
 .inv[data-phase] .stage { margin-top:max(0px, calc((100svh - min(100vw - 2rem, 340px) * 15 / 9) / 2 - 24px)); }
 .inv[data-phase="closed"] .card:not([data-card="2"]) { display:none; }
-.inv[data-phase] .stage > .card[data-card="2"] { transition:opacity .8s ease .35s, transform 1.05s cubic-bezier(.2,.8,.2,1) .35s; }
+.inv[data-phase] .stage > .card[data-card="2"] { transition:opacity .7s ease 1.45s, transform .9s cubic-bezier(.2,.8,.2,1) 1.45s; }
 .inv[data-phase="closed"] .stage > .card[data-card="2"] { opacity:0; transform:translateY(40px) scale(.94); }
 .inv[data-phase="opening"] .card[data-card]:not([data-card="2"]):not(.in),
 .inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:0; transform:translateY(32px); }
@@ -75,15 +77,27 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .env-btn { position:absolute; inset:0; z-index:5; padding:0; border:0; background:none; cursor:pointer; border-radius:20px; -webkit-tap-highlight-color:transparent; }
 .inv .env-btn:focus-visible { outline:2px solid var(--gold); outline-offset:8px; }
 .inv .env-btn:disabled { cursor:default; }
-.inv .env-art { position:absolute; left:0; top:50%; width:100%; aspect-ratio:1060/1640; transform:translateY(-50%); pointer-events:none; }
-.inv .env-art img { position:absolute; display:block; user-select:none; will-change:transform; }
-.inv .env-l { inset:0; width:100%; height:100%; }
-/* the right half spans the same height; its right edge meets the left panel, so the seal lands at the centre */
-.inv .env-r { left:31.23%; top:0; width:68.77%; height:100%; }
-.inv .env-l, .inv .env-r { transition:transform 1.15s cubic-bezier(.65,0,.25,1), opacity .5s ease .75s; }
-.inv[data-phase="opening"] .env-l { transform:translateX(-118%); opacity:0; }
-.inv[data-phase="opening"] .env-r { transform:translateX(150%); opacity:0; }
-.inv .env-hint { position:absolute; left:0; right:0; bottom:-14px; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); transition:opacity .3s ease; }
+
+/* Art box uses the body canvas (948x610). All three layers are placed in that coordinate system:
+   hinge = top edge of the body. Closed flap hangs from it; open flap stands on it. */
+.inv .env-art { position:absolute; left:50%; top:56%; width:calc(100% * 948 / 904); aspect-ratio:948/610; translate:-50% -50%;
+  perspective:1100px; pointer-events:none; transition:transform .6s cubic-bezier(.4,0,.2,1) 1.25s, opacity .4s ease 1.25s; }
+.inv .env-art img { position:absolute; display:block; user-select:none; backface-visibility:hidden; }
+.inv .env-body { inset:0; width:100%; height:100%; }
+.inv .env-flap-closed { left:.633%; top:-.984%; width:100%; height:78.361%; transform-origin:50% 2.929%;
+  transition:transform .5s cubic-bezier(.45,0,.85,.6), visibility 0s linear .5s; }
+.inv .env-flap-open { left:.633%; top:-73.279%; width:98.523%; height:76.066%; transform-origin:50% 98.06%;
+  transform:rotateX(-90deg); visibility:hidden; transition:transform .75s cubic-bezier(.12,.5,.3,1) .5s, visibility 0s linear .5s; }
+.inv[data-phase="opening"] .env-flap-closed { transform:rotateX(90deg); visibility:hidden; }
+.inv[data-phase="opening"] .env-flap-open { transform:rotateX(0deg); visibility:visible; }
+.inv[data-phase="opening"] .env-art { transform:translateY(36px) scale(.96); opacity:0; }
+
+/* static (editor) view: closed envelope only, no hint */
+.inv .stage.env-static { aspect-ratio:948/610; }
+.inv .env-static .env-art { top:50%; }
+.inv .env-static .env-flap-open { display:none; }
+
+.inv .env-hint { position:absolute; left:0; right:0; top:100%; margin-top:22px; text-align:center; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); transition:opacity .3s ease; }
 .inv[data-phase="opening"] .env-hint { opacity:0; }
 @media (prefers-reduced-motion: no-preference) { .inv[data-phase="closed"] .env-hint { animation:hint 2.4s ease-in-out infinite; } }
 @keyframes hint { 0%,100% { opacity:.45; } 50% { opacity:1; } }
@@ -91,8 +105,6 @@ body { background: var(--background); color: var(--foreground); font-family: var
 @media (prefers-reduced-motion: reduce) {
   .inv[data-phase] .stage > .card[data-card="2"],
   .inv[data-phase] .card[data-card]:not([data-card="2"]),
-  .inv .env-l, .inv .env-r { transition:none; }
+  .inv .env-art, .inv .env-art img { transition:none; }
   .inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:1; transform:none; }
 }
-.inv .stage.env-static { aspect-ratio:1060/1640; }
-.inv { padding-inline:12px; }
