@@ -126,3 +126,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
   font-family:var(--font-script),cursive; font-size:10.5cqw; line-height:1; pointer-events:none;
   background:linear-gradient(135deg,#e6cd82 0%,#a9812f 52%,#dcbf6c 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .inv .monogram .amp { font-size:.6em; color:inherit; }
+
+/* ───────── Card 2: invitation text on the watercolour sheet, arch photo above ───────── */
+.inv .card-sheet { background:#fbf7ee url(/templates/sage-story/v1/page-bg.webp) center bottom / cover no-repeat; justify-content:center; gap:20px; padding:26px 24px 41%; }
+.inv .card-sheet .arch { width:46%; background:#fffdf8; }
+.inv .card-sheet .small { font-size:16px; letter-spacing:.16em; line-height:1.65; max-width:15em; }

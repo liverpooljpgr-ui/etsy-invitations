@@ -71,9 +71,14 @@ export function Invitation({
 
       {/* 2 — invited (the envelope overlay sits on top of this card until opened) */}
       <div className="stage">
-        <section className="card" data-card="2" tabIndex={-1}>
-          {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
-          <p className="small">{c.texts.invited || "You're cordially invited"}</p>
+        <section className="card card-sheet" data-card="2" tabIndex={-1}>
+          {c.photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="arch" src={c.photo.url} alt={c.photo.alt || `${first} and ${second}`} />
+          ) : ph ? (
+            <div className="arch arch-empty">Photo</div>
+          ) : null}
+          <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
         </section>
         {envelope}
       </div>
@@ -89,14 +94,8 @@ export function Invitation({
         </h1>
       </section>
 
-      {/* 4 — photo + date */}
+      {/* 4 — date */}
       <section className="card" data-card="4">
-        {c.photo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="arch" src={c.photo.url} alt={c.photo.alt || `${first} and ${second}`} />
-        ) : ph ? (
-          <div className="arch arch-empty">Photo</div>
-        ) : null}
         <p className="caps tiny">{c.texts.celebration}</p>
         {d ? (
           <>

@@ -26,7 +26,7 @@ export const contentSchema = z.object({
   couple: z.object({ first: text(40), second: text(40) }),
   // New keys use .default() so drafts saved before they existed still parse.
   texts: z.object({
-    invited: text(60),
+    invited: text(80),
     headline: text(60),
     celebration: text(80),
     receptionNote: text(80),
@@ -52,7 +52,7 @@ export type Content = z.infer<typeof contentSchema>;
 export const defaultContent: Content = {
   couple: { first: "", second: "" },
   texts: {
-    invited: "You're cordially invited",
+    invited: "you are cordially invited to our wedding",
     headline: "We're getting married",
     celebration: "In celebration of our wedding",
     receptionNote: "Reception to follow",
