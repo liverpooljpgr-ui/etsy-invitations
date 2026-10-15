@@ -17,8 +17,27 @@ const optDate = z.union([z.literal(""), z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 
 const optEmail = z.union([z.literal(""), z.email().max(200)]);
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
-// Photos may only come from our own public storage bucket.
-const PHOTO_PREFIX = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/invitation-media/`;
+// Photos may only come from our own public storage bucket. Compare parsed URLs, not raw strings:
+// an env value with stray characters (e.g. a BOM added when it was pasted into Vercel) must not break uploads.
+const SUPABASE_ORIGIN = (() => {
+  try {
+    return new URL((process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim()).origin;
+  } catch {
+    return "";
+  }
+})();
+const PHOTO_PATH = "/storage/v1/object/public/invitation-media/";
+const photoUrl = z
+  .string()
+  .max(500)
+  .refine((v) => {
+    try {
+      const u = new URL(v);
+      return !!SUPABASE_ORIGIN && u.origin === SUPABASE_ORIGIN && u.pathname.startsWith(PHOTO_PATH);
+    } catch {
+      return false;
+    }
+  }, "Photo must be uploaded through the editor");
 
 export const THEMES = ["sage", "ivory", "burgundy"] as const;
 
@@ -39,7 +58,7 @@ export const contentSchema = z.object({
   }),
   decor: z.enum(["butterfly", "none"]).default("butterfly"),
   event: z.object({ date: optDate, time: text(30), venue: text(120), address: text(200), mapUrl: optUrl }),
-  photo: z.object({ url: z.string().startsWith(PHOTO_PREFIX).max(500), alt: text(200) }).nullable(),
+  photo: z.object({ url: photoUrl, alt: text(200) }).nullable(),
   timeline: z.array(z.object({ time: text(20), label: text(60) })).max(10),
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),
   dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
