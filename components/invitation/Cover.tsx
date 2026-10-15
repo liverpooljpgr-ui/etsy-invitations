@@ -11,19 +11,19 @@ function seeded(seed: number) {
   return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
 }
 const rnd = seeded(20271);
-const DUST = Array.from({ length: 44 }, (_, i) => {
-  const onEnvelope = i % 4 === 0;
+const DUST = Array.from({ length: 76 }, (_, i) => {
+  const onEnvelope = i % 5 === 0;
   const a = rnd() * Math.PI * 2;
-  const x = onEnvelope ? 6 + rnd() * 88 : 50 + Math.cos(a) * (52 + rnd() * 9);
-  const y = onEnvelope ? 12 + rnd() * 76 : 50 + Math.sin(a) * (54 + rnd() * 26);
-  const star = i % 3 !== 1;
+  const x = onEnvelope ? 6 + rnd() * 88 : 50 + Math.cos(a) * (51 + rnd() * 11);
+  const y = onEnvelope ? 12 + rnd() * 76 : 50 + Math.sin(a) * (52 + rnd() * 30);
+  const star = i % 4 === 0; // a few tiny stars among many specks
   return {
     x: +x.toFixed(1),
     y: +y.toFixed(1),
-    size: star ? +(12 + rnd() * 8).toFixed(1) : +(3.5 + rnd() * 3.5).toFixed(1),
+    size: star ? +(6 + rnd() * 4).toFixed(1) : +(1.6 + rnd() * 2).toFixed(1),
     star,
-    dx: Math.round((rnd() - 0.5) * 22),
-    dy: -Math.round(6 + rnd() * 18), // drifts upward
+    dx: Math.round((rnd() - 0.5) * 18),
+    dy: -Math.round(4 + rnd() * 14), // drifts upward
     dur: +(2.8 + rnd() * 2.8).toFixed(2),
     delay: -+(rnd() * 6).toFixed(2), // negative: starts mid-cycle so it is sparkling immediately
   };
@@ -76,7 +76,6 @@ export function CoverInner({ content: c, mode, hint }: { content: Content; mode:
         </span>
         <EnvelopeArt />
         <span className="magic magic-front" aria-hidden="true">
-          <span className="glint" />
           <GoldDust />
         </span>
       </span>
