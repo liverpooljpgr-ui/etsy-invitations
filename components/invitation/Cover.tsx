@@ -71,9 +71,6 @@ export function CoverInner({ content: c, mode, hint }: { content: Content; mode:
         <span>{second}</span>
       </span>
       <span className="cover-env">
-        <span className="magic magic-back" aria-hidden="true">
-          <span className="glow" />
-        </span>
         <EnvelopeArt />
         <span className="magic magic-front" aria-hidden="true">
           <GoldDust />

@@ -123,14 +123,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
 /* ───────── Magic golden dust around the envelope (hints that it can be tapped) ───────── */
 .inv .env-art { z-index:1; }
 .inv .magic { position:absolute; inset:0; pointer-events:none; transition:opacity .35s ease; }
-.inv .magic-back { z-index:0; }
 .inv .magic-front { z-index:3; }
 .inv[data-phase="opening"] .magic, .inv[data-phase="open"] .magic { opacity:0; }
-
-/* soft golden halo, breathing */
-.inv .glow { position:absolute; inset:-26% -16%; border-radius:50%;
-  background:radial-gradient(closest-side, rgba(238,198,86,.5) 58%, rgba(238,198,86,.2) 78%, transparent 100%); animation:glow 3s ease-in-out infinite; }
-@keyframes glow { 0%,100% { opacity:.3; transform:scale(.97); } 50% { opacity:.85; transform:scale(1.04); } }
 
 
 /* sparkles: round motes + four-point stars, twinkling and drifting upward */
@@ -148,6 +142,5 @@ body { background: var(--background); color: var(--foreground); font-family: var
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inv .glow { animation:none; opacity:.7; }
   .inv .dust { display:none; }
 }
