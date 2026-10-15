@@ -23,13 +23,10 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .small { font-size:22px; letter-spacing:.12em; text-transform:uppercase; }
 .inv .caps { font-size:13px; letter-spacing:.28em; text-transform:uppercase; }
 .inv .tiny { font-size:10.5px; letter-spacing:.24em; }
-.inv .month { font-size:15px; letter-spacing:.3em; margin-top:2px; }
 .inv .names { display:flex; flex-direction:column; align-items:center; font-family:var(--font-script),cursive; font-weight:400; font-size:54px; line-height:1.05; color:var(--ink); }
 .inv .amp { font-size:34px; color:var(--gold); }
 .inv .arch { width:62%; aspect-ratio:3/4; object-fit:cover; border-radius:999px 999px 6px 6px; border:1px solid var(--gold); padding:5px; background:var(--paper); }
 .inv .arch-empty { display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:13px; letter-spacing:.2em; text-transform:uppercase; }
-.inv .datebar { display:flex; align-items:center; gap:12px; font-size:11px; letter-spacing:.2em; }
-.inv .datebar b { font-size:28px; font-weight:500; padding:0 12px; border-left:1px solid var(--gold); border-right:1px solid var(--gold); }
 .inv .script { font-family:var(--font-script),cursive; font-weight:400; font-size:44px; color:var(--gold); }
 .inv .script.big { font-size:46px; color:var(--dark-ink); line-height:1.1; }
 .inv .title { font-size:40px; letter-spacing:.14em; text-transform:uppercase; line-height:1.15; font-weight:400; }
@@ -127,7 +124,23 @@ body { background: var(--background); color: var(--foreground); font-family: var
   background:linear-gradient(135deg,#e6cd82 0%,#a9812f 52%,#dcbf6c 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .inv .monogram .amp { font-size:.6em; color:inherit; }
 
-/* ───────── Card 2: invitation text on the watercolour sheet, arch photo above ───────── */
-.inv .card-sheet { background:#fbf7ee url(/templates/sage-story/v1/page-bg.webp) center bottom / cover no-repeat; justify-content:center; gap:20px; padding:26px 24px 41%; }
-.inv .card-sheet .arch { width:46%; background:#fffdf8; }
-.inv .card-sheet .small { font-size:16px; letter-spacing:.16em; line-height:1.65; max-width:15em; }
+
+/* ───────── Card 2: arch photo, date, "save the date" on the watercolour sheet ─────────
+   Sizes use container units (cqw / cqh = % of the card) so it scales on any phone width.
+   The sheet's flowers start ~77% down the card, so everything fits above them. */
+.inv .card-sheet { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg.webp) center bottom / cover no-repeat; padding:0; justify-content:flex-start; }
+/* cq units only work on descendants of the container, hence the inner wrapper */
+.inv .sheet-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:2cqh; padding:4cqh 7cqw 0; }
+.inv .card-sheet .arch { height:48cqh; width:auto; aspect-ratio:3/4; background:#fffdf8; flex:none; }
+.inv .dt { display:flex; flex-direction:column; align-items:center; gap:.9cqh; color:#6d6358; }
+.inv .dt-month, .inv .dt-year { font-size:3.5cqw; letter-spacing:.26em; text-transform:uppercase; padding-left:.26em; }
+.inv .dt-row { display:flex; align-items:center; gap:3.2cqw; font-size:3.4cqw; letter-spacing:.2em; text-transform:uppercase; }
+.inv .dt-row b { font-weight:500; font-size:8.8cqw; letter-spacing:0; line-height:1.15; padding:0 3cqw; border-left:1px solid rgba(90,80,70,.55); border-right:1px solid rgba(90,80,70,.55); }
+.inv .dt-row b:last-child { border-right:0; padding-right:0; }
+.inv .save { font-family:var(--font-script),cursive; font-size:8.6cqw; line-height:1.1; color:var(--gold); margin-top:.4cqh; }
+/* no photo uploaded (published view): centre the date block in the space above the flowers */
+.inv .sheet-in.no-photo { justify-content:center; gap:3cqh; padding:0 7cqw 24cqh; }
+.inv .sheet-in.no-photo .dt-month, .inv .sheet-in.no-photo .dt-year { font-size:4cqw; }
+.inv .sheet-in.no-photo .dt-row { font-size:3.8cqw; }
+.inv .sheet-in.no-photo .dt-row b { font-size:11cqw; }
+.inv .sheet-in.no-photo .save { font-size:10.5cqw; }

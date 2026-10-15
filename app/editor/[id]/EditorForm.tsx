@@ -205,8 +205,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} /></Field>
           </Section>
 
-          <Section n={2} title="Card 2 · Photo & invitation text">
-            <p className="text-sm text-stone-700">Photo (shown in an arch above the text)</p>
+          <Section n={2} title="Card 2 · Photo, date & save the date">
+            <p className="text-sm text-stone-700">Photo (shown in an arch)</p>
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => void onPhoto(e.target.files?.[0])} className="text-sm" />
             {draft.photo && (
               <>
@@ -214,7 +214,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <button type="button" onClick={() => set("photo", null)} className="text-xs text-red-700 underline">Remove photo</button>
               </>
             )}
-            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Date"><input type="date" className={inputCls} value={draft.event.date} onChange={(e) => set("event", { ...draft.event, date: e.target.value })} /></Field>
+              <Field label="Time (e.g. 2:00 PM)"><input className={inputCls} maxLength={30} value={draft.event.time} onChange={(e) => set("event", { ...draft.event, time: e.target.value })} /></Field>
+            </div>
+            <Field label="Text under the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
           </Section>
 
           <Section n={3} title="Card 3 · Names">
@@ -222,13 +226,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
           </Section>
 
-          <Section n={4} title="Card 4 · Date">
-            <Field label="Line above the date"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Date"><input type="date" className={inputCls} value={draft.event.date} onChange={(e) => set("event", { ...draft.event, date: e.target.value })} /></Field>
-              <Field label="Time (e.g. 2:00 PM)"><input className={inputCls} maxLength={30} value={draft.event.time} onChange={(e) => set("event", { ...draft.event, time: e.target.value })} /></Field>
-            </div>
-            <Field label="Line below the date"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
+          <Section n={4} title="Card 4 · Invitation text">
+            <Field label="Small line above"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
+            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
+            <Field label="Small line below"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
           <Section n={5} title="Card 5 · Timeline">

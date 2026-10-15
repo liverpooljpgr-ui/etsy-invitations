@@ -29,6 +29,21 @@ function parts(iso: string) {
   return { month: MONTHS[dt.getUTCMonth()], weekday: DAYS[dt.getUTCDay()], day: String(+m[3]), year: m[1], dt };
 }
 
+/** Month / WEEKDAY | day | AT time / year — the format of the reference design. */
+function DateBlock({ d, time }: { d: NonNullable<ReturnType<typeof parts>>; time: string }) {
+  return (
+    <div className="dt">
+      <span className="dt-month">{d.month}</span>
+      <span className="dt-row">
+        <span>{d.weekday}</span>
+        <b>{d.day}</b>
+        {time && <span>AT {time.toUpperCase()}</span>}
+      </span>
+      <span className="dt-year">{d.year}</span>
+    </div>
+  );
+}
+
 function longDate(iso: string) {
   const p = parts(iso);
   return p ? `${p.month[0]}${p.month.slice(1).toLowerCase()} ${p.day}, ${p.year}` : "";
@@ -72,13 +87,20 @@ export function Invitation({
       {/* 2 — invited (the envelope overlay sits on top of this card until opened) */}
       <div className="stage">
         <section className="card card-sheet" data-card="2" tabIndex={-1}>
-          {c.photo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="arch" src={c.photo.url} alt={c.photo.alt || `${first} and ${second}`} />
-          ) : ph ? (
-            <div className="arch arch-empty">Photo</div>
-          ) : null}
-          <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
+          <div className={c.photo || ph ? "sheet-in" : "sheet-in no-photo"}>
+            {c.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="arch" src={c.photo.url} alt={c.photo.alt || `${first} and ${second}`} />
+            ) : ph ? (
+              <div className="arch arch-empty">Photo</div>
+            ) : null}
+            {d ? (
+              <DateBlock d={d} time={c.event.time} />
+            ) : ph ? (
+              <div className="dt"><span className="dt-month">Date</span></div>
+            ) : null}
+            {(d || ph) && c.texts.saveTheDate && <p className="save">{c.texts.saveTheDate}</p>}
+          </div>
         </section>
         {envelope}
       </div>
@@ -94,19 +116,10 @@ export function Invitation({
         </h1>
       </section>
 
-      {/* 4 — date */}
+      {/* 4 — invitation text */}
       <section className="card" data-card="4">
-        <p className="caps tiny">{c.texts.celebration}</p>
-        {d ? (
-          <>
-            <p className="caps month">{d.month}</p>
-            <p className="datebar">
-              <span>{d.weekday}</span>
-              <b>{d.day}</b>
-              <span>{c.event.time ? `AT ${c.event.time.toUpperCase()}` : d.year}</span>
-            </p>
-          </>
-        ) : ph ? <p className="caps month">Date</p> : null}
+        {c.texts.celebration && <p className="caps tiny">{c.texts.celebration}</p>}
+        <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
         {c.texts.receptionNote && <p className="caps tiny">{c.texts.receptionNote}</p>}
       </section>
 
