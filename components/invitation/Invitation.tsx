@@ -108,25 +108,29 @@ export function Invitation({
       {/* 3 — venue: name, full address, directions link, "reception to follow" */}
       {(c.event.venue || ph) && (
         <section className="card card-venue" data-card="3">
-          {c.texts.venueIntro && <p className="venue-intro">{c.texts.venueIntro}</p>}
-          <p className="venue-name">{c.event.venue || "Venue name"}</p>
-          <span className="venue-rule" aria-hidden="true" />
-          {(c.event.address || ph) && <p className="venue-addr">{c.event.address || "Street address, city"}</p>}
-          {c.event.mapUrl && <a className="link venue-link" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>}
-          {c.texts.receptionNote && <p className="venue-recep">{c.texts.receptionNote}</p>}
+          <div className="venue-in">
+            {c.texts.venueIntro && <p className="venue-intro">{c.texts.venueIntro}</p>}
+            <p className="venue-name">{c.event.venue || "Venue name"}</p>
+            <span className="venue-rule" aria-hidden="true" />
+            {(c.event.address || ph) && <p className="venue-addr">{c.event.address || "Street address, city"}</p>}
+            {c.event.mapUrl && <a className="link venue-link" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>}
+            {c.texts.receptionNote && <p className="venue-recep">{c.texts.receptionNote}</p>}
+          </div>
         </section>
       )}
 
       {/* 4 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
       {(c.timeline.length > 0 || ph) && (
         <section className="card card-timeline" data-card="4">
-          <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
-          {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
-          <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
-            {c.timeline.map((it, i) => (
-              <li key={i}><span>{it.label}</span><b>{it.time}</b></li>
-            ))}
-          </ul>
+          <div className="tl-in">
+            <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
+            {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
+            <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
+              {c.timeline.map((it, i) => (
+                <li key={i}><span>{it.label}</span><b>{it.time}</b></li>
+              ))}
+            </ul>
+          </div>
         </section>
       )}
 

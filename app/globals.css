@@ -144,7 +144,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* ───────── Card 3: venue on the plain paper sheet ───────── */
 /* the sheet has a flower garland across the top (about the top quarter), so the text starts below it */
-.inv .card-venue { background:#f8f8f4 url(/templates/sage-story/v1/page-bg-venue.webp) center / cover no-repeat; gap:12px; padding:44% 30px 6%; }
+.inv .card-venue { container-type:size; background:#f8f8f4 url(/templates/sage-story/v1/page-bg-venue.webp) center / cover no-repeat; padding:0; }
+.inv .venue-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:26.4cqh 9cqw 3.6cqh; }
 .inv .venue-intro { font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); margin-bottom:6px; }
 .inv .venue-name { font-size:23px; letter-spacing:.14em; text-transform:uppercase; line-height:1.4; color:var(--ink); }
 .inv .venue-rule { display:block; width:44px; height:1px; background:var(--gold); margin:4px 0 2px; }
@@ -154,7 +155,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* ───────── Card 4: timeline (its own sheet: flowers along the bottom; ornaments between time stamps) ───────── */
 /* the flowers fill the bottom ~22% (taller stalk at the right edge), so the list stops above them */
-.inv .card-timeline { container-type:size; background:#f8f8f4 url(/templates/sage-story/v1/page-bg-timeline.webp) center / cover no-repeat; justify-content:flex-start; gap:1.4cqh; padding:9% 30px 40%; }
+.inv .card-timeline { container-type:size; background:#f8f8f4 url(/templates/sage-story/v1/page-bg-timeline.webp) center / cover no-repeat; padding:0; }
+.inv .tl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:1.4cqh; padding:5.4cqh 9cqw 24cqh; }
 .inv .tl-title { text-align:center; font-size:40px; line-height:1.1; }
 .inv .tl { width:100%; flex:1; min-height:0; display:flex; flex-direction:column; gap:0; }
 /* each item takes an equal share of the list, so any number of items fits the card */
