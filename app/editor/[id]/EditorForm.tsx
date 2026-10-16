@@ -235,19 +235,34 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </div>
       )}
 
+      <div className="mx-auto max-w-6xl px-4 pt-4">
+        {status === "published" ? (
+          <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
+            <p className="mb-2 font-medium text-green-900">Your invitation is live. Send this link to your guests:</p>
+            <div className="flex gap-2">
+              <input readOnly value={publicUrl} onFocus={(e) => e.currentTarget.select()} className="min-w-0 flex-1 rounded border border-green-300 bg-white px-2 py-1 font-mono text-xs" />
+              <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="rounded bg-green-800 px-3 text-white">{copied ? "Copied" : "Copy"}</button>
+              <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="rounded border border-green-800 px-3 py-1 text-green-900">Open</a>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="rounded border border-green-800 px-3 py-1 text-green-900">Share on WhatsApp</a>
+              <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="rounded border border-green-800 px-3 py-1 text-green-900">Text message</a>
+              <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="rounded border border-green-800 px-3 py-1 text-green-900">Email</a>
+              <button onClick={onUnpublish} disabled={busy} className="ml-auto text-xs text-green-900 underline">Unpublish</button>
+            </div>
+            <p className="mt-2 text-xs text-green-900/80">Changed something? Press “Update published” at the top — the same link then shows the new version.</p>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-stone-200 bg-white p-4 text-sm">
+            <p className="mb-2 font-medium">Your guest link</p>
+            <input readOnly value={publicUrl} className="w-full rounded border border-stone-200 bg-stone-50 px-2 py-1 font-mono text-xs text-stone-400" />
+            <p className="mt-2 text-xs text-stone-600">Press <b>Publish</b> at the top when you are happy with the preview — the link then goes live and you can copy and send it to your guests.</p>
+          </div>
+        )}
+      </div>
+
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className={`space-y-4 ${tab === "preview" ? "hidden lg:block" : ""}`}>
-          {status === "published" && (
-            <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
-              <p className="mb-2 font-medium text-green-900">Your invitation is live. Send this link to your guests:</p>
-              <div className="flex gap-2">
-                <input readOnly value={publicUrl} onFocus={(e) => e.currentTarget.select()} className="min-w-0 flex-1 rounded border border-green-300 bg-white px-2 py-1 font-mono text-xs" />
-                <button onClick={async () => { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className="rounded bg-green-800 px-3 text-white">{copied ? "Copied" : "Copy"}</button>
-                <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="rounded border border-green-800 px-3 py-1 text-green-900">Open</a>
-              </div>
-              <button onClick={onUnpublish} disabled={busy} className="mt-3 text-xs text-green-900 underline">Unpublish</button>
-            </div>
-          )}
 
           <Section n={1} title="Card 1 · Cover (the envelope screen)">
             <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
