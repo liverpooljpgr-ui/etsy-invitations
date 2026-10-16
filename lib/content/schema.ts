@@ -38,6 +38,8 @@ const photoUrl = z
       return false;
     }
   }, "Photo must be uploaded through the editor");
+// same rule for the optional background-music file: it must live in our own storage bucket
+const musicUrl = photoUrl;
 
 export const THEMES = ["sage", "ivory", "burgundy"] as const;
 
@@ -61,6 +63,7 @@ export const contentSchema = z.object({
   decor: z.enum(["butterfly", "none"]).default("butterfly"),
   event: z.object({ date: optDate, time: text(30), venue: text(120), address: text(300), mapUrl: optUrl }),
   photo: z.object({ url: photoUrl, alt: text(200) }).nullable(),
+  music: z.object({ url: musicUrl, name: text(80) }).nullable().default(null),
   timeline: z.array(z.object({ time: text(20), label: text(60) })).max(10),
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),
   dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
@@ -91,6 +94,7 @@ export const defaultContent: Content = {
   decor: "butterfly",
   event: { date: "", time: "", venue: "", address: "", mapUrl: "" },
   photo: null,
+  music: null,
   timeline: [],
   registry: [],
   dressCode: { label: "", colors: [] },

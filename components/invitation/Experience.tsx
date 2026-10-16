@@ -7,8 +7,6 @@ import { Invitation } from "./Invitation";
 
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
-/** Background music: drop an mp3 at this path (public/…). If the file is missing, no music button is shown. */
-const MUSIC_SRC = "/templates/sage-story/v1/music.mp3";
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
@@ -23,7 +21,8 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
 
   function startMusic() {
     // Browsers only allow sound after a tap, so the music starts with the tap on the envelope.
-    const a = new Audio(MUSIC_SRC);
+    if (!content.music) return; // no music chosen by the host
+    const a = new Audio(content.music.url);
     a.loop = true;
     a.volume = 0.6;
     a.addEventListener("error", () => { audio.current = null; setMusic("none"); });

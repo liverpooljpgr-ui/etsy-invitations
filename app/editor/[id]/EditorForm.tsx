@@ -185,6 +185,23 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     }
   }
 
+  async function onMusic(file: File | undefined) {
+    if (!file) return;
+    if (!(file.type === "audio/mpeg" || /.mp3$/i.test(file.name))) return setNotice({ ok: false, text: "Please choose an MP3 file." });
+    if (file.size > 8 * 1024 * 1024) return setNotice({ ok: false, text: "Music file is too large (max 8 MB)." });
+    setNotice(null);
+    try {
+      const supabase = createBrowserSupabase();
+      const path = `${id}/${crypto.randomUUID()}.mp3`;
+      const { error } = await supabase.storage.from("invitation-media").upload(path, file, { contentType: "audio/mpeg" });
+      if (error) throw error;
+      const { data } = supabase.storage.from("invitation-media").getPublicUrl(path);
+      update((d) => ({ ...d, music: { url: data.publicUrl, name: file.name.replace(/.mp3$/i, "").slice(0, 80) } }));
+    } catch {
+      setNotice({ ok: false, text: "Music upload failed. Please try again." });
+    }
+  }
+
   const set = <K extends keyof Content>(k: K, v: Content[K]) => update((d) => ({ ...d, [k]: v }));
   // Two fixed registry options (Amazon, Target), stored as registry[] items with those labels.
   const regUrl = (label: string) => draft.registry.find((r) => r.label === label)?.url ?? "";
@@ -271,6 +288,18 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Second name"><input className={inputCls} maxLength={40} value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
             </div>
             <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} /></Field>
+            <div className="space-y-2">
+              <p className="text-sm text-stone-700">Background music (optional) — plays when your guest taps the envelope</p>
+              <input type="file" accept="audio/mpeg,.mp3" onChange={(e) => { void onMusic(e.target.files?.[0]); e.target.value = ""; }} className="text-sm" />
+              {draft.music && (
+                <>
+                  <p className="text-xs text-stone-600">Selected: {draft.music.name || "your song"}</p>
+                  <audio controls preload="none" src={draft.music.url} className="w-full" />
+                  <button type="button" onClick={() => set("music", null)} className="text-xs text-red-700 underline">Remove music</button>
+                </>
+              )}
+              <p className="text-xs text-stone-500">MP3, up to 8 MB. Please use music you have the right to share.</p>
+            </div>
           </Section>
 
           <Section n={2} title="Card 2 · Photo, date & save the date">
