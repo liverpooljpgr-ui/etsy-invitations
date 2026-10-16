@@ -207,3 +207,34 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .closing-names { display:flex; flex-direction:column; align-items:center; font-family:var(--font-script),cursive; font-size:46px; line-height:1.15; color:var(--gold); overflow-wrap:anywhere; }
 .inv .closing-names .amp { font-size:30px; color:var(--ink); }
 .inv .closing-text { margin:3.4cqh 0 0; font-family:var(--font-serif),serif; font-size:15px; line-height:1.6; letter-spacing:.04em; color:var(--ink); }
+
+/* scroll reveal: when a card scrolls in, its elements rise one after another (the animated guest view only) */
+@keyframes rise { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+@keyframes pop { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:none; } }
+@keyframes slide-l { from { opacity:0; transform:translateX(-22px); } to { opacity:1; transform:none; } }
+@keyframes slide-r { from { opacity:0; transform:translateX(22px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in) > *,
+  .inv[data-phase] .card.in .tl-in > *,
+  .inv[data-phase] .card.in .rsvp-title > * { animation:rise .9s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase] .card.in .tl li { animation:rise .8s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase] .card.in .tl li:nth-child(odd) { animation-name:slide-l; }
+  .inv[data-phase] .card.in .tl li:nth-child(even) { animation-name:slide-r; }
+  .inv[data-phase] .card.in .qrbox, .inv[data-phase] .card.in .dots i { animation:pop .7s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > * { animation:rise 1s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > .arch { animation-name:pop; }
+
+  .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(1),
+  .inv[data-phase] .card.in .tl li:nth-child(1) { animation-delay:.25s; }
+  .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(2),
+  .inv[data-phase] .card.in .tl li:nth-child(2) { animation-delay:.45s; }
+  .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(3),
+  .inv[data-phase] .card.in .tl li:nth-child(3) { animation-delay:.65s; }
+  .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(4),
+  .inv[data-phase] .card.in .tl li:nth-child(4) { animation-delay:.85s; }
+  .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(n+5),
+  .inv[data-phase] .card.in .tl li:nth-child(n+5) { animation-delay:1.05s; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(1) { animation-delay:1.9s; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(2) { animation-delay:2.3s; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(3) { animation-delay:2.5s; }
+}
