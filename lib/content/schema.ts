@@ -51,7 +51,7 @@ export const contentSchema = z.object({
     receptionNote: text(80),
     timelineTitle: text(30).default("timeline"),
     rsvpTitle: text(30).default("please RSVP"),
-    closing: text(60).default(""),
+    closing: text(80).default(""),
     saveTheDate: text(40).default("save the date"),
     venueIntro: text(60).default("ceremony will take place"),
     detailsTitle: text(30).default("details"),

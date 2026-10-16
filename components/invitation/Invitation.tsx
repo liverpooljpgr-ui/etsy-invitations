@@ -191,11 +191,11 @@ export function Invitation({
       )}
 
       {/* 7 — closing */}
-      <section className="card card-dark" data-card="7">
-        <div className="frame">
-          {c.texts.closing
-            ? <p className="script big">{c.texts.closing}</p>
-            : <p className="script big">{first}<br /><span className="amp">&amp;</span><br />{second}</p>}
+      <section className="card card-closing" data-card="7">
+        <div className="closing-in">
+          <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
+          <span className="closing-rule" aria-hidden="true" />
+          <p className="closing-text">{c.texts.closing || "Two hearts, one love — our forever begins today."}</p>
         </div>
       </section>
     </div>

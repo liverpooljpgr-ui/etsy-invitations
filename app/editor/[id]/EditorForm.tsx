@@ -342,7 +342,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
 
           <Section n={7} title="Card 7 · Closing">
-            <Field label="Closing text (leave empty to show both names)"><input className={inputCls} maxLength={60} {...tp("closing")} /></Field>
+            <Field label="Short sentence about love (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Two hearts, one love — our forever begins today." {...tp("closing")} /></Field>
           </Section>
         </div>
 
