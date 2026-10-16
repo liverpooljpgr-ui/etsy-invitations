@@ -65,7 +65,7 @@ export const contentSchema = z.object({
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),
   dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
   hotel: z.object({ name: text(100), address: text(200) }),
-  parking: text(140).default(""),
+  parking: text(100).default(""),
   rsvp: z.object({ deadline: optDate, email: optEmail, note: text(160) }),
   theme: z.enum(THEMES),
 });
