@@ -254,3 +254,14 @@ html { scrollbar-gutter: stable; }
 .music-btn { position:fixed; right:16px; bottom:16px; z-index:30; width:44px; height:44px; border-radius:50%; border:1px solid rgba(185,154,85,.6); background:rgba(251,249,243,.92); color:#b99a55; display:grid; place-items:center; box-shadow:0 4px 14px rgba(0,0,0,.12); cursor:pointer; -webkit-tap-highlight-color:transparent; }
 .music-btn[aria-pressed="true"] { animation:hint 2.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .music-btn[aria-pressed="true"] { animation:none; } }
+
+/* phones (guest view): slides — each card is one full screen and scrolling snaps from slide to slide */
+@media (max-width: 640px) {
+  html:has(.inv[data-phase]) { scroll-snap-type:y mandatory; }
+  main:has(.inv[data-phase]) { padding:0; }
+  .inv[data-phase] { padding:0; gap:0; }
+  .inv[data-phase] .card, .inv[data-phase] .cover { width:100%; max-width:none; height:100svh; aspect-ratio:auto; border-radius:0; box-shadow:none; scroll-snap-align:start; scroll-snap-stop:always; }
+  .inv[data-phase] .stage { width:100%; aspect-ratio:auto; height:100svh; margin-top:0; scroll-snap-align:start; scroll-snap-stop:always; }
+  .inv[data-phase] .stage > .card, .inv[data-phase] .stage > .cover { height:100%; scroll-snap-align:none; }
+  .inv[data-phase] .card-rsvp { background-size:cover; background-position:20% 100%; }
+}
