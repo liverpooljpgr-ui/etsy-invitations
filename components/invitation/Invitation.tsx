@@ -117,9 +117,9 @@ export function Invitation({
         </section>
       )}
 
-      {/* 4 — timeline: the venue's garland paper, with an ornament between the time stamps */}
+      {/* 4 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
       {(c.timeline.length > 0 || ph) && (
-        <section className="card card-venue card-timeline" data-card="4">
+        <section className="card card-timeline" data-card="4">
           <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
           {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
           <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
