@@ -300,18 +300,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} title="Card 5 · Details (parking, accommodation, dress code, registry)">
+          <Section n={5} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
-            <Field label="Parking">
-              <textarea className={inputCls} rows={3} maxLength={90} value={draft.parking} onChange={(e) => set("parking", e.target.value)} />
-            </Field>
-            <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={36} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
+            <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (use Enter for a new line)">
-              <textarea className={inputCls} rows={2} maxLength={80} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
+              <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
             </Field>
             {features.dress_code ? (
               <div className="space-y-2">
-                <Field label="Dress code"><input className={inputCls} maxLength={36} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
+                <Field label="Dress code"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
                 <div className="flex flex-wrap items-center gap-2">
                   {draft.dressCode.colors.map((c, i) => (
                     <span key={i} className="flex items-center gap-1">

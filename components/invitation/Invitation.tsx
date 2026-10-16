@@ -55,7 +55,7 @@ export function Invitation({
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
-  const hasInfo = c.parking || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
+  const hasInfo = c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
 
   return (
@@ -117,17 +117,11 @@ export function Invitation({
         </section>
       )}
 
-      {/* 5 — details: parking, accommodation, dress code (the save-the-date sheet, flipped: flowers hang from the top) */}
+      {/* 5 — details: accommodation, dress code, registry (the save-the-date sheet, flipped: flowers hang from the top) */}
       {hasInfo && (
         <section className="card card-details" data-card="5">
           <div className="dtl-in">
             <h2 className="script tl-title">{c.texts.detailsTitle || "details"}</h2>
-            {(c.parking || ph) && (
-              <div className="blk dtl-blk">
-                <p className="caps tiny">Parking</p>
-                <p className="sub dtl-text">{c.parking || "Where guests can park"}</p>
-              </div>
-            )}
             {(c.hotel.name || ph) && (
               <div className="blk dtl-blk">
                 <p className="caps tiny">Accommodation</p>
@@ -142,10 +136,12 @@ export function Invitation({
                 {hasDress && (
                   <div className="blk dtl-blk">
                     <p className="caps tiny">Dress code</p>
-                    <p className="dots">
-                      {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
-                    </p>
-                    {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
+                    <div className="dtl-dress">
+                      <p className="dots">
+                        {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
+                      </p>
+                      {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
+                    </div>
                   </div>
                 )}
                 {registry.length > 0 && (

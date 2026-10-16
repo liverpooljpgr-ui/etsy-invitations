@@ -30,7 +30,6 @@ const sample: Content = {
   ],
   dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"] },
   hotel: { name: "The White Plains Hotel", address: "90 Pine Street, Miami, FL\nBook with code ADELE-OLIVER" },
-  parking: "Free parking at the hotel.\nValet available from 1:00 PM.",
   rsvp: { deadline: "2027-07-16", email: "adele@mail.com", note: "Please include the names of all guests attending in your RSVP." },
 };
 
