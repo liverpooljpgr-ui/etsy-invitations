@@ -20,7 +20,7 @@ function DateBlock({ d, time }: { d: NonNullable<ReturnType<typeof parts>>; time
       <span className="dt-row">
         <span>{d.weekday}</span>
         <b>{d.day}</b>
-        {time && <span>AT {time.toUpperCase()}</span>}
+        {time && <span>{time.toUpperCase()}</span>}
       </span>
       <span className="dt-year">{d.year}</span>
     </div>
