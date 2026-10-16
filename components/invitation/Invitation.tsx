@@ -32,6 +32,21 @@ function longDate(iso: string) {
   return p ? `${p.month[0]}${p.month.slice(1).toLowerCase()} ${p.day}, ${p.year}` : "";
 }
 
+/** "please RSVP" → small script lead + big letter-spaced caps; a single word (e.g. "RSVP") is split over two lines (RS / VP). */
+function RsvpTitle({ text }: { text: string }) {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const lead = words.length >= 2 ? words[0] : "";
+  const bigText = (words.length >= 2 ? words.slice(1).join(" ") : words[0] || "").toUpperCase();
+  const half = Math.ceil(bigText.length / 2);
+  const big = !bigText.includes(" ") && bigText.length >= 4 ? [bigText.slice(0, half), bigText.slice(half)] : [bigText];
+  return (
+    <h2 className="rsvp-title" aria-label={text}>
+      {lead && <span className="rsvp-lead" aria-hidden="true">{lead}</span>}
+      {big.map((b, i) => <span className="rsvp-big" key={i} aria-hidden="true">{b}</span>)}
+    </h2>
+  );
+}
+
 /**
  * Static story-card rendering of the "sage-story" template.
  * mode="preview" shows placeholders for empty fields; "public" hides empty things.
@@ -163,13 +178,15 @@ export function Invitation({
         </section>
       )}
 
-      {/* 6 — RSVP */}
+      {/* 6 — RSVP: script lead + big letter-spaced caps, flowers along the bottom */}
       {hasRsvp && (
-        <section className="card" data-card="6">
-          <h2 className="title">{c.texts.rsvpTitle || "please RSVP"}</h2>
-          {(c.rsvp.deadline || ph) && <p className="val">By {longDate(c.rsvp.deadline) || "date"}</p>}
-          {c.rsvp.email && <p className="sub"><a className="link" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
-          {c.rsvp.note && <p className="sub note">{c.rsvp.note}</p>}
+        <section className="card card-rsvp" data-card="6">
+          <div className="rsvp-in">
+            <RsvpTitle text={c.texts.rsvpTitle || "please RSVP"} />
+            {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
+            {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
+            {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
+          </div>
         </section>
       )}
 
