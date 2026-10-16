@@ -144,7 +144,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* ───────── Card 3: venue on the plain paper sheet ───────── */
 /* the sheet has a flower garland across the top (about the top quarter), so the text starts below it */
-.inv .card-venue { container-type:size; background:#f8f8f4 url(/templates/sage-story/v1/page-bg-venue.webp) center / cover no-repeat; padding:0; }
+/* venue + details use the save-the-date sheet flipped upside down (flowers hang from the top) */
+.inv .card-venue { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
 .inv .venue-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:16.4cqh 9cqw 3.6cqh; }
 .inv .venue-intro { font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); margin-bottom:6px; }
 .inv .venue-name { font-size:23px; letter-spacing:.14em; text-transform:uppercase; line-height:1.4; color:var(--ink); }
@@ -171,3 +172,9 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .tl-dense li span { order:2; font-size:10px; }
 .inv .tl-dense li b { order:1; font-size:14px; }
 .inv .tl-dense li + li::before { width:70px; height:8px; }
+
+/* ───────── Card 4: details (parking, accommodation, dress code) on the flipped sheet ───────── */
+.inv .card-details { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
+.inv .dtl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:2.4cqh; padding:24cqh 9cqw 6cqh; }
+.inv .dtl-blk { gap:4px; }
+.inv .dtl-text { font-size:15px; line-height:1.55; white-space:pre-line; color:var(--ink); }

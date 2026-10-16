@@ -72,7 +72,8 @@ export function Invitation({
   const d = parts(c.event.date);
   const butterfly = c.decor === "butterfly";
   const registry = c.registry.filter((r) => r.url);
-  const hasDetails = registry.length || c.dressCode.label || c.dressCode.colors.length || c.hotel.name || ph;
+  const hasInfo = c.parking || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || ph;
+  const hasRegistry = registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
 
   return (
@@ -119,9 +120,40 @@ export function Invitation({
         </section>
       )}
 
-      {/* 4 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
+      {/* 4 — details: parking, accommodation, dress code (the save-the-date sheet, flipped: flowers hang from the top) */}
+      {hasInfo && (
+        <section className="card card-details" data-card="4">
+          <div className="dtl-in">
+            <h2 className="script tl-title">{c.texts.detailsTitle || "details"}</h2>
+            {(c.parking || ph) && (
+              <div className="blk dtl-blk">
+                <p className="caps tiny">Parking</p>
+                <p className="sub dtl-text">{c.parking || "Where guests can park"}</p>
+              </div>
+            )}
+            {(c.hotel.name || ph) && (
+              <div className="blk dtl-blk">
+                <p className="caps tiny">Accommodation</p>
+                <p className="val sm">{c.hotel.name || "Hotel name"}</p>
+                {c.hotel.address && <p className="sub dtl-text">{c.hotel.address}</p>}
+              </div>
+            )}
+            {(c.dressCode.label || c.dressCode.colors.length > 0) && (
+              <div className="blk dtl-blk">
+                <p className="caps tiny">Dress code</p>
+                <p className="dots">
+                  {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
+                </p>
+                {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 5 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
       {(c.timeline.length > 0 || ph) && (
-        <section className="card card-timeline" data-card="4">
+        <section className="card card-timeline" data-card="5">
           <div className="tl-in">
             <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
             {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
@@ -134,8 +166,8 @@ export function Invitation({
         </section>
       )}
 
-      {/* 5 — names */}
-      <section className="card" data-card="5">
+      {/* 6 — names */}
+      <section className="card" data-card="6">
         {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
         <p className="caps">{c.texts.headline}</p>
         <h1 className="names">
@@ -145,16 +177,16 @@ export function Invitation({
         </h1>
       </section>
 
-      {/* 6 — invitation text */}
-      <section className="card" data-card="6">
+      {/* 7 — invitation text */}
+      <section className="card" data-card="7">
         {c.texts.celebration && <p className="caps tiny">{c.texts.celebration}</p>}
         <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
       </section>
 
-      {/* 7 — details (registry, dress code, hotel) */}
-      {hasDetails && (
-        <section className="card" data-card="7">
-          <h2 className="title">The<br /><i>details</i></h2>
+      {/* 8 — registry (QR codes) */}
+      {hasRegistry && (
+        <section className="card" data-card="8">
+          <h2 className="title">The<br /><i>registry</i></h2>
           {registry.length > 0 && (
             <div className="blk">
               <p className="caps tiny">Registry</p>
@@ -168,28 +200,13 @@ export function Invitation({
               </div>
             </div>
           )}
-          {(c.dressCode.label || c.dressCode.colors.length > 0) && (
-            <div className="blk">
-              <p className="caps tiny">Dress code</p>
-              <p className="dots">
-                {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
-              </p>
-              {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
-            </div>
-          )}
-          {c.hotel.name && (
-            <div className="blk">
-              <p className="caps tiny">Recommended hotel</p>
-              <p className="val sm">{c.hotel.name}</p>
-              {c.hotel.address && <p className="sub">{c.hotel.address}</p>}
-            </div>
-          )}
+          {registry.length === 0 && <p className="hint">Add registry links in the editor</p>}
         </section>
       )}
 
-      {/* 8 — RSVP */}
+      {/* 9 — RSVP */}
       {hasRsvp && (
-        <section className="card" data-card="8">
+        <section className="card" data-card="9">
           <h2 className="title">{c.texts.rsvpTitle || "please RSVP"}</h2>
           {(c.rsvp.deadline || ph) && <p className="val">By {longDate(c.rsvp.deadline) || "date"}</p>}
           {c.rsvp.email && <p className="sub"><a className="link" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
@@ -197,8 +214,8 @@ export function Invitation({
         </section>
       )}
 
-      {/* 9 — closing */}
-      <section className="card card-dark" data-card="9">
+      {/* 10 — closing */}
+      <section className="card card-dark" data-card="10">
         <div className="frame">
           {c.texts.closing
             ? <p className="script big">{c.texts.closing}</p>

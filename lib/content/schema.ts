@@ -54,6 +54,7 @@ export const contentSchema = z.object({
     closing: text(60).default(""),
     saveTheDate: text(40).default("save the date"),
     venueIntro: text(60).default("ceremony will take place"),
+    detailsTitle: text(30).default("details"),
     coverTop: text(40).default("the wedding of"),
     coverBottom: text(40).default("you are invited"),
   }),
@@ -64,6 +65,7 @@ export const contentSchema = z.object({
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),
   dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
   hotel: z.object({ name: text(100), address: text(200) }),
+  parking: text(140).default(""),
   rsvp: z.object({ deadline: optDate, email: optEmail, note: text(160) }),
   theme: z.enum(THEMES),
 });
@@ -82,6 +84,7 @@ export const defaultContent: Content = {
     closing: "",
     saveTheDate: "save the date",
     venueIntro: "ceremony will take place",
+    detailsTitle: "details",
     coverTop: "the wedding of",
     coverBottom: "you are invited",
   },
@@ -92,6 +95,7 @@ export const defaultContent: Content = {
   registry: [],
   dressCode: { label: "", colors: [] },
   hotel: { name: "", address: "" },
+  parking: "",
   rsvp: { deadline: "", email: "", note: "" },
   theme: "sage",
 };

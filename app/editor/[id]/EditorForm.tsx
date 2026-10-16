@@ -243,7 +243,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Section title="Style">
             <label className="flex items-center gap-2 text-sm text-stone-700">
               <input type="checkbox" checked={draft.decor === "butterfly"} onChange={(e) => set("decor", e.target.checked ? "butterfly" : "none")} />
-              Butterfly decoration (card 5)
+              Butterfly decoration (card 6)
             </label>
           </Section>
 
@@ -282,7 +282,32 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
-          <Section n={4} title="Card 4 · Timeline">
+          <Section n={4} title="Card 4 · Details (parking, accommodation, dress code)">
+            <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
+            <Field label="Parking">
+              <textarea className={inputCls} rows={3} maxLength={140} value={draft.parking} onChange={(e) => set("parking", e.target.value)} />
+            </Field>
+            <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={60} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
+            <Field label="Accommodation — address (use Enter for a new line)">
+              <textarea className={inputCls} rows={2} maxLength={120} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
+            </Field>
+            {features.dress_code ? (
+              <div className="space-y-2">
+                <Field label="Dress code"><input className={inputCls} maxLength={60} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
+                <div className="flex flex-wrap items-center gap-2">
+                  {draft.dressCode.colors.map((c, i) => (
+                    <span key={i} className="flex items-center gap-1">
+                      <input type="color" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
+                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="text-xs text-stone-500">✕</button>
+                    </span>
+                  ))}
+                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, "#8a9a78"] })} className="text-sm underline">+ Colour</button>}
+                </div>
+              </div>
+            ) : <p className="text-sm text-stone-500">Dress code is not included in your plan.</p>}
+          </Section>
+
+          <Section n={5} title="Card 5 · Timeline">
             {features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
@@ -298,17 +323,17 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} title="Card 5 · Names">
+          <Section n={6} title="Card 6 · Names">
             <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
             <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
           </Section>
 
-          <Section n={6} title="Card 6 · Invitation text">
+          <Section n={7} title="Card 7 · Invitation text">
             <Field label="Small line above"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
             <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
           </Section>
 
-          <Section n={7} title="Card 7 · The details (registry, dress code, hotel)">
+          <Section n={8} title="Card 8 · Registry (QR codes)">
             {features.registry ? (
               <div className="space-y-2">
                 <p className="text-sm text-stone-700">Registry links (shown as QR codes, up to 2)</p>
@@ -322,25 +347,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 {draft.registry.length < 2 && <button type="button" onClick={() => set("registry", [...draft.registry, { label: "", url: "" }])} className="text-sm underline">+ Add registry</button>}
               </div>
             ) : <p className="text-sm text-stone-500">Registry QR codes are not included in your plan.</p>}
-            {features.dress_code ? (
-              <div className="space-y-2">
-                <Field label="Dress code"><input className={inputCls} maxLength={60} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
-                <div className="flex flex-wrap items-center gap-2">
-                  {draft.dressCode.colors.map((c, i) => (
-                    <span key={i} className="flex items-center gap-1">
-                      <input type="color" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
-                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="text-xs text-stone-500">✕</button>
-                    </span>
-                  ))}
-                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, "#8a9a78"] })} className="text-sm underline">+ Colour</button>}
-                </div>
-              </div>
-            ) : <p className="text-sm text-stone-500">Dress code is not included in your plan.</p>}
-            <Field label="Recommended hotel"><input className={inputCls} maxLength={100} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
-            <Field label="Hotel address"><input className={inputCls} maxLength={200} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} /></Field>
           </Section>
 
-          <Section n={8} title="Card 8 · RSVP">
+          <Section n={9} title="Card 9 · RSVP">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
@@ -349,7 +358,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include the names of all guests attending" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
-          <Section n={9} title="Card 9 · Closing">
+          <Section n={10} title="Card 10 · Closing">
             <Field label="Closing text (leave empty to show both names)"><input className={inputCls} maxLength={60} {...tp("closing")} /></Field>
           </Section>
         </div>
