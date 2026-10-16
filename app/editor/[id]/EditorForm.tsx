@@ -76,7 +76,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       for (;;) {
         const sent = latest.current;
         again.current = false;
-        const r = await saveDraft(id, sent, version.current).catch(() => ({ ok: false as const, error: "Network error. Your changes are kept on this page; retrying…" }));
+        const r = await saveDraft(id, sent, version.current).catch(() => ({ ok: false as const, error: "Could not reach the server. Your changes are kept on this page and will retry — if this keeps happening, reload the page (a newer version of the editor may have been released)." }));
         if (r.ok) {
           version.current = r.version;
           lastSaved.current = JSON.stringify(parseContent(sent));
