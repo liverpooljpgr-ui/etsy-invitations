@@ -45,3 +45,6 @@ supabase/.temp/
 !.env.example
 .vercel
 .env*
+
+# Visual Studio local state
+.vs/
