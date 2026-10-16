@@ -152,7 +152,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .venue-rule { display:block; width:44px; height:1px; background:var(--gold); margin:4px 0 2px; }
 .inv .venue-addr { font-size:16px; line-height:1.75; white-space:pre-line; color:var(--ink); }
 .inv .venue-link { font-size:13px; letter-spacing:.2em; text-transform:uppercase; margin-top:2px; }
-.inv .venue-recep { font-family:var(--font-script),cursive; font-size:32px; line-height:1.15; color:var(--gold); margin-top:18px; }
+.inv .venue-recep { font-family:var(--font-script),cursive; font-size:25px; line-height:1.15; color:var(--gold); margin-top:18px; }
 
 /* ───────── Card 4: timeline (its own sheet: flowers along the bottom; ornaments between time stamps) ───────── */
 /* the flowers fill the bottom ~22% (taller stalk at the right edge), so the list stops above them */
