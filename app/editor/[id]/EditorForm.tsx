@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Invitation } from "@/components/invitation/Invitation";
 import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -147,7 +147,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   }, [saveState]);
 
   const preview = useMemo(() => applyPlan(draft, features), [draft, features]);
-  const publicUrl = typeof window === "undefined" ? `/${slug}` : `${window.location.origin}/${slug}`;
+  // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
+  const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
+  const publicUrl = `${origin}/${slug}`;
 
   async function onPublish() {
     setBusy(true); setNotice(null);
