@@ -2,23 +2,6 @@ import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
 import { Qr } from "./Qr";
 
-const WINGS = (
-  <>
-    <path d="M50 40 C32 4 4 8 8 32 C10 50 30 52 50 42 Z" />
-    <path d="M50 43 C34 48 18 68 30 74 C42 78 50 58 50 45 Z" />
-  </>
-);
-
-function Butterfly() {
-  return (
-    <svg className="butterfly" viewBox="0 0 100 80" aria-hidden="true">
-      <g fill="var(--wing)" stroke="var(--gold)" strokeWidth="0.8" strokeLinejoin="round">{WINGS}</g>
-      <g fill="var(--wing)" stroke="var(--gold)" strokeWidth="0.8" strokeLinejoin="round" transform="translate(100 0) scale(-1 1)">{WINGS}</g>
-      <path d="M50 30 V58 M50 31 C46 22 42 20 40 19 M50 31 C54 22 58 20 60 19" fill="none" stroke="var(--gold)" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const DAYS = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
 
@@ -70,10 +53,9 @@ export function Invitation({
   const first = c.couple.first || (ph ? "First name" : "");
   const second = c.couple.second || (ph ? "Second name" : "");
   const d = parts(c.event.date);
-  const butterfly = c.decor === "butterfly";
   const registry = c.registry.filter((r) => r.url);
-  const hasInfo = c.parking || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || ph;
-  const hasRegistry = registry.length > 0 || ph;
+  const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
+  const hasInfo = c.parking || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
 
   return (
@@ -155,60 +137,39 @@ export function Invitation({
                 </div>
               </div>
             )}
-            {(c.dressCode.label || c.dressCode.colors.length > 0) && (
-              <div className="blk dtl-blk">
-                <p className="caps tiny">Dress code</p>
-                <p className="dots">
-                  {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
-                </p>
-                {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
+            {(hasDress || registry.length > 0) && (
+              <div className="dtl-row">
+                {hasDress && (
+                  <div className="blk dtl-blk">
+                    <p className="caps tiny">Dress code</p>
+                    <p className="dots">
+                      {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
+                    </p>
+                    {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
+                  </div>
+                )}
+                {registry.length > 0 && (
+                  <div className="blk dtl-blk">
+                    <p className="caps tiny">Registry</p>
+                    <div className="qrs">
+                      {registry.map((r, i) => (
+                        <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="qrbox">
+                          <Qr value={r.url} label={`QR code for ${r.label || "registry"}`} />
+                          <span>{r.label || "Registry"}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </section>
       )}
 
-      {/* 6 — names */}
-      <section className="card" data-card="6">
-        {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
-        <p className="caps">{c.texts.headline}</p>
-        <h1 className="names">
-          <span>{first}</span>
-          <span className="amp">&amp;</span>
-          <span>{second}</span>
-        </h1>
-      </section>
-
-      {/* 7 — invitation text */}
-      <section className="card" data-card="7">
-        {c.texts.celebration && <p className="caps tiny">{c.texts.celebration}</p>}
-        <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
-      </section>
-
-      {/* 8 — registry (QR codes) */}
-      {hasRegistry && (
-        <section className="card" data-card="8">
-          <h2 className="title">The<br /><i>registry</i></h2>
-          {registry.length > 0 && (
-            <div className="blk">
-              <p className="caps tiny">Registry</p>
-              <div className="qrs">
-                {registry.map((r, i) => (
-                  <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="qrbox">
-                    <Qr value={r.url} label={`QR code for ${r.label || "registry"}`} />
-                    <span>{r.label || "Registry"}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-          {registry.length === 0 && <p className="hint">Add registry links in the editor</p>}
-        </section>
-      )}
-
-      {/* 9 — RSVP */}
+      {/* 6 — RSVP */}
       {hasRsvp && (
-        <section className="card" data-card="9">
+        <section className="card" data-card="6">
           <h2 className="title">{c.texts.rsvpTitle || "please RSVP"}</h2>
           {(c.rsvp.deadline || ph) && <p className="val">By {longDate(c.rsvp.deadline) || "date"}</p>}
           {c.rsvp.email && <p className="sub"><a className="link" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
@@ -216,8 +177,8 @@ export function Invitation({
         </section>
       )}
 
-      {/* 10 — closing */}
-      <section className="card card-dark" data-card="10">
+      {/* 7 — closing */}
+      <section className="card card-dark" data-card="7">
         <div className="frame">
           {c.texts.closing
             ? <p className="script big">{c.texts.closing}</p>

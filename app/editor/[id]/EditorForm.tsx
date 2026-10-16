@@ -13,6 +13,8 @@ type Props = {
 };
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
+const REGISTRIES = ["Amazon", "Target"] as const;
+
 const inputCls = "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -184,6 +186,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   }
 
   const set = <K extends keyof Content>(k: K, v: Content[K]) => update((d) => ({ ...d, [k]: v }));
+  // Two fixed registry options (Amazon, Target), stored as registry[] items with those labels.
+  const regUrl = (label: string) => draft.registry.find((r) => r.label === label)?.url ?? "";
+  const setRegUrl = (label: string, url: string) =>
+    update((d) => ({
+      ...d,
+      registry: REGISTRIES.map((l) => ({ label: l, url: l === label ? url : d.registry.find((r) => r.label === l)?.url ?? "" })),
+    }));
   const tp = (k: keyof Content["texts"]) => ({
     value: draft.texts[k],
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => set("texts", { ...draft.texts, [k]: e.target.value }),
@@ -240,13 +249,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           )}
 
-          <Section title="Style">
-            <label className="flex items-center gap-2 text-sm text-stone-700">
-              <input type="checkbox" checked={draft.decor === "butterfly"} onChange={(e) => set("decor", e.target.checked ? "butterfly" : "none")} />
-              Butterfly decoration (card 6)
-            </label>
-          </Section>
-
           <Section n={1} title="Card 1 · Cover (the envelope screen)">
             <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
             <div className="grid grid-cols-2 gap-3">
@@ -298,7 +300,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} title="Card 5 · Details (parking, accommodation, dress code)">
+          <Section n={5} title="Card 5 · Details (parking, accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             <Field label="Parking">
               <textarea className={inputCls} rows={3} maxLength={90} value={draft.parking} onChange={(e) => set("parking", e.target.value)} />
@@ -321,35 +323,19 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 </div>
               </div>
             ) : <p className="text-sm text-stone-500">Dress code is not included in your plan.</p>}
-          </Section>
-
-          <Section n={6} title="Card 6 · Names">
-            <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
-            <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
-          </Section>
-
-          <Section n={7} title="Card 7 · Invitation text">
-            <Field label="Small line above"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
-            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
-          </Section>
-
-          <Section n={8} title="Card 8 · Registry (QR codes)">
             {features.registry ? (
               <div className="space-y-2">
-                <p className="text-sm text-stone-700">Registry links (shown as QR codes, up to 2)</p>
-                {draft.registry.map((r, i) => (
-                  <div key={i} className="flex gap-2">
-                    <input aria-label="Label" placeholder="Target" className={`${inputCls} !mt-0 w-28`} maxLength={40} value={r.label} onChange={(e) => set("registry", draft.registry.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
-                    <input aria-label="Link" placeholder="https://…" inputMode="url" className={`${inputCls} !mt-0 flex-1`} maxLength={500} value={r.url} onChange={(e) => set("registry", draft.registry.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)))} />
-                    <button type="button" aria-label="Remove" onClick={() => set("registry", draft.registry.filter((_, j) => j !== i))} className="px-2 text-stone-500">✕</button>
-                  </div>
+                <p className="text-sm text-stone-700">Registry QR codes (leave a link empty to hide that one)</p>
+                {REGISTRIES.map((label) => (
+                  <Field key={label} label={`${label} registry link (https://…)`}>
+                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
+                  </Field>
                 ))}
-                {draft.registry.length < 2 && <button type="button" onClick={() => set("registry", [...draft.registry, { label: "", url: "" }])} className="text-sm underline">+ Add registry</button>}
               </div>
             ) : <p className="text-sm text-stone-500">Registry QR codes are not included in your plan.</p>}
           </Section>
 
-          <Section n={9} title="Card 9 · RSVP">
+          <Section n={6} title="Card 6 · RSVP">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
@@ -358,7 +344,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include the names of all guests attending" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
-          <Section n={10} title="Card 10 · Closing">
+          <Section n={7} title="Card 7 · Closing">
             <Field label="Closing text (leave empty to show both names)"><input className={inputCls} maxLength={60} {...tp("closing")} /></Field>
           </Section>
         </div>

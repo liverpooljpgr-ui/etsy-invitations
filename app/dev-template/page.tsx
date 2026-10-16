@@ -25,8 +25,8 @@ const sample: Content = {
     { label: "Fireworks", time: "10:30" },
   ],
   registry: [
-    { label: "Target", url: "https://target.com" },
     { label: "Amazon", url: "https://amazon.com" },
+    { label: "Target", url: "https://target.com" },
   ],
   dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"] },
   hotel: { name: "The White Plains Hotel", address: "90 Pine Street, Miami, FL\nBook with code ADELE-OLIVER" },
