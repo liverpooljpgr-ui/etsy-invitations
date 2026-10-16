@@ -146,8 +146,9 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .sheet-in.no-photo .save { font-size:10.5cqw; }
 
 /* ───────── Card 3: venue on the plain paper sheet ───────── */
-/* the sheet has flowers cascading from the top-right corner, so the text sits in the lower part of the card */
-.inv .card-venue { background:#f8f8f4 url(/templates/sage-story/v1/page-bg-venue.webp) center / cover no-repeat; gap:12px; padding:52% 30px 8%; }
+/* the sheet has a flower garland across the top (about the top quarter), so the text starts below it */
+.inv .card-venue { background:#f8f8f4 url(/templates/sage-story/v1/page-bg-venue.webp) center / cover no-repeat; gap:12px; padding:44% 30px 6%; }
+.inv .venue-intro { font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); margin-bottom:6px; }
 .inv .venue-name { font-size:23px; letter-spacing:.14em; text-transform:uppercase; line-height:1.4; color:var(--ink); }
 .inv .venue-rule { display:block; width:44px; height:1px; background:var(--gold); margin:4px 0 2px; }
 .inv .venue-addr { font-size:16px; line-height:1.75; white-space:pre-line; color:var(--ink); }

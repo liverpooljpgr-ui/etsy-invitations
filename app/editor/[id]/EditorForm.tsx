@@ -273,6 +273,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
 
           <Section n={3} title="Card 3 · Venue">
+            <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Full address (use Enter for a new line)">
               <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />

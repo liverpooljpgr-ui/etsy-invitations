@@ -108,6 +108,7 @@ export function Invitation({
       {/* 3 — venue: name, full address, directions link, "reception to follow" */}
       {(c.event.venue || ph) && (
         <section className="card card-venue" data-card="3">
+          {c.texts.venueIntro && <p className="venue-intro">{c.texts.venueIntro}</p>}
           <p className="venue-name">{c.event.venue || "Venue name"}</p>
           <span className="venue-rule" aria-hidden="true" />
           {(c.event.address || ph) && <p className="venue-addr">{c.event.address || "Street address, city"}</p>}
