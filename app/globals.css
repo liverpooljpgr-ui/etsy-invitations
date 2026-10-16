@@ -255,14 +255,14 @@ html { scrollbar-gutter: stable; }
 .music-btn[aria-pressed="true"] { animation:hint 2.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .music-btn[aria-pressed="true"] { animation:none; } }
 
-/* phones (guest view): slides — each card is one full screen and scrolling snaps from slide to slide */
+/* phones (guest view): slides — .inv becomes a full-screen scroller (fixed, so the browser bars never shift it); each card is exactly one screen and scrolling snaps slide to slide */
 @media (max-width: 640px) {
-  html:has(.inv[data-phase]) { scroll-snap-type:y mandatory; }
-  .inv[data-phase] .card[data-card]:not(.in) { transform:none !important; }
+  body:has(.inv[data-phase]) { overflow:hidden; }
   main:has(.inv[data-phase]) { padding:0; }
-  .inv[data-phase] { padding:0; gap:0; }
-  .inv[data-phase] .card, .inv[data-phase] .cover { width:100%; max-width:none; height:100vh; height:100dvh; aspect-ratio:auto; border-radius:0; box-shadow:none; scroll-snap-align:start; scroll-snap-stop:always; }
-  .inv[data-phase] .stage { width:100%; aspect-ratio:auto; height:100vh; height:100dvh; margin-top:0; scroll-snap-align:start; scroll-snap-stop:always; }
-  .inv[data-phase] .stage > .card, .inv[data-phase] .stage > .cover { height:100%; scroll-snap-align:none; }
+  .inv[data-phase] { position:fixed; inset:0; z-index:10; background:var(--background); padding:0; gap:0; overflow-x:hidden; overflow-y:auto; scroll-snap-type:y mandatory; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; align-items:stretch; }
+  .inv[data-phase] .card[data-card]:not(.in) { transform:none !important; }
+  .inv[data-phase] .card, .inv[data-phase] .cover { flex:0 0 100%; width:100%; max-width:none; height:100%; min-height:100%; aspect-ratio:auto; border-radius:0; box-shadow:none; scroll-snap-align:start; scroll-snap-stop:always; }
+  .inv[data-phase] .stage { flex:0 0 100%; width:100%; aspect-ratio:auto; height:100%; margin-top:0; scroll-snap-align:start; scroll-snap-stop:always; }
+  .inv[data-phase] .stage > .card, .inv[data-phase] .stage > .cover { flex:none; height:100%; scroll-snap-align:none; }
   .inv[data-phase] .card-rsvp { background-size:cover; background-position:20% 100%; }
 }
