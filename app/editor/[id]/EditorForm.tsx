@@ -282,7 +282,23 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
-          <Section n={4} title="Card 4 · Details (parking, accommodation, dress code)">
+          <Section n={4} title="Card 4 · Timeline">
+            {features.schedule ? (
+              <>
+                <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
+                {draft.timeline.map((t, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} !mt-0 flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                    <input aria-label="Time" placeholder="2:00" className={`${inputCls} !mt-0 w-24`} maxLength={20} value={t.time} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time: e.target.value } : x)))} />
+                    <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="px-2 text-stone-500">✕</button>
+                  </div>
+                ))}
+                {draft.timeline.length < 10 && <button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="text-sm underline">+ Add item</button>}
+              </>
+            ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
+          </Section>
+
+          <Section n={5} title="Card 5 · Details (parking, accommodation, dress code)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             <Field label="Parking">
               <textarea className={inputCls} rows={3} maxLength={90} value={draft.parking} onChange={(e) => set("parking", e.target.value)} />
@@ -305,22 +321,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 </div>
               </div>
             ) : <p className="text-sm text-stone-500">Dress code is not included in your plan.</p>}
-          </Section>
-
-          <Section n={5} title="Card 5 · Timeline">
-            {features.schedule ? (
-              <>
-                <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
-                {draft.timeline.map((t, i) => (
-                  <div key={i} className="flex gap-2">
-                    <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} !mt-0 flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
-                    <input aria-label="Time" placeholder="2:00" className={`${inputCls} !mt-0 w-24`} maxLength={20} value={t.time} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time: e.target.value } : x)))} />
-                    <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="px-2 text-stone-500">✕</button>
-                  </div>
-                ))}
-                {draft.timeline.length < 10 && <button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="text-sm underline">+ Add item</button>}
-              </>
-            ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
           </Section>
 
           <Section n={6} title="Card 6 · Names">

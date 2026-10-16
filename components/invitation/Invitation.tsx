@@ -120,9 +120,24 @@ export function Invitation({
         </section>
       )}
 
-      {/* 4 — details: parking, accommodation, dress code (the save-the-date sheet, flipped: flowers hang from the top) */}
+      {/* 4 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
+      {(c.timeline.length > 0 || ph) && (
+        <section className="card card-timeline" data-card="4">
+          <div className="tl-in">
+            <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
+            {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
+            <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
+              {c.timeline.map((it, i) => (
+                <li key={i}><span>{it.label}</span><b>{it.time}</b></li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* 5 — details: parking, accommodation, dress code (the save-the-date sheet, flipped: flowers hang from the top) */}
       {hasInfo && (
-        <section className="card card-details" data-card="4">
+        <section className="card card-details" data-card="5">
           <div className="dtl-in">
             <h2 className="script tl-title">{c.texts.detailsTitle || "details"}</h2>
             {(c.parking || ph) && (
@@ -147,21 +162,6 @@ export function Invitation({
                 {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
               </div>
             )}
-          </div>
-        </section>
-      )}
-
-      {/* 5 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
-      {(c.timeline.length > 0 || ph) && (
-        <section className="card card-timeline" data-card="5">
-          <div className="tl-in">
-            <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
-            {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
-            <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
-              {c.timeline.map((it, i) => (
-                <li key={i}><span>{it.label}</span><b>{it.time}</b></li>
-              ))}
-            </ul>
           </div>
         </section>
       )}
