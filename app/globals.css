@@ -206,5 +206,4 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .closing-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 18cqw; text-align:center; }
 .inv .closing-names { display:flex; flex-direction:column; align-items:center; font-family:var(--font-script),cursive; font-size:46px; line-height:1.15; color:var(--gold); overflow-wrap:anywhere; }
 .inv .closing-names .amp { font-size:30px; color:var(--ink); }
-.inv .closing-rule { width:56px; height:1px; background:var(--gold); margin:3.4cqh 0; }
-.inv .closing-text { margin:0; font-family:var(--font-serif),serif; font-size:15px; line-height:1.6; letter-spacing:.04em; color:var(--ink); }
+.inv .closing-text { margin:3.4cqh 0 0; font-family:var(--font-serif),serif; font-size:15px; line-height:1.6; letter-spacing:.04em; color:var(--ink); }
