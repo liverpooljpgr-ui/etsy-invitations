@@ -193,7 +193,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* RSVP: reference layout — small script lead, big letter-spaced caps, date, email, tiny caps note; flowers at the bottom */
 .inv .card-rsvp { container-type:size; padding:0; background:#fbf9f3 url(/templates/sage-story/v1/page-bg.webp) 0% 100% / 112% auto no-repeat; }
-.inv .rsvp-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding:6.4cqh 0 0; text-align:center; }
+.inv .rsvp-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding:12.4cqh 0 0; text-align:center; }
 .inv .rsvp-title { display:flex; flex-direction:column; align-items:center; margin:0 0 3.4cqh; font-weight:400; }
 .inv .rsvp-lead { font-family:var(--font-script),cursive; font-size:34px; line-height:1; color:var(--gold); margin-bottom:-4px; }
 .inv .rsvp-big { font-family:var(--font-serif),serif; font-size:56px; line-height:1; letter-spacing:.14em; margin-right:-.14em; color:var(--ink); }

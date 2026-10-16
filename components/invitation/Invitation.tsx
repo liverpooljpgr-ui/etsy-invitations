@@ -35,7 +35,7 @@ function longDate(iso: string) {
 /** "please RSVP" → small script lead + big letter-spaced caps; a single word (e.g. "RSVP") is split over two lines (RS / VP). */
 function RsvpTitle({ text }: { text: string }) {
   const words = text.trim().split(/\s+/).filter(Boolean);
-  const lead = words.length >= 2 ? words[0] : "";
+  const lead = words.length >= 2 ? words[0] : "please";
   const bigText = (words.length >= 2 ? words.slice(1).join(" ") : words[0] || "").toUpperCase();
   const half = Math.ceil(bigText.length / 2);
   const big = !bigText.includes(" ") && bigText.length >= 4 ? [bigText.slice(0, half), bigText.slice(half)] : [bigText];
