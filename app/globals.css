@@ -155,7 +155,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* ───────── Card 4: timeline (its own sheet: flowers along the bottom; ornaments between time stamps) ───────── */
 /* the flowers fill the bottom ~22% (taller stalk at the right edge), so the list stops above them */
-.inv .card-timeline { container-type:size; background:#f8f8f4 url(/templates/sage-story/v1/page-bg-timeline.webp) center / cover no-repeat; padding:0; }
+.inv .card-timeline { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg.webp) center bottom / cover no-repeat; padding:0; }
 .inv .tl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:1.4cqh; padding:9.4cqh 9cqw 24cqh; }
 .inv .tl-title { text-align:center; font-size:32px; line-height:1.1; }
 .inv .tl { width:100%; flex:1; min-height:0; display:flex; flex-direction:column; gap:0; }
