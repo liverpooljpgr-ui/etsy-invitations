@@ -243,7 +243,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Section title="Style">
             <label className="flex items-center gap-2 text-sm text-stone-700">
               <input type="checkbox" checked={draft.decor === "butterfly"} onChange={(e) => set("decor", e.target.checked ? "butterfly" : "none")} />
-              Butterfly decoration (card 4)
+              Butterfly decoration (card 5)
             </label>
           </Section>
 
@@ -282,17 +282,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
-          <Section n={4} title="Card 4 · Names">
-            <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
-            <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
-          </Section>
-
-          <Section n={5} title="Card 5 · Invitation text">
-            <Field label="Small line above"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
-            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
-          </Section>
-
-          <Section n={6} title="Card 6 · Timeline">
+          <Section n={4} title="Card 4 · Timeline">
             {features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
@@ -306,6 +296,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 {draft.timeline.length < 10 && <button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="text-sm underline">+ Add item</button>}
               </>
             ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
+          </Section>
+
+          <Section n={5} title="Card 5 · Names">
+            <Field label="Small headline"><input className={inputCls} maxLength={60} {...tp("headline")} /></Field>
+            <p className="text-xs text-stone-500">The names shown here are the ones you enter in Card 1.</p>
+          </Section>
+
+          <Section n={6} title="Card 6 · Invitation text">
+            <Field label="Small line above"><input className={inputCls} maxLength={80} {...tp("celebration")} /></Field>
+            <Field label="Invitation text"><input className={inputCls} maxLength={80} {...tp("invited")} /></Field>
           </Section>
 
           <Section n={7} title="Card 7 · The details (registry, dress code, hotel)">

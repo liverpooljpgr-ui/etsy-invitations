@@ -31,9 +31,6 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .script.big { font-size:46px; color:var(--dark-ink); line-height:1.1; }
 .inv .title { font-size:40px; letter-spacing:.14em; text-transform:uppercase; line-height:1.15; font-weight:400; }
 .inv .title i { font-family:var(--font-script),cursive; text-transform:none; letter-spacing:0; color:var(--gold); font-size:44px; }
-.inv .tl { width:100%; display:flex; flex-direction:column; gap:12px; }
-.inv .tl li { display:flex; flex-direction:column; gap:2px; font-size:11px; letter-spacing:.2em; text-transform:uppercase; }
-.inv .tl b { font-weight:500; font-size:13px; }
 .inv .blk { display:flex; flex-direction:column; align-items:center; gap:3px; }
 .inv .val { font-size:19px; letter-spacing:.08em; text-transform:uppercase; }
 .inv .val.sm { font-size:14px; }
@@ -154,3 +151,20 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .venue-addr { font-size:16px; line-height:1.75; white-space:pre-line; color:var(--ink); }
 .inv .venue-link { font-size:13px; letter-spacing:.2em; text-transform:uppercase; margin-top:2px; }
 .inv .venue-recep { font-family:var(--font-script),cursive; font-size:32px; line-height:1.15; color:var(--gold); margin-top:18px; }
+
+/* ───────── Card 4: timeline (garland paper from the venue card; ornaments between time stamps) ───────── */
+.inv .card-timeline { container-type:size; justify-content:flex-start; gap:1.4cqh; padding-bottom:11%; }
+.inv .tl-title { text-align:center; font-size:40px; line-height:1.1; }
+.inv .tl { width:100%; flex:1; min-height:0; display:flex; flex-direction:column; gap:0; }
+/* each item takes an equal share of the list, so any number of items fits the card */
+.inv .tl li { position:relative; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; text-align:center; text-transform:uppercase; color:var(--ink); }
+.inv .tl li span { font-size:11px; letter-spacing:.24em; }
+.inv .tl li b { font-weight:400; font-size:19px; letter-spacing:.06em; color:#6d6358; }
+/* ornament centred exactly on the boundary between two items */
+.inv .tl li + li::before { content:""; position:absolute; left:50%; top:0; width:92px; height:10px; transform:translate(-50%,-50%); background:var(--gold);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='10' viewBox='0 0 92 10'%3E%3Cpath d='M0 5H35M57 5H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 .8L50.2 5 46 9.2 41.8 5z' fill='none' stroke='black' stroke-width='1'/%3E%3C/svg%3E") center / contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='10' viewBox='0 0 92 10'%3E%3Cpath d='M0 5H35M57 5H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 .8L50.2 5 46 9.2 41.8 5z' fill='none' stroke='black' stroke-width='1'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* more than 5 items: one line per item (time + label) so everything still fits */
+.inv .tl-dense li { flex-direction:row; gap:.9em; }
+.inv .tl-dense li span { order:2; font-size:10px; }
+.inv .tl-dense li b { order:1; font-size:15px; }
+.inv .tl-dense li + li::before { width:70px; height:8px; }

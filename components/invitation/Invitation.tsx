@@ -117,8 +117,21 @@ export function Invitation({
         </section>
       )}
 
-      {/* 4 — names */}
-      <section className="card" data-card="4">
+      {/* 4 — timeline: the venue's garland paper, with an ornament between the time stamps */}
+      {(c.timeline.length > 0 || ph) && (
+        <section className="card card-venue card-timeline" data-card="4">
+          <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
+          {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
+          <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
+            {c.timeline.map((it, i) => (
+              <li key={i}><span>{it.label}</span><b>{it.time}</b></li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 5 — names */}
+      <section className="card" data-card="5">
         {butterfly ? <Butterfly /> : <div className="orn" aria-hidden="true">✦</div>}
         <p className="caps">{c.texts.headline}</p>
         <h1 className="names">
@@ -128,24 +141,11 @@ export function Invitation({
         </h1>
       </section>
 
-      {/* 5 — invitation text */}
-      <section className="card" data-card="5">
+      {/* 6 — invitation text */}
+      <section className="card" data-card="6">
         {c.texts.celebration && <p className="caps tiny">{c.texts.celebration}</p>}
         <p className="small">{c.texts.invited || "you are cordially invited to our wedding"}</p>
       </section>
-
-      {/* 6 — timeline */}
-      {(c.timeline.length > 0 || ph) && (
-        <section className="card" data-card="6">
-          <h2 className="script">{c.texts.timelineTitle || "timeline"}</h2>
-          {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
-          <ul className="tl">
-            {c.timeline.map((t, i) => (
-              <li key={i}><span>{t.label}</span><b>{t.time}</b></li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {/* 7 — details (registry, dress code, hotel) */}
       {hasDetails && (
