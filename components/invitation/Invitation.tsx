@@ -185,7 +185,7 @@ export function Invitation({
             <RsvpTitle text={c.texts.rsvpTitle || "please RSVP"} />
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
             {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
-            {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
+            <p className="rsvp-note">{c.rsvp.note || "Please include all guests name you are taking with you"}</p>
           </div>
         </section>
       )}

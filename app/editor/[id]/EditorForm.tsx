@@ -382,7 +382,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
-            <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include the names of all guests attending" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
+            <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include all guests name you are taking with you" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
           <Section n={7} title="Card 7 · Closing">
