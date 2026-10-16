@@ -149,8 +149,10 @@ export function Invitation({
             {(c.hotel.name || ph) && (
               <div className="blk dtl-blk">
                 <p className="caps tiny">Accommodation</p>
-                <p className="val sm">{c.hotel.name || "Hotel name"}</p>
-                {c.hotel.address && <p className="sub dtl-text">{c.hotel.address}</p>}
+                <div className="dtl-pair">
+                  <p className="val sm">{c.hotel.name || "Hotel name"}</p>
+                  {c.hotel.address && <p className="sub dtl-text">{c.hotel.address}</p>}
+                </div>
               </div>
             )}
             {(c.dressCode.label || c.dressCode.colors.length > 0) && (
