@@ -51,6 +51,19 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
     if (phase === "open") root.current?.querySelector<HTMLElement>('[data-card="2"]')?.focus({ preventScroll: true });
   }, [phase]);
 
+  // Phones show the cards as full-screen slides: scale the fixed-px sizes of the 340×567 design to the screen.
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const fit = () => {
+      const phone = window.matchMedia("(max-width: 640px)").matches;
+      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(window.innerWidth / 340, window.innerHeight / 567, 1.9))) : "1");
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
+
   // Reveal later cards as they scroll into view.
   useEffect(() => {
     if (phase === "closed") return;
@@ -67,7 +80,7 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.15 },
+      { threshold: window.matchMedia("(max-width: 640px)").matches ? 0.6 : 0.15 },
     );
     cards.forEach((c) => io.observe(c));
     const safety = setTimeout(() => cards.forEach((c) => c.classList.add("in")), 8000);
