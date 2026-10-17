@@ -1,6 +1,7 @@
 import "server-only";
 import { headers } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient as createSupabaseJs } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
 /** Throttle sign-in attempts: per IP and per email address (10 minutes window). */
@@ -35,4 +36,17 @@ export async function signInWithoutLink(email: string): Promise<boolean> {
   const supabase = await createClient();
   const { error: vErr } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash: tokenHash });
   return !vErr;
+}
+
+/**
+ * Email the one-time confirmation link. Uses the "implicit" flow on purpose: the link then works in ANY browser or
+ * device (the default PKCE flow only works in the browser that asked for it, which breaks "enter email on the laptop,
+ * open the mail on the phone").
+ */
+export async function sendConfirmationLink(email: string, next: string, origin: string): Promise<boolean> {
+  const client = createSupabaseJs(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false },
+  });
+  const { error } = await client.auth.signInWithOtp({ email, options: { emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` } });
+  return !error;
 }

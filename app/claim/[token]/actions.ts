@@ -4,9 +4,8 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { allowAttempt, findReturningCustomer, signInWithoutLink } from "@/lib/email-login";
+import { allowAttempt, findReturningCustomer, sendConfirmationLink, signInWithoutLink } from "@/lib/email-login";
 
 export type ClaimState = { ok: boolean; message: string } | null;
 
@@ -54,11 +53,6 @@ export async function startClaim(token: string, _prev: ClaimState, formData: For
 
   const h = await headers();
   const origin = h.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithOtp({
-    email: email.data,
-    options: { emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(`/claim/${token}/go`)}` },
-  });
-  if (error) return { ok: false, message: "Could not send the link. Please wait a minute and try again." };
-  return { ok: true, message: "Check your inbox: we sent you a confirmation link (once only). Open it in this same browser and your invitation opens right away. Next time you only enter your email." };
+  if (!(await sendConfirmationLink(email.data, `/claim/${token}/go`, origin))) return { ok: false, message: "Could not send the link. Please wait a minute and try again." };
+  return { ok: true, message: "Check your inbox: we sent you a confirmation link (once only). Open it on any device and your invitation opens right away. Next time you only enter your email." };
 }

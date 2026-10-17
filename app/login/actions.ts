@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { safeNext } from "@/lib/auth";
-import { allowAttempt, findReturningCustomer, signInWithoutLink } from "@/lib/email-login";
+import { allowAttempt, findReturningCustomer, sendConfirmationLink, signInWithoutLink } from "@/lib/email-login";
 
 export type LoginState = { ok: boolean; message: string } | null;
 
@@ -32,10 +32,8 @@ export async function signInByEmail(_prev: LoginState, formData: FormData): Prom
     const h = await headers();
     const origin = h.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
     const next = safeNext(formData.get("next"));
-    const supabase = await createClient();
-    const { error } = await supabase.auth.signInWithOtp({ email: email.data, options: { emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` } });
-    if (error) return { ok: false, message: "Could not send the link. Please wait a minute and try again." };
-    return { ok: true, message: "Check your inbox for the sign-in link. Open it in this same browser." };
+    if (!(await sendConfirmationLink(email.data, next, origin))) return { ok: false, message: "Could not send the link. Please wait a minute and try again." };
+    return { ok: true, message: "Check your inbox for the sign-in link. Open it on any device." };
   }
   return { ok: false, message: "This is not the right email. Enter the same email you used the first time you opened your personal link. If you haven't opened that link yet, open it first — you only need it once." };
 }
