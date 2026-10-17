@@ -1,66 +1,92 @@
 "use server";
 
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomInt } from "node:crypto";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { defaultContent } from "@/lib/content/schema";
 
-export type CreateState = { ok: boolean; message: string; claimUrl?: string; editorUrl?: string } | null;
+export type CreateState = { ok: boolean; message: string; claimUrl?: string } | null;
+
+const PLAN = "signature"; // every Etsy purchase gets the full template (schedule, dress code, registry QR codes)
 
 const input = z.object({
-  plan: z.enum(["essential", "signature", "signature_rsvp", "personalized_setup"]),
-  title: z.string().trim().min(1).max(80),
-  slug: z.string().trim().toLowerCase().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Slug: lowercase letters, numbers and dashes").min(3).max(40),
-  etsyRef: z.string().trim().max(60).optional(),
-  owner: z.enum(["claim", "me"]),
+  templateId: z.uuid(),
+  etsyRef: z.string().trim().min(1, "Enter the Etsy order reference.").max(60),
 });
 
-export async function createInvitation(_prev: CreateState, fd: FormData): Promise<CreateState> {
-  const { user } = await requireAdmin();
-  const p = input.safeParse({
-    plan: fd.get("plan"), title: fd.get("title"), slug: fd.get("slug"),
-    etsyRef: String(fd.get("etsyRef") ?? "") || undefined, owner: fd.get("owner"),
+const ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
+/** Short random guest-link code, e.g. "k7m2xq9p": says nothing about the couple and can't be guessed. */
+const randomSlug = () => Array.from({ length: 8 }, () => ALPHABET[randomInt(ALPHABET.length)]).join("");
+
+async function siteOrigin() {
+  return (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+}
+
+/** New personal link (valid 30 days) for an invitation; the raw token is returned once and never stored. */
+async function issueClaim(invitationId: string, adminId: string) {
+  const db = createAdminClient();
+  const token = randomBytes(32).toString("base64url");
+  const { error } = await db.from("edit_claims").insert({
+    invitation_id: invitationId,
+    token_hash: "\\x" + createHash("sha256").update(token).digest("hex"),
+    expires_at: new Date(Date.now() + 30 * 864e5).toISOString(),
+    created_by: adminId,
   });
+  if (error) return null;
+  await db.from("audit_log").insert({ actor_id: adminId, action: "claim.issue", entity_type: "invitation", entity_id: invitationId });
+  return `${await siteOrigin()}/claim/${token}`;
+}
+
+/** One purchase = one template for one customer = one personal link. */
+export async function createPurchase(_prev: CreateState, fd: FormData): Promise<CreateState> {
+  const { user } = await requireAdmin();
+  const p = input.safeParse({ templateId: fd.get("templateId"), etsyRef: fd.get("etsyRef") });
   if (!p.success) return { ok: false, message: p.error.issues[0].message };
   const v = p.data;
   const db = createAdminClient();
 
-  const { data: tpl } = await db.from("templates").select("id,current_version").eq("slug", "sage-story").single();
-  if (!tpl) return { ok: false, message: "Template 'sage-story' not found. Run the seed migration." };
+  const { data: tpl } = await db.from("templates").select("id, current_version, name").eq("id", v.templateId).eq("is_active", true).maybeSingle();
+  if (!tpl) return { ok: false, message: "Choose a template." };
 
   const { data: order, error: oErr } = await db.from("orders").insert({
-    plan_code: v.plan, etsy_order_ref: v.etsyRef ?? null, payment_status: "verified",
+    plan_code: PLAN, etsy_order_ref: v.etsyRef, payment_status: "verified",
     verified_by: user.id, verified_at: new Date().toISOString(), purchased_at: new Date().toISOString(),
   }).select("id").single();
   if (oErr) return { ok: false, message: oErr.code === "23505" ? "That Etsy order reference already exists." : "Could not create the order." };
 
-  const { data: inv, error: iErr } = await db.from("invitations").insert({
-    order_id: order.id, template_id: tpl.id, template_version: tpl.current_version, plan_code: v.plan,
-    slug: v.slug, display_title: v.title, owner_id: v.owner === "me" ? user.id : null,
-  }).select("id").single();
-  if (iErr) {
-    await db.from("orders").delete().eq("id", order.id);
-    return { ok: false, message: iErr.code === "23505" ? "That slug is taken." : iErr.code === "23514" ? "That slug is reserved or invalid." : "Could not create the invitation." };
+  let inv: { id: string } | null = null;
+  for (let i = 0; i < 5 && !inv; i++) {
+    const { data, error } = await db.from("invitations").insert({
+      order_id: order.id, template_id: tpl.id, template_version: tpl.current_version, plan_code: PLAN,
+      slug: randomSlug(), display_title: `${tpl.name} · ${v.etsyRef}`, owner_id: null,
+    }).select("id").single();
+    if (!error) inv = data;
+    else if (error.code !== "23505" && error.code !== "23514") break; // only retry on a slug clash
   }
+  const rollback = async () => { if (inv) await db.from("invitations").delete().eq("id", inv.id); await db.from("orders").delete().eq("id", order.id); };
+  if (!inv) { await rollback(); return { ok: false, message: "Could not create the invitation." }; }
 
-  const rollback = async () => { await db.from("invitations").delete().eq("id", inv.id); await db.from("orders").delete().eq("id", order.id); };
   const c1 = await db.from("invitation_content").insert({ invitation_id: inv.id, draft: defaultContent });
   const c2 = await db.from("hosting_entitlements").insert({ invitation_id: inv.id, order_id: order.id, state: "pending" });
   if (c1.error || c2.error) { await rollback(); return { ok: false, message: "Could not initialise the invitation." }; }
+  await db.from("audit_log").insert({ actor_id: user.id, action: "invitation.create", entity_type: "invitation", entity_id: inv.id, metadata: { template: tpl.name, etsy: v.etsyRef } });
 
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  await db.from("audit_log").insert({ actor_id: user.id, action: "invitation.create", entity_type: "invitation", entity_id: inv.id, metadata: { plan: v.plan, slug: v.slug } });
+  const claimUrl = await issueClaim(inv.id, user.id);
+  if (!claimUrl) { await rollback(); return { ok: false, message: "Could not create the personal link." }; }
+  return { ok: true, message: "Created. Send this link to the customer — it is shown only once (you can make a new one later).", claimUrl };
+}
 
-  if (v.owner === "me") return { ok: true, message: "Created. You own it — open the editor.", editorUrl: `/editor/${inv.id}` };
-
-  const token = randomBytes(32).toString("base64url");
-  const { error: tErr } = await db.from("edit_claims").insert({
-    invitation_id: inv.id, token_hash: "\\x" + createHash("sha256").update(token).digest("hex"),
-    expires_at: new Date(Date.now() + 14 * 864e5).toISOString(), created_by: user.id,
-  });
-  if (tErr) { await rollback(); return { ok: false, message: "Could not create the claim link." }; }
-  await db.from("audit_log").insert({ actor_id: user.id, action: "claim.issue", entity_type: "invitation", entity_id: inv.id });
-  return { ok: true, message: "Created. Send this link to the customer — it is shown only once.", claimUrl: `${origin}/claim/${token}` };
+/** Replace the personal link of a purchase that has not been used yet (e.g. the customer lost it). */
+export async function reissueClaim(invitationId: string): Promise<CreateState> {
+  const { user } = await requireAdmin();
+  if (!z.uuid().safeParse(invitationId).success) return { ok: false, message: "Invalid invitation." };
+  const db = createAdminClient();
+  const { data: inv } = await db.from("invitations").select("id, owner_id").eq("id", invitationId).maybeSingle();
+  if (!inv) return { ok: false, message: "Invitation not found." };
+  if (inv.owner_id) return { ok: false, message: "The customer already opened this one — they sign in with their email." };
+  await db.from("edit_claims").update({ revoked_at: new Date().toISOString() }).eq("invitation_id", invitationId).is("redeemed_at", null).is("revoked_at", null);
+  const claimUrl = await issueClaim(invitationId, user.id);
+  return claimUrl ? { ok: true, message: "New link created (the old one no longer works).", claimUrl } : { ok: false, message: "Could not create the link." };
 }
