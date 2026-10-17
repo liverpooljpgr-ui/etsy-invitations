@@ -18,6 +18,7 @@ export default async function PreviewPage({ params }: { params: Promise<{ id: st
   if (!row || !plan) notFound();
   return (
     <main className="px-4 py-6">
+      <Link href={`/editor/${id}`} className="fixed left-3 top-3 z-40 rounded-full bg-white/90 px-4 py-2 text-sm shadow md:hidden">← Editor</Link>
       <p className="mb-4 text-center text-sm"><Link className="underline" href={`/editor/${id}`}>← Back to editor</Link> · private preview of your saved draft — tap the envelope to test the animation</p>
       <Experience content={applyPlan(parseContent(row.draft), plan.features)} mode="preview" />
     </main>

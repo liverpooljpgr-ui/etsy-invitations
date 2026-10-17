@@ -251,6 +251,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           {(["edit", "preview"] as const).map((t) => (
             <button key={t} onClick={() => setTab(t)} className={`rounded-full px-4 py-1 text-sm ${tab === t ? "bg-stone-900 text-white" : "bg-stone-100"}`}>{t === "edit" ? "Details" : "Preview"}</button>
           ))}
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ml-auto rounded-full border border-stone-900 px-4 py-1 text-sm">▶ Animation</a>
         </div>
       </header>
 
