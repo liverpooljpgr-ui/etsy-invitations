@@ -39,10 +39,13 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
           <p className="text-sm text-stone-600 mb-6">Enter your email to personalise it. The first time, we email you one confirmation link; after that you only need your email.</p>
           <ClaimForm token={token} />
         </>
+      ) : status === "used" ? (
+        <>
+          <p className="text-sm text-stone-600 mb-6">This personal link was already opened. Enter the email you used the first time to continue.</p>
+          <ClaimForm token={token} />
+        </>
       ) : (
-        <p className="mb-4 text-sm text-stone-700">
-          {status === "used" ? "This personal link has already been used." : "This link is invalid or has expired. Contact support for a new one."}
-        </p>
+        <p className="mb-4 text-sm text-stone-700">This link is invalid or has expired. Contact support for a new one.</p>
       )}
       <p className="mt-8 text-sm"><Link className="underline" href="/login">Already have an invitation? Sign in with your email</Link></p>
     </main>

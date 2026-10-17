@@ -37,7 +37,7 @@ export async function signInByEmail(_prev: LoginState, formData: FormData): Prom
     if (error) return { ok: false, message: "Could not send the link. Please wait a minute and try again." };
     return { ok: true, message: "Check your inbox for the sign-in link. Open it in this same browser." };
   }
-  return { ok: false, message: "We couldn't find an invitation for this email. Open the personal link you received after your purchase — you only need it once." };
+  return { ok: false, message: "This is not the right email. Enter the same email you used the first time you opened your personal link. If you haven't opened that link yet, open it first — you only need it once." };
 }
 
 export async function signOut() {
