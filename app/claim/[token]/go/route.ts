@@ -11,6 +11,9 @@ export async function GET(request: NextRequest, ctx: { params: Promise<{ token: 
   const { data } = await supabase.auth.getUser();
   if (!data.user) return NextResponse.redirect(`${origin}/claim/${encodeURIComponent(token)}`);
   if (!/^[A-Za-z0-9_-]{20,100}$/.test(token)) return NextResponse.redirect(`${origin}/claim/${encodeURIComponent(token)}`);
+  // never attach a customer's purchase to a staff account that happens to be signed in in this browser
+  const { data: me } = await createAdminClient().from("profiles").select("role").eq("id", data.user.id).maybeSingle();
+  if (me?.role === "admin") return NextResponse.redirect(`${origin}/claim/${encodeURIComponent(token)}`);
   const hash = "\\x" + createHash("sha256").update(token).digest("hex");
   const { data: invId, error } = await createAdminClient().rpc("redeem_claim", { p_user: data.user.id, p_token_hash: hash });
   if (error || !invId) return NextResponse.redirect(`${origin}/dashboard`);
