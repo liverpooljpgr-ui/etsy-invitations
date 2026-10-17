@@ -21,7 +21,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <label className="block text-sm text-stone-700">{label}{children}</label>;
 }
 /** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
-function Section({ title, n, children }: { title: string; n?: number; children: React.ReactNode }) {
+function Section({ title, n, children, toggle }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void } }) {
   const jump = () => {
     if (!n || !window.matchMedia("(min-width: 1024px)").matches) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -30,7 +30,19 @@ function Section({ title, n, children }: { title: string; n?: number; children: 
   return (
     <fieldset onFocus={jump} className="space-y-3 rounded-xl border border-stone-200 bg-white p-4">
       <legend className="px-1 font-medium">{title}</legend>
-      {children}
+      {toggle && (
+        <div className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm">
+          <span>{toggle.on ? "This screen is shown to guests" : "This screen is switched off — guests will not see it"}</span>
+          <button
+            type="button" role="switch" aria-checked={toggle.on} aria-label={`Show ${title}`}
+            onClick={() => toggle.set(!toggle.on)}
+            className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${toggle.on ? "bg-green-700" : "bg-stone-300"}`}
+          >
+            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${toggle.on ? "left-[22px]" : "left-0.5"}`} />
+          </button>
+        </div>
+      )}
+      <div className={`space-y-3 ${toggle && !toggle.on ? "opacity-50" : ""}`}>{children}</div>
     </fieldset>
   );
 }
@@ -204,6 +216,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     }
   }
 
+  const screenToggle = (n: number) => ({
+    on: !draft.hidden.includes(n),
+    set: (v: boolean) => update((d) => ({ ...d, hidden: v ? d.hidden.filter((x) => x !== n) : [...new Set([...d.hidden, n])].sort() })),
+  });
   const set = <K extends keyof Content>(k: K, v: Content[K]) => update((d) => ({ ...d, [k]: v }));
   // Two fixed registry options (Amazon, Target), stored as registry[] items with those labels.
   const regUrl = (label: string) => draft.registry.find((r) => r.label === label)?.url ?? "";
@@ -320,7 +336,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Text under the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
           </Section>
 
-          <Section n={3} title="Card 3 · Venue">
+          <Section n={3} toggle={screenToggle(3)} title="Card 3 · Venue">
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Full address (use Enter for a new line)">
@@ -330,7 +346,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
-          <Section n={4} title="Card 4 · Timeline">
+          <Section n={4} toggle={screenToggle(4)} title="Card 4 · Timeline">
             {features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
@@ -346,7 +362,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} title="Card 5 · Details (accommodation, dress code, registry)">
+          <Section n={5} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (use Enter for a new line)">
@@ -378,7 +394,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="text-sm text-stone-500">Registry QR codes are not included in your plan.</p>}
           </Section>
 
-          <Section n={6} title="Card 6 · RSVP">
+          <Section n={6} toggle={screenToggle(6)} title="Card 6 · RSVP">
             <Field label="Title (first word in script, the rest large — e.g. “please RSVP”)"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
@@ -387,7 +403,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include all guests name you are taking with you" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
-          <Section n={7} title="Card 7 · Closing">
+          <Section n={7} toggle={screenToggle(7)} title="Card 7 · Closing">
             <Field label="Short sentence about love (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Our forever begins" {...tp("closing")} /></Field>
           </Section>
         </div>

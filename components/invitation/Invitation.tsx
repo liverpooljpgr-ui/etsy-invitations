@@ -72,6 +72,7 @@ export function Invitation({
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
   const hasInfo = c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
+  const off = (n: number) => c.hidden.includes(n); // screens the host switched off
 
   return (
     <div className="inv" data-theme={c.theme} data-phase={phase}>
@@ -104,7 +105,7 @@ export function Invitation({
       </div>
 
       {/* 3 — venue: name, full address, directions link, "reception to follow" */}
-      {(c.event.venue || ph) && (
+      {!off(3) && (c.event.venue || ph) && (
         <section className="card card-venue" data-card="3">
           <div className="venue-in">
             {c.texts.venueIntro && <p className="venue-intro">{c.texts.venueIntro}</p>}
@@ -118,7 +119,7 @@ export function Invitation({
       )}
 
       {/* 4 — timeline: flowers along the bottom of the sheet; an ornament sits between the time stamps */}
-      {(c.timeline.length > 0 || ph) && (
+      {!off(4) && (c.timeline.length > 0 || ph) && (
         <section className="card card-timeline" data-card="4">
           <div className="tl-in">
             <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
@@ -133,7 +134,7 @@ export function Invitation({
       )}
 
       {/* 5 — details: accommodation, dress code, registry (the save-the-date sheet, flipped: flowers hang from the top) */}
-      {hasInfo && (
+      {!off(5) && hasInfo && (
         <section className="card card-details" data-card="5">
           <div className="dtl-in">
             <h2 className="script tl-title">{c.texts.detailsTitle || "details"}</h2>
@@ -179,7 +180,7 @@ export function Invitation({
       )}
 
       {/* 6 — RSVP: script lead + big letter-spaced caps, flowers along the bottom */}
-      {hasRsvp && (
+      {!off(6) && hasRsvp && (
         <section className="card card-rsvp" data-card="6">
           <div className="rsvp-in">
             <RsvpTitle text={c.texts.rsvpTitle || "please RSVP"} />
@@ -191,12 +192,14 @@ export function Invitation({
       )}
 
       {/* 7 — closing */}
-      <section className="card card-closing" data-card="7">
-        <div className="closing-in">
-          <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
-          <p className="closing-text">{c.texts.closing || "Our forever begins"}</p>
-        </div>
-      </section>
+      {!off(7) && (
+        <section className="card card-closing" data-card="7">
+          <div className="closing-in">
+            <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
+            <p className="closing-text">{c.texts.closing || "Our forever begins"}</p>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
