@@ -202,7 +202,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   async function onMusic(file: File | undefined) {
     if (!file) return;
     if (!(file.type === "audio/mpeg" || /.mp3$/i.test(file.name))) return setNotice({ ok: false, text: "Please choose an MP3 file." });
-    if (file.size > 8 * 1024 * 1024) return setNotice({ ok: false, text: "Music file is too large (max 8 MB)." });
+    if (file.size > 4 * 1024 * 1024) return setNotice({ ok: false, text: "Music file is too large (max 4 MB)." });
     setNotice(null);
     try {
       const supabase = createBrowserSupabase();
@@ -317,7 +317,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   <button type="button" onClick={() => set("music", null)} className="text-xs text-red-700 underline">Remove music</button>
                 </>
               )}
-              <p className="text-xs text-stone-500">MP3, up to 8 MB. Please use music you have the right to share.</p>
+              <p className="text-xs text-stone-500">MP3, up to 4 MB. Please use music you have the right to share.</p>
             </div>
           </Section>
 
