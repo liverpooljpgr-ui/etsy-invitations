@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CreateForm } from "./CreateForm";
 import { NewLinkButton } from "./NewLinkButton";
+import { DeleteButton } from "./DeleteButton";
 
 type Purchase = {
   id: string; slug: string; status: string; owner_id: string | null; created_at: string;
@@ -56,7 +57,10 @@ export default async function AdminPage() {
               <li key={r.id} className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm">
                 <p className="font-medium">{r.template} · Etsy {r.etsy}</p>
                 <p className="mb-1 text-xs text-stone-600">Created {day(r.created_at)}</p>
-                <NewLinkButton invitationId={r.id} />
+                <div className="flex items-start justify-between gap-3">
+                  <NewLinkButton invitationId={r.id} />
+                  <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy}`} />
+                </div>
               </li>
             ))}
           </ul>
@@ -77,7 +81,10 @@ export default async function AdminPage() {
                       <p>{r.template} · Etsy {r.etsy}</p>
                       <p className="text-xs text-stone-500">{r.status} · bought {day(r.created_at)}</p>
                     </div>
-                    {r.status === "published" && <Link className="text-xs underline" href={`/${r.slug}`} target="_blank">/{r.slug}</Link>}
+                    <div className="flex items-center gap-3">
+                      {r.status === "published" && <Link className="text-xs underline" href={`/${r.slug}`} target="_blank">/{r.slug}</Link>}
+                      <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy} (${addr})`} />
+                    </div>
                   </li>
                 ))}
               </ul>

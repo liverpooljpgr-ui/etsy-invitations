@@ -2,6 +2,7 @@
 
 import { createHash, randomBytes, randomInt } from "node:crypto";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -76,6 +77,26 @@ export async function createPurchase(_prev: CreateState, fd: FormData): Promise<
   const claimUrl = await issueClaim(inv.id, user.id);
   if (!claimUrl) { await rollback(); return { ok: false, message: "Could not create the personal link." }; }
   return { ok: true, message: "Created. Send this link to the customer — it is shown only once (you can make a new one later).", claimUrl };
+}
+
+/** Permanently delete a purchase: the invitation, its content, its links, uploaded photo/music and its order. */
+export async function deleteInvitation(invitationId: string): Promise<{ ok: boolean; message: string }> {
+  const { user } = await requireAdmin();
+  if (!z.uuid().safeParse(invitationId).success) return { ok: false, message: "Invalid invitation." };
+  const db = createAdminClient();
+  const { data: inv } = await db.from("invitations").select("id, slug, order_id").eq("id", invitationId).maybeSingle();
+  if (!inv) return { ok: false, message: "Invitation not found." };
+
+  const files = await db.storage.from("invitation-media").list(inv.id, { limit: 1000 });
+  if (files.data?.length) await db.storage.from("invitation-media").remove(files.data.map((f) => `${inv.id}/${f.name}`));
+
+  const { error } = await db.from("invitations").delete().eq("id", inv.id); // content, claims, hosting, RSVPs cascade
+  if (error) return { ok: false, message: "Could not delete the invitation." };
+  if (inv.order_id) await db.from("orders").delete().eq("id", inv.order_id);
+  await db.from("audit_log").insert({ actor_id: user.id, action: "invitation.delete", entity_type: "invitation", entity_id: null, metadata: { slug: inv.slug } });
+  revalidatePath("/admin");
+  revalidatePath(`/${inv.slug}`);
+  return { ok: true, message: "Deleted." };
 }
 
 /** Replace the personal link of a purchase that has not been used yet (e.g. the customer lost it). */
