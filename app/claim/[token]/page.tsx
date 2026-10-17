@@ -1,18 +1,31 @@
-import { requireUser } from "@/lib/auth";
-import { claimInvitation } from "./actions";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { claimStatus } from "./actions";
+import { ClaimForm } from "./ClaimForm";
 
-export default async function ClaimPage({ params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ error?: string }> }) {
+export default async function ClaimPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const { error } = await searchParams;
-  await requireUser(`/claim/${token}`);
+  const status = await claimStatus(token);
+  if (status === "ok") {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    if (data.user) redirect(`/claim/${token}/go`); // already signed in: attach it straight away
+  }
   return (
     <main className="mx-auto max-w-sm px-5 py-20">
       <h1 className="font-serif text-3xl mb-2">Your invitation is ready</h1>
-      <p className="text-sm text-stone-600 mb-6">Confirm to link this invitation to your account. You&apos;ll then be able to personalise and publish it.</p>
-      {error && <p className="mb-4 text-sm text-red-700">This link is invalid, expired or already used. Contact support for a new one.</p>}
-      <form action={claimInvitation.bind(null, token)}>
-        <button className="w-full rounded-lg bg-stone-900 px-4 py-2 text-white">Start personalising</button>
-      </form>
+      {status === "ok" ? (
+        <>
+          <p className="text-sm text-stone-600 mb-6">Enter your email to personalise it. The first time, we email you one confirmation link; after that you only need your email.</p>
+          <ClaimForm token={token} />
+        </>
+      ) : (
+        <p className="mb-4 text-sm text-stone-700">
+          {status === "used" ? "This personal link has already been used." : "This link is invalid or has expired. Contact support for a new one."}
+        </p>
+      )}
+      <p className="mt-8 text-sm"><Link className="underline" href="/login">Already have an invitation? Sign in with your email</Link></p>
     </main>
   );
 }
