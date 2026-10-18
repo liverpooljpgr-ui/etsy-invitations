@@ -205,7 +205,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* closing: full names + a short love sentence on the wreath background */
 .inv .card-closing { container-type:size; padding:0; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-closing.webp) center / cover no-repeat; }
-.inv .closing-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 9cqw; text-align:center; }
+.inv .closing-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:25cqw 16cqw; text-align:center; }
 .inv .closing-names { display:flex; flex-direction:column; align-items:center; font-family:var(--font-script),cursive; font-size:calc(54px * var(--k,1)); line-height:1.12; color:#4f463d; overflow-wrap:anywhere; }
 .inv .closing-names .amp { font-size:calc(34px * var(--k,1)); color:#4f463d; }
 .inv .closing-text { margin:3.4cqh 0 0; font-family:var(--font-serif),serif; font-size:calc(15px * var(--k,1)); line-height:1.6; letter-spacing:.04em; color:var(--ink); }
