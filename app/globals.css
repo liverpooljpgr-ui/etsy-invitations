@@ -266,3 +266,14 @@ html { scrollbar-gutter: stable; }
   .inv[data-phase] .stage > .card, .inv[data-phase] .stage > .cover { flex:none; height:100%; scroll-snap-align:none; }
   .inv[data-phase] .card-rsvp { background-size:cover; background-position:20% 100%; }
 }
+
+/* chevron on the date screen: floats gently to say "swipe down for the next screen" */
+.inv .swipe-hint { position:absolute; left:50%; bottom:24cqh; margin-left:calc(-14px * var(--k,1)); width:calc(28px * var(--k,1)); height:calc(28px * var(--k,1)); color:var(--gold); pointer-events:none; opacity:0; }
+.inv .swipe-hint svg { display:block; width:100%; height:100%; }
+@keyframes swipe-in { to { opacity:1; } }
+@keyframes swipe-float { 0%,100% { transform:translateY(0); opacity:.55; } 50% { transform:translateY(calc(8px * var(--k,1))); opacity:1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-phase]:not([data-phase="closed"]) .swipe-hint { animation:swipe-in .8s ease 2.8s forwards; }
+  .inv[data-phase]:not([data-phase="closed"]) .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 3.6s infinite; }
+}
+@media (prefers-reduced-motion: reduce) { .inv[data-phase]:not([data-phase="closed"]) .swipe-hint { opacity:.9; } }

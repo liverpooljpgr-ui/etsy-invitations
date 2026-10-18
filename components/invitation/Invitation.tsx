@@ -100,6 +100,11 @@ export function Invitation({
               <div className="dt"><span className="dt-month">Date</span></div>
             ) : null}
           </div>
+          {phase && (
+            <span className="swipe-hint" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 9l7 7 7-7" /></svg>
+            </span>
+          )}
         </section>
         {envelope}
       </div>
