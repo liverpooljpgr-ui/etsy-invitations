@@ -405,7 +405,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
 
           <Section n={7} toggle={screenToggle(7)} title="Card 7 · Closing">
-            <Field label="Short sentence about love (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Our forever begins" {...tp("closing")} /></Field>
+            <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Thank you for your time." {...tp("closing")} /></Field>
           </Section>
         </div>
 

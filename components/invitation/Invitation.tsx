@@ -56,7 +56,7 @@ export function Invitation({
   mode,
   phase,
   envelope,
-  onFarewell,
+  calendarHref,
 }: {
   content: Content;
   mode: "preview" | "public";
@@ -64,8 +64,8 @@ export function Invitation({
   phase?: "closed" | "opening" | "open";
   /** Animated envelope overlay. When given it replaces static card 1 and sits over card 2. */
   envelope?: React.ReactNode;
-  /** Animated experience only: shows the "see you soon" farewell when the guest presses the button on the last screen. */
-  onFarewell?: () => void;
+  /** Published page only: link that downloads the event as a calendar file (.ics). */
+  calendarHref?: string;
 }) {
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "First name" : "");
@@ -218,10 +218,8 @@ export function Invitation({
         <section className="card card-closing" data-card="7">
           <div className="closing-in">
             <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
-            <p className="closing-text">{c.texts.closing || "Our forever begins"}</p>
-            {onFarewell && (
-              <button type="button" className="closing-exit" onClick={onFarewell}>Save the magic for the big day</button>
-            )}
+            <p className="closing-text">{c.texts.closing || "Thank you for your time."}</p>
+            {calendarHref && d && <a className="closing-cal" href={calendarHref}>Add to calendar</a>}
           </div>
         </section>
       )}

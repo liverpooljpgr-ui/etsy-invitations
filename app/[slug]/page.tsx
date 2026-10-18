@@ -33,7 +33,7 @@ export default async function PublicInvitation({ params }: { params: Promise<{ s
   }
   return (
     <main className="px-4 py-6">
-      <Experience content={parseContent(inv.content)} mode="public" />
+      <Experience content={parseContent(inv.content)} mode="public" calendarHref={`/${slug}/calendar.ics`} />
     </main>
   );
 }
