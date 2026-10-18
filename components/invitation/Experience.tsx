@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
 import { Invitation } from "./Invitation";
@@ -52,16 +52,27 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
   }, [phase]);
 
   // Phones show the cards as full-screen slides: scale the fixed-px sizes of the 340×567 design to the screen.
-  useEffect(() => {
+  // Set before the first paint (no flash of unscaled text). The height used is the tallest seen for this width, so the
+  // browser bars sliding in and out while scrolling (which change innerHeight) never make the layout jump.
+  useLayoutEffect(() => {
     const el = root.current;
     if (!el) return;
+    let tallest = 0;
+    let lastW = 0;
     const fit = () => {
+      const w = document.documentElement.clientWidth || window.innerWidth;
+      if (w !== lastW) { tallest = 0; lastW = w; }
+      tallest = Math.max(tallest, window.innerHeight);
       const phone = window.matchMedia("(max-width: 640px)").matches;
-      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(window.innerWidth / 340, window.innerHeight / 567, 1.9))) : "1");
+      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / 567, 1.9))) : "1");
     };
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
+    return () => {
+      window.removeEventListener("resize", fit);
+      window.removeEventListener("orientationchange", fit);
+    };
   }, []);
 
   // Reveal later cards as they scroll into view.
