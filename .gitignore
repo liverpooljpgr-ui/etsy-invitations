@@ -48,3 +48,6 @@ supabase/.temp/
 
 # Visual Studio local state
 .vs/
+
+# exported marketing images
+exports/
