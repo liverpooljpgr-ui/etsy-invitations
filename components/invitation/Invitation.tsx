@@ -56,6 +56,7 @@ export function Invitation({
   mode,
   phase,
   envelope,
+  onFarewell,
 }: {
   content: Content;
   mode: "preview" | "public";
@@ -63,6 +64,8 @@ export function Invitation({
   phase?: "closed" | "opening" | "open";
   /** Animated envelope overlay. When given it replaces static card 1 and sits over card 2. */
   envelope?: React.ReactNode;
+  /** Animated experience only: shows the "see you soon" farewell when the guest presses the button on the last screen. */
+  onFarewell?: () => void;
 }) {
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "First name" : "");
@@ -216,6 +219,9 @@ export function Invitation({
           <div className="closing-in">
             <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
             <p className="closing-text">{c.texts.closing || "Our forever begins"}</p>
+            {onFarewell && (
+              <button type="button" className="closing-exit" onClick={onFarewell}>Save the magic for the big day</button>
+            )}
           </div>
         </section>
       )}

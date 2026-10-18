@@ -18,6 +18,7 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
   const root = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
   const [music, setMusic] = useState<"none" | "on" | "off">("none");
+  const [farewell, setFarewell] = useState<{ days: number | null } | null>(null);
 
   function startMusic() {
     // Browsers only allow sound after a tap, so the music starts with the tap on the envelope.
@@ -35,6 +36,15 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
     if (a.paused) { a.play().then(() => setMusic("on")).catch(() => setMusic("off")); } else { a.pause(); setMusic("off"); }
   }
   useEffect(() => () => { audio.current?.pause(); audio.current = null; }, []);
+
+  /** "Exit": the music fades away and a farewell screen tells the guest the magic is still to come. */
+  function leave() {
+    const when = /^d{4}-d{2}-d{2}$/.test(content.event.date) ? Date.parse(`${content.event.date}T00:00:00`) : NaN;
+    const days = Number.isNaN(when) ? null : Math.ceil((when - Date.now()) / 864e5);
+    setFarewell({ days: days !== null && days > 0 ? days : null });
+    const a = audio.current;
+    if (a) { a.pause(); setMusic("off"); }
+  }
 
   function open() {
     if (phase !== "closed") return;
@@ -111,7 +121,7 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
       <noscript>
         <style>{`.inv[data-phase] .card{display:flex!important;opacity:1!important;transform:none!important}.env-btn{display:none!important}.inv .stage{margin-top:0!important}`}</style>
       </noscript>
-      <Invitation content={content} mode={mode} phase={phase} envelope={overlay} />
+      <Invitation content={content} mode={mode} phase={phase} envelope={overlay} onFarewell={leave} />
       {music !== "none" && (
         <button type="button" className="music-btn" onClick={toggleMusic} aria-pressed={music === "on"} aria-label={music === "on" ? "Turn the music off" : "Turn the music on"}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -119,6 +129,20 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
             {music === "off" && <path d="M3 3l18 18" />}
           </svg>
         </button>
+      )}
+      {farewell && (
+        <div className="inv farewell" data-theme={content.theme} role="dialog" aria-label="See you soon">
+          <div className="farewell-in">
+            <p className="farewell-names">{[content.couple.first, content.couple.second].filter(Boolean).join(" & ")}</p>
+            <p className="farewell-script">See you soon</p>
+            <span className="farewell-rule" aria-hidden="true" />
+            <p className="farewell-text">The magic of our wedding is waiting for you.</p>
+            {farewell.days !== null && (
+              <p className="farewell-count"><b>{farewell.days}</b> {farewell.days === 1 ? "day" : "days"} to go</p>
+            )}
+            <button type="button" className="farewell-again" onClick={() => setFarewell(null)}>Open the invitation again</button>
+          </div>
+        </div>
       )}
     </div>
   );

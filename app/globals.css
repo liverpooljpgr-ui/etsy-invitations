@@ -283,3 +283,22 @@ html { scrollbar-gutter: stable; }
   .inv[data-phase] .card.in .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 2.4s infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .inv[data-phase] .card.in .swipe-hint { opacity:.9; } }
+
+/* closing screen: button that "exits" the invitation, and the farewell screen it opens */
+.inv .closing-exit { margin-top:calc(28px * var(--k,1)); padding:calc(11px * var(--k,1)) calc(22px * var(--k,1)); border:1px solid var(--gold); border-radius:999px; background:rgba(251,249,243,.75); color:#4f463d; font-family:var(--font-sans),system-ui,sans-serif; font-size:calc(12px * var(--k,1)); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.inv .closing-exit:hover { background:var(--gold); color:#fff; }
+.inv.farewell { position:fixed; inset:0; z-index:60; padding:0; gap:0; justify-content:center; overflow:hidden; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-closing.webp) center / cover no-repeat; animation:farewell-in .9s ease both; }
+@keyframes farewell-in { from { opacity:0; } to { opacity:1; } }
+.farewell-in { display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 16cqw; max-width:min(100%, 420px); color:#4f463d; }
+.farewell-names { margin:0; font-size:calc(12px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; }
+.farewell-script { margin:calc(10px * var(--k,1)) 0 0; font-family:var(--font-script),cursive; font-size:calc(60px * var(--k,1)); line-height:1.1; color:var(--gold); }
+.farewell-rule { width:calc(56px * var(--k,1)); height:1px; background:var(--gold); margin:calc(18px * var(--k,1)) 0; }
+.farewell-text { margin:0; font-size:calc(17px * var(--k,1)); line-height:1.55; }
+.farewell-count { margin:calc(22px * var(--k,1)) 0 0; font-size:calc(15px * var(--k,1)); letter-spacing:.12em; text-transform:uppercase; }
+.farewell-count b { display:block; font-weight:400; font-family:var(--font-serif),serif; font-size:calc(54px * var(--k,1)); line-height:1.05; letter-spacing:0; color:var(--gold); }
+.farewell-again { margin-top:calc(34px * var(--k,1)); background:none; border:0; color:#4f463d; text-decoration:underline; text-underline-offset:4px; font-size:calc(12px * var(--k,1)); letter-spacing:.08em; cursor:pointer; opacity:.8; }
+@media (prefers-reduced-motion: no-preference) {
+  .farewell-in > * { animation:rise 1s cubic-bezier(.2,.8,.2,1) both; }
+  .farewell-in > :nth-child(2) { animation-delay:.25s; } .farewell-in > :nth-child(3) { animation-delay:.45s; }
+  .farewell-in > :nth-child(4) { animation-delay:.65s; } .farewell-in > :nth-child(5) { animation-delay:.95s; } .farewell-in > :nth-child(6) { animation-delay:1.3s; }
+}
