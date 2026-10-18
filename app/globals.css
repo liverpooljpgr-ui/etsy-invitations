@@ -291,7 +291,7 @@ html { scrollbar-gutter: stable; }
 @keyframes farewell-in { from { opacity:0; } to { opacity:1; } }
 .farewell-in { display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 16cqw; max-width:min(100%, 420px); color:#4f463d; }
 .farewell-names { margin:0; font-size:calc(12px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; }
-.farewell-script { margin:calc(10px * var(--k,1)) 0 0; font-family:var(--font-script),cursive; font-size:calc(60px * var(--k,1)); line-height:1.1; color:var(--gold); }
+.farewell-script { margin:calc(10px * var(--k,1)) 0 0; font-family:var(--font-script),cursive; font-size:calc(50px * var(--k,1)); line-height:1.1; color:var(--gold); white-space:nowrap; }
 .farewell-rule { width:calc(56px * var(--k,1)); height:1px; background:var(--gold); margin:calc(18px * var(--k,1)) 0; }
 .farewell-text { margin:0; font-size:calc(17px * var(--k,1)); line-height:1.55; }
 .farewell-count { margin:calc(22px * var(--k,1)) 0 0; font-size:calc(15px * var(--k,1)); letter-spacing:.12em; text-transform:uppercase; }
