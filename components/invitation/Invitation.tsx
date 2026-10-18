@@ -138,17 +138,21 @@ export function Invitation({
         <section className="card card-details" data-card="5">
           <div className="dtl-in">
             <h2 className="script tl-title">{c.texts.detailsTitle || "details"}</h2>
-            {(c.hotel.name || ph) && (
-              <div className="blk dtl-blk">
-                <p className="caps tiny">Accommodation</p>
-                <div className="dtl-pair">
-                  <p className="val sm">{c.hotel.name || "Hotel name"}</p>
-                  {c.hotel.address && <p className="sub dtl-text">{c.hotel.address}</p>}
-                </div>
-              </div>
-            )}
-            {(hasDress || registry.length > 0) && (
+            {(registry.length > 0 || hasDress || c.hotel.name || ph) && (
               <div className="dtl-row">
+                {registry.length > 0 && (
+                  <div className="blk dtl-blk">
+                    <p className="caps tiny">Registry</p>
+                    <div className="qrs">
+                      {registry.map((r, i) => (
+                        <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="qrbox">
+                          <Qr value={r.url} label={`QR code for ${r.label || "registry"}`} />
+                          <span>{r.label || "Registry"}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {hasDress && (
                   <div className="blk dtl-blk">
                     <p className="caps tiny">Dress code</p>
@@ -160,16 +164,12 @@ export function Invitation({
                     </div>
                   </div>
                 )}
-                {registry.length > 0 && (
+                {(c.hotel.name || ph) && (
                   <div className="blk dtl-blk">
-                    <p className="caps tiny">Registry</p>
-                    <div className="qrs">
-                      {registry.map((r, i) => (
-                        <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="qrbox">
-                          <Qr value={r.url} label={`QR code for ${r.label || "registry"}`} />
-                          <span>{r.label || "Registry"}</span>
-                        </a>
-                      ))}
+                    <p className="caps tiny">Accommodation</p>
+                    <div className="dtl-pair">
+                      <p className="val sm">{c.hotel.name || "Hotel name"}</p>
+                      {c.hotel.address && <p className="sub dtl-text">{c.hotel.address}</p>}
                     </div>
                   </div>
                 )}
