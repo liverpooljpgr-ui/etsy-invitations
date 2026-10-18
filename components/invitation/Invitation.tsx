@@ -73,6 +73,20 @@ export function Invitation({
   const hasInfo = c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
   const off = (n: number) => c.hidden.includes(n); // screens the host switched off
+  const shown: Record<number, boolean> = {
+    3: !off(3) && !!(c.event.venue || ph),
+    4: !off(4) && (c.timeline.length > 0 || ph),
+    5: !off(5) && !!hasInfo,
+    6: !off(6) && !!hasRsvp,
+    7: !off(7),
+  };
+  /** Down-chevron at the bottom of a screen, only when another screen follows. */
+  const hint = (n: number) =>
+    phase && [3, 4, 5, 6, 7].some((m) => m > n && shown[m]) ? (
+      <span className="swipe-hint" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 9l7 7 7-7" /></svg>
+      </span>
+    ) : null;
 
   return (
     <div className="inv" data-theme={c.theme} data-phase={phase}>
@@ -100,11 +114,7 @@ export function Invitation({
               <div className="dt"><span className="dt-month">Date</span></div>
             ) : null}
           </div>
-          {phase && (
-            <span className="swipe-hint" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 9l7 7 7-7" /></svg>
-            </span>
-          )}
+          {hint(2)}
         </section>
         {envelope}
       </div>
@@ -120,6 +130,7 @@ export function Invitation({
             {c.event.mapUrl && <a className="link venue-link" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>}
             {c.texts.receptionNote && <p className="venue-recep">{c.texts.receptionNote}</p>}
           </div>
+          {hint(3)}
         </section>
       )}
 
@@ -135,6 +146,7 @@ export function Invitation({
               ))}
             </ul>
           </div>
+          {hint(4)}
         </section>
       )}
 
@@ -181,6 +193,7 @@ export function Invitation({
               </div>
             )}
           </div>
+          {hint(5)}
         </section>
       )}
 
@@ -193,6 +206,7 @@ export function Invitation({
             {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
             <p className="rsvp-note">{c.rsvp.note || "Please include all guests name you are taking with you"}</p>
           </div>
+          {hint(6)}
         </section>
       )}
 

@@ -158,8 +158,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* ───────── Card 4: timeline (its own sheet: flowers along the bottom; ornaments between time stamps) ───────── */
 /* the flowers fill the bottom ~22% (taller stalk at the right edge), so the list stops above them */
-.inv .card-timeline { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg.webp) center bottom / cover no-repeat; padding:0; }
-.inv .tl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:1.4cqh; padding:9.4cqh 9cqw 24cqh; }
+.inv .card-timeline { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
+.inv .tl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:1.4cqh; padding:19cqh 9cqw 10cqh; }
 .inv .tl-title { text-align:center; font-size:calc(32px * var(--k,1)); line-height:1.1; }
 .inv .tl { width:100%; flex:1; min-height:0; display:flex; flex-direction:column; gap:0; }
 /* each item takes an equal share of the list, so any number of items fits the card */
@@ -194,8 +194,8 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .dtl-dress .val { min-width:0; }
 
 /* RSVP: reference layout — small script lead, big letter-spaced caps, date, email, tiny caps note; flowers at the bottom */
-.inv .card-rsvp { container-type:size; padding:0; background:#fbf9f3 url(/templates/sage-story/v1/page-bg.webp) 0% 100% / 112% auto no-repeat; }
-.inv .rsvp-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding:12cqh 9cqw 6cqh; text-align:center; }
+.inv .card-rsvp { container-type:size; padding:0; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; }
+.inv .rsvp-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding:20cqh 9cqw 8cqh; text-align:center; }
 .inv .rsvp-title { display:flex; flex-direction:column; align-items:center; margin:0 0 3.4cqh; font-weight:400; }
 .inv .rsvp-lead { font-family:var(--font-script),cursive; font-size:calc(34px * var(--k,1)); line-height:1; color:var(--gold); margin-bottom:calc(5px * var(--k,1)); text-transform:capitalize; }
 .inv .rsvp-big { font-family:var(--font-serif),serif; font-size:calc(56px * var(--k,1)); line-height:1; letter-spacing:.14em; margin-right:-.14em; color:var(--ink); }
@@ -264,7 +264,6 @@ html { scrollbar-gutter: stable; }
   .inv[data-phase] .card, .inv[data-phase] .cover { flex:0 0 100%; width:100%; max-width:none; height:100%; min-height:100%; aspect-ratio:auto; border-radius:0; box-shadow:none; scroll-snap-align:start; scroll-snap-stop:always; }
   .inv[data-phase] .stage { flex:0 0 100%; width:100%; aspect-ratio:auto; height:100%; margin-top:0; scroll-snap-align:start; scroll-snap-stop:always; }
   .inv[data-phase] .stage > .card, .inv[data-phase] .stage > .cover { flex:none; height:100%; scroll-snap-align:none; }
-  .inv[data-phase] .card-rsvp { background-size:cover; background-position:20% 100%; }
 }
 
 /* chevron on the date screen: floats gently to say "swipe down for the next screen" */
@@ -277,3 +276,10 @@ html { scrollbar-gutter: stable; }
   .inv[data-phase]:not([data-phase="closed"]) .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 3.6s infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .inv[data-phase]:not([data-phase="closed"]) .swipe-hint { opacity:.9; } }
+
+/* chevrons on screens 3-6 appear a moment after the screen has revealed itself */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-phase] .card.in .swipe-hint { animation:swipe-in .8s ease 1.6s forwards; }
+  .inv[data-phase] .card.in .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 2.4s infinite; }
+}
+@media (prefers-reduced-motion: reduce) { .inv[data-phase] .card.in .swipe-hint { opacity:.9; } }
