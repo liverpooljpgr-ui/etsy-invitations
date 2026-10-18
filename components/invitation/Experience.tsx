@@ -83,10 +83,8 @@ export function Experience({ content, mode = "public" }: { content: Content; mod
       { threshold: window.matchMedia("(max-width: 640px)").matches ? 0.6 : 0.15 },
     );
     cards.forEach((c) => io.observe(c));
-    const safety = setTimeout(() => cards.forEach((c) => c.classList.add("in")), 8000);
     return () => {
       io.disconnect();
-      clearTimeout(safety);
     };
   }, [phase]);
 
