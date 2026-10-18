@@ -220,8 +220,6 @@ body { background: var(--background); color: var(--foreground); font-family: var
   .inv[data-phase] .card.in .tl-in > *,
   .inv[data-phase] .card.in .rsvp-title > * { animation:rise .9s cubic-bezier(.2,.8,.2,1) both; }
   .inv[data-phase] .card.in .tl li { animation:rise .8s cubic-bezier(.2,.8,.2,1) both; }
-  .inv[data-phase] .card.in .tl li:nth-child(odd) { animation-name:slide-l; }
-  .inv[data-phase] .card.in .tl li:nth-child(even) { animation-name:slide-r; }
   .inv[data-phase] .card.in .qrbox, .inv[data-phase] .card.in .dots i { animation:pop .7s cubic-bezier(.2,.8,.2,1) both; }
   .inv[data-phase]:not([data-phase="closed"]) .sheet-in > * { animation:rise 1s cubic-bezier(.2,.8,.2,1) both; }
   .inv[data-phase]:not([data-phase="closed"]) .sheet-in > .arch { animation-name:pop; }
