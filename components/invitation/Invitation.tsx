@@ -229,7 +229,7 @@ export function Invitation({
           <div className="closing-in">
             <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
             <p className="closing-text">{c.texts.closing || "Thank you for your time."}</p>
-            {calendarHref && d && c.showCalendar && <a className="closing-cal" href={calendarHref}>Add to calendar</a>}
+            {calendarHref && d && c.showCalendar && <a className="link venue-link closing-cal" href={calendarHref}>Add to calendar</a>}
           </div>
         </section>
       )}

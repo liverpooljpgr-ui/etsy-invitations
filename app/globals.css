@@ -286,4 +286,4 @@ html { scrollbar-gutter: stable; }
 @media (prefers-reduced-motion: reduce) { .inv[data-phase] .card.in .swipe-hint { opacity:.9; } }
 
 /* closing screen: "Add to calendar" link under the closing sentence */
-.inv .closing-cal { margin-top:calc(22px * var(--k,1)); color:#4f463d; font-family:var(--font-sans),system-ui,sans-serif; font-size:calc(12px * var(--k,1)); letter-spacing:.16em; text-transform:uppercase; text-decoration:underline; text-underline-offset:calc(5px * var(--k,1)); text-decoration-color:var(--gold); }
+.inv .closing-cal { margin-top:calc(22px * var(--k,1)); } /* otherwise styled by "link venue-link", exactly like "Get directions" */
