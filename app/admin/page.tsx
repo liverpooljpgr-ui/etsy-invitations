@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { CreateForm } from "./CreateForm";
 import { NewLinkButton } from "./NewLinkButton";
 import { DeleteButton } from "./DeleteButton";
+import { PasswordForm } from "./PasswordForm";
 
 type Purchase = {
   id: string; slug: string; status: string; owner_id: string | null; created_at: string;
@@ -41,57 +42,68 @@ export default async function AdminPage() {
   const customers = [...byEmail.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-12 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-3xl">Admin</h1>
-        <Link className="text-sm underline" href="/dashboard">My invitations</Link>
-      </div>
+    <div className="ui">
+      <header className="ui-top">
+        <div className="ui-bar" style={{ paddingLeft: 18 }}>
+          <div className="ui-bar-title"><h1>Admin</h1></div>
+          <Link className="ui-btn ui-btn-gray ui-btn-sm" href="/dashboard">My invitations</Link>
+        </div>
+      </header>
 
-      <CreateForm templates={(templates ?? []).map((t) => ({ id: t.id, name: t.name }))} />
+      <main className="ui-wrap" style={{ maxWidth: "48rem", paddingTop: 12, paddingBottom: 56 }}>
+        <h2 className="ui-large-title">Orders</h2>
 
-      {waiting.length > 0 && (
-        <section>
-          <h2 className="font-medium mb-3">Waiting for the customer to open their link ({waiting.length})</h2>
-          <ul className="space-y-2">
-            {waiting.map((r) => (
-              <li key={r.id} className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm">
-                <p className="font-medium">{r.template} · Etsy {r.etsy}</p>
-                <p className="mb-1 text-xs text-stone-600">Created {day(r.created_at)}</p>
-                <div className="flex items-start justify-between gap-3">
-                  <NewLinkButton invitationId={r.id} />
-                  <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy}`} />
-                </div>
+        <CreateForm templates={(templates ?? []).map((t) => ({ id: t.id, name: t.name }))} />
+
+        {waiting.length > 0 && (
+          <section style={{ marginTop: 28 }}>
+            <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Waiting for the customer to open their link · {waiting.length}</h3>
+            <ul className="dash-list">
+              {waiting.map((r) => (
+                <li key={r.id} className="ui-card">
+                  <p style={{ margin: 0, fontWeight: 600 }}>{r.template} · Etsy {r.etsy}</p>
+                  <p className="ui-help" style={{ margin: "2px 0 10px" }}>Created {day(r.created_at)}</p>
+                  <div className="ui-actions" style={{ marginTop: 0, justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <NewLinkButton invitationId={r.id} />
+                    <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy}`} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section style={{ marginTop: 28 }}>
+          <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Customers · {customers.length}</h3>
+          {customers.length === 0 && <div className="ui-card"><p className="ui-help" style={{ margin: 0 }}>No customer has opened a link yet.</p></div>}
+          <ul className="dash-list">
+            {customers.map(([addr, list]) => (
+              <li key={addr} className="ui-card">
+                <p style={{ margin: 0, fontWeight: 600 }}>{addr} <span className="ui-help" style={{ fontWeight: 400 }}>· {list.length} {list.length === 1 ? "purchase" : "purchases"}</span></p>
+                <ul className="adm-rows">
+                  {list.map((r) => (
+                    <li key={r.id} className="adm-row">
+                      <div style={{ minWidth: 0 }}>
+                        <p style={{ margin: 0 }}>{r.template} · Etsy {r.etsy}</p>
+                        <p className="ui-help" style={{ margin: 0 }}>{r.status} · bought {day(r.created_at)}</p>
+                      </div>
+                      <div className="ui-row-line" style={{ flex: "none" }}>
+                        {r.status === "published" && <Link className="ui-link" style={{ fontSize: 14 }} href={`/${r.slug}`} target="_blank">/{r.slug}</Link>}
+                        <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy} (${addr})`} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>
         </section>
-      )}
 
-      <section>
-        <h2 className="font-medium mb-3">Customers ({customers.length})</h2>
-        {customers.length === 0 && <p className="text-sm text-stone-600">No customer has opened a link yet.</p>}
-        <ul className="space-y-3">
-          {customers.map(([addr, list]) => (
-            <li key={addr} className="rounded-lg border border-stone-200 bg-white p-3 text-sm">
-              <p className="font-medium">{addr} <span className="text-xs font-normal text-stone-500">· {list.length} {list.length === 1 ? "purchase" : "purchases"}</span></p>
-              <ul className="mt-2 divide-y divide-stone-100">
-                {list.map((r) => (
-                  <li key={r.id} className="flex items-center justify-between gap-3 py-1.5">
-                    <div>
-                      <p>{r.template} · Etsy {r.etsy}</p>
-                      <p className="text-xs text-stone-500">{r.status} · bought {day(r.created_at)}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {r.status === "published" && <Link className="text-xs underline" href={`/${r.slug}`} target="_blank">/{r.slug}</Link>}
-                      <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy} (${addr})`} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </main>
+        <section style={{ marginTop: 28 }}>
+          <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Your sign-in password</h3>
+          <PasswordForm />
+        </section>
+      </main>
+    </div>
   );
 }

@@ -25,16 +25,18 @@ export default function AuthFinish() {
   }, []);
 
   return (
-    <main className="mx-auto max-w-sm px-5 py-20">
-      {failed ? (
-        <>
-          <h1 className="font-serif text-3xl mb-2">Welcome back</h1>
-          <p className="text-base text-stone-700 mb-6">This link was already used. Sign in with the email you used the very first time.</p>
-          <LoginForm next={nextPath} />
-        </>
-      ) : (
-        <p className="text-sm text-stone-600 text-center">Opening your invitation…</p>
-      )}
-    </main>
+    <div className="ui ui-center">
+      <main className="ui-auth">
+        {failed ? (
+          <>
+            <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>Welcome back</h1>
+            <p className="ui-lede">This link was already used. Sign in with the email you used the very first time.</p>
+            <div className="ui-card"><LoginForm next={nextPath} /></div>
+          </>
+        ) : (
+          <p className="ui-lede" style={{ textAlign: "center" }}>Opening your invitation…</p>
+        )}
+      </main>
+    </div>
   );
 }

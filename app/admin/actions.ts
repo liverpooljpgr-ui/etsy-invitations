@@ -111,3 +111,16 @@ export async function reissueClaim(invitationId: string): Promise<CreateState> {
   const claimUrl = await issueClaim(invitationId, user.id);
   return claimUrl ? { ok: true, message: "New link created (the old one no longer works).", claimUrl } : { ok: false, message: "Could not create the link." };
 }
+
+/** The signed-in admin chooses their own password (so it never passes through anyone else). */
+export async function setAdminPassword(_prev: CreateState, fd: FormData): Promise<CreateState> {
+  const { user } = await requireAdmin();
+  const password = String(fd.get("password") ?? "");
+  const confirm = String(fd.get("confirm") ?? "");
+  if (password.length < 10) return { ok: false, message: "Use at least 10 characters." };
+  if (password !== confirm) return { ok: false, message: "The two passwords do not match." };
+  const { error } = await createAdminClient().auth.admin.updateUserById(user.id, { password });
+  if (error) return { ok: false, message: "Could not save the password. Try a longer or less common one." };
+  await createAdminClient().from("audit_log").insert({ actor_id: user.id, action: "admin.password_set", entity_type: "profile", entity_id: user.id });
+  return { ok: true, message: "Password saved. From now on sign in at /login with your email and this password." };
+}

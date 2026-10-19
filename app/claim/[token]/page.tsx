@@ -22,32 +22,38 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
         redirect(`/claim/${token}`);
       }
       return (
-        <main className="mx-auto max-w-sm px-5 py-20">
-          <h1 className="font-serif text-3xl mb-2">You are signed in as admin</h1>
-          <p className="text-sm text-stone-600 mb-6">This is a customer&apos;s personal link, so it was not used. To see what the customer sees, sign out here (or open the link in a private window).</p>
-          <form action={leaveAdmin}><button className="w-full rounded-lg bg-stone-900 px-4 py-2 text-white">Sign out and view as customer</button></form>
-          <p className="mt-6 text-sm"><Link className="underline" href="/admin">Back to admin</Link></p>
-        </main>
+        <div className="ui ui-center">
+          <main className="ui-auth">
+            <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>You are signed in as admin</h1>
+            <p className="ui-lede">This is a customer&apos;s personal link, so it was not used. To see what the customer sees, sign out here (or open the link in a private window).</p>
+            <div className="ui-card ui-auth-stack">
+              <form action={leaveAdmin}><button className="ui-btn ui-btn-primary" style={{ width: "100%" }}>Sign out and view as customer</button></form>
+              <Link className="ui-btn ui-btn-gray" href="/admin" style={{ width: "100%" }}>Back to admin</Link>
+            </div>
+          </main>
+        </div>
       );
     }
   }
   return (
-    <main className="mx-auto max-w-sm px-5 py-20">
-      <h1 className="font-serif text-3xl mb-2">{status === "used" ? "Welcome back" : "Your invitation is ready"}</h1>
-      {status === "ok" ? (
-        <>
-          <p className="text-sm text-stone-600 mb-6">Enter your email to personalise it. The first time, we email you one confirmation link; after that you only need your email.</p>
-          <ClaimForm token={token} />
-        </>
-      ) : status === "used" ? (
-        <>
-          <p className="text-base text-stone-700 mb-6">Sign in with the email you used the very first time.</p>
-          <ClaimForm token={token} label="Sign in" />
-        </>
-      ) : (
-        <p className="mb-4 text-sm text-stone-700">This link is invalid or has expired. Contact support for a new one.</p>
-      )}
-      {status !== "used" && <p className="mt-8 text-sm"><Link className="underline" href="/login">Already have an invitation? Sign in with your email</Link></p>}
-    </main>
+    <div className="ui ui-center">
+      <main className="ui-auth">
+        <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Your invitation is ready"}</h1>
+        {status === "ok" && (
+          <>
+            <p className="ui-lede">Enter your email to personalise it. The first time, we email you one confirmation link; after that you only need your email.</p>
+            <div className="ui-card"><ClaimForm token={token} /></div>
+          </>
+        )}
+        {status === "used" && (
+          <>
+            <p className="ui-lede">Sign in with the email you used the very first time.</p>
+            <div className="ui-card"><ClaimForm token={token} label="Sign in" /></div>
+          </>
+        )}
+        {status === "invalid" && <p className="ui-lede">This link is invalid or has expired. Contact support for a new one.</p>}
+        {status === "ok" && <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}><Link href="/login" className="ui-link">Already have an invitation? Sign in with your email</Link></p>}
+      </main>
+    </div>
   );
 }
