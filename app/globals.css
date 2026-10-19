@@ -297,6 +297,7 @@ html { scrollbar-gutter: stable; }
   min-height:100vh; background:var(--ui-bg); color:var(--ui-label); font-family:var(--font-ui),-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
   font-size:17px; line-height:1.4; letter-spacing:-.003em; -webkit-font-smoothing:antialiased; }
 .ui * { font-family:inherit; }
+html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-wrap { max-width:72rem; margin:0 auto; padding:0 16px; }
 
 /* floating glass bar */
