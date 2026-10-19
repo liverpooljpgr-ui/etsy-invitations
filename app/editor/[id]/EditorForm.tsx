@@ -81,6 +81,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [draft, setDraft] = useState<Content>(initialDraft);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
+  const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
   const [tab, setTab] = useState<"edit" | "preview">("edit");
   const [status, setStatus] = useState(initialStatus);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
@@ -118,6 +119,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         const r = await saveDraft(id, sent, version.current).catch(() => ({ ok: false as const, error: "Could not reach the server. Your changes are kept on this page and will retry — if this keeps happening, reload the page (a newer version of the editor may have been released)." }));
         if (r.ok) {
           version.current = r.version;
+          setEverSaved(true);
           lastSaved.current = JSON.stringify(parseContent(sent));
           setSaveError("");
           setConflict(null);
@@ -273,7 +275,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Link>
           <div className="ui-bar-title">
             <h1>{title}</h1>
-            <span role="status" className="ui-status"><i className="ui-dot" data-s={saveState} />{stateLabel}</span>
+            {(everSaved || saveState !== "saved") && <span role="status" className="ui-status"><i className="ui-dot" data-s={saveState} />{stateLabel}</span>}
           </div>
           <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-plain hidden sm:inline-flex">▶ Preview animation</a>
           <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>
