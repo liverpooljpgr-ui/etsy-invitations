@@ -65,6 +65,8 @@ export const contentSchema = z.object({
   photo: z.object({ url: photoUrl, alt: text(200) }).nullable(),
   /** screens (3–7) the host switched off: not shown to guests */
   hidden: z.array(z.number().int().min(3).max(7)).max(5).default([]),
+  /** show the "Add to calendar" link on the closing screen */
+  showCalendar: z.boolean().default(true),
   music: z.object({ url: musicUrl, name: text(80) }).nullable().default(null),
   timeline: z.array(z.object({ time: text(20), label: text(60) })).max(10),
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),
@@ -97,6 +99,7 @@ export const defaultContent: Content = {
   event: { date: "", time: "", venue: "", address: "", mapUrl: "" },
   photo: null,
   hidden: [],
+  showCalendar: true,
   music: null,
   timeline: [],
   registry: [],

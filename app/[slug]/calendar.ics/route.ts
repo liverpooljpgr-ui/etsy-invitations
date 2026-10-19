@@ -8,7 +8,9 @@ export async function GET(request: Request, ctx: { params: Promise<{ slug: strin
   const inv = await loadPublicInvitation(slug);
   if (inv?.status !== "published") return new Response("Not found", { status: 404 });
   const origin = new URL(request.url).origin;
-  const ics = buildIcs(parseContent(inv.content), `${slug}@wedding-invitation`, `${origin}/${slug}`);
+  const content = parseContent(inv.content);
+  if (!content.showCalendar) return new Response("Not found", { status: 404 }); // the host switched the link off
+  const ics = buildIcs(content, `${slug}@wedding-invitation`, `${origin}/${slug}`);
   if (!ics) return new Response("This invitation has no date yet.", { status: 404 });
   return new Response(ics, {
     headers: {

@@ -406,6 +406,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={7} toggle={screenToggle(7)} title="Card 7 · Closing">
             <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Thank you for your time." {...tp("closing")} /></Field>
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={draft.showCalendar} onChange={(e) => set("showCalendar", e.target.checked)} />
+              Show an “Add to calendar” link (needs the event date)
+            </label>
           </Section>
         </div>
 
