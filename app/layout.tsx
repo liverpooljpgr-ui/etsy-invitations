@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Jost, Oranienbaum, Pinyon_Script } from "next/font/google";
+import { Inter, Jost, Oranienbaum, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });
 const sans = Jost({ variable: "--font-sans", subsets: ["latin"] });
+// UI font for the editor (the invitation itself keeps its own fonts)
+const ui = Inter({ variable: "--font-ui", subsets: ["latin", "latin-ext", "cyrillic"] });
 
 export const metadata: Metadata = {
   title: "PixelBridge Invitations",
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable}`}>
+    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable}`}>
       <body>{children}</body>
     </html>
   );

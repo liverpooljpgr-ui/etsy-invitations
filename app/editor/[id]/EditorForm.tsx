@@ -15,11 +15,31 @@ type SaveState = "saved" | "dirty" | "saving" | "error";
 
 const REGISTRIES = ["Amazon", "Target"] as const;
 
-const inputCls = "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm";
+const inputCls = "ui-input";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <label className="block text-sm text-stone-700">{label}{children}</label>;
+  return <label className="ui-field"><span className="ui-label">{label}</span>{children}</label>;
 }
+
+/** iOS-style switch. */
+function Switch({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <button type="button" role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)} className="ui-switch">
+      <span />
+    </button>
+  );
+}
+
+/** A "choose file" capsule (the native file input is hidden). */
+function FilePick({ accept, label, onFile }: { accept: string; label: string; onFile: (f: File | undefined) => void }) {
+  return (
+    <label className="ui-btn ui-btn-soft">
+      {label}
+      <input type="file" accept={accept} hidden onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ""; }} />
+    </label>
+  );
+}
+
 /** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
 function Section({ title, n, children, toggle }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void } }) {
   const jump = () => {
@@ -27,23 +47,22 @@ function Section({ title, n, children, toggle }: { title: string; n?: number; ch
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.querySelector(`[data-card="${n}"]`)?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
   };
+  const cut = title.indexOf(" · ");
+  const num = cut > 0 ? title.slice(0, cut).replace("Card ", "") : "";
+  const name = cut > 0 ? title.slice(cut + 3) : title;
   return (
-    <fieldset onFocus={jump} className="space-y-3 rounded-xl border border-stone-200 bg-white p-4">
-      <legend className="px-1 font-medium">{title}</legend>
-      {toggle && (
-        <div className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm">
-          <span>{toggle.on ? "This screen is shown to guests" : "This screen is switched off — guests will not see it"}</span>
-          <button
-            type="button" role="switch" aria-checked={toggle.on} aria-label={`Show ${title}`}
-            onClick={() => toggle.set(!toggle.on)}
-            className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${toggle.on ? "bg-green-700" : "bg-stone-300"}`}
-          >
-            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${toggle.on ? "left-[22px]" : "left-0.5"}`} />
-          </button>
-        </div>
-      )}
-      <div className={`space-y-3 ${toggle && !toggle.on ? "opacity-50" : ""}`}>{children}</div>
-    </fieldset>
+    <section onFocus={jump} className="ui-section">
+      <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
+      <div className="ui-group">
+        {toggle && (
+          <div className="ui-row-switch">
+            <span>{toggle.on ? "Shown to your guests" : "Hidden from your guests"}</span>
+            <Switch on={toggle.on} onChange={toggle.set} label={`Show ${name}`} />
+          </div>
+        )}
+        <div className={`ui-fields ${toggle && !toggle.on ? "ui-dim" : ""}`}>{children}</div>
+      </div>
+    </section>
   );
 }
 
@@ -236,100 +255,115 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const editable = status === "draft" || status === "published";
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="sticky top-0 z-20 border-b border-stone-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-          <Link href="/dashboard" className="text-sm text-stone-500 hover:underline">←</Link>
-          <h1 className="min-w-0 flex-1 truncate font-medium">{title}</h1>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="hidden text-sm underline sm:inline">Preview animation</a>
-          <span role="status" className={`text-xs ${saveState === "error" ? "text-red-700" : "text-stone-500"}`}>{stateLabel}</span>
-          <button onClick={onPublish} disabled={busy || !editable} className="rounded-lg bg-stone-900 px-4 py-1.5 text-sm text-white disabled:opacity-50">
+    <div className="ui">
+      <header className="ui-top">
+        <div className="ui-bar">
+          <Link href="/dashboard" className="ui-icon-btn" aria-label="Back to my invitations">
+            <svg width="11" height="19" viewBox="0 0 11 19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9.5 1.5 1.5 9.5l8 8" /></svg>
+          </Link>
+          <div className="ui-bar-title">
+            <h1>{title}</h1>
+            <span role="status" className="ui-status"><i className="ui-dot" data-s={saveState} />{stateLabel}</span>
+          </div>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-plain hidden sm:inline-flex">▶ Preview animation</a>
+          <button onClick={onPublish} disabled={busy || !editable} className="ui-btn ui-btn-primary">
             {status === "published" ? "Update published" : "Publish"}
           </button>
         </div>
-        <div className="mx-auto flex max-w-6xl gap-1 px-4 pb-2 lg:hidden">
-          {(["edit", "preview"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`rounded-full px-4 py-1 text-sm ${tab === t ? "bg-stone-900 text-white" : "bg-stone-100"}`}>{t === "edit" ? "Details" : "Preview"}</button>
-          ))}
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ml-auto rounded-full border border-stone-900 px-4 py-1 text-sm">▶ Animation</a>
+        <div className="ui-seg-row lg:hidden">
+          <div className="ui-seg" role="group" aria-label="View">
+            {(["edit", "preview"] as const).map((t) => (
+              <button key={t} type="button" aria-pressed={tab === t} onClick={() => setTab(t)}>{t === "edit" ? "Details" : "Preview"}</button>
+            ))}
+          </div>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm ml-auto">▶ Animation</a>
         </div>
       </header>
 
       {(saveError || notice || conflict) && (
-        <div className="mx-auto max-w-6xl px-4 pt-3">
+        <div className="ui-wrap">
           {conflict && (
-            <div role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-              <p>This invitation was changed somewhere else (another tab, or by support) after you opened it. Your latest edits are not saved yet. Which version do you want to keep?</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <button type="button" onClick={keepMine} className="rounded bg-amber-900 px-3 py-1.5 text-white">Keep what I&apos;m editing</button>
-                <button type="button" onClick={loadTheirs} className="rounded border border-amber-900 px-3 py-1.5">Load the other version</button>
+            <div role="alert" className="ui-note ui-note-warn">
+              <p style={{ margin: 0 }}>This invitation was changed somewhere else (another tab, or by support) after you opened it. Your latest edits are not saved yet. Which version do you want to keep?</p>
+              <div className="ui-actions">
+                <button type="button" onClick={keepMine} className="ui-btn ui-btn-primary ui-btn-sm">Keep what I&apos;m editing</button>
+                <button type="button" onClick={loadTheirs} className="ui-btn ui-btn-gray ui-btn-sm">Load the other version</button>
               </div>
             </div>
           )}
-          {saveError &&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{saveError}</p>}
-          {notice && <p role="status" className={`mt-2 rounded-lg p-3 text-sm ${notice.ok ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}>{notice.text}</p>}
+          {saveError && <p role="alert" className="ui-note ui-note-err">{saveError}</p>}
+          {notice && <p role="status" className={`ui-note ${notice.ok ? "ui-note-ok" : "ui-note-err"}`}>{notice.text}</p>}
         </div>
       )}
 
-      <div className="mx-auto max-w-6xl px-4 pt-4">
+      <div className="ui-wrap" style={{ paddingTop: 16 }}>
         {status === "published" ? (
-          <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
-            <p className="mb-2 font-medium text-green-900">Your invitation is live. Send this link to your guests:</p>
-            <div className="flex gap-2">
-              <input readOnly value={publicUrl} onFocus={(e) => e.currentTarget.select()} className="min-w-0 flex-1 rounded border border-green-300 bg-white px-2 py-1 font-mono text-xs" />
-              <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="rounded bg-green-800 px-3 text-white">{copied ? "Copied" : "Copy"}</button>
-              <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="rounded border border-green-800 px-3 py-1 text-green-900">Open</a>
+          <div className="ui-card ui-live">
+            <h3>Your invitation is live</h3>
+            <p className="ui-help">Send this link to your guests.</p>
+            <div className="ui-linkfield">
+              <input readOnly value={publicUrl} aria-label="Guest link" onFocus={(e) => e.currentTarget.select()} />
+              <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="ui-btn ui-btn-primary">{copied ? "Copied" : "Copy"}</button>
             </div>
-            <div className="mt-3 flex flex-wrap items-center gap-3">
-              <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="rounded border border-green-800 px-3 py-1 text-green-900">Share on WhatsApp</a>
-              <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="rounded border border-green-800 px-3 py-1 text-green-900">Text message</a>
-              <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="rounded border border-green-800 px-3 py-1 text-green-900">Email</a>
-              <button onClick={onUnpublish} disabled={busy} className="ml-auto text-xs text-green-900 underline">Unpublish</button>
+            <div className="ui-actions">
+              <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Open</a>
+              <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
+              <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
+              <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
+              <button onClick={onUnpublish} disabled={busy} className="ui-btn ui-btn-danger ui-btn-sm ml-auto">Unpublish</button>
             </div>
-            <p className="mt-2 text-xs text-green-900/80">Changed something? Press “Update published” at the top — the same link then shows the new version.</p>
+            <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press “Update published” at the top — the same link then shows the new version.</p>
           </div>
         ) : (
-          <div className="rounded-xl border border-stone-200 bg-white p-4 text-sm">
-            <p className="mb-2 font-medium">Your guest link</p>
-            <input readOnly value={publicUrl} className="w-full rounded border border-stone-200 bg-stone-50 px-2 py-1 font-mono text-xs text-stone-400" />
-            <p className="mt-2 text-xs text-stone-600">Press <b>Publish</b> at the top when you are happy with the preview — the link then goes live and you can copy and send it to your guests.</p>
+          <div className="ui-card">
+            <h3>Your guest link</h3>
+            <div className="ui-linkfield">
+              <input readOnly value={publicUrl} aria-label="Guest link" style={{ background: "var(--ui-fill)", color: "var(--ui-secondary)" }} />
+            </div>
+            <p className="ui-help" style={{ marginTop: 12 }}>Press <b>Publish</b> when you are happy with the preview. The link then goes live and you can send it to your guests.</p>
           </div>
         )}
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className={`space-y-4 ${tab === "preview" ? "hidden lg:block" : ""}`}>
+      <div className="ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <div className={`ui-sections ${tab === "preview" ? "hidden lg:flex" : ""}`}>
 
           <Section n={1} title="Card 1 · Cover (the envelope screen)">
             <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="First name"><input className={inputCls} maxLength={40} value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
-              <Field label="Second name"><input className={inputCls} maxLength={40} value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
+            <div className="ui-two">
+              <Field label="First name"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
+              <Field label="Second name"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
             </div>
             <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} /></Field>
-            <div className="space-y-2">
-              <p className="text-sm text-stone-700">Background music (optional) — plays when your guest taps the envelope</p>
-              <input type="file" accept="audio/mpeg,.mp3" onChange={(e) => { void onMusic(e.target.files?.[0]); e.target.value = ""; }} className="text-sm" />
+            <div className="ui-field">
+              <span className="ui-label">Background music (optional)</span>
+              <div className="ui-media">
+                <FilePick accept="audio/mpeg,.mp3" label={draft.music ? "Change song" : "Choose an MP3"} onFile={(f) => void onMusic(f)} />
+                {draft.music && <button type="button" onClick={() => set("music", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+              </div>
               {draft.music && (
                 <>
-                  <p className="text-xs text-stone-600">Selected: {draft.music.name || "your song"}</p>
-                  <audio controls preload="none" src={draft.music.url} className="w-full" />
-                  <button type="button" onClick={() => set("music", null)} className="text-xs text-red-700 underline">Remove music</button>
+                  <p className="ui-help" style={{ color: "var(--ui-label)" }}>{draft.music.name || "Your song"}</p>
+                  <audio controls preload="none" src={draft.music.url} className="ui-audio" />
                 </>
               )}
-              <p className="text-xs text-stone-500">MP3, up to 4 MB. Please use music you have the right to share.</p>
+              <p className="ui-help">Plays when your guest taps the envelope. MP3, up to 4 MB. Please use music you have the right to share.</p>
             </div>
           </Section>
 
           <Section n={2} title="Card 2 · Photo, date & save the date">
-            <p className="text-sm text-stone-700">Photo (shown in an arch)</p>
-            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => void onPhoto(e.target.files?.[0])} className="text-sm" />
-            {draft.photo && (
-              <>
-                <button type="button" onClick={() => set("photo", null)} className="text-xs text-red-700 underline">Remove photo</button>
-              </>
-            )}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="ui-field">
+              <span className="ui-label">Photo (shown in an arch)</span>
+              <div className="ui-media">
+                {draft.photo && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={draft.photo.url} alt="" className="ui-thumb" />
+                )}
+                <FilePick accept="image/jpeg,image/png,image/webp" label={draft.photo ? "Change photo" : "Choose a photo"} onFile={(f) => void onPhoto(f)} />
+                {draft.photo && <button type="button" onClick={() => set("photo", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+              </div>
+            </div>
+            <div className="ui-two">
               <Field label="Date"><input type="date" className={inputCls} value={draft.event.date} onChange={(e) => set("event", { ...draft.event, date: e.target.value })} /></Field>
               <Field label="Time (e.g. 2:00 PM)"><input className={inputCls} maxLength={30} value={draft.event.time} onChange={(e) => set("event", { ...draft.event, time: e.target.value })} /></Field>
             </div>
@@ -339,7 +373,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Section n={3} toggle={screenToggle(3)} title="Card 3 · Venue">
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
-            <Field label="Full address (use Enter for a new line)">
+            <Field label="Full address (Enter starts a new line)">
               <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
             </Field>
             <Field label="Map link (https://…)"><input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })} /></Field>
@@ -350,53 +384,57 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             {features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
-                {draft.timeline.map((t, i) => (
-                  <div key={i} className="flex gap-2">
-                    <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} !mt-0 flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
-                    <input aria-label="Time" placeholder="2:00" className={`${inputCls} !mt-0 w-24`} maxLength={20} value={t.time} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time: e.target.value } : x)))} />
-                    <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="px-2 text-stone-500">✕</button>
-                  </div>
-                ))}
-                {draft.timeline.length < 10 && <button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="text-sm underline">+ Add item</button>}
+                <div className="ui-field">
+                  <span className="ui-label">Schedule</span>
+                  {draft.timeline.map((t, i) => (
+                    <div key={i} className="ui-row-line">
+                      <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                      <input aria-label="Time" placeholder="2:00" className={`${inputCls} w-24`} maxLength={20} value={t.time} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time: e.target.value } : x)))} />
+                      <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="ui-x">✕</button>
+                    </div>
+                  ))}
+                  {draft.timeline.length < 10 && <div><button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add item</button></div>}
+                </div>
               </>
-            ) : <p className="text-sm text-stone-500">The timeline is not included in your plan.</p>}
+            ) : <p className="ui-help">The timeline is not included in your plan.</p>}
           </Section>
 
           <Section n={5} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
-            <Field label="Accommodation — address (use Enter for a new line)">
+            <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
             </Field>
             {features.dress_code ? (
-              <div className="space-y-2">
+              <div className="ui-field">
                 <Field label="Dress code"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="ui-colors">
                   {draft.dressCode.colors.map((c, i) => (
-                    <span key={i} className="flex items-center gap-1">
-                      <input type="color" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
-                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="text-xs text-stone-500">✕</button>
+                    <span key={i} className="ui-row-line" style={{ gap: 0 }}>
+                      <input type="color" className="ui-swatch" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
+                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="ui-x" style={{ width: 32, height: 32, marginLeft: -6 }}>✕</button>
                     </span>
                   ))}
-                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, "#8a9a78"] })} className="text-sm underline">+ Colour</button>}
+                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, "#8a9a78"] })} className="ui-btn ui-btn-soft ui-btn-sm">+ Colour</button>}
                 </div>
               </div>
-            ) : <p className="text-sm text-stone-500">Dress code is not included in your plan.</p>}
+            ) : <p className="ui-help">Dress code is not included in your plan.</p>}
             {features.registry ? (
-              <div className="space-y-2">
-                <p className="text-sm text-stone-700">Registry QR codes (leave a link empty to hide that one)</p>
+              <div className="ui-field" style={{ gap: 14 }}>
+                <span className="ui-label">Registry QR codes</span>
                 {REGISTRIES.map((label) => (
                   <Field key={label} label={`${label} registry link (https://…)`}>
                     <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
                   </Field>
                 ))}
+                <p className="ui-help">Leave a link empty to hide that QR code.</p>
               </div>
-            ) : <p className="text-sm text-stone-500">Registry QR codes are not included in your plan.</p>}
+            ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
           </Section>
 
           <Section n={6} toggle={screenToggle(6)} title="Card 6 · RSVP">
             <Field label="Title (first word in script, the rest large — e.g. “please RSVP”)"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="ui-two">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
@@ -405,16 +443,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={7} toggle={screenToggle(7)} title="Card 7 · Closing">
             <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Thank you for your time." {...tp("closing")} /></Field>
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={draft.showCalendar} onChange={(e) => set("showCalendar", e.target.checked)} />
-              Show an “Add to calendar” link (needs the event date)
-            </label>
+            <div className="ui-switch-row">
+              <span>Show “Add to calendar” <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
+              <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show Add to calendar link" />
+            </div>
           </Section>
         </div>
 
         <aside className={`${tab === "edit" ? "hidden lg:block" : ""}`}>
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-            <p className="mb-2 text-center text-xs uppercase tracking-widest text-stone-500">Static preview · use “Preview animation” to test the envelope</p>
+            <p className="ui-caption">Static preview · use “Preview animation” to test the envelope</p>
             <Invitation content={preview} mode="preview" />
           </div>
         </aside>
