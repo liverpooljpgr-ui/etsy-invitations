@@ -47,6 +47,16 @@ function RsvpTitle({ text }: { text: string }) {
   );
 }
 
+/** The chevron's job: scroll to the screen that follows the one the button is on. */
+function goNext(e: React.MouseEvent<HTMLElement>) {
+  const card = e.currentTarget.closest(".card");
+  const holder = card?.closest(".stage") ?? card; // screen 2 sits inside the envelope stage
+  let next = holder?.nextElementSibling ?? null;
+  while (next && !next.matches(".card, .stage")) next = next.nextElementSibling;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  next?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+}
+
 /**
  * Static story-card rendering of the "sage-story" template.
  * mode="preview" shows placeholders for empty fields; "public" hides empty things.
@@ -86,9 +96,9 @@ export function Invitation({
   /** Down-chevron at the bottom of a screen, only when another screen follows. */
   const hint = (n: number) =>
     phase && [3, 4, 5, 6, 7].some((m) => m > n && shown[m]) ? (
-      <span className="swipe-hint" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 9l7 7 7-7" /></svg>
-      </span>
+      <button type="button" className="swipe-hint" aria-label="Next screen" onClick={goNext}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
+      </button>
     ) : null;
 
   return (

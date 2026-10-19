@@ -66,7 +66,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv[data-phase="closed"] .stage > .card[data-card="2"] { opacity:0; transform:translateY(40px) scale(.94); }
 .inv[data-phase="opening"] .card[data-card]:not([data-card="2"]):not(.in),
 .inv[data-phase="open"] .card[data-card]:not([data-card="2"]):not(.in) { opacity:0; transform:translateY(32px); }
-.inv[data-phase] .card[data-card]:not([data-card="2"]) { transition:opacity .7s ease, transform .8s cubic-bezier(.2,.8,.2,1); }
+.inv[data-phase] .card[data-card]:not([data-card="2"]) { transition:opacity .95s ease, transform 1.1s cubic-bezier(.2,.8,.2,1); }
 
 .inv .env-btn { position:absolute; inset:0; z-index:5; border:0; font:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
 .inv .env-btn:focus-visible { outline:2px solid var(--gold); outline-offset:6px; }
@@ -218,27 +218,27 @@ body { background: var(--background); color: var(--foreground); font-family: var
 @media (prefers-reduced-motion: no-preference) {
   .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in) > *,
   .inv[data-phase] .card.in .tl-in > *,
-  .inv[data-phase] .card.in .rsvp-title > * { animation:rise .9s cubic-bezier(.2,.8,.2,1) both; }
-  .inv[data-phase] .card.in .tl li { animation:rise .8s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase] .card.in .rsvp-title > * { animation:rise 1.25s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase] .card.in .tl li { animation:rise 1.1s cubic-bezier(.2,.8,.2,1) both; }
   .inv[data-phase] .card.in .tl li:nth-child(odd) { animation-name:slide-l; }
   .inv[data-phase] .card.in .tl li:nth-child(even) { animation-name:slide-r; }
-  .inv[data-phase] .card.in .qrbox, .inv[data-phase] .card.in .dots i { animation:pop .7s cubic-bezier(.2,.8,.2,1) both; }
-  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > * { animation:rise 1s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase] .card.in .qrbox, .inv[data-phase] .card.in .dots i { animation:pop 1s cubic-bezier(.2,.8,.2,1) both; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > * { animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both; }
   .inv[data-phase]:not([data-phase="closed"]) .sheet-in > .arch { animation-name:pop; }
 
   .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(1),
-  .inv[data-phase] .card.in .tl li:nth-child(1) { animation-delay:.25s; }
+  .inv[data-phase] .card.in .tl li:nth-child(1) { animation-delay:.35s; }
   .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(2),
-  .inv[data-phase] .card.in .tl li:nth-child(2) { animation-delay:.45s; }
+  .inv[data-phase] .card.in .tl li:nth-child(2) { animation-delay:.65s; }
   .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(3),
-  .inv[data-phase] .card.in .tl li:nth-child(3) { animation-delay:.65s; }
+  .inv[data-phase] .card.in .tl li:nth-child(3) { animation-delay:.95s; }
   .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(4),
-  .inv[data-phase] .card.in .tl li:nth-child(4) { animation-delay:.85s; }
+  .inv[data-phase] .card.in .tl li:nth-child(4) { animation-delay:1.25s; }
   .inv[data-phase] .card.in :is(.venue-in, .dtl-in, .dtl-row, .rsvp-in, .closing-in, .tl-in, .rsvp-title, .tl, .qrs, .dots) > :nth-child(n+5),
-  .inv[data-phase] .card.in .tl li:nth-child(n+5) { animation-delay:1.05s; }
-  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(1) { animation-delay:1.9s; }
-  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(2) { animation-delay:2.3s; }
-  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(3) { animation-delay:2.5s; }
+  .inv[data-phase] .card.in .tl li:nth-child(n+5) { animation-delay:1.55s; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(1) { animation-delay:2s; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(2) { animation-delay:2.6s; }
+  .inv[data-phase]:not([data-phase="closed"]) .sheet-in > :nth-child(3) { animation-delay:3s; }
 }
 
 /* keep the layout from shifting sideways when the scrollbar appears (e.g. after the envelope opens) */
@@ -267,20 +267,21 @@ html { scrollbar-gutter: stable; }
 }
 
 /* chevron on the date screen: floats gently to say "swipe down for the next screen" */
-.inv .swipe-hint { position:absolute; left:50%; bottom:3.5cqh; margin-left:calc(-14px * var(--k,1)); width:calc(28px * var(--k,1)); height:calc(28px * var(--k,1)); color:#a88437; pointer-events:none; opacity:0; }
-.inv .swipe-hint svg { display:block; width:100%; height:100%; }
+.inv .swipe-hint { position:absolute; left:50%; bottom:calc(3.5cqh - 10px * var(--k,1)); margin-left:calc(-24px * var(--k,1)); width:calc(48px * var(--k,1)); height:calc(48px * var(--k,1)); display:grid; place-items:center; padding:0; border:0; background:none; color:#a88437; cursor:pointer; opacity:0; -webkit-tap-highlight-color:transparent; }
+.inv .swipe-hint:focus-visible { outline:2px solid var(--gold); outline-offset:2px; border-radius:50%; }
+.inv .swipe-hint svg { display:block; width:calc(28px * var(--k,1)); height:calc(28px * var(--k,1)); }
 @keyframes swipe-in { to { opacity:1; } }
 @keyframes swipe-float { 0%,100% { transform:translateY(0); opacity:.55; } 50% { transform:translateY(calc(8px * var(--k,1))); opacity:1; } }
 @media (prefers-reduced-motion: no-preference) {
-  .inv[data-phase]:not([data-phase="closed"]) .swipe-hint { animation:swipe-in .8s ease 2.8s forwards; }
-  .inv[data-phase]:not([data-phase="closed"]) .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 3.6s infinite; }
+  .inv[data-phase]:not([data-phase="closed"]) .swipe-hint { animation:swipe-in .8s ease 4.2s forwards; }
+  .inv[data-phase]:not([data-phase="closed"]) .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 5s infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .inv[data-phase]:not([data-phase="closed"]) .swipe-hint { opacity:.9; } }
 
 /* chevrons on screens 3-6 appear a moment after the screen has revealed itself */
 @media (prefers-reduced-motion: no-preference) {
-  .inv[data-phase] .card.in .swipe-hint { animation:swipe-in .8s ease 1.6s forwards; }
-  .inv[data-phase] .card.in .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 2.4s infinite; }
+  .inv[data-phase] .card.in .swipe-hint { animation:swipe-in .8s ease 2.4s forwards; }
+  .inv[data-phase] .card.in .swipe-hint svg { animation:swipe-float 1.8s ease-in-out 3.2s infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .inv[data-phase] .card.in .swipe-hint { opacity:.9; } }
 
