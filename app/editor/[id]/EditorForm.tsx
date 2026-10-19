@@ -32,6 +32,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <label className="ui-field"><span className="ui-label">{label}</span>{children}</label>;
 }
 
+/** Phones: keep the field being typed in centred in the space between the sticky header and the on-screen keyboard. */
+function centerInView(el: HTMLElement) {
+  const vv = window.visualViewport;
+  if (!vv) { el.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+  const headerBottom = document.querySelector(".ui-top")?.getBoundingClientRect().bottom ?? 0;
+  const r = el.getBoundingClientRect();
+  const visTop = Math.max(vv.offsetTop, 0) + headerBottom;
+  const visBottom = vv.offsetTop + vv.height - 56; // iOS also floats an autofill bar above the keyboard
+  const wanted = visTop + (visBottom - visTop) / 2 - r.height / 2;
+  window.scrollBy({ top: r.top - wanted, behavior: "smooth" });
+}
+
 const IconPlay = () => (
   <svg width="13" height="14" viewBox="0 0 13 14" fill="currentColor" aria-hidden="true"><path d="M1.5 1.3v11.4a.8.8 0 0 0 1.2.7l9.2-5.7a.8.8 0 0 0 0-1.4L2.7.6a.8.8 0 0 0-1.2.7z" /></svg>
 );
@@ -101,6 +113,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
   const [step, setStep] = useState(0); // phone wizard
+  const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
   const goStep = (i: number) => {
     setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -111,6 +124,31 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [copied, setCopied] = useState(false);
 
   const [conflict, setConflict] = useState<{ version: number; draft: unknown } | null>(null);
+
+  useEffect(() => {
+    const isField = (t: EventTarget | null): t is HTMLElement =>
+      t instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) && !["checkbox", "radio", "file", "color", "button", "submit"].includes((t as HTMLInputElement).type);
+    let off: ReturnType<typeof setTimeout> | undefined;
+    let focused: HTMLElement | null = null;
+    const settle = () => { if (focused && document.activeElement === focused) centerInView(focused); };
+    const onIn = (e: FocusEvent) => {
+      if (!isField(e.target) || window.innerWidth >= 1024) return;
+      clearTimeout(off);
+      focused = e.target;
+      setTyping(true);
+      setTimeout(settle, 420); // after the keyboard and the folded header have settled
+    };
+    const onOut = () => { clearTimeout(off); off = setTimeout(() => { focused = null; setTyping(false); }, 200); };
+    document.addEventListener("focusin", onIn);
+    document.addEventListener("focusout", onOut);
+    window.visualViewport?.addEventListener("resize", settle);
+    return () => {
+      clearTimeout(off);
+      document.removeEventListener("focusin", onIn);
+      document.removeEventListener("focusout", onOut);
+      window.visualViewport?.removeEventListener("resize", settle);
+    };
+  }, []);
 
   // success messages ("Published! …") fade away after 3 seconds; problems stay until the next action
   useEffect(() => {
@@ -309,13 +347,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <IconPublish /> {status === "published" ? "Publish Updates" : "Publish"}
           </button>
         </div>
-        <div className="wiz-actions lg:hidden">
+        <div className={`wiz-actions lg:hidden ${typing ? "hidden" : ""}`}>
           <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
           <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>
             <IconPublish /> Publish
           </button>
         </div>
-        <div className="wiz-head lg:hidden">
+        <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-progress" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1} aria-label="Progress"><i style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
           <div className="wiz-row">
             <div className="wiz-chips" role="tablist" aria-label="Screens">
