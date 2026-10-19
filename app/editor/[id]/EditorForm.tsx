@@ -290,7 +290,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Link>
           <div className="ui-bar-title">
             <h1>{title}</h1>
-            {(everSaved || saveState !== "saved") && <span role="status" className="ui-status"><i className="ui-dot" data-s={saveState} />{stateLabel}</span>}
+            {(everSaved || saveState !== "saved") && <span role="status" className="ui-status" data-s={saveState}>
+              {saveState === "saved"
+                ? <i className="ui-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 6.5l2.4 2.4 4.6-5.3" /></svg></i>
+                : <i className="ui-dot" data-s={saveState} />}
+              {stateLabel}
+            </span>}
           </div>
           <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-plain hidden sm:inline-flex">▶ Preview animation</a>
           <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>

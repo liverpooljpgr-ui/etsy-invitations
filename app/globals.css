@@ -308,6 +308,10 @@ html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-bar-title { min-width:0; flex:1; display:flex; flex-direction:column; justify-content:center; }
 .ui-bar-title h1 { margin:0; font-size:17px; font-weight:600; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .ui-status { display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ui-secondary); }
+.ui-status[data-s="saved"] { color:#137a2e; font-weight:600; font-size:13px; }
+.ui-status[data-s="error"] { color:var(--ui-red); font-weight:600; }
+.ui-check { width:17px; height:17px; border-radius:50%; background:var(--ui-green); color:#fff; display:grid; place-items:center; flex:none; animation:ui-pop .45s var(--ui-ease) both; }
+@keyframes ui-pop { from { transform:scale(.4); opacity:0; } to { transform:none; opacity:1; } }
 .ui-dot { width:7px; height:7px; border-radius:50%; background:var(--ui-green); flex:none; transition:background .3s ease; }
 .ui-dot[data-s="dirty"], .ui-dot[data-s="saving"] { background:#ff9f0a; } .ui-dot[data-s="error"] { background:var(--ui-red); }
 .ui-icon-btn { width:44px; height:44px; flex:none; display:grid; place-items:center; border-radius:50%; color:var(--ui-label); background:transparent; border:0; cursor:pointer; text-decoration:none; transition:background .2s ease; }
