@@ -15,6 +15,17 @@ type SaveState = "saved" | "dirty" | "saving" | "error";
 
 const REGISTRIES = ["Amazon", "Target"] as const;
 
+/** Phone layout is a wizard: one screen of the invitation per step. */
+const STEPS = [
+  { n: 1, label: "Cover" },
+  { n: 2, label: "Photo & date" },
+  { n: 3, label: "Venue" },
+  { n: 4, label: "Timeline" },
+  { n: 5, label: "Details" },
+  { n: 6, label: "RSVP" },
+  { n: 7, label: "Closing" },
+] as const;
+
 const inputCls = "ui-input";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -41,17 +52,17 @@ function FilePick({ accept, label, onFile }: { accept: string; label: string; on
 }
 
 /** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
-function Section({ title, n, children, toggle }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void } }) {
+function Section({ title, n, children, toggle, mobileHidden }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void }; mobileHidden?: boolean }) {
   const jump = () => {
     if (!n || !window.matchMedia("(min-width: 1024px)").matches) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.querySelector(`[data-card="${n}"]`)?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+    document.querySelector(`aside [data-card="${n}"]`)?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
   };
   const cut = title.indexOf(" · ");
   const num = cut > 0 ? title.slice(0, cut).replace("Card ", "") : "";
   const name = cut > 0 ? title.slice(cut + 3) : title;
   return (
-    <section onFocus={jump} className="ui-section">
+    <section onFocus={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
       <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
       <div className="ui-group">
         {toggle && (
@@ -82,7 +93,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
-  const [tab, setTab] = useState<"edit" | "preview">("edit");
+  const [step, setStep] = useState(0); // phone wizard
+  const goStep = (i: number) => {
+    setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const [status, setStatus] = useState(initialStatus);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -282,13 +297,21 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             {status === "published" ? "Publish Updates" : "Publish"}
           </button>
         </div>
-        <div className="ui-seg-row lg:hidden">
-          <div className="ui-seg" role="group" aria-label="View">
-            {(["edit", "preview"] as const).map((t) => (
-              <button key={t} type="button" aria-pressed={tab === t} onClick={() => setTab(t)}>{t === "edit" ? "Details" : "Preview"}</button>
-            ))}
+        <div className="wiz-head lg:hidden">
+          <div className="wiz-progress" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1} aria-label="Progress"><i style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
+          <div className="wiz-row">
+            <div className="wiz-chips" role="tablist" aria-label="Screens">
+              {STEPS.map((t, i) => (
+                <button
+                  key={t.n} type="button" role="tab" aria-selected={step === i}
+                  ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
+                  onClick={() => goStep(i)}
+                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n >= 3 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
+                ><b>{t.n}</b>{t.label}</button>
+              ))}
+            </div>
+            <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-black ui-btn-sm wiz-play">▶ Preview</a>
           </div>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm ml-auto">▶ Animation</a>
         </div>
       </header>
 
@@ -308,7 +331,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </div>
       )}
 
-      <div className="ui-wrap" style={{ paddingTop: 16 }}>
+      <div className={`ui-wrap ${step === 0 || step === STEPS.length - 1 ? "" : "max-lg:hidden"}`} style={{ paddingTop: 16 }}>
         {status === "published" ? (
           <div className="ui-card ui-live">
             <h3>Your invitation is live</h3>
@@ -338,9 +361,22 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       </div>
 
       <div className="ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className={`ui-sections ${tab === "preview" ? "hidden lg:flex" : ""}`}>
+        <div className="wiz-preview-wrap lg:hidden">
+          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {STEPS.length} · live preview</p>
+          <div className="wiz-preview-box">
+            {STEPS[step].n >= 3 && draft.hidden.includes(STEPS[step].n) ? (
+              <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
+            ) : (
+              <div className="wiz-preview" data-step={STEPS[step].n}>
+                <Invitation content={preview} mode="preview" />
+              </div>
+            )}
+          </div>
+        </div>
 
-          <Section n={1} title="Card 1 · Cover (the envelope screen)">
+        <div className="ui-sections">
+
+          <Section n={1} mobileHidden={step !== 0} title="Card 1 · Cover (the envelope screen)">
             <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
             <div className="ui-two">
               <Field label="First name"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
@@ -363,7 +399,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           </Section>
 
-          <Section n={2} title="Card 2 · Photo, date & save the date">
+          <Section n={2} mobileHidden={step !== 1} title="Card 2 · Photo, date & save the date">
             <div className="ui-field">
               <span className="ui-label">Photo (shown in an arch)</span>
               <div className="ui-media">
@@ -382,7 +418,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Text under the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
           </Section>
 
-          <Section n={3} toggle={screenToggle(3)} title="Card 3 · Venue">
+          <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Full address (Enter starts a new line)">
@@ -392,7 +428,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
-          <Section n={4} toggle={screenToggle(4)} title="Card 4 · Timeline">
+          <Section n={4} mobileHidden={step !== 3} toggle={screenToggle(4)} title="Card 4 · Timeline">
             {features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
@@ -411,7 +447,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="ui-help">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
+          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (Enter starts a new line)">
@@ -444,7 +480,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
           </Section>
 
-          <Section n={6} toggle={screenToggle(6)} title="Card 6 · RSVP">
+          <Section n={6} mobileHidden={step !== 5} toggle={screenToggle(6)} title="Card 6 · RSVP">
             <Field label="Title (first word in script, the rest large — e.g. “please RSVP”)"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="ui-two">
               <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
@@ -453,7 +489,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include all guests name you are taking with you" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
           </Section>
 
-          <Section n={7} toggle={screenToggle(7)} title="Card 7 · Closing">
+          <Section n={7} mobileHidden={step !== 6} toggle={screenToggle(7)} title="Card 7 · Closing">
             <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Thank you for your time." {...tp("closing")} /></Field>
             <div className="ui-switch-row">
               <span>Show “Add to calendar” <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
@@ -462,13 +498,22 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
         </div>
 
-        <aside className={`${tab === "edit" ? "hidden lg:block" : ""}`}>
+        <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
             <p className="ui-caption">Static preview · use “Preview animation” to test the envelope</p>
             <Invitation content={preview} mode="preview" />
           </div>
         </aside>
       </div>
+
+      <nav className="wiz-bar lg:hidden" aria-label="Steps">
+        <button type="button" className="ui-btn ui-btn-gray" onClick={() => goStep(step - 1)} disabled={step === 0}>Back</button>
+        {step < STEPS.length - 1 ? (
+          <button type="button" className="ui-btn ui-btn-primary" onClick={() => goStep(step + 1)}>Next · {STEPS[step + 1].label}</button>
+        ) : (
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-primary">▶ Preview invitation</a>
+        )}
+      </nav>
     </div>
   );
 }
