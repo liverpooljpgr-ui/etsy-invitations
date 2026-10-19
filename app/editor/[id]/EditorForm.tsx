@@ -35,16 +35,19 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <label className="ui-field"><span className="ui-label">{label}</span>{children}</label>;
 }
 
-/** Phones: keep the field being typed in centred in the space between the sticky header and the on-screen keyboard. */
-function centerInView(el: HTMLElement) {
+/**
+ * Phones: if the field being typed in is hidden behind the sticky header or the keyboard, bring it into the middle of the
+ * free space. Does nothing when it is already comfortably visible, and never animates (so it cannot fight the keyboard).
+ */
+function ensureVisible(el: HTMLElement) {
   const vv = window.visualViewport;
-  if (!vv) { el.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
   const headerBottom = document.querySelector(".ui-top")?.getBoundingClientRect().bottom ?? 0;
+  const top = (vv?.offsetTop ?? 0) + headerBottom + 12;
+  const bottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 64; // iOS also floats an autofill bar above the keyboard
   const r = el.getBoundingClientRect();
-  const visTop = Math.max(vv.offsetTop, 0) + headerBottom;
-  const visBottom = vv.offsetTop + vv.height - 56; // iOS also floats an autofill bar above the keyboard
-  const wanted = visTop + (visBottom - visTop) / 2 - r.height / 2;
-  window.scrollBy({ top: r.top - wanted, behavior: "smooth" });
+  if (r.top >= top && r.bottom <= bottom) return; // already visible: leave the screen alone
+  const wanted = top + (bottom - top) / 2 - r.height / 2;
+  window.scrollBy({ top: r.top - wanted, behavior: "instant" });
 }
 
 const IconArrow = () => (
@@ -136,26 +139,31 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     const isField = (t: EventTarget | null): t is HTMLElement =>
       t instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) && !["checkbox", "radio", "file", "color", "button", "submit"].includes((t as HTMLInputElement).type);
     let off: ReturnType<typeof setTimeout> | undefined;
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
     let focused: HTMLElement | null = null;
-    // The header folds away only while the keyboard is REALLY showing. A field can stay focused after the keyboard was
-    // hidden (iOS "hide keyboard"), so focus alone must never keep the header folded.
+    // "Keyboard up" means the visual viewport is clearly shorter than the window. The header folds only while that is true
+    // (a field can stay focused after the keyboard was hidden). The keyboard animation fires dozens of resize events, so every
+    // decision waits until they stop: no flip-flopping header, no repeated scrolling.
     const keyboardUp = () => { const vv = window.visualViewport; return !vv || window.innerHeight - vv.height > 120; };
-    const update = () => setTyping(focused !== null && keyboardUp());
-    const settle = () => { if (focused && document.activeElement === focused && keyboardUp()) centerInView(focused); };
+    const settle = () => {
+      setTyping(focused !== null && keyboardUp());
+      if (focused && document.activeElement === focused && keyboardUp()) ensureVisible(focused);
+    };
+    const settleSoon = (ms: number) => { clearTimeout(settleTimer); settleTimer = setTimeout(settle, ms); };
     const onIn = (e: FocusEvent) => {
       if (!isField(e.target) || window.innerWidth >= 1024) return;
       clearTimeout(off);
       focused = e.target;
-      update();
-      setTimeout(() => { update(); settle(); }, 420); // after the keyboard has settled
+      settleSoon(500); // after the keyboard has come up
     };
-    const onOut = () => { clearTimeout(off); off = setTimeout(() => { focused = null; update(); }, 200); };
-    const onViewport = () => { update(); settle(); };
+    const onOut = () => { clearTimeout(off); off = setTimeout(() => { focused = null; settleSoon(0); }, 200); };
+    const onViewport = () => settleSoon(350);
     document.addEventListener("focusin", onIn);
     document.addEventListener("focusout", onOut);
     window.visualViewport?.addEventListener("resize", onViewport);
     return () => {
       clearTimeout(off);
+      clearTimeout(settleTimer);
       document.removeEventListener("focusin", onIn);
       document.removeEventListener("focusout", onOut);
       window.visualViewport?.removeEventListener("resize", onViewport);
