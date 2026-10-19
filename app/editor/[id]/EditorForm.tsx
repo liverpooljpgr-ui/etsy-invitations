@@ -114,11 +114,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
   const [step, setStep] = useState(0); // phone wizard
   const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
+  const [status, setStatus] = useState(initialStatus);
+  // after the first publish a 8th tab, "Guest link", appears with the link and the ways to send it
+  const GUEST_STEP = { n: 8, label: "Guest link" } as const;
+  const steps: readonly { n: number; label: string }[] = status === "published" ? [...STEPS, GUEST_STEP] : STEPS;
+  const guestIdx = STEPS.length; // index of the guest-link tab (7)
   const goStep = (i: number) => {
-    setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
+    setStep(Math.max(0, Math.min(steps.length - 1, i)));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const [status, setStatus] = useState(initialStatus);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -259,7 +263,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (!saved) { setBusy(false); setNotice({ ok: false, text: "Could not save your latest changes, so nothing was published." }); return; }
     const r = await publishInvitation(id).catch(() => ({ ok: false as const, error: "Network error. Nothing was published." }));
     setBusy(false);
-    if (r.ok) { setStatus("published"); setNotice({ ok: true, text: "Published! Your guest link is ready." }); }
+    if (r.ok) {
+      setStatus("published");
+      setStep(guestIdx); // jump to the new "Guest link" tab
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setNotice({ ok: true, text: "Published! Your guest link is ready." });
+    }
     else setNotice({ ok: false, text: r.error + ("missing" in r && r.missing ? ` Missing: ${r.missing.join(", ")}.` : "") });
   }
   async function onUnpublish() {
@@ -267,7 +276,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     setBusy(true);
     const r = await unpublishInvitation(id);
     setBusy(false);
-    if (r.ok) { setStatus("draft"); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
+    if (r.ok) { setStatus("draft"); setStep((s) => Math.min(s, guestIdx - 1)); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
     else setNotice({ ok: false, text: r.error ?? "Could not unpublish." });
   }
   async function onPhoto(file: File | undefined) {
@@ -385,12 +394,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-row">
             <div className="wiz-chips" role="tablist" aria-label="Screens">
-              {STEPS.map((t, i) => (
+              {steps.map((t, i) => (
                 <button
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
-                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${stepDone[i] ? "wiz-chip-done" : ""} ${t.n >= 3 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
+                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${stepDone[i] || t.n === 8 ? "wiz-chip-done" : ""} ${t.n >= 3 && t.n <= 7 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
                 ><b>{t.n}</b>{t.label}</button>
               ))}
             </div>
@@ -420,13 +429,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       )}
 
       <div className="ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="wiz-preview-wrap lg:hidden">
+        <div className={`wiz-preview-wrap lg:hidden ${step === guestIdx ? "hidden" : ""}`}>
           <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {STEPS.length} · live preview</p>
           <div className="wiz-preview-box">
-            {STEPS[step].n >= 3 && draft.hidden.includes(STEPS[step].n) ? (
+            {STEPS[Math.min(step, STEPS.length - 1)].n >= 3 && draft.hidden.includes(STEPS[Math.min(step, STEPS.length - 1)].n) ? (
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
-              <div className="wiz-preview" data-step={STEPS[step].n}>
+              <div className="wiz-preview" data-step={STEPS[Math.min(step, STEPS.length - 1)].n}>
                 <Invitation content={preview} mode="preview" />
               </div>
             )}
@@ -557,7 +566,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
         </div>
 
-        {status === "published" && step === STEPS.length - 1 && <div className="lg:hidden">{liveCard}</div>}
+        {status === "published" && <div className={`lg:hidden ${step === guestIdx ? "" : "hidden"}`}>{liveCard}</div>}
 
         <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
