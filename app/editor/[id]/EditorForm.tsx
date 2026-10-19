@@ -147,7 +147,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     const keyboardUp = () => { const vv = window.visualViewport; return !vv || window.innerHeight - vv.height > 120; };
     const settle = () => {
       setTyping(focused !== null && keyboardUp());
-      if (focused && document.activeElement === focused && keyboardUp()) ensureVisible(focused);
+      // wait for React to fold the header / add the bottom room, then look once
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (focused && document.activeElement === focused && keyboardUp()) ensureVisible(focused); }));
     };
     const settleSoon = (ms: number) => { clearTimeout(settleTimer); settleTimer = setTimeout(settle, ms); };
     const onIn = (e: FocusEvent) => {
@@ -430,7 +431,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className="ui-wrap max-lg:hidden" style={{ paddingTop: 16 }}>{liveCard}</div>
       )}
 
-      <div className="ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className={`ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px] ${typing ? "max-lg:pb-[50vh]" : ""}`}>
         <div className={`wiz-preview-wrap lg:hidden ${step === GUEST_IDX ? "hidden" : ""}`}>
           <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {GUEST_IDX} · live preview</p>
           <div className="wiz-preview-box">
