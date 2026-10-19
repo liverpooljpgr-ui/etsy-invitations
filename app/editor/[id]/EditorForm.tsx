@@ -326,7 +326,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => void onPhoto(e.target.files?.[0])} className="text-sm" />
             {draft.photo && (
               <>
-                <Field label="Photo description (for screen readers)"><input className={inputCls} maxLength={200} value={draft.photo.alt} onChange={(e) => set("photo", { ...draft.photo!, alt: e.target.value })} /></Field>
                 <button type="button" onClick={() => set("photo", null)} className="text-xs text-red-700 underline">Remove photo</button>
               </>
             )}
