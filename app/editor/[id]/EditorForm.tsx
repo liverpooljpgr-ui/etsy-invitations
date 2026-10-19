@@ -323,6 +323,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   });
   const stateLabel = { saved: "All changes saved", dirty: "Unsaved changes…", saving: "Saving…", error: "Not saved" }[saveState];
   const editable = status === "draft" || status === "published";
+  // a tab turns green once what that screen needs is filled in
+  const stepDone: boolean[] = [
+    !!(draft.couple.first.trim() && draft.couple.second.trim()),
+    !!draft.event.date,
+    !!draft.event.venue.trim(),
+    !features.schedule || draft.timeline.some((t) => t.label.trim() || t.time.trim()),
+    !!(draft.hotel.name.trim() || draft.dressCode.label.trim() || draft.dressCode.colors.length > 0 || draft.registry.some((r) => r.url.trim())),
+    !!(draft.rsvp.deadline && draft.rsvp.email.trim()),
+    !!(draft.couple.first.trim() && draft.couple.second.trim() && draft.event.date && draft.event.venue.trim()), // closing = ready to publish
+  ];
 
   const liveCard = (
     <div className="ui-card ui-live">
@@ -351,7 +361,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Link href="/dashboard" className="ui-icon-btn" aria-label="Back to my invitations">
             <svg width="11" height="19" viewBox="0 0 11 19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9.5 1.5 1.5 9.5l8 8" /></svg>
           </Link>
-          <div className="ui-bar-title">
+          <div className="ui-bar-title max-lg:items-center max-lg:text-center">
             <h1>{title.split(" · ")[0]}</h1>
             {(everSaved || saveState !== "saved") && <span role="status" className="ui-status" data-s={saveState}>
               {saveState === "saved"
@@ -364,11 +374,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn max-lg:hidden ${publishTone}`}>
             <IconPublish /> {status === "published" ? "Publish Updates" : "Publish"}
           </button>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" aria-label="Preview the invitation" className="ui-icon-btn ui-icon-dgrey lg:hidden"><IconPlay /></a>
-          <button type="button" onClick={onPublish} disabled={busy || !editable} aria-label="Publish" className="ui-icon-btn ui-icon-blue lg:hidden"><IconPublish /></button>
+          <span className="ui-icon-btn lg:hidden" aria-hidden="true" style={{ visibility: "hidden" }} />
+        </div>
+        <div className={`wiz-actions lg:hidden ${typing ? "hidden" : ""}`}>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+          <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
+            <IconPublish /> Publish
+          </button>
         </div>
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
-          <div className="wiz-progress" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1} aria-label="Progress"><i style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
           <div className="wiz-row">
             <div className="wiz-chips" role="tablist" aria-label="Screens">
               {STEPS.map((t, i) => (
@@ -376,19 +390,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
-                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n >= 3 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
+                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${stepDone[i] ? "wiz-chip-done" : ""} ${t.n >= 3 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
                 ><b>{t.n}</b>{t.label}</button>
               ))}
             </div>
           </div>
-        {step === STEPS.length - 1 && (
-          <div className="wiz-actions">
-            <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
-            <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
-              <IconPublish /> Publish
-            </button>
-          </div>
-        )}
         </div>
       </header>
 
