@@ -10,7 +10,7 @@ import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
 type Props = {
   id: string; title: string; slug: string; status: string;
-  features: PlanFeatures; initialDraft: Content; initialVersion: number;
+  features: PlanFeatures; initialDraft: Content; initialVersion: number; initialStep?: number;
 };
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
@@ -25,9 +25,9 @@ const STEPS = [
   { n: 5, label: "Details" },
   { n: 6, label: "RSVP" },
   { n: 7, label: "Closing" },
-  { n: 8, label: "Guest link" },
 ] as const;
-const GUEST_IDX = 7; // index of the Guest link tab
+const GUEST_STEP = { n: 8, label: "Guest link" } as const; // appears only after the invitation is published
+const GUEST_IDX = 7; // its index
 
 const inputCls = "ui-input";
 
@@ -114,18 +114,18 @@ async function prepareImage(file: File): Promise<Blob> {
   return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/webp", 0.85));
 }
 
-export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion }: Props) {
+export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialStep }: Props) {
   const [draft, setDraft] = useState<Content>(initialDraft);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
-  const [step, setStep] = useState(0); // phone wizard
+  const [step, setStep] = useState(() => Math.max(0, Math.min((initialStep ?? 1) - 1, initialStatus === "published" ? GUEST_IDX : GUEST_IDX - 1))); // phone wizard
   const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
   const [status, setStatus] = useState(initialStatus);
-  const goStep = (i: number) => {
-    setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const steps: readonly { n: number; label: string }[] = status === "published" ? [...STEPS, GUEST_STEP] : STEPS;
+  const goStep = (i: number) => setStep(Math.max(0, Math.min(steps.length - 1, i)));
+  // every step opens from its top
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [step]);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -272,8 +272,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     const r = await publishInvitation(id).catch(() => ({ ok: false as const, error: "Network error. Nothing was published." }));
     setBusy(false);
     if (r.ok) {
+      const wasLive = status === "published";
       setStatus("published");
-      setNotice({ ok: true, text: "Published! Your guest link is ready." });
+      setStep(GUEST_IDX); // the Guest link tab appears now and opens
+      setNotice({ ok: true, text: wasLive ? "Updated. Guests now see the latest version." : "Published! Your guest link is ready." });
     }
     else setNotice({ ok: false, text: r.error + ("missing" in r && r.missing ? ` Missing: ${r.missing.join(", ")}.` : "") });
   }
@@ -282,7 +284,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     setBusy(true);
     const r = await unpublishInvitation(id);
     setBusy(false);
-    if (r.ok) { setStatus("draft"); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
+    if (r.ok) { setStatus("draft"); setStep((s) => Math.min(s, GUEST_IDX - 1)); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
     else setNotice({ ok: false, text: r.error ?? "Could not unpublish." });
   }
   async function onPhoto(file: File | undefined) {
@@ -355,7 +357,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
         <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
       </div>
-      <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press Publish again — the same link then shows the new version.</p>
+      <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>
   );
 
@@ -384,7 +386,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-row">
             <div className="wiz-chips" role="tablist" aria-label="Screens">
-              {STEPS.map((t, i) => (
+              {steps.map((t, i) => (
                 <button
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
@@ -558,20 +560,30 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
         </div>
 
-        <div className={`ui-auth-stack lg:hidden ${step === GUEST_IDX ? "wiz-in" : "hidden"}`}>
-          {status === "published" ? liveCard : <p className="ui-lede" style={{ margin: 0 }}>When you are happy with the preview, publish to get your guest link.</p>}
-          <div className="wiz-actions">
-            <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+        {status === "published" && (
+          <div className={`ui-auth-stack lg:hidden ${step === GUEST_IDX ? "wiz-in" : "hidden"}`}>
+            {liveCard}
+            <div className="wiz-actions">
+              <a href={`/preview/${id}?from=8`} className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+              <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
+                <IconPublish /> Republish
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step < GUEST_IDX - 1 && (
+          <button type="button" onClick={() => goStep(step + 1)} className="ui-btn ui-btn-primary lg:hidden" style={{ width: "100%" }}>
+            Next <IconArrow />
+          </button>
+        )}
+        {step === GUEST_IDX - 1 && (
+          <div className="wiz-actions lg:hidden">
+            <a href={`/preview/${id}?from=7`} className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
             <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
               <IconPublish /> Publish
             </button>
           </div>
-        </div>
-
-        {step < GUEST_IDX && (
-          <button type="button" onClick={() => goStep(step + 1)} className="ui-btn ui-btn-primary lg:hidden" style={{ width: "100%" }}>
-            Next <IconArrow />
-          </button>
         )}
 
         <aside className="hidden lg:block">

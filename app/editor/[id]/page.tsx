@@ -3,8 +3,9 @@ import { requireUser } from "@/lib/auth";
 import { parseContent } from "@/lib/content/schema";
 import { EditorForm } from "./EditorForm";
 
-export default async function EditorPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditorPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ step?: string }> }) {
   const { id } = await params;
+  const { step } = await searchParams;
   const { supabase } = await requireUser(`/editor/${id}`);
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
 
@@ -25,6 +26,7 @@ export default async function EditorPage({ params }: { params: Promise<{ id: str
       features={plan.features}
       initialDraft={parseContent(row.draft)}
       initialVersion={row.draft_version}
+      initialStep={Number(step) >= 1 ? Math.floor(Number(step)) : undefined}
     />
   );
 }
