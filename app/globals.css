@@ -315,6 +315,10 @@ html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-dot { width:7px; height:7px; border-radius:50%; background:var(--ui-green); flex:none; transition:background .3s ease; }
 .ui-dot[data-s="dirty"], .ui-dot[data-s="saving"] { background:#ff9f0a; } .ui-dot[data-s="error"] { background:var(--ui-red); }
 .ui-icon-btn { width:44px; height:44px; flex:none; display:grid; place-items:center; border-radius:50%; color:var(--ui-label); background:transparent; border:0; cursor:pointer; text-decoration:none; transition:background .2s ease; }
+.ui-icon-dgrey { background:#58585c; color:#fff; } .ui-icon-dgrey:hover { background:#6b6b70; }
+.ui-icon-blue { background:#0a66d9; color:#fff; } .ui-icon-blue:hover { background:#0b74f5; }
+.ui-icon-black { background:#1d1d1f; color:#fff; } .ui-icon-black:hover { background:#38383a; }
+.ui-icon-btn:disabled { opacity:.45; }
 .ui-icon-btn:hover { background:rgba(60,60,67,.08); }
 .ui-seg-row { max-width:72rem; margin:8px auto 0; display:flex; gap:8px; align-items:center; }
 .ui-seg { display:flex; padding:2px; border-radius:11px; background:rgba(118,118,128,.16); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); }
@@ -325,6 +329,7 @@ html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:0 20px; border:0; border-radius:999px; font-size:15px; font-weight:600; letter-spacing:-.005em; cursor:pointer; text-decoration:none; white-space:nowrap; transition:transform .15s var(--ui-ease), opacity .2s ease, background .2s ease; -webkit-tap-highlight-color:transparent; }
 .ui-btn:active { transform:scale(.97); } .ui-btn:disabled { opacity:.45; cursor:default; }
 .ui-btn-primary { background:var(--ui-tint); color:#fff; box-shadow:0 1px 2px rgba(217,87,63,.4); }
+.ui-btn-blue { background:#0a66d9; color:#fff; box-shadow:0 1px 2px rgba(10,102,217,.4); }
 .ui-btn-dgrey { background:#58585c; color:#fff; }
 .ui-btn-black { background:#1d1d1f; color:#fff; }
 .ui-btn-soft { background:var(--ui-tint-soft); color:var(--ui-tint); }

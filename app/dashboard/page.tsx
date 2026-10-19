@@ -65,9 +65,9 @@ export default async function Dashboard() {
                     )}
                   </span>
                   <span className="dash-body">
-                    <span className="dash-title">{names || i.display_title || "Your invitation"}</span>
+                    <span className="dash-title">{names || i.display_title?.split(" · ")[0] || "Your invitation"}</span>
                     {when && <span className="dash-sub">{when}</span>}
-                    <span className="dash-sub">{i.display_title}</span>
+                    <span className="dash-sub">{i.display_title.split(" · ")[0]}</span>
                     <span className={`dash-pill ${i.status === "published" ? "dash-live" : ""}`}>{i.status === "published" ? "Published" : i.status === "draft" ? "Draft" : i.status}</span>
                   </span>
                   <svg className="dash-chev" width="10" height="17" viewBox="0 0 10 17" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1.5 1.5l7 7-7 7" /></svg>

@@ -250,6 +250,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const preview = useMemo(() => applyPlan(draft, features), [draft, features]);
   // published and nothing edited since → the button rests in black; any edit turns it coral again
   const hasChanges = status === "published" && pubNorm !== null && norm(preview) !== pubNorm;
+  const publishTone = status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-blue";
   // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
   const publicUrl = `${origin}/${slug}`;
@@ -334,7 +335,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <svg width="11" height="19" viewBox="0 0 11 19" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9.5 1.5 1.5 9.5l8 8" /></svg>
           </Link>
           <div className="ui-bar-title">
-            <h1>{title}</h1>
+            <h1>{title.split(" · ")[0]}</h1>
             {(everSaved || saveState !== "saved") && <span role="status" className="ui-status" data-s={saveState}>
               {saveState === "saved"
                 ? <i className="ui-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 6.5l2.4 2.4 4.6-5.3" /></svg></i>
@@ -343,15 +344,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </span>}
           </div>
           <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey max-lg:hidden"><IconPlay /> Preview animation</a>
-          <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn max-lg:hidden ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>
+          <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn max-lg:hidden ${publishTone}`}>
             <IconPublish /> {status === "published" ? "Publish Updates" : "Publish"}
           </button>
-        </div>
-        <div className={`wiz-actions lg:hidden ${typing ? "hidden" : ""}`}>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
-          <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>
-            <IconPublish /> Publish
-          </button>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" aria-label="Preview the invitation" className="ui-icon-btn ui-icon-dgrey lg:hidden"><IconPlay /></a>
+          <button type="button" onClick={onPublish} disabled={busy || !editable} aria-label="Publish" className={`ui-icon-btn lg:hidden ${publishTone === "ui-btn-black" ? "ui-icon-black" : "ui-icon-blue"}`}><IconPublish /></button>
         </div>
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-progress" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1} aria-label="Progress"><i style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
@@ -367,6 +364,14 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               ))}
             </div>
           </div>
+        {step === STEPS.length - 1 && (
+          <div className="wiz-actions">
+            <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+            <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
+              <IconPublish /> Publish
+            </button>
+          </div>
+        )}
         </div>
       </header>
 
