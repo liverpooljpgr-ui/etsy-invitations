@@ -449,8 +449,8 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 }
 
 /* sign-in, claim, home and admin pages */
-.ui-center { display:grid; place-items:center; padding:48px 16px; }
-.ui-auth { width:100%; max-width:26rem; }
+.ui-center { display:block; padding:max(56px, env(safe-area-inset-top)) 16px 40px; } /* forms start at the top of the screen, not in the middle */
+.ui-auth { width:100%; max-width:26rem; margin:0 auto; }
 .ui-auth-stack { display:flex; flex-direction:column; gap:14px; }
 .ui-lede { margin:0 0 22px; font-size:17px; line-height:1.45; color:var(--ui-secondary); }
 .ui-link { color:var(--ui-tint); text-decoration:none; font-weight:500; } .ui-link:hover { text-decoration:underline; }
