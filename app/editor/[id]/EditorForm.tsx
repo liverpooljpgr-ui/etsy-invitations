@@ -47,6 +47,10 @@ function centerInView(el: HTMLElement) {
   window.scrollBy({ top: r.top - wanted, behavior: "smooth" });
 }
 
+const IconArrow = () => (
+  <svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1 7h15M10.5 1.5 16 7l-5.5 5.5" /></svg>
+);
+
 const IconPlay = () => (
   <svg width="13" height="14" viewBox="0 0 13 14" fill="currentColor" aria-hidden="true"><path d="M1.5 1.3v11.4a.8.8 0 0 0 1.2.7l9.2-5.7a.8.8 0 0 0 0-1.4L2.7.6a.8.8 0 0 0-1.2.7z" /></svg>
 );
@@ -563,6 +567,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </button>
           </div>
         </div>
+
+        {step < GUEST_IDX && (
+          <button type="button" onClick={() => goStep(step + 1)} className="ui-btn ui-btn-primary lg:hidden" style={{ width: "100%" }}>
+            Next <IconArrow />
+          </button>
+        )}
 
         <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
