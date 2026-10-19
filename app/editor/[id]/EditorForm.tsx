@@ -340,7 +340,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
         <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
       </div>
-      <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press “Publish Updates” at the top — the same link then shows the new version.</p>
+      <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press Publish again — the same link then shows the new version.</p>
     </div>
   );
 
