@@ -262,7 +262,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (!saved) { setBusy(false); setNotice({ ok: false, text: "Could not save your latest changes, so nothing was published." }); return; }
     const r = await publishInvitation(id).catch(() => ({ ok: false as const, error: "Network error. Nothing was published." }));
     setBusy(false);
-    if (r.ok) { setStatus("published"); setPubNorm(norm(applyPlan(latest.current, features))); setNotice({ ok: true, text: "Published! Your guest link is ready below." }); }
+    if (r.ok) { setStatus("published"); setPubNorm(norm(applyPlan(latest.current, features))); setNotice({ ok: true, text: "Published! Your guest link is ready." }); }
     else setNotice({ ok: false, text: r.error + ("missing" in r && r.missing ? ` Missing: ${r.missing.join(", ")}.` : "") });
   }
   async function onUnpublish() {
@@ -326,6 +326,25 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   });
   const stateLabel = { saved: "All changes saved", dirty: "Unsaved changes…", saving: "Saving…", error: "Not saved" }[saveState];
   const editable = status === "draft" || status === "published";
+
+  const liveCard = (
+    <div className="ui-card ui-live">
+      <h3>Your invitation is live</h3>
+      <p className="ui-help">Send this link to your guests.</p>
+      <div className="ui-linkfield">
+        <input readOnly value={publicUrl} aria-label="Guest link" onFocus={(e) => e.currentTarget.select()} />
+        <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="ui-btn ui-btn-black">{copied ? "Copied" : "Copy"}</button>
+      </div>
+      <div className="ui-actions">
+        <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Open</a>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
+        <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
+        <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
+        <button onClick={onUnpublish} disabled={busy} className="ui-btn ui-btn-danger ui-btn-sm ml-auto">Unpublish</button>
+      </div>
+      <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press “Publish Updates” at the top — the same link then shows the new version.</p>
+    </div>
+  );
 
   return (
     <div className="ui">
@@ -391,34 +410,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </div>
       )}
 
-      <div className={`ui-wrap ${step === STEPS.length - 1 ? "" : "max-lg:hidden"}`} style={{ paddingTop: 16 }}>
-        {status === "published" ? (
-          <div className="ui-card ui-live">
-            <h3>Your invitation is live</h3>
-            <p className="ui-help">Send this link to your guests.</p>
-            <div className="ui-linkfield">
-              <input readOnly value={publicUrl} aria-label="Guest link" onFocus={(e) => e.currentTarget.select()} />
-              <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="ui-btn ui-btn-black">{copied ? "Copied" : "Copy"}</button>
-            </div>
-            <div className="ui-actions">
-              <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Open</a>
-              <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
-              <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
-              <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
-              <button onClick={onUnpublish} disabled={busy} className="ui-btn ui-btn-danger ui-btn-sm ml-auto">Unpublish</button>
-            </div>
-            <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press “Publish Updates” at the top — the same link then shows the new version.</p>
-          </div>
-        ) : (
-          <div className="ui-card">
-            <h3>Your guest link</h3>
-            <div className="ui-linkfield">
-              <input readOnly value={publicUrl} aria-label="Guest link" style={{ background: "var(--ui-fill)", color: "var(--ui-secondary)" }} />
-            </div>
-            <p className="ui-help" style={{ marginTop: 12 }}>Press <b>Publish</b> when you are happy with the preview. The link then goes live and you can send it to your guests.</p>
-          </div>
-        )}
-      </div>
+      {/* the guest link only exists for guests once the invitation has been published: nothing is shown before that */}
+      {status === "published" && (
+        <div className="ui-wrap max-lg:hidden" style={{ paddingTop: 16 }}>{liveCard}</div>
+      )}
 
       <div className="ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="wiz-preview-wrap lg:hidden">
@@ -557,6 +552,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           </Section>
         </div>
+
+        {status === "published" && step === STEPS.length - 1 && <div className="lg:hidden">{liveCard}</div>}
 
         <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
