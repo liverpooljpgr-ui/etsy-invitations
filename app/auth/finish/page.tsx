@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { LoginForm } from "@/app/login/LoginForm";
 
 /** Completes an emailed sign-in link opened on any device: reads the tokens from the URL fragment and starts the session here. */
 export default function AuthFinish() {
   const [failed, setFailed] = useState(false);
+  const [nextPath, setNextPath] = useState("/dashboard");
 
   useEffect(() => {
     const frag = new URLSearchParams(window.location.hash.replace(/^#/, ""));
@@ -19,20 +20,20 @@ export default function AuthFinish() {
       : Promise.resolve(false);
     void start.then((ok) => {
       if (ok) window.location.replace(next); // full load so the server sees the new session cookie
-      else setFailed(true);
+      else { setNextPath(next); setFailed(true); }
     });
   }, []);
 
   return (
-    <main className="mx-auto max-w-sm px-5 py-20 text-center">
+    <main className="mx-auto max-w-sm px-5 py-20">
       {failed ? (
         <>
-          <h1 className="font-serif text-2xl mb-2">This link no longer works</h1>
-          <p className="text-sm text-stone-600 mb-6">It may have expired or already been used. Open your personal link again and enter your email to get a fresh one.</p>
-          <Link className="underline text-sm" href="/login">Go to sign in</Link>
+          <h1 className="font-serif text-3xl mb-2">Welcome back</h1>
+          <p className="text-base text-stone-700 mb-6">This link was already used. Sign in with the email you used the very first time.</p>
+          <LoginForm next={nextPath} />
         </>
       ) : (
-        <p className="text-sm text-stone-600">Opening your invitation…</p>
+        <p className="text-sm text-stone-600 text-center">Opening your invitation…</p>
       )}
     </main>
   );
