@@ -376,4 +376,21 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 .ui-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center; }
 .ui-caption { text-align:center; margin:0 0 10px; font-size:12.5px; color:var(--ui-secondary); }
 @media (prefers-reduced-motion: reduce) { .ui *, .ui *::before, .ui *::after { transition-duration:.01ms !important; } }
+
+/* dashboard: list of the customer's invitations */
+.ui-large-title { margin:18px 4px 14px; font-size:34px; font-weight:700; letter-spacing:-.02em; line-height:1.1; }
+.dash-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+.dash-card { display:flex; align-items:center; gap:16px; padding:14px 16px 14px 14px; background:#fff; border-radius:22px; text-decoration:none; color:inherit;
+  box-shadow:0 0 0 .5px var(--ui-hair), 0 2px 10px rgba(0,0,0,.04); transition:transform .25s var(--ui-ease), box-shadow .25s ease; -webkit-tap-highlight-color:transparent; }
+.dash-card:hover { transform:translateY(-2px); box-shadow:0 0 0 .5px var(--ui-hair), 0 12px 30px rgba(0,0,0,.1); }
+.dash-card:active { transform:scale(.985); }
+.dash-thumb { position:relative; flex:none; width:96px; height:160px; border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 0 0 .5px var(--ui-hair), 0 4px 14px rgba(0,0,0,.1); }
+.dash-thumb-inner { position:absolute !important; left:0; top:0; width:340px; height:567px; padding:0 !important; gap:0 !important; display:block !important; transform:scale(.2824); transform-origin:0 0; pointer-events:none; }
+.dash-thumb-inner .card { width:340px !important; height:567px !important; border-radius:0 !important; box-shadow:none !important; }
+.dash-body { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+.dash-title { font-size:19px; font-weight:600; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dash-sub { font-size:14px; color:var(--ui-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dash-pill { align-self:flex-start; margin-top:8px; padding:3px 11px; border-radius:999px; font-size:12.5px; font-weight:600; background:rgba(118,118,128,.14); color:var(--ui-secondary); }
+.dash-live { background:rgba(52,199,89,.16); color:#14602a; }
+.dash-chev { flex:none; color:rgba(60,60,67,.3); }
 }
