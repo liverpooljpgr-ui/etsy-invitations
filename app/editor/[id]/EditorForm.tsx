@@ -89,6 +89,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
   const [conflict, setConflict] = useState<{ version: number; draft: unknown } | null>(null);
 
+  // success messages ("Published! …") fade away after 3 seconds; problems stay until the next action
+  useEffect(() => {
+    if (!notice?.ok) return;
+    const t = setTimeout(() => setNotice(null), 3000);
+    return () => clearTimeout(t);
+  }, [notice]);
+
   const latest = useRef(draft);
   const version = useRef(initialVersion);
   const inFlight = useRef(false);

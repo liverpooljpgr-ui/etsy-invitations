@@ -293,7 +293,7 @@ html { scrollbar-gutter: stable; }
 /* Editor UI, following the "apple-design" skill: grouped inset lists, a floating glass bar, capsule buttons, 17px fields,
    44pt hit targets, one tinted action (brand gold, darkened for contrast), system-style switch. */
 .ui { --ui-bg:#f2f2f7; --ui-card:#fff; --ui-fill:#f2f2f7; --ui-label:#1d1d1f; --ui-secondary:#6e6e73; --ui-hair:rgba(60,60,67,.14);
-  --ui-tint:#8a6d2f; --ui-tint-soft:rgba(138,109,47,.12); --ui-green:#34c759; --ui-red:#d70015; --ui-ease:cubic-bezier(.3,1.3,.5,1);
+  --ui-tint:#d9573f; --ui-tint-soft:rgba(217,87,63,.12); --ui-green:#34c759; --ui-red:#d70015; --ui-ease:cubic-bezier(.3,1.3,.5,1);
   min-height:100vh; background:var(--ui-bg); color:var(--ui-label); font-family:var(--font-ui),-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
   font-size:17px; line-height:1.4; letter-spacing:-.003em; -webkit-font-smoothing:antialiased; }
 .ui * { font-family:inherit; }
@@ -319,13 +319,13 @@ html { scrollbar-gutter: stable; }
 /* buttons: capsules, 44pt targets, no outlines */
 .ui-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:0 20px; border:0; border-radius:999px; font-size:15px; font-weight:600; letter-spacing:-.005em; cursor:pointer; text-decoration:none; white-space:nowrap; transition:transform .15s var(--ui-ease), opacity .2s ease, background .2s ease; -webkit-tap-highlight-color:transparent; }
 .ui-btn:active { transform:scale(.97); } .ui-btn:disabled { opacity:.45; cursor:default; }
-.ui-btn-primary { background:var(--ui-tint); color:#fff; box-shadow:0 1px 2px rgba(138,109,47,.4); }
+.ui-btn-primary { background:var(--ui-tint); color:#fff; box-shadow:0 1px 2px rgba(217,87,63,.4); }
 .ui-btn-soft { background:var(--ui-tint-soft); color:var(--ui-tint); }
 .ui-btn-gray { background:rgba(118,118,128,.12); color:var(--ui-label); }
 .ui-btn-plain { background:transparent; color:var(--ui-tint); padding:0 12px; }
 .ui-btn-danger { background:transparent; color:var(--ui-red); padding:0 12px; font-weight:500; }
 .ui-btn-sm { min-height:36px; padding:0 14px; font-size:14px; }
-.ui :focus-visible { outline:3px solid rgba(138,109,47,.45); outline-offset:2px; }
+.ui :focus-visible { outline:3px solid rgba(217,87,63,.45); outline-offset:2px; }
 
 /* grouped sections */
 .ui-sections { display:flex; flex-direction:column; gap:26px; }
@@ -343,7 +343,7 @@ html { scrollbar-gutter: stable; }
 .ui-input { box-sizing:border-box; width:100%; min-height:48px; padding:12px 14px; border:1.5px solid transparent; border-radius:12px; background:var(--ui-fill); color:var(--ui-label); font-size:17px; line-height:1.3; transition:box-shadow .2s ease, border-color .2s ease, background .2s ease; appearance:none; -webkit-appearance:none; }
 .ui-input::placeholder { color:rgba(60,60,67,.4); }
 .ui-input:hover { background:#ececf1; }
-.ui-input:focus { outline:none; background:#fff; border-color:var(--ui-tint); box-shadow:0 0 0 4px rgba(138,109,47,.18); }
+.ui-input:focus { outline:none; background:#fff; border-color:var(--ui-tint); box-shadow:0 0 0 4px rgba(217,87,63,.18); }
 textarea.ui-input { min-height:96px; resize:vertical; }
 
 /* iOS-style switch */
