@@ -422,11 +422,11 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 .wiz-chips::-webkit-scrollbar { display:none; }
 .wiz-chip { flex:none; display:inline-flex; align-items:center; gap:6px; min-height:36px; padding:0 14px 0 7px; border:0; border-radius:999px; background:rgba(255,255,255,.85); color:var(--ui-label); font-size:14px; font-weight:500; cursor:pointer; box-shadow:0 0 0 .5px var(--ui-hair); transition:background .2s ease, color .2s ease; }
 .wiz-chip b { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; background:rgba(118,118,128,.16); font-size:12px; font-weight:700; }
-.wiz-chip-done { background:rgba(52,199,89,.16); color:#14602a; box-shadow:0 0 0 .5px rgba(52,199,89,.35); }
-.wiz-chip-done b { background:#34c759; color:#fff; }
 .wiz-chip-on { background:var(--ui-tint); color:#fff; box-shadow:none; font-weight:600; }
 .wiz-chip-on b { background:rgba(255,255,255,.28); color:#fff; }
-.wiz-chip-on.wiz-chip-done b { background:#34c759; }
+.wiz-chip-guest, .wiz-chip-guest.wiz-chip-on { background:#34c759; color:#fff; box-shadow:none; }
+.wiz-chip-guest b, .wiz-chip-guest.wiz-chip-on b { background:rgba(255,255,255,.3); color:#fff; }
+.wiz-chip-guest.wiz-chip-on { box-shadow:0 0 0 3px rgba(52,199,89,.4); }
 .wiz-chip-off { opacity:.5; text-decoration:line-through; }
 .wiz-play { flex:none; }
 .wiz-preview-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; }

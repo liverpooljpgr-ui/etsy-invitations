@@ -24,7 +24,9 @@ const STEPS = [
   { n: 5, label: "Details" },
   { n: 6, label: "RSVP" },
   { n: 7, label: "Closing" },
+  { n: 8, label: "Guest link" },
 ] as const;
+const GUEST_IDX = 7; // index of the Guest link tab
 
 const inputCls = "ui-input";
 
@@ -115,12 +117,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [step, setStep] = useState(0); // phone wizard
   const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
   const [status, setStatus] = useState(initialStatus);
-  // after the first publish a 8th tab, "Guest link", appears with the link and the ways to send it
-  const GUEST_STEP = { n: 8, label: "Guest link" } as const;
-  const steps: readonly { n: number; label: string }[] = status === "published" ? [...STEPS, GUEST_STEP] : STEPS;
-  const guestIdx = STEPS.length; // index of the guest-link tab (7)
   const goStep = (i: number) => {
-    setStep(Math.max(0, Math.min(steps.length - 1, i)));
+    setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
@@ -265,8 +263,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     setBusy(false);
     if (r.ok) {
       setStatus("published");
-      setStep(guestIdx); // jump to the new "Guest link" tab
-      window.scrollTo({ top: 0, behavior: "smooth" });
       setNotice({ ok: true, text: "Published! Your guest link is ready." });
     }
     else setNotice({ ok: false, text: r.error + ("missing" in r && r.missing ? ` Missing: ${r.missing.join(", ")}.` : "") });
@@ -276,7 +272,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     setBusy(true);
     const r = await unpublishInvitation(id);
     setBusy(false);
-    if (r.ok) { setStatus("draft"); setStep((s) => Math.min(s, guestIdx - 1)); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
+    if (r.ok) { setStatus("draft"); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
     else setNotice({ ok: false, text: r.error ?? "Could not unpublish." });
   }
   async function onPhoto(file: File | undefined) {
@@ -332,16 +328,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   });
   const stateLabel = { saved: "All changes saved", dirty: "Unsaved changes…", saving: "Saving…", error: "Not saved" }[saveState];
   const editable = status === "draft" || status === "published";
-  // a tab turns green once what that screen needs is filled in
-  const stepDone: boolean[] = [
-    !!(draft.couple.first.trim() && draft.couple.second.trim()),
-    !!draft.event.date,
-    !!draft.event.venue.trim(),
-    !features.schedule || draft.timeline.some((t) => t.label.trim() || t.time.trim()),
-    !!(draft.hotel.name.trim() || draft.dressCode.label.trim() || draft.dressCode.colors.length > 0 || draft.registry.some((r) => r.url.trim())),
-    !!(draft.rsvp.deadline && draft.rsvp.email.trim()),
-    !!(draft.couple.first.trim() && draft.couple.second.trim() && draft.event.date && draft.event.venue.trim()), // closing = ready to publish
-  ];
 
   const liveCard = (
     <div className="ui-card ui-live">
@@ -385,21 +371,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </button>
           <span className="ui-icon-btn lg:hidden" aria-hidden="true" style={{ visibility: "hidden" }} />
         </div>
-        <div className={`wiz-actions lg:hidden ${typing ? "hidden" : ""}`}>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
-          <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
-            <IconPublish /> Publish
-          </button>
-        </div>
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-row">
             <div className="wiz-chips" role="tablist" aria-label="Screens">
-              {steps.map((t, i) => (
+              {STEPS.map((t, i) => (
                 <button
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
-                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${stepDone[i] || t.n === 8 ? "wiz-chip-done" : ""} ${t.n >= 3 && t.n <= 7 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
+                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${t.n >= 3 && t.n <= 7 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
                 ><b>{t.n}</b>{t.label}</button>
               ))}
             </div>
@@ -429,13 +409,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       )}
 
       <div className="ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className={`wiz-preview-wrap lg:hidden ${step === guestIdx ? "hidden" : ""}`}>
-          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {STEPS.length} · live preview</p>
+        <div className={`wiz-preview-wrap lg:hidden ${step === GUEST_IDX ? "hidden" : ""}`}>
+          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {GUEST_IDX} · live preview</p>
           <div className="wiz-preview-box">
-            {STEPS[Math.min(step, STEPS.length - 1)].n >= 3 && draft.hidden.includes(STEPS[Math.min(step, STEPS.length - 1)].n) ? (
+            {STEPS[Math.min(step, GUEST_IDX - 1)].n >= 3 && draft.hidden.includes(STEPS[Math.min(step, GUEST_IDX - 1)].n) ? (
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
-              <div className="wiz-preview" data-step={STEPS[Math.min(step, STEPS.length - 1)].n}>
+              <div className="wiz-preview" data-step={STEPS[Math.min(step, GUEST_IDX - 1)].n}>
                 <Invitation content={preview} mode="preview" />
               </div>
             )}
@@ -566,7 +546,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
         </div>
 
-        {status === "published" && <div className={`lg:hidden ${step === guestIdx ? "" : "hidden"}`}>{liveCard}</div>}
+        <div className={`ui-auth-stack lg:hidden ${step === GUEST_IDX ? "wiz-in" : "hidden"}`}>
+          {status === "published" ? liveCard : <p className="ui-lede" style={{ margin: 0 }}>When you are happy with the preview, publish to get your guest link.</p>}
+          <div className="wiz-actions">
+            <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+            <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
+              <IconPublish /> Publish
+            </button>
+          </div>
+        </div>
 
         <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
