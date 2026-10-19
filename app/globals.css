@@ -409,7 +409,7 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 .dash-chev { flex:none; color:rgba(60,60,67,.3); }
 
 /* phone wizard: progress bar + step tabs, live preview of the current screen, bottom Back / Next bar */
-.wiz-actions { max-width:72rem; margin:8px auto 0; display:flex; gap:10px; }
+.wiz-actions { margin:0; display:flex; gap:10px; }
 .wiz-actions .ui-btn { flex:1; }
 .wiz-head { max-width:72rem; margin:8px auto 0; display:flex; flex-direction:column; gap:8px; }
 .wiz-progress { height:5px; margin:0 8px; border-radius:3px; background:rgba(118,118,128,.22); overflow:hidden; }
