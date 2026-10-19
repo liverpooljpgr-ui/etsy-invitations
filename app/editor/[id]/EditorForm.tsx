@@ -64,10 +64,10 @@ function Section({ title, n, children, toggle, mobileHidden }: { title: string; 
   return (
     <section onFocus={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
       <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
-      <div className="ui-group">
+      <div className={`ui-group ${toggle && !toggle.on ? "ui-group-off" : ""}`}>
         {toggle && (
           <div className="ui-row-switch">
-            <span>{toggle.on ? "Shown to your guests" : "Hidden from your guests"}</span>
+            <span>Show screen to guests</span>
             <Switch on={toggle.on} onChange={toggle.set} label={`Show ${name}`} />
           </div>
         )}

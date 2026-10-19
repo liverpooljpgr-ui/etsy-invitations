@@ -340,7 +340,10 @@ html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-group { background:var(--ui-card); border-radius:20px; box-shadow:0 0 0 .5px var(--ui-hair); overflow:hidden; }
 .ui-row-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:56px; padding:8px 16px; border-bottom:.5px solid var(--ui-hair); font-size:16px; }
 .ui-fields { display:flex; flex-direction:column; gap:18px; padding:18px 16px 20px; transition:opacity .25s ease; }
-.ui-dim { opacity:.45; }
+.ui-dim { opacity:.55; }
+.ui-group-off { background:#e6e6eb; box-shadow:0 0 0 .5px rgba(60,60,67,.22); } /* a switched-off screen: the whole section turns grey */
+.ui-group-off .ui-row-switch { border-bottom-color:rgba(60,60,67,.18); }
+.ui-group-off .ui-input { background:#dcdce2; }
 .ui-two { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 @media (max-width:420px) { .ui-two { grid-template-columns:1fr; } }
 .ui-field { display:flex; flex-direction:column; gap:6px; }
