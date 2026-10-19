@@ -422,12 +422,8 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 .wiz-preview[data-step="6"] .inv > [data-card="6"] { display:flex !important; }
 .wiz-preview[data-step="7"] .inv > [data-card="7"] { display:flex !important; }
 .wiz-off { position:absolute; inset:0; display:grid; place-items:center; padding:20px; text-align:center; font-size:14px; line-height:1.4; color:var(--ui-secondary); background:repeating-linear-gradient(45deg,#f2f2f7,#f2f2f7 10px,#ececf1 10px,#ececf1 20px); }
-.wiz-bar { position:fixed; left:12px; right:12px; bottom:max(12px, env(safe-area-inset-bottom)); z-index:30; display:flex; gap:10px; padding:8px; border-radius:26px; background:rgba(255,255,255,.78);
-  -webkit-backdrop-filter:blur(22px) saturate(180%); backdrop-filter:blur(22px) saturate(180%); border:1px solid rgba(255,255,255,.7); box-shadow:0 8px 28px rgba(0,0,0,.14); }
-.wiz-bar .ui-btn { flex:1; }
-.wiz-bar .ui-btn:first-child { flex:0 0 30%; }
 @media (max-width:1023px) {
-  .ui-wrap.grid { padding-bottom:112px; }
+  .ui-wrap.grid { padding-bottom:40px; }
   @keyframes wiz-fade { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
   .wiz-in { animation:wiz-fade .4s ease both; }
 }

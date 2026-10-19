@@ -505,15 +505,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </div>
         </aside>
       </div>
-
-      <nav className="wiz-bar lg:hidden" aria-label="Steps">
-        <button type="button" className="ui-btn ui-btn-gray" onClick={() => goStep(step - 1)} disabled={step === 0}>Back</button>
-        {step < STEPS.length - 1 ? (
-          <button type="button" className="ui-btn ui-btn-primary" onClick={() => goStep(step + 1)}>Next · {STEPS[step + 1].label}</button>
-        ) : (
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-primary">▶ Preview invitation</a>
-        )}
-      </nav>
     </div>
   );
 }
