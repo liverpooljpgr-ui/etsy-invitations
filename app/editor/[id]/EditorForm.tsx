@@ -331,7 +331,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </div>
       )}
 
-      <div className={`ui-wrap ${step === 0 || step === STEPS.length - 1 ? "" : "max-lg:hidden"}`} style={{ paddingTop: 16 }}>
+      <div className={`ui-wrap ${step === STEPS.length - 1 ? "" : "max-lg:hidden"}`} style={{ paddingTop: 16 }}>
         {status === "published" ? (
           <div className="ui-card ui-live">
             <h3>Your invitation is live</h3>
