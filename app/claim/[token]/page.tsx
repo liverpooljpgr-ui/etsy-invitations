@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { signOut } from "@/app/login/actions";
-import { claimStatus } from "./actions";
+import { claimStatus, claimTarget } from "./actions";
 import { ClaimForm } from "./ClaimForm";
+import { OpenInBrowserTip } from "@/components/OpenInBrowserTip";
 
 export default async function ClaimPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -35,9 +36,17 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
       );
     }
   }
+  if (status === "used") {
+    // already signed in as the owner (e.g. came back from checking a map): straight back into the editor
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    const target = data.user ? await claimTarget(token) : null;
+    if (data.user && target && target.ownerId === data.user.id) redirect(`/editor/${target.invitationId}`);
+  }
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
+        <OpenInBrowserTip />
         <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Your invitation is ready"}</h1>
         {status === "ok" && (
           <>

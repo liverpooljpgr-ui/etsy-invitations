@@ -18,8 +18,10 @@ export default function AuthFinish() {
     const start = access_token && refresh_token
       ? createBrowserSupabase().auth.setSession({ access_token, refresh_token }).then(({ error }) => !error)
       : Promise.resolve(false);
-    void start.then((ok) => {
-      if (ok) window.location.replace(next); // full load so the server sees the new session cookie
+    void start.then(async (ok) => {
+      if (ok) { window.location.replace(next); return; } // full load so the server sees the new session cookie
+      const { data } = await createBrowserSupabase().auth.getUser();
+      if (data.user) window.location.replace(next); // already signed in on this device
       else { setNextPath(next); setFailed(true); }
     });
   }, []);

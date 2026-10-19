@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { redirectIfSignedIn } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  await redirectIfSignedIn();
   return (
     <div className="ui ui-center">
       <main className="ui-auth" style={{ textAlign: "center" }}>

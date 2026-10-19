@@ -1,7 +1,9 @@
+import { redirectIfSignedIn } from "@/lib/auth";
 import { LoginForm } from "./LoginForm";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const { next } = await searchParams;
+  await redirectIfSignedIn(next);
   return (
     <div className="ui ui-center">
       <main className="ui-auth">

@@ -20,6 +20,17 @@ export async function claimStatus(token: string): Promise<"ok" | "used" | "inval
   return data.redeemed_at ? "used" : "ok";
 }
 
+/** The invitation behind a personal link and its owner, so a signed-in owner can be sent straight back to it. */
+export async function claimTarget(token: string): Promise<{ invitationId: string; ownerId: string | null } | null> {
+  if (!/^[A-Za-z0-9_-]{20,100}$/.test(token)) return null;
+  const hash = "\\x" + createHash("sha256").update(token).digest("hex");
+  const db = createAdminClient();
+  const { data: c } = await db.from("edit_claims").select("invitation_id").eq("token_hash", hash).maybeSingle();
+  if (!c) return null;
+  const { data: inv } = await db.from("invitations").select("owner_id").eq("id", c.invitation_id).maybeSingle();
+  return { invitationId: c.invitation_id, ownerId: inv?.owner_id ?? null };
+}
+
 /**
  * First visit with this purchase link: the customer enters their email.
  *  - new email  → we email a confirmation link ONCE; opening it attaches the invitation to them;
