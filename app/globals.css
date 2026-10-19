@@ -320,6 +320,7 @@ html { scrollbar-gutter: stable; }
 .ui-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:0 20px; border:0; border-radius:999px; font-size:15px; font-weight:600; letter-spacing:-.005em; cursor:pointer; text-decoration:none; white-space:nowrap; transition:transform .15s var(--ui-ease), opacity .2s ease, background .2s ease; -webkit-tap-highlight-color:transparent; }
 .ui-btn:active { transform:scale(.97); } .ui-btn:disabled { opacity:.45; cursor:default; }
 .ui-btn-primary { background:var(--ui-tint); color:#fff; box-shadow:0 1px 2px rgba(217,87,63,.4); }
+.ui-btn-black { background:#1d1d1f; color:#fff; }
 .ui-btn-soft { background:var(--ui-tint-soft); color:var(--ui-tint); }
 .ui-btn-gray { background:rgba(118,118,128,.12); color:var(--ui-label); }
 .ui-btn-plain { background:transparent; color:var(--ui-tint); padding:0 12px; }
