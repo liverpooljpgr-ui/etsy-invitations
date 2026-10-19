@@ -32,6 +32,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <label className="ui-field"><span className="ui-label">{label}</span>{children}</label>;
 }
 
+const IconPlay = () => (
+  <svg width="13" height="14" viewBox="0 0 13 14" fill="currentColor" aria-hidden="true"><path d="M1.5 1.3v11.4a.8.8 0 0 0 1.2.7l9.2-5.7a.8.8 0 0 0 0-1.4L2.7.6a.8.8 0 0 0-1.2.7z" /></svg>
+);
+const IconPublish = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14.2 1.8 7.1 8.9M14.2 1.8l-4.4 12.4-2.7-5.3-5.3-2.7z" /></svg>
+);
+
 /** iOS-style switch. */
 function Switch({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
@@ -297,9 +304,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               {stateLabel}
             </span>}
           </div>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-plain hidden sm:inline-flex">▶ Preview animation</a>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey max-lg:hidden"><IconPlay /> Preview animation</a>
+          <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn max-lg:hidden ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>
+            <IconPublish /> {status === "published" ? "Publish Updates" : "Publish"}
+          </button>
+        </div>
+        <div className="wiz-actions lg:hidden">
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
           <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-primary"}`}>
-            {status === "published" ? "Publish Updates" : "Publish"}
+            <IconPublish /> Publish
           </button>
         </div>
         <div className="wiz-head lg:hidden">
@@ -315,7 +328,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 ><b>{t.n}</b>{t.label}</button>
               ))}
             </div>
-            <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-black ui-btn-sm wiz-play">▶ Preview</a>
           </div>
         </div>
       </header>

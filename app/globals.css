@@ -325,6 +325,7 @@ html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:0 20px; border:0; border-radius:999px; font-size:15px; font-weight:600; letter-spacing:-.005em; cursor:pointer; text-decoration:none; white-space:nowrap; transition:transform .15s var(--ui-ease), opacity .2s ease, background .2s ease; -webkit-tap-highlight-color:transparent; }
 .ui-btn:active { transform:scale(.97); } .ui-btn:disabled { opacity:.45; cursor:default; }
 .ui-btn-primary { background:var(--ui-tint); color:#fff; box-shadow:0 1px 2px rgba(217,87,63,.4); }
+.ui-btn-dgrey { background:#58585c; color:#fff; }
 .ui-btn-black { background:#1d1d1f; color:#fff; }
 .ui-btn-soft { background:var(--ui-tint-soft); color:var(--ui-tint); }
 .ui-btn-gray { background:rgba(118,118,128,.12); color:var(--ui-label); }
@@ -403,6 +404,8 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 .dash-chev { flex:none; color:rgba(60,60,67,.3); }
 
 /* phone wizard: progress bar + step tabs, live preview of the current screen, bottom Back / Next bar */
+.wiz-actions { max-width:72rem; margin:8px auto 0; display:flex; gap:10px; }
+.wiz-actions .ui-btn { flex:1; }
 .wiz-head { max-width:72rem; margin:8px auto 0; display:flex; flex-direction:column; gap:8px; }
 .wiz-progress { height:5px; margin:0 8px; border-radius:3px; background:rgba(118,118,128,.22); overflow:hidden; }
 .wiz-progress i { display:block; height:100%; border-radius:3px; background:var(--ui-tint); transition:width .4s cubic-bezier(.3,.9,.3,1); }
