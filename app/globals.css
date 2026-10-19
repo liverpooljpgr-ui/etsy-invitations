@@ -445,3 +445,11 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 }
 
 /* build marker: editor action row */
+
+/* text links inside the invitation cards ("Get directions", "Add to calendar"): soft white glow and an arrow that nudges to the right */
+.inv .venue-link, .inv .closing-cal { text-shadow:0 0 6px rgba(255,255,255,.95), 0 0 14px rgba(255,255,255,.85); }
+.inv .venue-link::after, .inv .closing-cal::after { content:"\2192"; display:inline-block; margin-left:.55em; text-decoration:none; }
+@keyframes link-nudge { 0%,100% { transform:translateX(0); } 50% { transform:translateX(calc(5px * var(--k,1))); } }
+@media (prefers-reduced-motion: no-preference) {
+  .inv .venue-link::after, .inv .closing-cal::after { animation:link-nudge 1.6s ease-in-out infinite; }
+}
