@@ -9,7 +9,7 @@ import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
 type Props = {
   id: string; title: string; slug: string; status: string;
-  features: PlanFeatures; initialDraft: Content; initialVersion: number; initialPublished: unknown;
+  features: PlanFeatures; initialDraft: Content; initialVersion: number;
 };
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
@@ -107,7 +107,7 @@ async function prepareImage(file: File): Promise<Blob> {
   return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/webp", 0.85));
 }
 
-export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialPublished }: Props) {
+export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion }: Props) {
   const [draft, setDraft] = useState<Content>(initialDraft);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
@@ -165,7 +165,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   // normalised JSON of what this tab last stored, to tell a harmless version bump from a real change elsewhere
   const norm = (d: unknown) => JSON.stringify(parseContent(d));
   const lastSaved = useRef(norm(initialDraft));
-  const [pubNorm, setPubNorm] = useState<string | null>(initialPublished ? norm(initialPublished) : null);
 
   const flush = useCallback(async (): Promise<boolean> => {
     if (inFlight.current) { again.current = true; return false; }
@@ -248,9 +247,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   }, [saveState]);
 
   const preview = useMemo(() => applyPlan(draft, features), [draft, features]);
-  // published and nothing edited since → the button rests in black; any edit turns it coral again
-  const hasChanges = status === "published" && pubNorm !== null && norm(preview) !== pubNorm;
-  const publishTone = status === "published" && !hasChanges ? "ui-btn-black" : "ui-btn-blue";
+  const publishTone = "ui-btn-blue"; // Publish stays blue whatever the state
   // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
   const publicUrl = `${origin}/${slug}`;
@@ -262,7 +259,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (!saved) { setBusy(false); setNotice({ ok: false, text: "Could not save your latest changes, so nothing was published." }); return; }
     const r = await publishInvitation(id).catch(() => ({ ok: false as const, error: "Network error. Nothing was published." }));
     setBusy(false);
-    if (r.ok) { setStatus("published"); setPubNorm(norm(applyPlan(latest.current, features))); setNotice({ ok: true, text: "Published! Your guest link is ready." }); }
+    if (r.ok) { setStatus("published"); setNotice({ ok: true, text: "Published! Your guest link is ready." }); }
     else setNotice({ ok: false, text: r.error + ("missing" in r && r.missing ? ` Missing: ${r.missing.join(", ")}.` : "") });
   }
   async function onUnpublish() {
@@ -270,7 +267,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     setBusy(true);
     const r = await unpublishInvitation(id);
     setBusy(false);
-    if (r.ok) { setStatus("draft"); setPubNorm(null); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
+    if (r.ok) { setStatus("draft"); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
     else setNotice({ ok: false, text: r.error ?? "Could not unpublish." });
   }
   async function onPhoto(file: File | undefined) {
@@ -329,18 +326,19 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
   const liveCard = (
     <div className="ui-card ui-live">
-      <h3>Your invitation is live</h3>
+      <div className="ui-live-head">
+          <h3>Your invitation is live</h3>
+          <button onClick={onUnpublish} disabled={busy} className="ui-btn ui-btn-danger ui-btn-sm">Unpublish</button>
+        </div>
       <p className="ui-help">Send this link to your guests.</p>
       <div className="ui-linkfield">
         <input readOnly value={publicUrl} aria-label="Guest link" onFocus={(e) => e.currentTarget.select()} />
         <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="ui-btn ui-btn-black">{copied ? "Copied" : "Copy"}</button>
       </div>
       <div className="ui-actions">
-        <a href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Open</a>
         <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
         <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
         <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
-        <button onClick={onUnpublish} disabled={busy} className="ui-btn ui-btn-danger ui-btn-sm ml-auto">Unpublish</button>
       </div>
       <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Press “Publish Updates” at the top — the same link then shows the new version.</p>
     </div>
@@ -367,7 +365,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <IconPublish /> {status === "published" ? "Publish Updates" : "Publish"}
           </button>
           <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" aria-label="Preview the invitation" className="ui-icon-btn ui-icon-dgrey lg:hidden"><IconPlay /></a>
-          <button type="button" onClick={onPublish} disabled={busy || !editable} aria-label="Publish" className={`ui-icon-btn lg:hidden ${publishTone === "ui-btn-black" ? "ui-icon-black" : "ui-icon-blue"}`}><IconPublish /></button>
+          <button type="button" onClick={onPublish} disabled={busy || !editable} aria-label="Publish" className="ui-icon-btn ui-icon-blue lg:hidden"><IconPublish /></button>
         </div>
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-progress" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={step + 1} aria-label="Progress"><i style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>

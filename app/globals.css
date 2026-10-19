@@ -385,6 +385,8 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 .ui-card { background:var(--ui-card); border-radius:20px; padding:18px 16px; box-shadow:0 0 0 .5px var(--ui-hair); }
 .ui-card h3 { margin:0 0 4px; font-size:17px; font-weight:600; }
 .ui-live { background:linear-gradient(180deg,rgba(52,199,89,.12),rgba(52,199,89,.06)); box-shadow:0 0 0 .5px rgba(52,199,89,.4); }
+.ui-live-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:-4px -6px 0 0; }
+.ui-live-head h3 { margin:6px 0 0; }
 .ui-linkfield { display:flex; gap:8px; align-items:center; margin-top:12px; }
 .ui-linkfield input { box-sizing:border-box; flex:1; min-width:0; min-height:44px; padding:0 16px; border:0; border-radius:999px; background:rgba(255,255,255,.85); font-size:14px; color:var(--ui-label); text-overflow:ellipsis; }
 .ui-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center; }
