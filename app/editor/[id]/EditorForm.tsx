@@ -132,23 +132,28 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       t instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) && !["checkbox", "radio", "file", "color", "button", "submit"].includes((t as HTMLInputElement).type);
     let off: ReturnType<typeof setTimeout> | undefined;
     let focused: HTMLElement | null = null;
-    const settle = () => { if (focused && document.activeElement === focused) centerInView(focused); };
+    // The header folds away only while the keyboard is REALLY showing. A field can stay focused after the keyboard was
+    // hidden (iOS "hide keyboard"), so focus alone must never keep the header folded.
+    const keyboardUp = () => { const vv = window.visualViewport; return !vv || window.innerHeight - vv.height > 120; };
+    const update = () => setTyping(focused !== null && keyboardUp());
+    const settle = () => { if (focused && document.activeElement === focused && keyboardUp()) centerInView(focused); };
     const onIn = (e: FocusEvent) => {
       if (!isField(e.target) || window.innerWidth >= 1024) return;
       clearTimeout(off);
       focused = e.target;
-      setTyping(true);
-      setTimeout(settle, 420); // after the keyboard and the folded header have settled
+      update();
+      setTimeout(() => { update(); settle(); }, 420); // after the keyboard has settled
     };
-    const onOut = () => { clearTimeout(off); off = setTimeout(() => { focused = null; setTyping(false); }, 200); };
+    const onOut = () => { clearTimeout(off); off = setTimeout(() => { focused = null; update(); }, 200); };
+    const onViewport = () => { update(); settle(); };
     document.addEventListener("focusin", onIn);
     document.addEventListener("focusout", onOut);
-    window.visualViewport?.addEventListener("resize", settle);
+    window.visualViewport?.addEventListener("resize", onViewport);
     return () => {
       clearTimeout(off);
       document.removeEventListener("focusin", onIn);
       document.removeEventListener("focusout", onOut);
-      window.visualViewport?.removeEventListener("resize", settle);
+      window.visualViewport?.removeEventListener("resize", onViewport);
     };
   }, []);
 
