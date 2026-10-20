@@ -15,6 +15,14 @@ const PLAN = "signature"; // every Etsy purchase gets the full template (schedul
 const input = z.object({
   templateId: z.uuid(),
   etsyRef: z.string().trim().min(1, "Enter the Etsy order reference.").max(60),
+  // optional custom guest-link address; left empty = a random code
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(40, "The address can be at most 40 characters.")
+    .refine((v) => v === "" || /^[a-z0-9]+(-[a-z0-9]+)*$/.test(v), "Use only letters, numbers and single dashes (for example anna-and-john).")
+    .refine((v) => v === "" || v.length >= 3, "The address needs at least 3 characters."),
 });
 
 const ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
@@ -43,13 +51,24 @@ async function issueClaim(invitationId: string, adminId: string) {
 /** One purchase = one template for one customer = one personal link. */
 export async function createPurchase(_prev: CreateState, fd: FormData): Promise<CreateState> {
   const { user } = await requireAdmin();
-  const p = input.safeParse({ templateId: fd.get("templateId"), etsyRef: fd.get("etsyRef") });
+  const p = input.safeParse({ templateId: fd.get("templateId"), etsyRef: fd.get("etsyRef"), slug: fd.get("slug") ?? "" });
   if (!p.success) return { ok: false, message: p.error.issues[0].message };
   const v = p.data;
   const db = createAdminClient();
 
   const { data: tpl } = await db.from("templates").select("id, current_version, name").eq("id", v.templateId).eq("is_active", true).maybeSingle();
   if (!tpl) return { ok: false, message: "Choose a template." };
+
+  // a custom address must be free and not reserved (checked up front so nothing half-created is left behind)
+  const custom = v.slug || "";
+  if (custom) {
+    const [{ data: taken }, { data: reserved }] = await Promise.all([
+      db.from("invitations").select("id").eq("slug", custom).maybeSingle(),
+      db.from("reserved_slugs").select("slug").eq("slug", custom).maybeSingle(),
+    ]);
+    if (taken) return { ok: false, message: `"${custom}" is already used by another invitation. Choose a different address.` };
+    if (reserved) return { ok: false, message: `"${custom}" is reserved. Choose a different address.` };
+  }
 
   const { data: order, error: oErr } = await db.from("orders").insert({
     plan_code: PLAN, etsy_order_ref: v.etsyRef, payment_status: "verified",
@@ -58,16 +77,16 @@ export async function createPurchase(_prev: CreateState, fd: FormData): Promise<
   if (oErr) return { ok: false, message: oErr.code === "23505" ? "That Etsy order reference already exists." : "Could not create the order." };
 
   let inv: { id: string } | null = null;
-  for (let i = 0; i < 5 && !inv; i++) {
+  for (let i = 0; i < (custom ? 1 : 5) && !inv; i++) {
     const { data, error } = await db.from("invitations").insert({
       order_id: order.id, template_id: tpl.id, template_version: tpl.current_version, plan_code: PLAN,
-      slug: randomSlug(), display_title: `${tpl.name} · ${v.etsyRef}`, owner_id: null,
+      slug: custom || randomSlug(), display_title: `${tpl.name} · ${v.etsyRef}`, owner_id: null,
     }).select("id").single();
     if (!error) inv = data;
     else if (error.code !== "23505" && error.code !== "23514") break; // only retry on a slug clash
   }
   const rollback = async () => { if (inv) await db.from("invitations").delete().eq("id", inv.id); await db.from("orders").delete().eq("id", order.id); };
-  if (!inv) { await rollback(); return { ok: false, message: "Could not create the invitation." }; }
+  if (!inv) { await rollback(); return { ok: false, message: custom ? `"${custom}" is not available. Choose a different address.` : "Could not create the invitation." }; }
 
   const c1 = await db.from("invitation_content").insert({ invitation_id: inv.id, draft: defaultContent });
   const c2 = await db.from("hosting_entitlements").insert({ invitation_id: inv.id, order_id: order.id, state: "pending" });

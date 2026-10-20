@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useSyncExternalStore } from "react";
 import { createPurchase } from "./actions";
 
 export function CopyField({ value }: { value: string }) {
@@ -17,6 +17,10 @@ export function CopyField({ value }: { value: string }) {
 
 export function CreateForm({ templates }: { templates: { id: string; name: string }[] }) {
   const [s, action, pending] = useActionState(createPurchase, null);
+  const [slug, setSlug] = useState("");
+  const host = useSyncExternalStore(() => () => {}, () => window.location.host, () => "");
+  // keep it a valid address while typing: lower case, spaces become dashes, nothing else allowed
+  const clean = (v: string) => v.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-{2,}/g, "-").replace(/^-/, "").slice(0, 40);
   return (
     <form action={action} className="ui-card" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <h3>New purchase link</h3>
@@ -29,6 +33,11 @@ export function CreateForm({ templates }: { templates: { id: string; name: strin
       <label className="ui-field">
         <span className="ui-label">Etsy order reference</span>
         <input name="etsyRef" required maxLength={60} className="ui-input" />
+      </label>
+      <label className="ui-field">
+        <span className="ui-label">Guest link address (optional)</span>
+        <input name="slug" value={slug} onChange={(e) => setSlug(clean(e.target.value))} maxLength={40} autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder="anna-and-john" className="ui-input" />
+        <span className="ui-help">{slug ? <>Guests will open <b style={{ color: "var(--ui-label)" }}>{host || "your-domain"}/{slug}</b></> : "Leave empty for a random code that doesn’t reveal any names. Letters, numbers and dashes only."}</span>
       </label>
       <button disabled={pending} className="ui-btn ui-btn-primary" style={{ width: "100%" }}>{pending ? "Creating…" : "Create link"}</button>
       {s && (
