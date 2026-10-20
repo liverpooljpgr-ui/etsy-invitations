@@ -1,45 +1,57 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
+import { signOut } from "@/app/login/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { AdminTabs } from "./AdminTabs";
 import { CreateForm } from "./CreateForm";
-import { NewLinkButton } from "./NewLinkButton";
-import { DeleteButton } from "./DeleteButton";
+import { OrdersGrid, type OrderRow } from "./OrdersGrid";
 import { PasswordForm } from "./PasswordForm";
 
-type Purchase = {
-  id: string; slug: string; status: string; owner_id: string | null; created_at: string;
-  etsy: string; template: string;
-};
-
-const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-
-export default async function AdminPage() {
-  await requireAdmin();
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { user } = await requireAdmin();
+  const { tab } = await searchParams;
   const db = createAdminClient();
+
   const [{ data: invs }, { data: templates }] = await Promise.all([
-    db.from("invitations").select("id, slug, status, owner_id, order_id, template_id, created_at").order("created_at", { ascending: false }).limit(500),
+    db.from("invitations").select("id, status, owner_id, order_id, template_id, created_at").order("created_at", { ascending: false }).limit(1000),
     db.from("templates").select("id, name").eq("is_active", true).order("name"),
   ]);
   const ownerIds = [...new Set((invs ?? []).map((i) => i.owner_id).filter((x): x is string => !!x))];
-  const orderIds = (invs ?? []).map((i) => i.order_id);
-  const [{ data: owners }, { data: orders }] = await Promise.all([
+  const orderIds = (invs ?? []).map((i) => i.order_id).filter((x): x is string => !!x);
+  const invIds = (invs ?? []).map((i) => i.id);
+  const [{ data: owners }, { data: orders }, { data: hosting }] = await Promise.all([
     ownerIds.length ? db.from("profiles").select("id, email").in("id", ownerIds) : Promise.resolve({ data: [] as { id: string; email: string }[] }),
-    orderIds.length ? db.from("orders").select("id, etsy_order_ref").in("id", orderIds) : Promise.resolve({ data: [] as { id: string; etsy_order_ref: string | null }[] }),
+    orderIds.length ? db.from("orders").select("id, etsy_order_ref, buyer_note, purchased_at, created_at").in("id", orderIds) : Promise.resolve({ data: [] as { id: string; etsy_order_ref: string | null; buyer_note: string | null; purchased_at: string | null; created_at: string }[] }),
+    invIds.length ? db.from("hosting_entitlements").select("invitation_id, ends_at").in("invitation_id", invIds) : Promise.resolve({ data: [] as { invitation_id: string; ends_at: string | null }[] }),
   ]);
   const email = new Map((owners ?? []).map((o) => [o.id, o.email]));
-  const etsy = new Map((orders ?? []).map((o) => [o.id, o.etsy_order_ref ?? "—"]));
+  const order = new Map((orders ?? []).map((o) => [o.id, o]));
+  const ends = new Map((hosting ?? []).map((h) => [h.invitation_id, h.ends_at]));
   const tplName = new Map((templates ?? []).map((t) => [t.id, t.name]));
 
-  const rows: (Purchase & { email: string | null })[] = (invs ?? []).map((i) => ({
-    id: i.id, slug: i.slug, status: i.status, owner_id: i.owner_id, created_at: i.created_at,
-    etsy: etsy.get(i.order_id) ?? "—", template: tplName.get(i.template_id) ?? "Template",
-    email: i.owner_id ? email.get(i.owner_id) ?? "(unknown)" : null,
-  }));
+  const rows: OrderRow[] = (invs ?? []).map((i) => {
+    const o = i.order_id ? order.get(i.order_id) : undefined;
+    return {
+      id: i.id,
+      orderId: i.order_id ?? "",
+      purchased: o?.purchased_at ?? o?.created_at ?? i.created_at,
+      template: tplName.get(i.template_id) ?? "Template",
+      etsy: o?.etsy_order_ref ?? "—",
+      email: i.owner_id ? email.get(i.owner_id) ?? "(unknown)" : null,
+      status: i.status,
+      expires: ends.get(i.id) ?? null,
+      note: o?.buyer_note ?? "",
+    };
+  }).filter((r) => r.orderId);
 
-  const waiting = rows.filter((r) => !r.email);
-  const byEmail = new Map<string, typeof rows>();
-  for (const r of rows) if (r.email) byEmail.set(r.email, [...(byEmail.get(r.email) ?? []), r]);
-  const customers = [...byEmail.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  async function leave() {
+    "use server";
+    await signOut();
+    redirect("/login");
+  }
+
+  const initial = tab === "orders" || tab === "settings" ? tab : "new";
 
   return (
     <div className="ui">
@@ -50,59 +62,48 @@ export default async function AdminPage() {
         </div>
       </header>
 
-      <main className="ui-wrap" style={{ maxWidth: "48rem", paddingTop: 12, paddingBottom: 56 }}>
-        <h2 className="ui-large-title">Orders</h2>
-
-        <CreateForm templates={(templates ?? []).map((t) => ({ id: t.id, name: t.name }))} />
-
-        {waiting.length > 0 && (
-          <section style={{ marginTop: 28 }}>
-            <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Waiting for the customer to open their link · {waiting.length}</h3>
-            <ul className="dash-list">
-              {waiting.map((r) => (
-                <li key={r.id} className="ui-card">
-                  <p style={{ margin: 0, fontWeight: 600 }}>{r.template} · Etsy {r.etsy}</p>
-                  <p className="ui-help" style={{ margin: "2px 0 10px" }}>Created {day(r.created_at)}</p>
-                  <div className="ui-actions" style={{ marginTop: 0, justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <NewLinkButton invitationId={r.id} />
-                    <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy}`} />
+      <main className="ui-wrap" style={{ maxWidth: "76rem", paddingTop: 16, paddingBottom: 56 }}>
+        <AdminTabs
+          initial={initial}
+          counts={{ orders: rows.length }}
+          panels={{
+            new: (
+              <div style={{ maxWidth: "34rem" }}>
+                <CreateForm templates={(templates ?? []).map((t) => ({ id: t.id, name: t.name }))} />
+                <p className="ui-help" style={{ marginTop: 14 }}>Send the personal link to your customer through Etsy messages. It can be used once; the customer enters their email and starts personalising. You can find the order later in the Orders tab.</p>
+              </div>
+            ),
+            orders: <OrdersGrid rows={rows} />,
+            settings: (
+              <div style={{ maxWidth: "34rem", display: "flex", flexDirection: "column", gap: 22 }}>
+                <section>
+                  <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Account</h3>
+                  <div className="ui-card" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    <div>
+                      <p className="ui-label" style={{ margin: 0 }}>Signed in as</p>
+                      <p style={{ margin: "2px 0 0", fontWeight: 600 }}>{user.email}</p>
+                    </div>
+                    <form action={leave}><button className="ui-btn ui-btn-gray" style={{ width: "100%" }}>Sign out</button></form>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <section style={{ marginTop: 28 }}>
-          <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Customers · {customers.length}</h3>
-          {customers.length === 0 && <div className="ui-card"><p className="ui-help" style={{ margin: 0 }}>No customer has opened a link yet.</p></div>}
-          <ul className="dash-list">
-            {customers.map(([addr, list]) => (
-              <li key={addr} className="ui-card">
-                <p style={{ margin: 0, fontWeight: 600 }}>{addr} <span className="ui-help" style={{ fontWeight: 400 }}>· {list.length} {list.length === 1 ? "purchase" : "purchases"}</span></p>
-                <ul className="adm-rows">
-                  {list.map((r) => (
-                    <li key={r.id} className="adm-row">
-                      <div style={{ minWidth: 0 }}>
-                        <p style={{ margin: 0 }}>{r.template} · Etsy {r.etsy}</p>
-                        <p className="ui-help" style={{ margin: 0 }}>{r.status} · bought {day(r.created_at)}</p>
-                      </div>
-                      <div className="ui-row-line" style={{ flex: "none" }}>
-                        {r.status === "published" && <Link className="ui-link" style={{ fontSize: 14 }} href={`/${r.slug}`} target="_blank">/{r.slug}</Link>}
-                        <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy} (${addr})`} />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section style={{ marginTop: 28 }}>
-          <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Your sign-in password</h3>
-          <PasswordForm />
-        </section>
+                </section>
+                <section>
+                  <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Your sign-in password</h3>
+                  <PasswordForm />
+                </section>
+                <section>
+                  <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Hosting rules</h3>
+                  <div className="ui-card">
+                    <ul className="ui-help" style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
+                      <li>Each purchase is hosted for <b>6 months</b>, counted from the day the customer first publishes.</li>
+                      <li>After that there is a 14-day grace period, then the page is archived.</li>
+                      <li>Music uploads are limited to 4 MB per invitation.</li>
+                    </ul>
+                  </div>
+                </section>
+              </div>
+            ),
+          }}
+        />
       </main>
     </div>
   );

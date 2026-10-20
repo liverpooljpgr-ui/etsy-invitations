@@ -124,3 +124,12 @@ export async function setAdminPassword(_prev: CreateState, fd: FormData): Promis
   await createAdminClient().from("audit_log").insert({ actor_id: user.id, action: "admin.password_set", entity_type: "profile", entity_id: user.id });
   return { ok: true, message: "Password saved. From now on sign in at /login with your email and this password." };
 }
+
+/** A few words of private admin notes about an order (stored in orders.buyer_note, never shown to customers). */
+export async function saveOrderNote(orderId: string, note: string): Promise<{ ok: boolean; message?: string }> {
+  await requireAdmin();
+  if (!z.uuid().safeParse(orderId).success) return { ok: false, message: "Invalid order." };
+  const clean = note.trim().slice(0, 80);
+  const { error } = await createAdminClient().from("orders").update({ buyer_note: clean || null }).eq("id", orderId);
+  return error ? { ok: false, message: "Could not save." } : { ok: true };
+}
