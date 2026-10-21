@@ -89,7 +89,13 @@ function Section({ title, n, children, toggle, mobileHidden }: { title: string; 
   const jump = () => {
     if (!n || !window.matchMedia("(min-width: 1024px)").matches) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.querySelector(`aside [data-card="${n}"]`)?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+    // scroll only the preview panel to the card: scrollIntoView would also move the whole page under the cursor
+    const card = document.querySelector<HTMLElement>(`aside [data-card="${n}"]`);
+    let box = card?.parentElement ?? null;
+    while (box && !/(auto|scroll)/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
+    if (!card || !box) return;
+    const c = card.getBoundingClientRect(), b = box.getBoundingClientRect();
+    box.scrollTo({ top: box.scrollTop + (c.top - b.top) - (b.height - c.height) / 2, behavior: reduce ? "auto" : "smooth" });
   };
   const cut = title.indexOf(" · ");
   const num = cut > 0 ? title.slice(0, cut).replace("Card ", "") : "";
