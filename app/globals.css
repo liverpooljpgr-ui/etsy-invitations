@@ -460,10 +460,6 @@ textarea.ui-input { min-height:96px; resize:vertical; }
 select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%236e6e73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:38px; }
 
 /* tip: open in your normal browser */
-.ui-tip { position:relative; margin:0 0 16px; padding-right:44px; }
-.ui-tip-title { margin:0 0 4px; font-weight:700; }
-.ui-tip-text { margin:0; font-size:14.5px; line-height:1.45; }
-.ui-tip-x { position:absolute; top:6px; right:6px; width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:inherit; font-size:15px; cursor:pointer; opacity:.7; }
 
 /* admin: tabs + orders grid */
 .adm-tabs { display:flex; gap:6px; padding:4px; margin:0 0 20px; width:fit-content; max-width:100%; overflow-x:auto; border-radius:14px; background:rgba(118,118,128,.14); }

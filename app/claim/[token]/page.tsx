@@ -5,7 +5,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { signOut } from "@/app/login/actions";
 import { claimStatus, claimTarget } from "./actions";
 import { ClaimForm } from "./ClaimForm";
-import { OpenInBrowserTip } from "@/components/OpenInBrowserTip";
 
 export default async function ClaimPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -46,7 +45,6 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
-        <OpenInBrowserTip />
         <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Your invitation is ready"}</h1>
         {status === "ok" && (
           <>

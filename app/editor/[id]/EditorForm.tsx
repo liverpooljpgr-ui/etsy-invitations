@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { Invitation } from "@/components/invitation/Invitation";
 import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
-import { OpenInBrowserTip } from "@/components/OpenInBrowserTip";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
 type Props = {
@@ -407,8 +406,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </div>
         </div>
       </header>
-
-      <div className="ui-wrap lg:hidden"><OpenInBrowserTip /></div>
 
       {(saveError || notice || conflict) && (
         <div className="ui-wrap">
