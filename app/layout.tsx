@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Manrope, Libre_Caslon_Text, Parisienne, Jost, Oranienbaum, Pinyon_Script } from "next/font/google";
+import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });
 const sans = Jost({ variable: "--font-sans", subsets: ["latin"] });
-// Platform UI (the invitation itself keeps its own fonts): Manrope for text and labels, Libre Caslon for headings, Parisienne for accents
+// Platform UI (the invitation itself keeps its own fonts): Manrope for text and labels, Libre Caslon for headings, Rouge Script for accents
 const ui = Manrope({ variable: "--font-ui", subsets: ["latin", "latin-ext", "cyrillic"] });
 const head = Libre_Caslon_Text({ variable: "--font-head", subsets: ["latin", "latin-ext"], weight: ["400", "700"] });
-const accent = Parisienne({ variable: "--font-accent", subsets: ["latin", "latin-ext"], weight: "400" });
+const accent = Rouge_Script({ variable: "--font-accent", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "PixelBridge Invitations",

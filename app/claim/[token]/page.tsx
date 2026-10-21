@@ -45,20 +45,20 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
-        <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Invitation is waiting"}</h1>
+        <h1 className="ui-large-title" style={{ margin: "0 0 8px", textAlign: "center" }}>{status === "used" ? "Welcome back" : "Invitation is waiting"}</h1>
         {status === "ok" && (
           <>
-            <p className="ui-lede ui-accent">Enter your email to personalise it.</p>
+            <p className="ui-lede ui-accent" style={{ textAlign: "center" }}>Enter your email to personalise it.</p>
             <div className="ui-card"><ClaimForm token={token} /></div>
           </>
         )}
         {status === "used" && (
           <>
-            <p className="ui-lede ui-accent">Sign in with email you used the very first time.</p>
+            <p className="ui-lede ui-accent" style={{ textAlign: "center" }}>Sign in with email you used the very first time.</p>
             <div className="ui-card"><ClaimForm token={token} label="Sign in" /></div>
           </>
         )}
-        {status === "invalid" && <p className="ui-lede">This link is invalid or has expired. Contact support for a new one.</p>}
+        {status === "invalid" && <p className="ui-lede" style={{ textAlign: "center" }}>This link is invalid or has expired. Contact support for a new one.</p>}
         {status === "ok" && <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}><Link href="/login" className="ui-link">Already have an invitation? Sign in</Link></p>}
       </main>
     </div>
