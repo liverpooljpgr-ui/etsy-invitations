@@ -78,8 +78,8 @@ export function Invitation({
   calendarHref?: string;
 }) {
   const ph = mode === "preview";
-  const first = c.couple.first || (ph ? "First name" : "");
-  const second = c.couple.second || (ph ? "Second name" : "");
+  const first = c.couple.first || (ph ? "Beloved" : "");
+  const second = c.couple.second || (ph ? "Beloved" : "");
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);

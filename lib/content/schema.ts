@@ -118,8 +118,8 @@ export function parseContent(raw: unknown): Content {
 
 export function publishMissing(c: Content): string[] {
   const m: string[] = [];
-  if (!c.couple.first) m.push("First name");
-  if (!c.couple.second) m.push("Second name");
+  if (!c.couple.first) m.push("First beloved's name");
+  if (!c.couple.second) m.push("Second beloved's name");
   if (!c.event.date) m.push("Event date");
   if (!c.event.venue) m.push("Venue name");
   return m;

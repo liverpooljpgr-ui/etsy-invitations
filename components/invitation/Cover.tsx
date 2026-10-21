@@ -8,8 +8,8 @@ import { EnvelopeArt } from "./EnvelopeArt";
  */
 export function CoverInner({ content: c, mode, hint }: { content: Content; mode: "preview" | "public"; hint?: boolean }) {
   const ph = mode === "preview";
-  const first = c.couple.first || (ph ? "First name" : "");
-  const second = c.couple.second || (ph ? "Second name" : "");
+  const first = c.couple.first || (ph ? "Beloved" : "");
+  const second = c.couple.second || (ph ? "Beloved" : "");
   // First letter of each name, taken from the names above (works for any alphabet or emoji)
   const initial = (n: string) => Array.from(n.trim())[0]?.toUpperCase() ?? "";
   const [i1, i2] = [initial(first), initial(second)];
