@@ -6,7 +6,7 @@ import { MapPreview, type Place } from "@/components/PlaceSearch";
 const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 const MAX_LOOKUPS = 40; // per time the editor is open
 
-type Win = Window & { gm_authFailure?: () => void };
+type Win = Window & { gm_authFailure?: () => void; __mapsReady?: () => void };
 const failListeners = new Set<() => void>();
 let loader: Promise<void> | null = null;
 let lookups = 0;
@@ -18,9 +18,9 @@ function loadMaps(): Promise<void> {
   loader ??= new Promise<void>((resolve, reject) => {
     (window as Win).gm_authFailure = () => failListeners.forEach((f) => f()); // key refused or the Maps JavaScript API is not enabled
     const s = document.createElement("script");
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&v=weekly&loading=async`;
+    (window as Win).__mapsReady = () => resolve(); // Google calls this once the script has finished starting up
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&v=weekly&loading=async&callback=__mapsReady`;
     s.async = true;
-    s.onload = () => resolve();
     s.onerror = () => { loader = null; reject(new Error("load")); };
     document.head.append(s);
   });
@@ -109,7 +109,7 @@ export function MapPicker({ query, center, onPick, hint }: { query: string; cent
         });
         setReady(true);
       })
-      .catch(() => { if (!gone) setFailed(true); });
+      .catch((e) => { console.warn("Map picker unavailable, showing the plain map:", e); if (!gone) setFailed(true); });
     return () => { gone = true; failListeners.delete(onFail); };
   }, []);
 
