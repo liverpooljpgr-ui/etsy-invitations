@@ -438,7 +438,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
               <div className="wiz-preview" data-step={STEPS[Math.min(step, GUEST_IDX - 1)].n}>
-                <Invitation content={preview} mode="preview" />
+                <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} />
               </div>
             )}
           </div>
@@ -599,7 +599,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
             <p className="ui-caption">Static preview · use “Preview animation” to test the envelope</p>
-            <Invitation content={preview} mode="preview" />
+            <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} />
           </div>
         </aside>
       </div>
