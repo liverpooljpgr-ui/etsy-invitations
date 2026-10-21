@@ -128,6 +128,20 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [status, setStatus] = useState(initialStatus);
   const steps: readonly { n: number; label: string }[] = status === "published" ? [...STEPS, GUEST_STEP] : STEPS;
   const goStep = (i: number) => setStep(Math.max(0, Math.min(steps.length - 1, i)));
+  // phones: swipe the live preview left / right to go to the next / previous screen
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const [slide, setSlide] = useState<{ dir: "next" | "prev"; step: number } | null>(null);
+  const onSwipeEnd = (e: React.TouchEvent) => {
+    const s0 = swipe.current; swipe.current = null;
+    const t = e.changedTouches[0];
+    if (!s0 || !t) return;
+    const dx = t.clientX - s0.x, dy = t.clientY - s0.y;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return; // a clear sideways flick only, not a scroll
+    const to = Math.max(0, Math.min(GUEST_IDX - 1, step + (dx < 0 ? 1 : -1)));
+    if (to === step) return;
+    setSlide({ dir: dx < 0 ? "next" : "prev", step: to });
+    goStep(to);
+  };
   // every step opens from its top
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [step]);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
@@ -431,9 +445,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       )}
 
       <div className={`ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px] ${typing ? "max-lg:pb-[50vh]" : ""}`}>
-        <div className={`wiz-preview-wrap lg:hidden ${step === GUEST_IDX ? "hidden" : ""}`}>
-          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {GUEST_IDX} · live preview</p>
-          <div className="wiz-preview-box">
+        <div className={`wiz-preview-wrap lg:hidden ${step === GUEST_IDX ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
+          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {GUEST_IDX} · live preview · swipe to change screen</p>
+          <div key={step} className={`wiz-preview-box ${slide?.step === step ? `wiz-slide-${slide.dir}` : ""}`}>
             {STEPS[Math.min(step, GUEST_IDX - 1)].n >= 3 && draft.hidden.includes(STEPS[Math.min(step, GUEST_IDX - 1)].n) ? (
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
