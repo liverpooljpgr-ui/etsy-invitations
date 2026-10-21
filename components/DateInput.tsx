@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 /** "YYYY-MM-DD" -> "DD/MM/YYYY" ("" when empty or malformed). */
 const display = (iso: string) => {
@@ -26,7 +26,6 @@ function toIso(digits: string) {
  */
 export function DateInput({ value, onChange }: { value: string; onChange: (iso: string) => void }) {
   const [text, setText] = useState(() => display(value));
-  const pickRef = useRef<HTMLInputElement>(null);
 
   // the value changed from outside (the calendar, another version loaded): show it
   const [seen, setSeen] = useState(value);
@@ -51,13 +50,14 @@ export function DateInput({ value, onChange }: { value: string; onChange: (iso: 
     <div style={{ display: "grid", gridTemplateColumns: "1fr 48px", gap: 8, position: "relative" }}>
       <input className="ui-input" inputMode="numeric" autoComplete="off" placeholder="DD/MM/YYYY" aria-label="Date (day / month / year)" aria-invalid={bad}
         onFocus={(e) => e.target.select()} value={text} onChange={(e) => type(e.target.value)} />
-      <button type="button" aria-label="Pick a date from the calendar" className="ui-btn ui-btn-gray" style={{ padding: 0, minHeight: 48, borderRadius: 12 }}
-        onClick={() => { const el = pickRef.current; if (!el) return; try { el.showPicker(); } catch { el.focus(); el.click(); } }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>
-      </button>
-      {/* the browser's own calendar, opened by the button; picking a day fills the field */}
-      <input ref={pickRef} type="date" tabIndex={-1} aria-hidden="true" value={value} onChange={(e) => { setText(display(e.target.value)); onChange(e.target.value); }}
-        style={{ position: "absolute", right: 0, bottom: 0, width: 48, height: 1, opacity: 0, pointerEvents: "none", border: 0, padding: 0 }} />
+      {/* the browser's own calendar: a real date input laid invisibly over the icon, so the tap lands on it directly (phones refuse to open a picker from a hidden field) */}
+      <div className="ui-btn ui-btn-gray" style={{ position: "relative", padding: 0, minHeight: 48, borderRadius: 12, overflow: "hidden" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ pointerEvents: "none" }}><rect x="3.5" y="5" width="17" height="15.5" rx="3" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>
+        <input type="date" aria-label="Pick a date from the calendar" value={value}
+          onClick={(e) => { try { e.currentTarget.showPicker(); } catch { /* the browser opens it by itself */ } }}
+          onChange={(e) => { setText(display(e.target.value)); onChange(e.target.value); }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", border: 0, padding: 0, margin: 0, fontSize: 16 }} />
+      </div>
       {bad && <span className="ui-help" style={{ gridColumn: "1 / -1", color: "var(--ui-red)" }}>That date doesn’t exist. Use day / month / year, for example 25/06/2027.</span>}
     </div>
   );
