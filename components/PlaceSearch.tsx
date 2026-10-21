@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { isMapsLink } from "@/lib/maps-link";
+import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 
 const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 const MAX_SEARCHES = 40; // per time the editor is open: keeps the Google bill at zero even if someone types a lot
@@ -20,6 +22,7 @@ export function PlaceSearch({ label, placeholder, onPick }: { label: string; pla
   const [q, setQ] = useState("");
   const [found, setFound] = useState<{ q: string; items: Suggestion[] } | null>(null);
   const [error, setError] = useState("");
+  const [reading, setReading] = useState(false);
   const token = useRef(newToken());
   const used = useRef(0);
 
@@ -27,6 +30,18 @@ export function PlaceSearch({ label, placeholder, onPick }: { label: string; pla
   useEffect(() => {
     const text = q.trim();
     if (!KEY || text.length < 3) return;
+    if (isMapsLink(text)) { // a pasted Google Maps link: read the place out of it instead of searching
+      const t = setTimeout(async () => {
+        setReading(true); setError("");
+        try {
+          const p = await lookupPlaceFromLink(text);
+          if (p) { onPick({ name: p.name, address: p.address, mapUrl: p.mapUrl }); setQ(""); }
+          else setError("Could not read a place from that link. Try the search box or type the details by hand.");
+        } catch { setError("Could not read that link. You can type the details by hand."); }
+        setReading(false);
+      }, 600);
+      return () => clearTimeout(t);
+    }
     const ctl = new AbortController();
     const timer = setTimeout(async () => {
       if (used.current >= MAX_SEARCHES) { setError("Search limit reached for now. Type the address by hand or reopen the editor."); return; }
@@ -52,6 +67,7 @@ export function PlaceSearch({ label, placeholder, onPick }: { label: string; pla
       }
     }, 450);
     return () => { clearTimeout(timer); ctl.abort(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
   if (!KEY) return null;
@@ -77,7 +93,7 @@ export function PlaceSearch({ label, placeholder, onPick }: { label: string; pla
   return (
     <div className="ui-field">
       <label className="ui-label" htmlFor={id}>{label}</label>
-      <input id={id} className="ui-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={placeholder ?? "Start typing a name or address…"}
+      <input id={id} className="ui-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={placeholder ?? "Name, address or a Google Maps link"}
         autoComplete="off" role="combobox" aria-expanded={items.length > 0} aria-controls={`${id}-list`} />
       {items.length > 0 && (
         <ul id={`${id}-list`} role="listbox" className="ui-group" style={{ listStyle: "none", margin: 0, padding: 0 }}>
@@ -93,7 +109,8 @@ export function PlaceSearch({ label, placeholder, onPick }: { label: string; pla
         </ul>
       )}
       {error && <p className="ui-help" style={{ color: "var(--ui-red)" }}>{error}</p>}
-      {!error && items.length === 0 && <p className="ui-help">Pick a result and the details below fill in for you. You can still change them.</p>}
+      {reading && <p className="ui-help">Reading the link…</p>}
+      {!error && !reading && items.length === 0 && <p className="ui-help">Type a name or paste a Google Maps link, and the details below fill in for you. You can still change them.</p>}
     </div>
   );
 }

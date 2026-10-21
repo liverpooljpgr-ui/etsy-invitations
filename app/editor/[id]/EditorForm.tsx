@@ -7,6 +7,8 @@ import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/
 import { DateInput, type DateOrder } from "@/components/DateInput";
 import { TimeInput } from "@/components/TimeInput";
 import { MapPreview, PlaceSearch } from "@/components/PlaceSearch";
+import { isMapsLink } from "@/lib/maps-link";
+import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
@@ -352,6 +354,21 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     set: (v: boolean) => update((d) => ({ ...d, hidden: v ? d.hidden.filter((x) => x !== n) : [...new Set([...d.hidden, n])].sort() })),
   });
   const set = <K extends keyof Content>(k: K, v: Content[K]) => update((d) => ({ ...d, [k]: v }));
+  // a Google Maps link pasted into "Map link" fills in the venue name and address
+  const [mapNote, setMapNote] = useState("");
+  const [lookedUp, setLookedUp] = useState("");
+  const fillVenueFromLink = async (link: string) => {
+    const l = link.trim();
+    if (!isMapsLink(l) || lookedUp === l) return;
+    setLookedUp(l);
+    setMapNote("Reading the link…");
+    try {
+      const pl = await lookupPlaceFromLink(l);
+      if (!pl) { setMapNote("Link saved. We could not read a place name from it, so fill in the name and address by hand."); return; }
+      update((d) => ({ ...d, event: { ...d.event, venue: pl.name.slice(0, 120), address: pl.address.slice(0, 300), mapUrl: l.slice(0, 500) } }));
+      setMapNote("Venue name and address filled in from the link. You can edit them.");
+    } catch { setMapNote("Could not read that link. Fill in the name and address by hand."); }
+  };
   // Two fixed registry options (Amazon, Target), stored as registry[] items with those labels.
   const regUrl = (label: string) => draft.registry.find((r) => r.label === label)?.url ?? "";
   const setRegUrl = (label: string, url: string) =>
@@ -505,12 +522,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
-            <PlaceSearch label="Find the venue" placeholder="Venue name or address" onPick={(p) => set("event", { ...draft.event, venue: p.name.slice(0, 120), address: p.address.slice(0, 300), mapUrl: p.mapUrl.slice(0, 500) })} />
+            <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={(p) => set("event", { ...draft.event, venue: p.name.slice(0, 120), address: p.address.slice(0, 300), mapUrl: p.mapUrl.slice(0, 500) })} />
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Full address (Enter starts a new line)">
               <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
             </Field>
-            <Field label="Map link (https://…)"><input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })} /></Field>
+            <Field label="Map link (https://…)">
+              <input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })}
+                onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
+              {mapNote && <span className="ui-help">{mapNote}</span>}
+            </Field>
             <MapPreview query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} />
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
@@ -538,7 +559,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
-            <PlaceSearch label="Find the hotel" placeholder="Hotel name or address" onPick={(p) => set("hotel", { ...draft.hotel, name: p.name.slice(0, 30), address: p.address.slice(0, 60) })} />
+            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={(p) => set("hotel", { ...draft.hotel, name: p.name.slice(0, 30), address: p.address.slice(0, 60) })} />
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
