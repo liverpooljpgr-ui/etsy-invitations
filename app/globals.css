@@ -491,13 +491,11 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
 }
 }
 
-/* Nohemi for headings (files go in public/fonts/; until they are there headings fall back to Raleway) */
-@font-face { font-family:"Nohemi"; font-weight:400; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-Regular.woff2") format("woff2"); }
-@font-face { font-family:"Nohemi"; font-weight:500; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-Medium.woff2") format("woff2"); }
-@font-face { font-family:"Nohemi"; font-weight:600; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-SemiBold.woff2") format("woff2"); }
-@font-face { font-family:"Nohemi"; font-weight:700; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-Bold.woff2") format("woff2"); }
+/* Platform headings and accents (fonts are loaded in layout.tsx) */
 @layer components {
-  .ui h1, .ui h2, .ui h3, .ui h4, .ui-large-title, .ui-sec-head, .dash-title { font-family:"Nohemi", var(--font-ui), -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  .ui h1, .ui h2, .ui h3, .ui h4, .ui-large-title, .ui-sec-head, .dash-title { font-family:var(--font-head), Georgia, "Times New Roman", serif; }
+  .ui .ui-accent { font-family:var(--font-accent), "Brush Script MT", cursive; font-weight:400; letter-spacing:0; }
+  .ui .ui-lede.ui-accent { font-size:26px; line-height:1.15; }
 }
 
 /* Gradient buttons: login / publish (lilac) and preview / next (black) */

@@ -8,7 +8,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     <div className="ui ui-center">
       <main className="ui-auth">
         <h1 className="ui-large-title" style={{ margin: "0 0 8px", textAlign: "center" }}>Sign in</h1>
-        <p className="ui-lede" style={{ textAlign: "center" }}>Sign in with the email you used the very first time.</p>
+        <p className="ui-lede ui-accent" style={{ textAlign: "center" }}>Sign in with the email you used the very first time.</p>
         <div className="ui-card"><LoginForm next={next ?? "/dashboard"} /></div>
       </main>
     </div>

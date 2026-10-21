@@ -48,13 +48,13 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
         <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Invitation is waiting"}</h1>
         {status === "ok" && (
           <>
-            <p className="ui-lede">Enter your email to personalise it.</p>
+            <p className="ui-lede ui-accent">Enter your email to personalise it.</p>
             <div className="ui-card"><ClaimForm token={token} /></div>
           </>
         )}
         {status === "used" && (
           <>
-            <p className="ui-lede">Sign in with email you used the very first time.</p>
+            <p className="ui-lede ui-accent">Sign in with email you used the very first time.</p>
             <div className="ui-card"><ClaimForm token={token} label="Sign in" /></div>
           </>
         )}
