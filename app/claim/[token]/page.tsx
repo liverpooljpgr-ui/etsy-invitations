@@ -45,7 +45,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
-        <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Your invitation is ready"}</h1>
+        <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Invitation is waiting"}</h1>
         {status === "ok" && (
           <>
             <p className="ui-lede">Enter your email to personalise it.</p>
