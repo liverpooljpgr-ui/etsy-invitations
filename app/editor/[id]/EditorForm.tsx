@@ -6,6 +6,7 @@ import { Invitation } from "@/components/invitation/Invitation";
 import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { DateInput, type DateOrder } from "@/components/DateInput";
 import { TimeInput } from "@/components/TimeInput";
+import { MapPreview, PlaceSearch } from "@/components/PlaceSearch";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
@@ -504,11 +505,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
+            <PlaceSearch label="Find the venue" placeholder="Venue name or address" onPick={(p) => set("event", { ...draft.event, venue: p.name.slice(0, 120), address: p.address.slice(0, 300), mapUrl: p.mapUrl.slice(0, 500) })} />
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Full address (Enter starts a new line)">
               <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
             </Field>
             <Field label="Map link (https://…)"><input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })} /></Field>
+            <MapPreview query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} />
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
@@ -535,6 +538,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
+            <PlaceSearch label="Find the hotel" placeholder="Hotel name or address" onPick={(p) => set("hotel", { ...draft.hotel, name: p.name.slice(0, 30), address: p.address.slice(0, 60) })} />
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
