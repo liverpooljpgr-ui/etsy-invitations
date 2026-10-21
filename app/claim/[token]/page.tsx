@@ -48,18 +48,18 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
         <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>{status === "used" ? "Welcome back" : "Your invitation is ready"}</h1>
         {status === "ok" && (
           <>
-            <p className="ui-lede">Enter your email to personalise it. The first time, we email you one confirmation link; after that you only need your email.</p>
+            <p className="ui-lede">Enter your email to personalise it.</p>
             <div className="ui-card"><ClaimForm token={token} /></div>
           </>
         )}
         {status === "used" && (
           <>
-            <p className="ui-lede">Sign in with the email you used the very first time.</p>
+            <p className="ui-lede">Sign in with email you used the very first time.</p>
             <div className="ui-card"><ClaimForm token={token} label="Sign in" /></div>
           </>
         )}
         {status === "invalid" && <p className="ui-lede">This link is invalid or has expired. Contact support for a new one.</p>}
-        {status === "ok" && <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}><Link href="/login" className="ui-link">Already have an invitation? Sign in with your email</Link></p>}
+        {status === "ok" && <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}><Link href="/login" className="ui-link">Already have an invitation? Sign in</Link></p>}
       </main>
     </div>
   );

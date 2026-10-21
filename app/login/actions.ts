@@ -31,7 +31,7 @@ export async function signInByEmail(_prev: LoginState, formData: FormData): Prom
 
   const { data: p } = await createAdminClient().from("profiles").select("role").eq("email", email.data).maybeSingle();
   if (p?.role === "admin") return { ok: true, message: "", needsPassword: true, email: email.data };
-  return { ok: false, message: "This is not the right email. Enter the same email you used the first time you opened your personal link. If you haven't opened that link yet, open it first — you only need it once." };
+  return { ok: false, message: "This is not the right email. Enter the same email you used the first time you opened your personal link." };
 }
 
 /** Admin sign-in with email + password. Anyone who is not an admin is signed straight out again. */
