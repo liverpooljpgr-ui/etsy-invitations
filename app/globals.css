@@ -490,3 +490,12 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
   .adm-actions { justify-content:space-between; }
 }
 }
+
+/* Nohemi for headings (files go in public/fonts/; until they are there headings fall back to Raleway) */
+@font-face { font-family:"Nohemi"; font-weight:400; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-Regular.woff2") format("woff2"); }
+@font-face { font-family:"Nohemi"; font-weight:500; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-Medium.woff2") format("woff2"); }
+@font-face { font-family:"Nohemi"; font-weight:600; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-SemiBold.woff2") format("woff2"); }
+@font-face { font-family:"Nohemi"; font-weight:700; font-style:normal; font-display:swap; src:url("/fonts/Nohemi-Bold.woff2") format("woff2"); }
+@layer components {
+  .ui h1, .ui h2, .ui h3, .ui h4, .ui-large-title, .ui-sec-head, .dash-title { font-family:"Nohemi", var(--font-ui), -apple-system, "Helvetica Neue", Arial, sans-serif; }
+}
