@@ -8,6 +8,7 @@ import { DateInput, type DateOrder } from "@/components/DateInput";
 import { TimeInput } from "@/components/TimeInput";
 import { PlaceSearch, type Place } from "@/components/PlaceSearch";
 import { MapPicker } from "@/components/MapPicker";
+import { PhotoCrop } from "@/components/PhotoCrop";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -524,8 +525,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <span className="ui-label">Photo (shown in an arch)</span>
               <div className="ui-media">
                 {draft.photo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={draft.photo.url} alt="" className="ui-thumb" />
+                  <div style={{ width: "100%" }}>
+                    <PhotoCrop photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
+                  </div>
                 )}
                 <FilePick accept="image/jpeg,image/png,image/webp" label={draft.photo ? "Change photo" : "Choose a photo"} onFile={(f) => void onPhoto(f)} />
                 {draft.photo && <button type="button" onClick={() => set("photo", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}

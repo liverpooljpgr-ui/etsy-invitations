@@ -1,3 +1,4 @@
+import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
 import { Qr } from "./Qr";
@@ -121,8 +122,12 @@ export function Invitation({
         <section className="card card-sheet" data-card="2" tabIndex={-1}>
           <div className={c.photo || ph ? "sheet-in" : "sheet-in no-photo"}>
             {c.photo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img className="arch" src={c.photo.url} alt={c.photo.alt || `${first} and ${second}`} />
+              <div className="arch" role="img" aria-label={c.photo.alt || `${first} and ${second}`}>
+                <span className="arch-in">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={c.photo.url} alt="" draggable={false} style={photoImgStyle(c.photo)} />
+                </span>
+              </div>
             ) : ph ? (
               <div className="arch arch-empty">Photo</div>
             ) : null}

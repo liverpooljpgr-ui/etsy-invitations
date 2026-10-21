@@ -25,7 +25,9 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .tiny { font-size:calc(10.5px * var(--k,1)); letter-spacing:.24em; }
 .inv .names { display:flex; flex-direction:column; align-items:center; font-family:var(--font-script),cursive; font-weight:400; font-size:calc(54px * var(--k,1)); line-height:1.05; color:var(--ink); }
 .inv .amp { font-size:calc(34px * var(--k,1)); color:var(--gold); }
-.inv .arch { width:62%; aspect-ratio:3/4; object-fit:cover; border-radius:999px 999px 6px 6px; border:1px solid var(--gold); padding:calc(5px * var(--k,1)); background:var(--paper); }
+.inv .arch { width:62%; aspect-ratio:3/4; border-radius:999px 999px 6px 6px; border:1px solid var(--gold); padding:calc(5px * var(--k,1)); background:var(--paper); }
+.inv .arch-in { position:relative; display:block; width:100%; height:100%; overflow:hidden; border-radius:999px 999px 3px 3px; }
+.inv .arch-in img { display:block; user-select:none; -webkit-user-drag:none; }
 .inv .arch-empty { display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:calc(13px * var(--k,1)); letter-spacing:.2em; text-transform:uppercase; }
 .inv .script { font-family:var(--font-script),cursive; font-weight:400; font-size:calc(44px * var(--k,1)); color:var(--gold); }
 .inv .script.big { font-size:calc(46px * var(--k,1)); color:var(--dark-ink); line-height:1.1; }
@@ -128,7 +130,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .card-sheet { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; justify-content:flex-start; }
 /* cq units only work on descendants of the container, hence the inner wrapper */
 .inv .sheet-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:2cqh; padding:17cqh 7cqw 0; }
-.inv .card-sheet .arch { height:44cqh; width:auto; aspect-ratio:3/4; background:#fffdf8; flex:none; }
+.inv .card-sheet .arch { height:44cqh; width:calc(44cqh * 3 / 4); aspect-ratio:3/4; background:#fffdf8; flex:none; }
 .inv .dt { display:flex; flex-direction:column; align-items:center; gap:.9cqh; color:#4f463d; }
 .inv .dt-month, .inv .dt-year { font-size:5.5cqw; letter-spacing:.26em; text-transform:uppercase; padding-left:.26em; }
 .inv .dt-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0; font-size:3.4cqw; letter-spacing:.2em; text-transform:uppercase; }

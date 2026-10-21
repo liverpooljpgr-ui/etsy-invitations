@@ -62,7 +62,7 @@ export const contentSchema = z.object({
   }),
   decor: z.enum(["butterfly", "none"]).default("butterfly"),
   event: z.object({ date: optDate, time: text(30), venue: text(120), address: text(300), mapUrl: optUrl }),
-  photo: z.object({ url: photoUrl, alt: text(200) }).nullable(),
+  photo: z.object({ url: photoUrl, alt: text(200), ar: z.number().min(0.1).max(10).optional(), cx: z.number().min(0).max(1).optional(), cy: z.number().min(0).max(1).optional(), zoom: z.number().min(1).max(4).optional() }).nullable(),
   /** screens (3–7) the host switched off: not shown to guests */
   hidden: z.array(z.number().int().min(3).max(7)).max(5).default([]),
   /** show the "Add to calendar" link on the closing screen */
