@@ -7,7 +7,7 @@ import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 const MAX_SEARCHES = 40; // per time the editor is open: keeps the Google bill at zero even if someone types a lot
 
-export type Place = { name: string; address: string; mapUrl: string };
+export type Place = { name: string; address: string; mapUrl: string; lat?: number; lng?: number };
 type Suggestion = { id: string; main: string; secondary: string };
 
 const newToken = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : String(Math.random()).slice(2));
@@ -76,11 +76,11 @@ export function PlaceSearch({ label, placeholder, onPick }: { label: string; pla
     setError("");
     try {
       const res = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(s.id)}?sessionToken=${encodeURIComponent(token.current)}`, {
-        headers: { "X-Goog-Api-Key": KEY, "X-Goog-FieldMask": "displayName,formattedAddress,googleMapsUri" },
+        headers: { "X-Goog-Api-Key": KEY, "X-Goog-FieldMask": "displayName,formattedAddress,googleMapsUri,location" },
       });
       if (!res.ok) throw new Error(String(res.status));
-      const d = (await res.json()) as { displayName?: { text?: string }; formattedAddress?: string; googleMapsUri?: string };
-      onPick({ name: d.displayName?.text ?? s.main, address: d.formattedAddress ?? s.secondary, mapUrl: d.googleMapsUri ?? "" });
+      const d = (await res.json()) as { displayName?: { text?: string }; formattedAddress?: string; googleMapsUri?: string; location?: { latitude: number; longitude: number } };
+      onPick({ name: d.displayName?.text ?? s.main, address: d.formattedAddress ?? s.secondary, mapUrl: d.googleMapsUri ?? "", lat: d.location?.latitude, lng: d.location?.longitude });
       setQ("");
       setFound(null);
       token.current = newToken(); // a pick ends the Google session

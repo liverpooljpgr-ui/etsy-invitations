@@ -6,7 +6,8 @@ import { Invitation } from "@/components/invitation/Invitation";
 import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { DateInput, type DateOrder } from "@/components/DateInput";
 import { TimeInput } from "@/components/TimeInput";
-import { MapPreview, PlaceSearch } from "@/components/PlaceSearch";
+import { PlaceSearch, type Place } from "@/components/PlaceSearch";
+import { MapPicker } from "@/components/MapPicker";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -360,6 +361,17 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     set: (v: boolean) => update((d) => ({ ...d, hidden: v ? d.hidden.filter((x) => x !== n) : [...new Set([...d.hidden, n])].sort() })),
   });
   const set = <K extends keyof Content>(k: K, v: Content[K]) => update((d) => ({ ...d, [k]: v }));
+  // a place chosen in the search box or on the map fills the venue / hotel fields
+  const [venuePos, setVenuePos] = useState<{ lat: number; lng: number } | null>(null);
+  const [hotelPos, setHotelPos] = useState<{ lat: number; lng: number } | null>(null);
+  const pickVenue = (p: Place) => {
+    set("event", { ...draft.event, venue: p.name.slice(0, 120), address: p.address.slice(0, 300), mapUrl: p.mapUrl.slice(0, 500) });
+    if (p.lat !== undefined && p.lng !== undefined) setVenuePos({ lat: p.lat, lng: p.lng });
+  };
+  const pickHotel = (p: Place) => {
+    set("hotel", { ...draft.hotel, name: p.name.slice(0, 30), address: p.address.slice(0, 60) });
+    if (p.lat !== undefined && p.lng !== undefined) setHotelPos({ lat: p.lat, lng: p.lng });
+  };
   // a Google Maps link pasted into "Map link" fills in the venue name and address
   const [mapNote, setMapNote] = useState("");
   const [lookedUp, setLookedUp] = useState("");
@@ -528,7 +540,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
-            <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={(p) => set("event", { ...draft.event, venue: p.name.slice(0, 120), address: p.address.slice(0, 300), mapUrl: p.mapUrl.slice(0, 500) })} />
+            <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={pickVenue} />
+            <MapPicker query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} center={venuePos} onPick={pickVenue} />
             <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
             <Field label="Full address (Enter starts a new line)">
               <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
@@ -538,7 +551,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
               {mapNote && <span className="ui-help">{mapNote}</span>}
             </Field>
-            <MapPreview query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} />
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
@@ -565,7 +577,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
-            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={(p) => set("hotel", { ...draft.hotel, name: p.name.slice(0, 30), address: p.address.slice(0, 60) })} />
+            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
+            <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
