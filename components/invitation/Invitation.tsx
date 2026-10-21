@@ -33,6 +33,12 @@ function longDate(iso: string) {
 }
 
 /** "please RSVP" → small script lead + big letter-spaced caps; a single word (e.g. "RSVP") is split over two lines (RS / VP). */
+const SMALL = new Set(["a", "an", "the", "of", "and", "or", "in", "on", "at", "to", "for"]);
+/** Title Case for the card headings: "save the date" -> "Save the Date" (small words stay lower case, except the first). */
+function titleCase(text: string) {
+  return text.replace(/\S+/g, (w, i: number) => (i > 0 && SMALL.has(w.toLowerCase()) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)));
+}
+
 function RsvpTitle({ text }: { text: string }) {
   const words = text.trim().split(/\s+/).filter(Boolean);
   const lead = words.length >= 2 ? words[0] : "please";
@@ -120,7 +126,7 @@ export function Invitation({
             ) : ph ? (
               <div className="arch arch-empty">Photo</div>
             ) : null}
-            {(d || ph) && c.texts.saveTheDate && <p className="save">{c.texts.saveTheDate}</p>}
+            {(d || ph) && c.texts.saveTheDate && <p className="save">{titleCase(c.texts.saveTheDate)}</p>}
             {d ? (
               <DateBlock d={d} time={c.event.time} />
             ) : ph ? (
@@ -151,7 +157,7 @@ export function Invitation({
       {!off(4) && (c.timeline.length > 0 || ph) && (
         <section className="card card-timeline" data-card="4">
           <div className="tl-in">
-            <h2 className="script tl-title">{c.texts.timelineTitle || "timeline"}</h2>
+            <h2 className="script tl-title">{titleCase(c.texts.timelineTitle || "Timeline")}</h2>
             {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
             <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
               {c.timeline.map((it, i) => (
@@ -167,7 +173,7 @@ export function Invitation({
       {!off(5) && hasInfo && (
         <section className="card card-details" data-card="5">
           <div className="dtl-in">
-            <h2 className="script tl-title">{c.texts.detailsTitle || "details"}</h2>
+            <h2 className="script tl-title">{titleCase(c.texts.detailsTitle || "Details")}</h2>
             {(registry.length > 0 || hasDress || c.hotel.name || ph) && (
               <div className="dtl-row">
                 {registry.length > 0 && (
@@ -214,7 +220,7 @@ export function Invitation({
       {!off(6) && hasRsvp && (
         <section className="card card-rsvp" data-card="6">
           <div className="rsvp-in">
-            <RsvpTitle text={c.texts.rsvpTitle || "please RSVP"} />
+            <RsvpTitle text="Please RSVP" />
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
             {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
             <p className="rsvp-note">{c.rsvp.note || "Please include all guests name you are taking with you"}</p>
