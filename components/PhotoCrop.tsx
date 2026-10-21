@@ -66,3 +66,16 @@ export function PhotoCrop({ photo, onChange }: { photo: Photo; onChange: (patch:
     </div>
   );
 }
+
+/** The saved photo as it sits in the arch (small, not editable). */
+export function PhotoArchThumb({ photo }: { photo: Photo }) {
+  return (
+    <div
+      role="img" aria-label="Your photo in the arch"
+      style={{ position: "relative", width: 110, aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: "999px 999px 6px 6px", background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a", flex: "none" }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={photo.url} alt="" draggable={false} style={photoImgStyle(photo)} />
+    </div>
+  );
+}

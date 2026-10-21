@@ -8,7 +8,7 @@ import { DateInput, type DateOrder } from "@/components/DateInput";
 import { TimeInput } from "@/components/TimeInput";
 import { PlaceSearch, type Place } from "@/components/PlaceSearch";
 import { MapPicker } from "@/components/MapPicker";
-import { PhotoCrop } from "@/components/PhotoCrop";
+import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -335,6 +335,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       if (error) throw error;
       const { data } = supabase.storage.from("invitation-media").getPublicUrl(path);
       update((d) => ({ ...d, photo: { url: data.publicUrl, alt: d.photo?.alt ?? "" } }));
+      setCropOpen(true); // a new photo opens the crop / zoom tool
     } catch {
       setNotice({ ok: false, text: "Photo upload failed. Please try again." });
     }
@@ -375,6 +376,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   };
   // a Google Maps link pasted into "Map link" fills in the venue name and address
   const [mapNote, setMapNote] = useState("");
+  const [cropOpen, setCropOpen] = useState(false); // the crop / zoom tool is open only while a photo is being adjusted
   const [lookedUp, setLookedUp] = useState("");
   const fillVenueFromLink = async (link: string) => {
     const l = link.trim();
@@ -524,13 +526,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <div className="ui-field">
               <span className="ui-label">Photo (shown in an arch)</span>
               <div className="ui-media">
-                {draft.photo && (
-                  <div style={{ width: "100%" }}>
+                {draft.photo && cropOpen && (
+                  <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
                     <PhotoCrop photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
+                    <button type="button" onClick={() => setCropOpen(false)} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>Save photo</button>
                   </div>
                 )}
+                {draft.photo && !cropOpen && <PhotoArchThumb photo={draft.photo} />}
                 <FilePick accept="image/jpeg,image/png,image/webp" label={draft.photo ? "Change photo" : "Choose a photo"} onFile={(f) => void onPhoto(f)} />
-                {draft.photo && <button type="button" onClick={() => set("photo", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+                {draft.photo && !cropOpen && <button type="button" onClick={() => setCropOpen(true)} className="ui-btn ui-btn-gray ui-btn-sm">Adjust</button>}
+                {draft.photo && <button type="button" onClick={() => { set("photo", null); setCropOpen(false); }} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
               </div>
             </div>
             <Field label="Text above the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
