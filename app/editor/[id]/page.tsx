@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { parseContent } from "@/lib/content/schema";
@@ -17,6 +18,9 @@ export default async function EditorPage({ params, searchParams }: { params: Pro
   ]);
   if (!row || !plan) notFound();
 
+  // visitors from the USA type dates month first
+  const dateOrder = (await headers()).get("x-vercel-ip-country") === "US" ? "mdy" : "dmy";
+
   return (
     <EditorForm
       id={inv.id}
@@ -26,6 +30,7 @@ export default async function EditorPage({ params, searchParams }: { params: Pro
       features={plan.features}
       initialDraft={parseContent(row.draft)}
       initialVersion={row.draft_version}
+      dateOrder={dateOrder}
       initialStep={Number(step) >= 1 ? Math.floor(Number(step)) : undefined}
     />
   );
