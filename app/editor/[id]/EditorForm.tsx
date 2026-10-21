@@ -481,11 +481,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 {draft.photo && <button type="button" onClick={() => set("photo", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
               </div>
             </div>
+            <Field label="Text above the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
             <div className="ui-two">
               <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
-              <Field label="Time (e.g. 2:00 PM)"><input className={inputCls} maxLength={30} value={draft.event.time} onChange={(e) => set("event", { ...draft.event, time: e.target.value })} /></Field>
+              <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
             </div>
-            <Field label="Text under the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
           </Section>
 
           <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
