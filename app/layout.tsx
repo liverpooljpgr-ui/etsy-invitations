@@ -7,7 +7,7 @@ const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], we
 const sans = Jost({ variable: "--font-sans", subsets: ["latin"] });
 // Platform UI (the invitation itself keeps its own fonts): Manrope for text and labels, Libre Caslon for headings, Parisienne for accents
 const ui = Manrope({ variable: "--font-ui", subsets: ["latin", "latin-ext", "cyrillic"] });
-const head = Libre_Caslon_Text({ variable: "--font-head", subsets: ["latin", "latin-ext"], weight: ["400", "500", "600", "700"] });
+const head = Libre_Caslon_Text({ variable: "--font-head", subsets: ["latin", "latin-ext"], weight: ["400", "700"] });
 const accent = Parisienne({ variable: "--font-accent", subsets: ["latin", "latin-ext"], weight: "400" });
 
 export const metadata: Metadata = {
