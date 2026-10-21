@@ -2,60 +2,63 @@
 
 import { useRef, useState } from "react";
 
-const parts = (iso: string) => {
+/** "YYYY-MM-DD" -> "DD/MM/YYYY" ("" when empty or malformed). */
+const display = (iso: string) => {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  return m ? { d: String(Number(m[3])), m: String(Number(m[2])), y: m[1] } : { d: "", m: "", y: "" };
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : "";
 };
 
-/** "YYYY-MM-DD" when day / month / year make a real calendar date, otherwise "". */
-function compose(d: string, m: string, y: string) {
-  if (y.length !== 4 || !d || !m) return "";
-  const dn = Number(d), mn = Number(m), yn = Number(y);
-  const dt = new Date(Date.UTC(yn, mn - 1, dn));
-  if (dt.getUTCFullYear() !== yn || dt.getUTCMonth() !== mn - 1 || dt.getUTCDate() !== dn) return "";
-  return `${y}-${String(mn).padStart(2, "0")}-${String(dn).padStart(2, "0")}`;
+/** Up to 8 digits -> "DD/MM/YYYY" with the slashes put in as you type. */
+const mask = (digits: string, slash: boolean) => [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)].filter(Boolean).join("/") + (slash && (digits.length === 2 || digits.length === 4) ? "/" : "");
+
+/** "YYYY-MM-DD" when the 8 digits are a real calendar date, otherwise "". */
+function toIso(digits: string) {
+  if (digits.length !== 8) return "";
+  const d = Number(digits.slice(0, 2)), m = Number(digits.slice(2, 4)), y = Number(digits.slice(4));
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  if (y < 1000 || dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return "";
+  return `${digits.slice(4)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
 }
 
 /**
- * Date as three number fields (day, month, year) plus a calendar button. Typing opens the numeric keyboard on phones,
- * and it can't be misread (no DD/MM vs MM/DD guessing). The value is an ISO date, or "" while it is incomplete.
+ * One date field with a DD/MM/YYYY mask: tapping it opens the numeric keyboard on phones, the slashes appear by
+ * themselves, and the button beside it opens the browser's calendar. The value is an ISO date, or "" while incomplete.
  */
 export function DateInput({ value, onChange }: { value: string; onChange: (iso: string) => void }) {
-  const [p, setP] = useState(() => parts(value));
-  const mRef = useRef<HTMLInputElement>(null);
-  const yRef = useRef<HTMLInputElement>(null);
+  const [text, setText] = useState(() => display(value));
   const pickRef = useRef<HTMLInputElement>(null);
 
-  // the value changed from outside (another version loaded): show it
+  // the value changed from outside (the calendar, another version loaded): show it
   const [seen, setSeen] = useState(value);
   if (value !== seen) {
     setSeen(value);
-    if (value !== compose(p.d, p.m, p.y)) setP(parts(value));
+    if (value !== toIso(text.replace(/\D/g, ""))) setText(display(value));
   }
 
-  const update = (next: { d: string; m: string; y: string }) => {
-    setP(next);
-    const iso = compose(next.d, next.m, next.y);
+  const digits = text.replace(/\D/g, "");
+  const bad = digits.length === 8 && !toIso(digits);
+
+  const type = (raw: string) => {
+    let d = raw.replace(/\D/g, "").slice(0, 8);
+    // deleting a slash would otherwise bring it straight back: take the digit before it instead
+    if (raw.length < text.length && d === digits) d = d.slice(0, -1);
+    setText(mask(d, raw.length > text.length)); // the next slash is added while typing forward, not while deleting
+    const iso = toIso(d);
     if (iso !== value) onChange(iso);
   };
-  const digits = (v: string, max: number) => v.replace(/\D/g, "").slice(0, max);
-  const bad = !!(p.d || p.m || p.y) && p.y.length === 4 && !compose(p.d, p.m, p.y);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.5fr 48px", gap: 8, position: "relative" }}>
-      <input className="ui-input" inputMode="numeric" autoComplete="off" onFocus={(e) => e.target.select()} placeholder="Day" aria-label="Day" aria-invalid={bad} value={p.d}
-        onChange={(e) => { const d = digits(e.target.value, 2); update({ ...p, d }); if (d.length === 2) mRef.current?.focus(); }} style={{ textAlign: "center" }} />
-      <input ref={mRef} className="ui-input" inputMode="numeric" autoComplete="off" onFocus={(e) => e.target.select()} placeholder="Month" aria-label="Month" aria-invalid={bad} value={p.m}
-        onChange={(e) => { const m = digits(e.target.value, 2); update({ ...p, m }); if (m.length === 2) yRef.current?.focus(); }} style={{ textAlign: "center" }} />
-      <input ref={yRef} className="ui-input" inputMode="numeric" autoComplete="off" onFocus={(e) => e.target.select()} placeholder="Year" aria-label="Year" aria-invalid={bad} value={p.y}
-        onChange={(e) => update({ ...p, y: digits(e.target.value, 4) })} style={{ textAlign: "center" }} />
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 48px", gap: 8, position: "relative" }}>
+      <input className="ui-input" inputMode="numeric" autoComplete="off" placeholder="DD/MM/YYYY" aria-label="Date (day / month / year)" aria-invalid={bad}
+        onFocus={(e) => e.target.select()} value={text} onChange={(e) => type(e.target.value)} />
       <button type="button" aria-label="Pick a date from the calendar" className="ui-btn ui-btn-gray" style={{ padding: 0, minHeight: 48, borderRadius: 12 }}
         onClick={() => { const el = pickRef.current; if (!el) return; try { el.showPicker(); } catch { el.focus(); el.click(); } }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>
       </button>
-      {/* the browser's own calendar, opened by the button; picking a day fills the three fields */}
-      <input ref={pickRef} type="date" tabIndex={-1} aria-hidden="true" value={value} onChange={(e) => update(parts(e.target.value))}
+      {/* the browser's own calendar, opened by the button; picking a day fills the field */}
+      <input ref={pickRef} type="date" tabIndex={-1} aria-hidden="true" value={value} onChange={(e) => { setText(display(e.target.value)); onChange(e.target.value); }}
         style={{ position: "absolute", right: 0, bottom: 0, width: 48, height: 1, opacity: 0, pointerEvents: "none", border: 0, padding: 0 }} />
+      {bad && <span className="ui-help" style={{ gridColumn: "1 / -1", color: "var(--ui-red)" }}>That date doesn’t exist. Use day / month / year, for example 25/06/2027.</span>}
     </div>
   );
 }
