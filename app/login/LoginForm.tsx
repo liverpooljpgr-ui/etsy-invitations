@@ -23,7 +23,7 @@ export function LoginForm({ next }: { next: string }) {
             <span className="ui-label">Password</span>
             <input name="password" type="password" required autoFocus autoComplete="current-password" className="ui-input" />
           </label>
-          <button disabled={pwPending} className="ui-btn ui-btn-primary" style={{ width: "100%" }}>{pwPending ? "Signing in…" : "Sign in"}</button>
+          <button disabled={pwPending} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>{pwPending ? "Signing in…" : "Sign in"}</button>
           {pwState && !pwState.ok && <p role="alert" className="ui-note ui-note-err" style={{ margin: 0 }}>{pwState.message}</p>}
         </form>
         <form action={linkAction} className="ui-auth-stack">
@@ -44,7 +44,7 @@ export function LoginForm({ next }: { next: string }) {
         <span className="ui-label">Email</span>
         <input name="email" type="email" required autoComplete="email" inputMode="email" className="ui-input" />
       </label>
-      <button disabled={pending} className="ui-btn ui-btn-primary" style={{ width: "100%" }}>{pending ? "Signing in…" : "Sign in"}</button>
+      <button disabled={pending} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>{pending ? "Signing in…" : "Sign in"}</button>
       {state && !state.ok && <p role="alert" className="ui-note ui-note-err" style={{ margin: 0 }}>{state.message}</p>}
     </form>
   );

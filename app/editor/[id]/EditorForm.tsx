@@ -267,7 +267,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   }, [saveState]);
 
   const preview = useMemo(() => applyPlan(draft, features), [draft, features]);
-  const publishTone = "ui-btn-blue"; // Publish stays blue whatever the state
+  const publishTone = "ui-btn-grad"; // Publish keeps the same look whatever the state
   // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
   const publicUrl = `${origin}/${slug}`;
@@ -385,7 +385,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               {stateLabel}
             </span>}
           </div>
-          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-dgrey max-lg:hidden"><IconPlay /> Preview animation</a>
+          <a href={`/preview/${id}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-grad-dark max-lg:hidden"><IconPlay /> Preview animation</a>
           <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn max-lg:hidden ${publishTone}`}>
             <IconPublish /> {status === "published" ? "Publish Updates" : "Publish"}
           </button>
@@ -570,7 +570,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <div className={`ui-auth-stack lg:hidden ${step === GUEST_IDX ? "wiz-in" : "hidden"}`}>
             {liveCard}
             <div className="wiz-actions">
-              <a href={`/preview/${id}?from=8`} className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+              <a href={`/preview/${id}?from=8`} className="ui-btn ui-btn-grad-dark"><IconPlay /> Preview</a>
               <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
                 <IconPublish /> Republish
               </button>
@@ -579,13 +579,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         )}
 
         {step < GUEST_IDX - 1 && (
-          <button type="button" onClick={() => goStep(step + 1)} className="ui-btn ui-btn-primary lg:hidden" style={{ width: "100%" }}>
+          <button type="button" onClick={() => goStep(step + 1)} className="ui-btn ui-btn-grad-dark lg:hidden" style={{ width: "100%" }}>
             Next <IconArrow />
           </button>
         )}
         {step === GUEST_IDX - 1 && (
           <div className="wiz-actions lg:hidden">
-            <a href={`/preview/${id}?from=7`} className="ui-btn ui-btn-dgrey"><IconPlay /> Preview</a>
+            <a href={`/preview/${id}?from=7`} className="ui-btn ui-btn-grad-dark"><IconPlay /> Preview</a>
             <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
               <IconPublish /> Publish
             </button>

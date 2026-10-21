@@ -499,3 +499,12 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
 @layer components {
   .ui h1, .ui h2, .ui h3, .ui h4, .ui-large-title, .ui-sec-head, .dash-title { font-family:"Nohemi", var(--font-ui), -apple-system, "Helvetica Neue", Arial, sans-serif; }
 }
+
+/* Gradient buttons: login / publish (lilac) and preview / next (black) */
+@layer components {
+  .ui-btn-grad, .ui-btn-grad-dark { color:#fff; border-radius:10px; text-transform:uppercase; letter-spacing:.14em; font-size:14px; font-weight:600; transition:transform .15s var(--ui-ease), opacity .2s ease, box-shadow .2s ease, filter .2s ease; }
+  .ui-btn-grad { background:linear-gradient(100deg, #a3b1fc 0%, #a87ff1 100%); box-shadow:0 10px 24px -8px rgba(150,120,240,.6), 0 0 0 1px rgba(255,255,255,.25) inset; }
+  .ui-btn-grad-dark { background:linear-gradient(100deg, #48484d 0%, #0b0b0c 100%); box-shadow:0 10px 24px -8px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.12) inset; }
+  .ui-btn-grad:hover:not(:disabled), .ui-btn-grad-dark:hover:not(:disabled) { filter:brightness(1.06); }
+  .ui-btn-grad.ui-btn-sm, .ui-btn-grad-dark.ui-btn-sm { letter-spacing:.1em; font-size:12.5px; }
+}
