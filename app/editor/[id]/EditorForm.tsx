@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Invitation } from "@/components/invitation/Invitation";
 import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
+import { DateInput } from "@/components/DateInput";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
@@ -480,7 +481,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               </div>
             </div>
             <div className="ui-two">
-              <Field label="Date"><input type="date" className={inputCls} value={draft.event.date} onChange={(e) => set("event", { ...draft.event, date: e.target.value })} /></Field>
+              <Field label="Date"><DateInput value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
               <Field label="Time (e.g. 2:00 PM)"><input className={inputCls} maxLength={30} value={draft.event.time} onChange={(e) => set("event", { ...draft.event, time: e.target.value })} /></Field>
             </div>
             <Field label="Text under the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
@@ -551,7 +552,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Section n={6} mobileHidden={step !== 5} toggle={screenToggle(6)} title="Card 6 · RSVP">
             <Field label="Title (first word in script, the rest large — e.g. “please RSVP”)"><input className={inputCls} maxLength={30} {...tp("rsvpTitle")} /></Field>
             <div className="ui-two">
-              <Field label="Reply by"><input type="date" className={inputCls} value={draft.rsvp.deadline} onChange={(e) => set("rsvp", { ...draft.rsvp, deadline: e.target.value })} /></Field>
+              <Field label="Reply by"><DateInput value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include all guests name you are taking with you" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
