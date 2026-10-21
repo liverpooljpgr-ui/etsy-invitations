@@ -4,6 +4,8 @@ import { requireUser } from "@/lib/auth";
 import { parseContent } from "@/lib/content/schema";
 import { EditorForm } from "./EditorForm";
 
+const MONTH_FIRST = new Set(["US", "CA", "PH"]);
+
 export default async function EditorPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ step?: string }> }) {
   const { id } = await params;
   const { step } = await searchParams;
@@ -18,8 +20,8 @@ export default async function EditorPage({ params, searchParams }: { params: Pro
   ]);
   if (!row || !plan) notFound();
 
-  // visitors from the USA type dates month first
-  const dateOrder = (await headers()).get("x-vercel-ip-country") === "US" ? "mdy" : "dmy";
+  // visitors from the USA, Canada and the Philippines type dates month first
+  const dateOrder = MONTH_FIRST.has((await headers()).get("x-vercel-ip-country") ?? "") ? "mdy" : "dmy";
 
   return (
     <EditorForm

@@ -26,7 +26,7 @@ function toIso(digits: string, order: DateOrder) {
 }
 
 /**
- * One date field with a DD/MM/YYYY mask (MM/DD/YYYY for visitors from the USA): tapping it opens the numeric keyboard on
+ * One date field with a DD/MM/YYYY mask (MM/DD/YYYY for visitors from the USA, Canada and the Philippines): tapping it opens the numeric keyboard on
  * phones, the slashes appear by themselves, and the button beside it opens the browser's calendar. The value is an ISO
  * date, or "" while incomplete.
  */
