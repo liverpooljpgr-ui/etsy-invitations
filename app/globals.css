@@ -506,3 +506,58 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
   .ui-btn-grad:hover:not(:disabled), .ui-btn-grad-dark:hover:not(:disabled) { filter:brightness(1.06); }
   .ui-btn-grad.ui-btn-sm, .ui-btn-grad-dark.ui-btn-sm { letter-spacing:.1em; font-size:12.5px; }
 }
+
+/* Plum system: black and white with a plum accent (Plum / System kit) on top of the iOS basics above.
+   Palette: plum #482552 (accent), lavender #a67ca8, dusted lilac #e7dcea, apricot #f6c3a7 (warnings only). */
+@layer components {
+  .ui { --ui-bg:#f8f7f8; --ui-card:#fff; --ui-fill:#f3f1f3; --ui-label:#121013; --ui-secondary:#6c6671; --ui-hair:rgba(40,16,48,.11);
+    --ui-tint:#482552; --ui-tint-soft:#efe7f1; --ui-lav:#a67ca8; --ui-lilac:#e7dcea; --ui-apricot:#f6c3a7; --ui-green:#482552; }
+  html:has(.ui) { background:#f8f7f8; }
+  .ui-top { background:linear-gradient(to bottom, rgba(248,247,248,.97) 0%, rgba(248,247,248,.9) 65%, rgba(248,247,248,0) 100%); }
+  .ui-large-title { font-weight:400; letter-spacing:-.015em; }
+
+  /* cards and groups: white, hairline, soft plum-tinted shadow */
+  .ui-card, .ui-group, .adm-grid { border-radius:20px; box-shadow:0 0 0 .5px var(--ui-hair), 0 10px 30px -14px rgba(72,37,82,.16); }
+  .dash-card { box-shadow:0 0 0 .5px var(--ui-hair), 0 10px 30px -16px rgba(72,37,82,.2); }
+  .dash-card:hover { box-shadow:0 0 0 .5px var(--ui-hair), 0 18px 38px -16px rgba(72,37,82,.32); }
+
+  /* small caps captions like "TYPOGRAPHY" / "COLOR PALETTE" in the kit */
+  .ui .ui-sec-head, .ui .adm-head { font-family:var(--font-ui), -apple-system, sans-serif; font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ui-secondary); }
+  .adm-head { background:#faf8fa; }
+
+  /* buttons */
+  .ui-btn-primary, .ui-btn-blue { background:var(--ui-tint); color:#fff; box-shadow:0 6px 16px -6px rgba(72,37,82,.55); }
+  .ui-btn-soft { background:var(--ui-tint-soft); color:var(--ui-tint); }
+  .ui-btn-gray { background:#fff; color:var(--ui-label); box-shadow:0 0 0 1px var(--ui-hair); }
+  .ui-btn-plain, .ui-link { color:var(--ui-tint); }
+  .ui-btn-grad, .ui-btn-grad-dark { border-radius:12px; }
+  .ui-btn-grad { background:linear-gradient(100deg, #7b4a8b 0%, #482552 100%); box-shadow:0 12px 26px -10px rgba(72,37,82,.7), 0 0 0 1px rgba(255,255,255,.16) inset; }
+  .ui-btn-grad-dark { background:linear-gradient(100deg, #3b3b3f 0%, #09090a 100%); }
+  .ui-icon-blue { background:var(--ui-tint); } .ui-icon-blue:hover { background:#5d3369; }
+  .ui :focus-visible { outline:3px solid rgba(72,37,82,.4); }
+
+  /* fields */
+  .ui-input:focus { box-shadow:0 0 0 4px rgba(72,37,82,.14); }
+  .ui-input:hover { background:#eeebee; }
+
+  /* toggles in plum */
+  .ui-switch[aria-checked="true"] { background:var(--ui-tint); }
+  .ui-group-off { background:#ececee; }
+  .ui-group-off .ui-input { background:#e2e0e3; }
+
+  /* status, progress, tabs, chips */
+  .ui-status[data-s="saved"], .adm-note-state[data-s="ok"] { color:var(--ui-tint); }
+  .ui-dot[data-s="dirty"], .ui-dot[data-s="saving"] { background:var(--ui-apricot); }
+  .wiz-progress { background:rgba(72,37,82,.12); }
+  .wiz-chip-guest, .wiz-chip-guest.wiz-chip-on { background:#121013; color:#fff; }
+  .wiz-chip-guest.wiz-chip-on { box-shadow:0 0 0 3px rgba(72,37,82,.3); }
+  .wiz-chip b { background:rgba(72,37,82,.1); }
+  .wiz-off { background:repeating-linear-gradient(45deg,#f8f7f8,#f8f7f8 10px,#efedef 10px,#efedef 20px); }
+  .adm-tabs, .ui-seg { background:rgba(72,37,82,.07); }
+
+  /* notices: plum for good news, apricot for cautions */
+  .ui-note-ok { background:var(--ui-lilac); color:#3a1d44; }
+  .ui-note-warn { background:rgba(246,195,167,.4); color:#6b3a1a; }
+  .ui-live { background:linear-gradient(180deg, rgba(231,220,234,.7), rgba(231,220,234,.35)); box-shadow:0 0 0 .5px rgba(72,37,82,.28); }
+  .dash-live { background:var(--ui-lilac); color:var(--ui-tint); }
+}
