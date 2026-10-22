@@ -303,6 +303,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const publishTone = "ui-btn-grad"; // Publish keeps the same look whatever the state
   // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
+  const [mailOpen, setMailOpen] = useState(false); // the Email choices (mail app, Gmail, Outlook, copy)
+  const [mailCopied, setMailCopied] = useState(false);
   const [liveSlug, setLiveSlug] = useState(slug); // the first publish can swap the random code for the couple's names
   const publicUrl = `${origin}/${liveSlug}`;
   // the email is the one place a full, warm message is written (chat apps show a preview card instead)
@@ -454,8 +456,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <a href={`https://wa.me/?text=${encodeURIComponent(publicUrl)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
         <a href={`https://t.me/share/url?url=${encodeURIComponent(publicUrl)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Telegram</a>
         <a href={`sms:?&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
-        <a href={`mailto:?subject=${encodeURIComponent(mail.subject)}&body=${encodeURIComponent(mail.body)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
+        <button type="button" className="ui-btn ui-btn-gray ui-btn-sm" aria-expanded={mailOpen} onClick={() => setMailOpen((o) => !o)}>Email</button>
       </div>
+      {mailOpen && (
+        <div className="ui-actions" role="group" aria-label="Send by email with">
+          <a className="ui-btn ui-btn-soft ui-btn-sm" href={`mailto:?subject=${encodeURIComponent(mail.subject)}&body=${encodeURIComponent(mail.body)}`}>Mail app</a>
+          <a className="ui-btn ui-btn-soft ui-btn-sm" target="_blank" rel="noopener noreferrer" href={`https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(mail.subject)}&body=${encodeURIComponent(mail.body)}`}>Gmail</a>
+          <a className="ui-btn ui-btn-soft ui-btn-sm" target="_blank" rel="noopener noreferrer" href={`https://outlook.live.com/mail/0/deeplink/compose?subject=${encodeURIComponent(mail.subject)}&body=${encodeURIComponent(mail.body)}`}>Outlook.com</a>
+          <button type="button" className="ui-btn ui-btn-soft ui-btn-sm" onClick={async () => { try { await navigator.clipboard.writeText(`${mail.subject}\n\n${mail.body}`); setMailCopied(true); setTimeout(() => setMailCopied(false), 2000); } catch { /* the choices above still work */ } }}>{mailCopied ? "Copied" : "Copy the message"}</button>
+        </div>
+      )}
       <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>
     <RsvpReplies invitationId={id} />
