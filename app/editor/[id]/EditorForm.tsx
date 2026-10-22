@@ -232,6 +232,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           setEverSaved(true);
           lastSaved.current = JSON.stringify(parseContent(sent));
           setSaveError("");
+          setNotice((n) => (n && !n.ok ? null : n)); // a red message about a problem goes away once saving works again
           setConflict(null);
           if (latest.current === sent && !again.current) { setSaveState("saved"); return true; }
           continue;
@@ -281,6 +282,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       return next;
     });
     setSaveState("dirty");
+    setNotice((n) => (n && !n.ok ? null : n)); // the person is fixing things: drop the old red message
     clearTimeout(timer.current);
     timer.current = setTimeout(() => void flush(), 1000);
   }, [flush]);
