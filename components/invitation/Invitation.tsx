@@ -1,3 +1,4 @@
+import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
@@ -74,6 +75,7 @@ export function Invitation({
   phase,
   envelope,
   calendarHref,
+  rsvpSlug,
 }: {
   content: Content;
   mode: "preview" | "public";
@@ -83,6 +85,8 @@ export function Invitation({
   envelope?: React.ReactNode;
   /** Published page only: link that downloads the event as a calendar file (.ics). */
   calendarHref?: string;
+  /** Public invitations only: the address replies are sent to. Without it the reply form is a preview that sends nothing. */
+  rsvpSlug?: string;
 }) {
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "Beloved" : "");
@@ -91,7 +95,7 @@ export function Invitation({
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
   const hasInfo = c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
-  const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || ph;
+  const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || c.rsvp.online || ph;
   const off = (n: number) => c.hidden.includes(n); // screens the host switched off
   const shown: Record<number, boolean> = {
     3: !off(3) && !!(c.event.venue || ph),
@@ -229,6 +233,7 @@ export function Invitation({
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
             {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
             <p className="rsvp-note">{c.rsvp.note || "Please include all guests name you are taking with you"}</p>
+            {c.rsvp.online && <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} />}
           </div>
           {hint(6)}
         </section>

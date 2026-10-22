@@ -10,6 +10,7 @@ import { PlaceSearch, type Place } from "@/components/PlaceSearch";
 import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
+import { RsvpReplies } from "@/components/RsvpReplies";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -408,6 +409,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const editable = status === "draft" || status === "published";
 
   const liveCard = (
+    <>
     <div className="ui-card ui-live">
       <div className="ui-live-head">
           <h3>Your invitation is live</h3>
@@ -425,6 +427,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       </div>
       <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>
+    <RsvpReplies invitationId={id} />
+    </>
   );
 
   return (
@@ -628,6 +632,18 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
             <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include all guests name you are taking with you" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
+            <div className="ui-switch-row">
+              <span>Let guests reply inside the invitation</span>
+              <Switch on={draft.rsvp.online} onChange={(online) => set("rsvp", { ...draft.rsvp, online })} label="Let guests reply inside the invitation" />
+            </div>
+            {draft.rsvp.online && (
+              <Field label="Most guests in one reply">
+                <select className={inputCls} value={draft.rsvp.maxParty} onChange={(e) => set("rsvp", { ...draft.rsvp, maxParty: Number(e.target.value) })}>
+                  {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
+                </select>
+              </Field>
+            )}
+            <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the invitation is published.</p>
           </Section>
 
           <Section n={7} mobileHidden={step !== 6} toggle={screenToggle(7)} title="Card 7 · Closing">

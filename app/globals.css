@@ -597,3 +597,32 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
   .ui-status[data-s="saved"] .ui-check { background:#1fc35f; box-shadow:0 0 0 3px rgba(31,195,95,.22); }
   .ui-dot { background:#1fc35f; }
 }
+
+/* guest reply form (RSVP card) */
+.inv .rsvp-open { margin-top:calc(22px * var(--k,1)); padding:calc(12px * var(--k,1)) calc(30px * var(--k,1)); border:1px solid var(--gold); border-radius:999px; background:transparent; color:#6b5320; font-family:var(--font-sans),system-ui,sans-serif; font-size:calc(12px * var(--k,1)); letter-spacing:.28em; text-transform:uppercase; cursor:pointer; }
+.inv .rsvp-open:hover { background:rgba(185,150,70,.1); }
+.rsvp-bg { position:fixed; inset:0; z-index:60; display:flex; align-items:flex-end; justify-content:center; background:rgba(40,30,20,.42); }
+.rsvp-sheet { position:relative; width:min(100%, 440px); max-height:92dvh; overflow-y:auto; padding:26px 22px 22px; border-radius:24px 24px 0 0; background:#fbf9f3; color:#4f463d; font-family:var(--font-sans),system-ui,sans-serif; font-size:16px; box-shadow:0 -12px 40px rgba(0,0,0,.18); text-align:left; }
+@media (min-width:640px) { .rsvp-bg { align-items:center; } .rsvp-sheet { border-radius:24px; } }
+.rsvp-sheet-title { margin:0 0 14px; font-family:var(--font-serif),serif; font-size:26px; letter-spacing:.04em; color:#3d352c; text-align:center; }
+.rsvp-x { position:absolute; top:10px; right:14px; width:36px; height:36px; border:0; background:transparent; font-size:28px; line-height:1; color:#8a7a63; cursor:pointer; }
+.rsvp-field { display:flex; flex-direction:column; gap:6px; margin:0 0 14px; }
+.rsvp-field > span { font-size:12.5px; letter-spacing:.12em; text-transform:uppercase; color:#8a7a63; }
+.rsvp-field input, .rsvp-field textarea { box-sizing:border-box; width:100%; padding:12px 14px; border:1px solid rgba(185,150,70,.55); border-radius:12px; background:#fff; color:#3d352c; font:inherit; font-size:16px; }
+.rsvp-field input:focus, .rsvp-field textarea:focus { outline:2px solid rgba(185,150,70,.5); outline-offset:1px; }
+.rsvp-choices { display:flex; flex-direction:column; gap:8px; margin:0 0 16px; }
+.rsvp-choice { padding:12px 14px; border:1px solid rgba(185,150,70,.55); border-radius:12px; background:#fff; color:#4f463d; font:inherit; font-size:15px; text-align:left; cursor:pointer; }
+.rsvp-choice[aria-checked="true"] { background:#b99646; border-color:#b99646; color:#fff; }
+.rsvp-count { display:flex; align-items:center; gap:18px; }
+.rsvp-count button { width:44px; height:44px; border:1px solid rgba(185,150,70,.55); border-radius:50%; background:#fff; color:#6b5320; font-size:22px; cursor:pointer; }
+.rsvp-count b { min-width:28px; text-align:center; font-size:22px; font-weight:500; }
+.rsvp-trap { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+.rsvp-send { width:100%; margin-top:4px; padding:14px; border:0; border-radius:999px; background:#b99646; color:#fff; font:inherit; font-size:13px; letter-spacing:.24em; text-transform:uppercase; cursor:pointer; }
+.rsvp-send:disabled { opacity:.6; }
+.rsvp-err { margin:0 0 10px; color:#a3271a; font-size:14px; }
+.rsvp-fine { margin:12px 0 0; text-align:center; font-size:12.5px; color:#8a7a63; }
+.rsvp-done { text-align:center; padding:10px 0 4px; }
+.rsvp-done p { margin:0 0 14px; }
+
+/* the little music button must not float over the reply sheet */
+body:has(.rsvp-bg) .music-btn { display:none; }

@@ -73,7 +73,7 @@ export const contentSchema = z.object({
   dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
   hotel: z.object({ name: text(100), address: text(200) }),
   parking: text(100).default(""),
-  rsvp: z.object({ deadline: optDate, email: optEmail, note: text(160) }),
+  rsvp: z.object({ deadline: optDate, email: optEmail, note: text(160), online: z.boolean().default(true), maxParty: z.number().int().min(1).max(20).default(6) }),
   theme: z.enum(THEMES),
 });
 
@@ -106,7 +106,7 @@ export const defaultContent: Content = {
   dressCode: { label: "", colors: [] },
   hotel: { name: "", address: "" },
   parking: "",
-  rsvp: { deadline: "", email: "", note: "" },
+  rsvp: { deadline: "", email: "", note: "", online: true, maxParty: 6 },
   theme: "sage",
 };
 

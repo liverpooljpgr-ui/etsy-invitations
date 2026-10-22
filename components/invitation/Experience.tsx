@@ -13,7 +13,7 @@ const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
  * the next card rises into place, and the remaining cards reveal as you scroll.
  * Without JS (see <noscript>) or with reduced motion, everything is shown immediately.
  */
-export function Experience({ content, mode = "public", calendarHref }: { content: Content; mode?: "public" | "preview"; calendarHref?: string }) {
+export function Experience({ content, mode = "public", calendarHref, rsvpSlug }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string }) {
   const [phase, setPhase] = useState<Phase>("closed");
   const root = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
@@ -111,7 +111,7 @@ export function Experience({ content, mode = "public", calendarHref }: { content
       <noscript>
         <style>{`.inv[data-phase] .card{display:flex!important;opacity:1!important;transform:none!important}.env-btn{display:none!important}.inv .stage{margin-top:0!important}`}</style>
       </noscript>
-      <Invitation content={content} mode={mode} phase={phase} envelope={overlay} calendarHref={calendarHref} />
+      <Invitation content={content} mode={mode} phase={phase} envelope={overlay} calendarHref={calendarHref} rsvpSlug={rsvpSlug} />
       {music !== "none" && (
         <button type="button" className="music-btn" onClick={toggleMusic} aria-pressed={music === "on"} aria-label={music === "on" ? "Turn the music off" : "Turn the music on"}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
