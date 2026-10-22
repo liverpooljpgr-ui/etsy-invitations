@@ -590,3 +590,10 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
   .ui-group-off .ui-fields { opacity:.5; filter:grayscale(.6); }
   .ui-group-off .ui-input, .ui-group-off .ui-btn, .ui-group-off .ui-icon-btn, .ui-group-off .ui-switch { cursor:not-allowed; }
 }
+
+/* "All changes saved": bright green */
+@layer components {
+  .ui-status[data-s="saved"] { color:#12a150; font-weight:700; }
+  .ui-status[data-s="saved"] .ui-check { background:#1fc35f; box-shadow:0 0 0 3px rgba(31,195,95,.22); }
+  .ui-dot { background:#1fc35f; }
+}
