@@ -114,7 +114,7 @@ function Section({ title, n, children, toggle, mobileHidden }: { title: string; 
           </span>
         )}
       </div>
-      <div className={`ui-group ${toggle && !toggle.on ? "ui-group-off" : ""}`}>
+      <div className={`ui-group ${toggle && !toggle.on ? "ui-group-off" : ""}`} inert={toggle && !toggle.on ? true : undefined}>
         <div className={`ui-fields ${toggle && !toggle.on ? "ui-dim" : ""}`}>{children}</div>
       </div>
     </section>

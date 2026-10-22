@@ -583,3 +583,10 @@ select.ui-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
   .ui-switch.ui-switch-sm[aria-checked="true"] { background:#7e9a88; }
   .ui-switch.ui-switch-sm[aria-checked="true"] span { transform:translateX(14px); }
 }
+
+/* a switched-off page: everything inside is shaded and can not be clicked, typed in or tabbed to */
+@layer components {
+  .ui-group-off { pointer-events:none; user-select:none; }
+  .ui-group-off .ui-fields { opacity:.5; filter:grayscale(.6); }
+  .ui-group-off .ui-input, .ui-group-off .ui-btn, .ui-group-off .ui-icon-btn, .ui-group-off .ui-switch { cursor:not-allowed; }
+}
