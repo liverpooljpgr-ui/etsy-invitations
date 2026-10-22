@@ -38,8 +38,8 @@ const photoUrl = z
       return false;
     }
   }, "Photo must be uploaded through the editor");
-// same rule for the optional background-music file: it must live in our own storage bucket
-const musicUrl = photoUrl;
+// background music is either one of our own library songs (/music/...) or a file uploaded to our own storage bucket
+const musicUrl = z.union([z.string().regex(/^\/music\/[a-z0-9-]+\.mp3$/), photoUrl]);
 
 export const THEMES = ["sage", "ivory", "burgundy"] as const;
 

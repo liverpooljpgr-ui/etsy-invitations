@@ -9,6 +9,7 @@ import { TimeInput } from "@/components/TimeInput";
 import { PlaceSearch, type Place } from "@/components/PlaceSearch";
 import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
+import { SongPicker } from "@/components/SongPicker";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -508,6 +509,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} /></Field>
             <div className="ui-field">
               <span className="ui-label">Background music (optional)</span>
+              <SongPicker currentUrl={draft.music?.url ?? null} onPick={(song) => set("music", { url: song.url, name: song.name })} />
+              <span className="ui-help">Or use your own song:</span>
               <div className="ui-media">
                 <FilePick accept="audio/mpeg,.mp3" label={draft.music ? "Change song" : "Choose an MP3"} onFile={(f) => void onMusic(f)} />
                 {draft.music && <button type="button" onClick={() => set("music", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
@@ -518,7 +521,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   <audio controls preload="none" src={draft.music.url} className="ui-audio" />
                 </>
               )}
-              <p className="ui-help">Plays when your guest taps the envelope. MP3, up to 4 MB. Please use music you have the right to share.</p>
+              <p className="ui-help">Plays when your guest taps the envelope. Your own MP3 can be up to 4 MB; please use music you have the right to share.</p>
             </div>
           </Section>
 
