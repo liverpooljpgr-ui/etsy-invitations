@@ -305,9 +305,31 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
   const [liveSlug, setLiveSlug] = useState(slug); // the first publish can swap the random code for the couple's names
   const publicUrl = `${origin}/${liveSlug}`;
-  const hello = draft.couple.first.trim() && draft.couple.second.trim()
-    ? `Hi, it's ${draft.couple.first.trim()} and ${draft.couple.second.trim()}. We are kindly inviting you to our event.`
-    : "You are invited!";
+  // the email is the one place a full, warm message is written (chat apps show a preview card instead)
+  const niceDate = (iso: string) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric", year: "numeric" }) : "");
+  const mail = (() => {
+    const a = draft.couple.first.trim(), b = draft.couple.second.trim();
+    const names = a && b ? `${a} & ${b}` : "";
+    const when = niceDate(draft.event.date), replyBy = niceDate(draft.rsvp.deadline);
+    const body = [
+      "Dear friend,",
+      "",
+      names ? `It is ${a} and ${b}, and we have some happy news: we are getting married${when ? ` on ${when}` : ""}.` : `We have some happy news: we are getting married${when ? ` on ${when}` : ""}.`,
+      "It would mean the world to us to have you with us on our special day.",
+      "",
+      "We have put everything you need to know into a small invitation page made just for our guests: the place, the schedule and how to let us know that you are coming. There is nothing to download and nothing to sign up for. Just tap the link below and open the envelope.",
+      "",
+      publicUrl,
+      "",
+      replyBy ? `If you can, please let us know whether you can join us by ${replyBy}. You can reply right inside the invitation, or simply answer this email.` : "You can reply right inside the invitation, or simply answer this email.",
+      "",
+      "Thank you for being part of our story. We cannot wait to celebrate with you.",
+      "",
+      "With love,",
+      names || "Your friends",
+    ].join("\r\n");
+    return { subject: names ? `You are invited: ${names}` : "You are invited", body };
+  })();
 
   async function onPublish() {
     setBusy(true); setNotice(null);
@@ -428,11 +450,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="ui-btn ui-btn-black">{copied ? "Copied" : "Copy"}</button>
       </div>
       <div className="ui-actions">
-        {/* the link goes on its own line so the chat app finds it and builds the preview picture */}
-        <a href={`https://wa.me/?text=${encodeURIComponent(`${hello}\n${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
-        <a href={`https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${encodeURIComponent(hello)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Telegram</a>
-        <a href={`sms:?&body=${encodeURIComponent(`${hello} ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
-        <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(`${hello}\n\n${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
+        {/* chat apps show the names, greeting and photo in the preview card themselves, so only the link is sent (an email has no card, so it gets the greeting) */}
+        <a href={`https://wa.me/?text=${encodeURIComponent(publicUrl)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
+        <a href={`https://t.me/share/url?url=${encodeURIComponent(publicUrl)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Telegram</a>
+        <a href={`sms:?&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
+        <a href={`mailto:?subject=${encodeURIComponent(mail.subject)}&body=${encodeURIComponent(mail.body)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
       </div>
       <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>

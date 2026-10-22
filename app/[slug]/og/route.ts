@@ -6,7 +6,20 @@ import { clampCrop, FRAME_RATIO, imageSize } from "@/lib/photo-crop";
 export const runtime = "nodejs";
 
 const W = 1200, H = 630;
-const ARCH_H = 560, ARCH_W = Math.round(ARCH_H * FRAME_RATIO); // the arch from the invitation: 3 wide, 4 high
+const ARCH_H = 410, ARCH_W = Math.round(ARCH_H * FRAME_RATIO); // the arch from the invitation: 3 wide, 4 high
+
+/** The watercolour flowers of the invitation as a wide frame (the closing page's border, turned on its side). Made once, then kept. */
+let flowers: Promise<Buffer | null> | null = null;
+function flowerFrame(origin: string): Promise<Buffer | null> {
+  flowers ??= (async () => {
+    try {
+      const r = await fetch(new URL("/templates/sage-story/v1/page-bg-closing.webp", origin), { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) return null;
+      return await sharp(Buffer.from(await r.arrayBuffer())).rotate(90).resize(W, H, { fit: "fill" }).jpeg({ quality: 88 }).toBuffer();
+    } catch { return null; }
+  })().then((b) => { if (!b) flowers = null; return b; });
+  return flowers;
+}
 
 /** Link-preview picture: the couple's photo in the same arch (and with the same crop) as on the invitation. */
 export async function GET(request: Request, ctx: { params: Promise<{ slug: string }> }) {
@@ -43,13 +56,12 @@ export async function GET(request: Request, ctx: { params: Promise<{ slug: strin
     const rounded = await sharp(photo).composite([{ input: mask, blend: "dest-in" }]).png().toBuffer();
 
     const x = Math.round((W - ARCH_W) / 2), y = Math.round((H - ARCH_H) / 2);
-    const frame = Buffer.from(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">` +
-      `<rect x="22" y="22" width="${W - 44}" height="${H - 44}" fill="none" stroke="#b99646" stroke-opacity=".55" stroke-width="1.5"/>` +
-      `<g transform="translate(${x} ${y})"><path d="${archPath}" fill="none" stroke="#b99646" stroke-width="4"/></g></svg>`,
+    const border = Buffer.from(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><g transform="translate(${x} ${y})"><path d="${archPath}" fill="none" stroke="#b99646" stroke-width="4"/></g></svg>`,
     );
-    const out = await sharp({ create: { width: W, height: H, channels: 3, background: "#f6f2ea" } })
-      .composite([{ input: rounded, left: x, top: y }, { input: frame }])
+    const bg = await flowerFrame(request.url);
+    const out = await (bg ? sharp(bg) : sharp({ create: { width: W, height: H, channels: 3, background: "#f6f2ea" } }))
+      .composite([{ input: rounded, left: x, top: y }, { input: border }])
       .jpeg({ quality: 84, mozjpeg: true })
       .toBuffer();
     return new Response(new Uint8Array(out), { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" } });
