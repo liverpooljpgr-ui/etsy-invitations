@@ -69,9 +69,9 @@ const IconPublish = () => (
 );
 
 /** iOS-style switch. */
-function Switch({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
+function Switch({ on, onChange, label, small }: { on: boolean; onChange: (v: boolean) => void; label: string; small?: boolean }) {
   return (
-    <button type="button" role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)} className="ui-switch">
+    <button type="button" role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)} className={small ? "ui-switch ui-switch-sm" : "ui-switch"}>
       <span />
     </button>
   );
@@ -105,14 +105,16 @@ function Section({ title, n, children, toggle, mobileHidden }: { title: string; 
   const name = cut > 0 ? title.slice(cut + 3) : title;
   return (
     <section onFocus={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
-      <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
-      <div className={`ui-group ${toggle && !toggle.on ? "ui-group-off" : ""}`}>
+      <div className="ui-sec-row">
+        <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
         {toggle && (
-          <div className="ui-row-switch">
-            <span>Show screen to guests</span>
-            <Switch on={toggle.on} onChange={toggle.set} label={`Show ${name}`} />
-          </div>
+          <span className="ui-sec-toggle">
+            <span>Show page to guests</span>
+            <Switch small on={toggle.on} onChange={toggle.set} label={`Show page to guests: ${name}`} />
+          </span>
         )}
+      </div>
+      <div className={`ui-group ${toggle && !toggle.on ? "ui-group-off" : ""}`}>
         <div className={`ui-fields ${toggle && !toggle.on ? "ui-dim" : ""}`}>{children}</div>
       </div>
     </section>
