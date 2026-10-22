@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { loadPublicInvitation as load } from "@/lib/public-invitation";
@@ -8,14 +9,22 @@ import { Experience } from "@/components/invitation/Experience";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const inv = await load(slug);
-  const title = inv?.status === "published" ? "You are invited" : "Invitation";
-  const description = "Tap to open your invitation.";
+  const live = inv?.status === "published";
+  const c = live ? parseContent(inv.content) : null;
+  const first = c?.couple.first.trim(), second = c?.couple.second.trim();
+  const named = !!(first && second);
+  const title = named ? `${first} & ${second}` : live ? "You are invited" : "Invitation";
+  const description = named ? `Hi, it's ${first} and ${second}. We are kindly inviting you to our event.` : "Tap to open your invitation.";
+  // the couple's photo in the arch; a version number in the address makes chat apps fetch it again after the photo changes
+  const ph = c?.photo;
+  const v = ph ? createHash("sha1").update(`${ph.url}|${ph.cx}|${ph.cy}|${ph.zoom}`).digest("hex").slice(0, 8) : "";
+  const images = [{ url: ph ? `/${slug}/og?v=${v}` : "/share-card.jpg", width: 1200, height: 630, alt: title }];
   return {
     title,
     description,
     robots: { index: false, follow: false },
-    openGraph: { title, description, type: "website", siteName: "You are invited" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { title, description, type: "website", siteName: "You are invited", images },
+    twitter: { card: "summary_large_image", title, description, images: images.map((i) => i.url) },
   };
 }
 

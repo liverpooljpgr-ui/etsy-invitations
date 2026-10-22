@@ -303,7 +303,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const publishTone = "ui-btn-grad"; // Publish keeps the same look whatever the state
   // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
-  const publicUrl = `${origin}/${slug}`;
+  const [liveSlug, setLiveSlug] = useState(slug); // the first publish can swap the random code for the couple's names
+  const publicUrl = `${origin}/${liveSlug}`;
+  const hello = draft.couple.first.trim() && draft.couple.second.trim()
+    ? `Hi, it's ${draft.couple.first.trim()} and ${draft.couple.second.trim()}. We are kindly inviting you to our event.`
+    : "You are invited!";
 
   async function onPublish() {
     setBusy(true); setNotice(null);
@@ -315,6 +319,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (r.ok) {
       const wasLive = status === "published";
       setStatus("published");
+      setLiveSlug(r.slug);
       setStep(GUEST_IDX); // the Guest link tab appears now and opens
       setNotice({ ok: true, text: wasLive ? "Updated. Guests now see the latest version." : "Published! Your guest link is ready." });
     }
@@ -424,10 +429,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       </div>
       <div className="ui-actions">
         {/* the link goes on its own line so the chat app finds it and builds the preview picture */}
-        <a href={`https://wa.me/?text=${encodeURIComponent(`You are invited!\n${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
-        <a href={`https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${encodeURIComponent("You are invited!")}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Telegram</a>
-        <a href={`sms:?&body=${encodeURIComponent(`You are invited! ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
-        <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${hello}\n${publicUrl}`)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
+        <a href={`https://t.me/share/url?url=${encodeURIComponent(publicUrl)}&text=${encodeURIComponent(hello)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Telegram</a>
+        <a href={`sms:?&body=${encodeURIComponent(`${hello} ${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
+        <a href={`mailto:?subject=${encodeURIComponent("You are invited")}&body=${encodeURIComponent(`${hello}\n\n${publicUrl}`)}`} className="ui-btn ui-btn-gray ui-btn-sm">Email</a>
       </div>
       <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>
