@@ -726,11 +726,12 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .card-sheet .arch { height:36cqh; width:calc(36cqh * 3 / 4); }
 .inv[data-template="white-roses"] .venue-in { padding:10cqh 9cqw 8cqh; }
 .inv[data-template="white-roses"] .tl-in { padding:14cqh 9cqw 10cqh; }
-/* screen 5 has flowers along its bottom third (bg-details.webp): the text block stays above them, centred in the space under the title */
-.inv[data-template="white-roses"] .dtl-in { padding:14cqh 9cqw 24cqh; gap:2cqh; }
+/* screen 5 has flowers in two corners (top left, bottom right) in bg-details.webp: the text block is centred between them */
+.inv[data-template="white-roses"] .dtl-in { padding:14cqh 9cqw 18cqh; gap:2cqh; }
 .inv[data-template="white-roses"] .dtl-row { gap:3.4cqh; }
 .inv[data-template="white-roses"] .dtl-row .qr { width:calc(72px * var(--k,1)); height:calc(72px * var(--k,1)); }
-.inv[data-template="white-roses"] .rsvp-in { padding:18cqh 9cqw 8cqh; }
+/* screen 6 (bg-rsvp.webp) has flowers along its bottom third: the reply block stays above them */
+.inv[data-template="white-roses"] .rsvp-in { padding:14cqh 9cqw 8cqh; }
 .inv[data-template="white-roses"] .closing-in { padding:16cqw 12cqw; }
 
 /* the reply form inside this design */
