@@ -686,6 +686,18 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .venue-addr, .inv[data-template="white-roses"] .dtl-text { letter-spacing:.06em; }
 .inv[data-template="white-roses"] .tl li b { letter-spacing:.08em; }
 
+/* the narrow sans looks smaller than the wide one, so the small lines get a little more size */
+.inv[data-template="white-roses"] .venue-addr { font-size:calc(18px * var(--k,1)); }
+.inv[data-template="white-roses"] .dtl-text { font-size:calc(17px * var(--k,1)); }
+.inv[data-template="white-roses"] .rsvp-note { font-size:calc(16px * var(--k,1)); }
+.inv[data-template="white-roses"] .tl li span { font-size:calc(12.5px * var(--k,1)); }
+.inv[data-template="white-roses"] .dt-row { font-size:3.8cqw; }
+.inv[data-template="white-roses"] .caps { font-size:calc(14.5px * var(--k,1)); }
+.inv[data-template="white-roses"] .tiny, .inv[data-template="white-roses"] .qrbox { font-size:calc(11.5px * var(--k,1)); }
+.inv[data-template="white-roses"] .venue-intro { font-size:calc(13.5px * var(--k,1)); }
+.inv[data-template="white-roses"] .venue-link { font-size:calc(14.5px * var(--k,1)); }
+.inv[data-template="white-roses"] .cover-top { font-size:calc(15.5px * var(--k,1)); }
+
 /* the date: month, then "weekday | day | time" between two thin lines, then the year */
 .inv[data-template="white-roses"] .dt { color:var(--ink); }
 .inv[data-template="white-roses"] .dt-row { border-top:1px solid var(--gold); border-bottom:1px solid var(--gold); padding:1.1cqh 0; margin:.6cqh 0; }
