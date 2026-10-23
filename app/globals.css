@@ -127,7 +127,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 /* ───────── Card 2: arch photo, date, "save the date" on the watercolour sheet ─────────
    Sizes use container units (cqw / cqh = % of the card) so it scales on any phone width.
    The sheet's flowers start ~77% down the card, so everything fits above them. */
-.inv .card-sheet { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; justify-content:flex-start; }
+.inv .card-sheet { container-type:size; background:#fbf9f3 url(/templates/aquarelle/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; justify-content:flex-start; }
 /* cq units only work on descendants of the container, hence the inner wrapper */
 .inv .sheet-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:2cqh; padding:17cqh 7cqw 0; }
 .inv .card-sheet .arch { height:44cqh; width:calc(44cqh * 3 / 4); aspect-ratio:3/4; background:#fffdf8; flex:none; }
@@ -149,7 +149,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 /* ───────── Card 3: venue on the plain paper sheet ───────── */
 /* the sheet has a flower garland across the top (about the top quarter), so the text starts below it */
 /* venue + details use the save-the-date sheet flipped upside down (flowers hang from the top) */
-.inv .card-venue { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
+.inv .card-venue { container-type:size; background:#fbf9f3 url(/templates/aquarelle/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
 .inv .venue-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(12px * var(--k,1)); padding:16.4cqh 9cqw 3.6cqh; }
 .inv .venue-intro { font-size:calc(12px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; color:var(--ink); margin-bottom:calc(6px * var(--k,1)); }
 .inv .venue-name { font-size:calc(23px * var(--k,1)); letter-spacing:.14em; text-transform:uppercase; line-height:1.4; color:var(--ink); }
@@ -160,7 +160,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 
 /* ───────── Card 4: timeline (its own sheet: flowers along the bottom; ornaments between time stamps) ───────── */
 /* the flowers fill the bottom ~22% (taller stalk at the right edge), so the list stops above them */
-.inv .card-timeline { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
+.inv .card-timeline { container-type:size; background:#fbf9f3 url(/templates/aquarelle/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
 .inv .tl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:1.4cqh; padding:22cqh 9cqw 9cqh; }
 .inv .tl-title { text-align:center; font-size:calc(32px * var(--k,1)); line-height:1.1; }
 .inv .tl { width:100%; flex:1; min-height:0; display:flex; flex-direction:column; gap:0; }
@@ -178,7 +178,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .tl-dense li + li::before { width:calc(70px * var(--k,1)); height:calc(8px * var(--k,1)); }
 
 /* ───────── Card 4: details (parking, accommodation, dress code) on the flipped sheet ───────── */
-.inv .card-details { container-type:size; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
+.inv .card-details { container-type:size; background:#fbf9f3 url(/templates/aquarelle/v1/page-bg-flipped.webp) center top / cover no-repeat; padding:0; }
 .inv .dtl-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; gap:5.4cqh; padding:20cqh 9cqw 10cqh; }
 /* 10px between a block's caption and its content; the hotel name + address are one sub-block with 4px between them */
 .inv .dtl-blk { gap:calc(10px * var(--k,1)); }
@@ -196,7 +196,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .dtl-dress .val { min-width:0; }
 
 /* RSVP: reference layout — small script lead, big letter-spaced caps, date, email, tiny caps note; flowers at the bottom */
-.inv .card-rsvp { container-type:size; padding:0; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-flipped.webp) center top / cover no-repeat; }
+.inv .card-rsvp { container-type:size; padding:0; background:#fbf9f3 url(/templates/aquarelle/v1/page-bg-flipped.webp) center top / cover no-repeat; }
 .inv .rsvp-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; padding:31cqh 9cqw 8cqh; text-align:center; }
 .inv .rsvp-title { display:flex; flex-direction:column; align-items:center; margin:0 0 3.4cqh; font-weight:400; }
 .inv .rsvp-lead { font-family:var(--font-script),cursive; font-size:calc(34px * var(--k,1)); line-height:1; color:var(--gold); margin-bottom:calc(5px * var(--k,1)); text-transform:capitalize; }
@@ -206,7 +206,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 .inv .rsvp-note { margin:calc(7cqh) 0 0; max-width:84%; font-family:var(--font-sans),system-ui,sans-serif; font-size:calc(14px * var(--k,1)); font-weight:400; line-height:1.55; letter-spacing:.02em; color:#4f463d; }
 
 /* closing: full names + a short love sentence on the wreath background */
-.inv .card-closing { container-type:size; padding:0; background:#fbf9f3 url(/templates/sage-story/v1/page-bg-closing.webp) center / cover no-repeat; }
+.inv .card-closing { container-type:size; padding:0; background:#fbf9f3 url(/templates/aquarelle/v1/page-bg-closing.webp) center / cover no-repeat; }
 .inv .closing-in { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:25cqw 16cqw; text-align:center; }
 .inv .closing-names { display:flex; flex-direction:column; align-items:center; font-family:var(--font-script),cursive; font-size:calc(54px * var(--k,1)); line-height:1.12; color:#4f463d; overflow-wrap:anywhere; }
 .inv .closing-names .amp { font-size:calc(34px * var(--k,1)); color:#4f463d; }
@@ -636,7 +636,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 
 /* ═════════ Invitation template: WHITE ROSES ═════════
    White paper, gold-olive lettering, a thin handwritten script, a flared serif for headings and a light sans for small
-   capitals. No flower pictures are used: the backgrounds are separate files (see public/templates/white-roses/v1/README.txt);
+   capitals. No flower pictures are used: the backgrounds are separate files (see public/templates/jasmin/v1/README.txt);
    a screen without its picture is plain white. */
 .inv[data-template="white-roses"] {
   --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#8a7424;
@@ -644,13 +644,13 @@ body:has(.rsvp-bg) .music-btn { display:none; }
   font-family:var(--wr-body); }
 .inv[data-template="white-roses"] .card,
 .inv[data-template="white-roses"] .cover { background-color:#fff; box-shadow:0 8px 28px rgba(70,66,40,.12); }
-.inv[data-template="white-roses"] .cover { background-image:url(/templates/white-roses/v1/bg-cover.webp); background-size:cover; background-position:center; background-repeat:no-repeat; }
-.inv[data-template="white-roses"] .card-sheet    { background-image:url(/templates/white-roses/v1/bg-photo.webp);    background-size:cover; background-position:center; background-repeat:no-repeat; }
-.inv[data-template="white-roses"] .card-venue    { background-image:url(/templates/white-roses/v1/bg-venue.webp);    background-size:cover; background-position:center; background-repeat:no-repeat; }
-.inv[data-template="white-roses"] .card-timeline { background-image:url(/templates/white-roses/v1/bg-timeline.webp); background-size:cover; background-position:center; background-repeat:no-repeat; }
-.inv[data-template="white-roses"] .card-details  { background-image:url(/templates/white-roses/v1/bg-details.webp);  background-size:cover; background-position:center; background-repeat:no-repeat; }
-.inv[data-template="white-roses"] .card-rsvp     { background-image:url(/templates/white-roses/v1/bg-rsvp.webp);     background-size:cover; background-position:center; background-repeat:no-repeat; }
-.inv[data-template="white-roses"] .card-closing  { background-image:url(/templates/white-roses/v1/bg-closing.webp);  background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .cover { background-image:url(/templates/jasmin/v1/bg-cover.webp); background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-sheet    { background-image:url(/templates/jasmin/v1/bg-photo.webp);    background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-venue    { background-image:url(/templates/jasmin/v1/bg-venue.webp);    background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-timeline { background-image:url(/templates/jasmin/v1/bg-timeline.webp); background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-details  { background-image:url(/templates/jasmin/v1/bg-details.webp);  background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-rsvp     { background-image:url(/templates/jasmin/v1/bg-rsvp.webp);     background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-closing  { background-image:url(/templates/jasmin/v1/bg-closing.webp);  background-size:cover; background-position:center; background-repeat:no-repeat; }
 
 /* script: names, "reception to follow", save the date, monogram */
 .inv[data-template="white-roses"] .names, .inv[data-template="white-roses"] .script, .inv[data-template="white-roses"] .script.big,

@@ -9,8 +9,8 @@ export function templateSlug(v: unknown): TemplateSlug {
 
 /** Where each design keeps its envelope pictures (and their file type). White Roses has its own envelope pictures (made from the files in assets/white-roses). */
 export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "svg" }> = {
-  "sage-story": { base: "/templates/sage-story/v1", ext: "webp" },
-  "white-roses": { base: "/templates/white-roses/v1", ext: "webp" },
+  "sage-story": { base: "/templates/aquarelle/v1", ext: "webp" },
+  "white-roses": { base: "/templates/jasmin/v1", ext: "webp" },
 };
 
 /** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval. */
