@@ -190,7 +190,7 @@ export function Invitation({
             {(registry.length > 0 || hasDress || c.hotel.name || ph) && (
               <div className="dtl-row">
                 {(c.hotel.name || ph) && (
-                  <div className="blk dtl-blk">
+                  <div className="blk dtl-blk dtl-acc">
                     <p className="caps tiny">Accommodation</p>
                     <div className="dtl-pair">
                       <p className="val sm">{c.hotel.name || "Hotel name"}</p>
@@ -199,7 +199,7 @@ export function Invitation({
                   </div>
                 )}
                 {hasDress && (
-                  <div className="blk dtl-blk">
+                  <div className="blk dtl-blk dtl-dresscode">
                     <p className="caps tiny">Dress code</p>
                     <div className="dtl-dress">
                       <p className="dots">
@@ -210,7 +210,7 @@ export function Invitation({
                   </div>
                 )}
                 {registry.length > 0 && (
-                  <div className="blk dtl-blk">
+                  <div className="blk dtl-blk dtl-reg">
                     <p className="caps tiny">Registry</p>
                     <div className="qrs">
                       {registry.map((r, i) => (
