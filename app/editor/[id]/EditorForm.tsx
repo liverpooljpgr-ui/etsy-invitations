@@ -673,7 +673,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Reply by"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
-            <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="Please include all guests name you are taking with you" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
+            <Field label="Note to guests"><input className={inputCls} maxLength={160} placeholder="A short line for your guests (leave empty to show nothing)" value={draft.rsvp.note} onChange={(e) => set("rsvp", { ...draft.rsvp, note: e.target.value })} /></Field>
             <div className="ui-switch-row">
               <span>Let guests reply inside the invitation</span>
               <Switch on={draft.rsvp.online} onChange={(online) => set("rsvp", { ...draft.rsvp, online })} label="Let guests reply inside the invitation" />

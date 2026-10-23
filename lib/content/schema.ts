@@ -101,12 +101,18 @@ export const defaultContent: Content = {
   hidden: [],
   showCalendar: true,
   music: null,
-  timeline: [],
+  // four common moments of the day, without times: the couple adds the times (or removes what they do not need)
+  timeline: [
+    { time: "", label: "Getting ready" },
+    { time: "", label: "Ceremony" },
+    { time: "", label: "Cocktail hour" },
+    { time: "", label: "Reception" },
+  ],
   registry: [],
   dressCode: { label: "", colors: [] },
   hotel: { name: "", address: "" },
   parking: "",
-  rsvp: { deadline: "", email: "", note: "", online: true, maxParty: 6 },
+  rsvp: { deadline: "", email: "", note: "Please include all guests name you are taking with you", online: true, maxParty: 6 },
   theme: "sage",
 };
 

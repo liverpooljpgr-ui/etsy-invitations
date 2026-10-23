@@ -174,7 +174,7 @@ export function Invitation({
             {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
             <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
               {c.timeline.map((it, i) => (
-                <li key={i}><span>{it.label}</span><b>{it.time}</b></li>
+                <li key={i} className={it.time ? undefined : "no-time"}><span>{it.label}</span>{it.time && <b>{it.time}</b>}</li>
               ))}
             </ul>
           </div>
@@ -236,7 +236,7 @@ export function Invitation({
             <RsvpTitle text="Please RSVP" />
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
             {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
-            <p className="rsvp-note">{c.rsvp.note || "Please include all guests name you are taking with you"}</p>
+            {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
             {c.rsvp.online && <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} />}
           </div>
           {hint(6)}
