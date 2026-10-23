@@ -704,8 +704,14 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .dt-row b { border-left:0; border-right:0; font-size:9cqw; padding:0 3.4cqw; }
 .inv[data-template="white-roses"] .sheet-in.no-photo .dt-row b { font-size:12cqw; }
 
-/* the plain paper envelope needs a soft shadow to stand out on white */
-.inv[data-template="white-roses"] .env-art { filter:drop-shadow(0 8px 16px rgba(70,66,40,.22)); }
+/* White Roses envelope pictures (envelope-body / -flap-closed / -flap-open .webp). Each picture has a little empty margin around the
+   paper for its shadow, so the layers are placed by the paper itself: body paper 890 x 570 inside a 952 x 632 picture, the closed
+   flap picture 938 x 483, the open flap picture 926 x 470. Everything below is in % of the 952 x 632 body picture. */
+.inv[data-template="white-roses"] .cover-env { aspect-ratio:890/570; }
+.inv[data-template="white-roses"] .env-art { width:calc(100% * 952 / 890); aspect-ratio:952/632; }
+.inv[data-template="white-roses"] .env-flap-closed { left:.735%; top:2.6%; width:98.53%; height:76.42%; transform-origin:50% 2%; }
+.inv[data-template="white-roses"] .env-flap-open { left:1.365%; top:-70.58%; width:97.27%; height:74.37%; transform-origin:50% 98.94%; }
+.inv[data-template="white-roses"] .monogram { top:57%; }
 
 /* the photo is an oval with a hairline */
 .inv[data-template="white-roses"] .arch { border-color:var(--gold); background:#fff; border-radius:50%; padding:calc(6px * var(--k,1)); }
