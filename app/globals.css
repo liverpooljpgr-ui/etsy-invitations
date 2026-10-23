@@ -727,8 +727,8 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .venue-in { padding:10cqh 9cqw 8cqh; }
 .inv[data-template="white-roses"] .tl-in { padding:14cqh 9cqw 10cqh; }
 /* screen 5 has flowers in two corners (top left, bottom right) in bg-details.webp: the text block is centred between them */
-.inv[data-template="white-roses"] .dtl-in { padding:14cqh 14cqw 18cqh; gap:2cqh; }
-.inv[data-template="white-roses"] .dtl-row { gap:6cqh; }
+.inv[data-template="white-roses"] .dtl-in { padding:14cqh 14cqw 18cqh; gap:6cqh; justify-content:center; } /* the heading and the blocks are one group, centred together */
+.inv[data-template="white-roses"] .dtl-row { gap:6cqh; flex:none; }
 /* on this design the registry comes first, then the dress code, and the accommodation last */
 .inv[data-template="white-roses"] .dtl-reg { order:1; }
 .inv[data-template="white-roses"] .dtl-dresscode { order:2; }
