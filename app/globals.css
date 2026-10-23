@@ -720,8 +720,10 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .arch-in { border-radius:50%; }
 
 /* the layouts were made around the flower borders of the first design; with plain white they sit more evenly */
-.inv[data-template="white-roses"] .sheet-in { padding-top:12cqh; }
-.inv[data-template="white-roses"] .sheet-in.no-photo { padding-top:10cqh; }
+/* screen 2 has the jasmine garland (bg-photo.webp) across its top fifth, so everything starts below it */
+.inv[data-template="white-roses"] .sheet-in { padding-top:21cqh; }
+.inv[data-template="white-roses"] .sheet-in.no-photo { padding-top:24cqh; }
+.inv[data-template="white-roses"] .card-sheet .arch { height:36cqh; width:calc(36cqh * 3 / 4); }
 .inv[data-template="white-roses"] .venue-in { padding:10cqh 9cqw 8cqh; }
 .inv[data-template="white-roses"] .tl-in { padding:14cqh 9cqw 10cqh; }
 .inv[data-template="white-roses"] .dtl-in { padding:14cqh 9cqw 10cqh; }
