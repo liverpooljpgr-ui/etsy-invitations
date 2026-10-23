@@ -61,7 +61,7 @@ export default async function Dashboard() {
                 <Link href={`/editor/${i.id}`} className="dash-card">
                   <span className="dash-thumb" aria-hidden="true">
                     {c && (
-                      <span className="inv dash-thumb-inner">
+                      <span className="inv dash-thumb-inner" data-template={tplOf.get(i.id)}>
                         <span className="card cover cover-static"><CoverInner content={c} mode="preview" template={tplOf.get(i.id)} /></span>
                       </span>
                     )}
