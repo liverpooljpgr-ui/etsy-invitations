@@ -3,6 +3,7 @@
 import { createHash, randomBytes, randomInt } from "node:crypto";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -96,6 +97,32 @@ export async function createPurchase(_prev: CreateState, fd: FormData): Promise<
   const claimUrl = await issueClaim(inv.id, user.id);
   if (!claimUrl) { await rollback(); return { ok: false, message: "Could not create the personal link." }; }
   return { ok: true, message: "Created. Send this link to the customer — it is shown only once (you can make a new one later).", claimUrl };
+}
+
+/** An invitation the admin makes for themselves (as a designer): no order, no personal link, it opens straight in the editor. */
+export async function createOwnInvitation(_prev: CreateState, fd: FormData): Promise<CreateState> {
+  const { user } = await requireAdmin();
+  const p = z.object({ templateId: z.uuid(), title: z.string().trim().max(60) }).safeParse({ templateId: fd.get("templateId"), title: fd.get("title") ?? "" });
+  if (!p.success) return { ok: false, message: "Choose a template." };
+  const db = createAdminClient();
+  const { data: tpl } = await db.from("templates").select("id, current_version, name").eq("id", p.data.templateId).eq("is_active", true).maybeSingle();
+  if (!tpl) return { ok: false, message: "Choose a template." };
+
+  let inv: { id: string } | null = null;
+  for (let i = 0; i < 5 && !inv; i++) {
+    const { data, error } = await db.from("invitations").insert({
+      order_id: null, template_id: tpl.id, template_version: tpl.current_version, plan_code: PLAN,
+      slug: randomSlug(), display_title: p.data.title || `${tpl.name} · mine`, owner_id: user.id,
+    }).select("id").single();
+    if (!error) inv = data;
+    else if (error.code !== "23505" && error.code !== "23514") break;
+  }
+  if (!inv) return { ok: false, message: "Could not create the invitation." };
+  const c1 = await db.from("invitation_content").insert({ invitation_id: inv.id, draft: defaultContent });
+  const c2 = await db.from("hosting_entitlements").insert({ invitation_id: inv.id, order_id: null, state: "pending" });
+  if (c1.error || c2.error) { await db.from("invitations").delete().eq("id", inv.id); return { ok: false, message: "Could not initialise the invitation." }; }
+  await db.from("audit_log").insert({ actor_id: user.id, action: "invitation.create_own", entity_type: "invitation", entity_id: inv.id, metadata: { template: tpl.name } });
+  redirect(`/editor/${inv.id}`);
 }
 
 /** Permanently delete a purchase: the invitation, its content, its links, uploaded photo/music and its order. */

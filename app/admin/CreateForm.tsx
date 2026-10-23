@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState, useSyncExternalStore } from "react";
-import { createPurchase } from "./actions";
+import { createOwnInvitation, createPurchase } from "./actions";
 
 export function CopyField({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
@@ -46,6 +46,28 @@ export function CreateForm({ templates }: { templates: { id: string; name: strin
           {s.claimUrl && <CopyField value={s.claimUrl} />}
         </div>
       )}
+    </form>
+  );
+}
+
+/** For the admin's own use (designer): no link, no order; opens the editor right away. */
+export function CreateOwnForm({ templates }: { templates: { id: string; name: string }[] }) {
+  const [s, action, pending] = useActionState(createOwnInvitation, null);
+  return (
+    <form action={action} className="ui-card" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <h3>New invitation for myself</h3>
+      <label className="ui-field">
+        <span className="ui-label">Template</span>
+        <select name="templateId" required className="ui-input" defaultValue={templates[0]?.id}>
+          {templates.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+        </select>
+      </label>
+      <label className="ui-field">
+        <span className="ui-label">Name (only you see it)</span>
+        <input name="title" maxLength={60} className="ui-input" placeholder="Anna and John" />
+      </label>
+      <button disabled={pending} className="ui-btn ui-btn-black" style={{ width: "100%" }}>{pending ? "Creating…" : "Create and open editor"}</button>
+      {s && !s.ok && <div role="status" className="ui-note ui-note-err" style={{ margin: 0 }}><p style={{ margin: 0 }}>{s.message}</p></div>}
     </form>
   );
 }
