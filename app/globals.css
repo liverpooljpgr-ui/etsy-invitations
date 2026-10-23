@@ -633,3 +633,83 @@ body:has(.rsvp-bg) .music-btn { display:none; }
   .ui-live h3 { color:#0e7a3c; }
   .ui-live .ui-help { color:#2f6f4a; }
 }
+
+/* ═════════ Invitation template: WHITE ROSES ═════════
+   White paper, gold-olive lettering, a thin handwritten script, a flared serif for headings and a light sans for small
+   capitals. No flower pictures are used: the backgrounds are separate files (see public/templates/white-roses/v1/README.txt);
+   a screen without its picture is plain white. */
+.inv[data-template="white-roses"] {
+  --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#8a7424;
+  --wr-script:var(--font-wr-script),"Brush Script MT",cursive; --wr-head:var(--font-wr-head),Georgia,serif; --wr-body:var(--font-wr-body),system-ui,sans-serif;
+  font-family:var(--wr-body); }
+.inv[data-template="white-roses"] .card,
+.inv[data-template="white-roses"] .cover { background-color:#fff; box-shadow:0 8px 28px rgba(70,66,40,.12); }
+.inv[data-template="white-roses"] .cover { background-image:url(/templates/white-roses/v1/bg-cover.webp); background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-sheet    { background-image:url(/templates/white-roses/v1/bg-photo.webp);    background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-venue    { background-image:url(/templates/white-roses/v1/bg-venue.webp);    background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-timeline { background-image:url(/templates/white-roses/v1/bg-timeline.webp); background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-details  { background-image:url(/templates/white-roses/v1/bg-details.webp);  background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-rsvp     { background-image:url(/templates/white-roses/v1/bg-rsvp.webp);     background-size:cover; background-position:center; background-repeat:no-repeat; }
+.inv[data-template="white-roses"] .card-closing  { background-image:url(/templates/white-roses/v1/bg-closing.webp);  background-size:cover; background-position:center; background-repeat:no-repeat; }
+
+/* script: names, "reception to follow", save the date, monogram */
+.inv[data-template="white-roses"] .names, .inv[data-template="white-roses"] .script, .inv[data-template="white-roses"] .script.big,
+.inv[data-template="white-roses"] .title i, .inv[data-template="white-roses"] .save, .inv[data-template="white-roses"] .venue-recep,
+.inv[data-template="white-roses"] .rsvp-lead, .inv[data-template="white-roses"] .closing-names, .inv[data-template="white-roses"] .cover-names,
+.inv[data-template="white-roses"] .monogram, .inv[data-template="white-roses"] .seal { font-family:var(--wr-script); font-weight:400; color:var(--gold); }
+.inv[data-template="white-roses"] .cover-names { font-size:calc(52px * var(--k,1)); line-height:1.05; }
+.inv[data-template="white-roses"] .cover-names .amp, .inv[data-template="white-roses"] .closing-names .amp { font-size:.8em; color:var(--gold); }
+.inv[data-template="white-roses"] .closing-names { font-size:calc(62px * var(--k,1)); color:var(--gold); }
+.inv[data-template="white-roses"] .save { font-size:calc(40px * var(--k,1)); }
+.inv[data-template="white-roses"] .venue-recep { font-size:calc(32px * var(--k,1)); }
+.inv[data-template="white-roses"] .rsvp-lead { font-size:calc(40px * var(--k,1)); text-transform:none; }
+.inv[data-template="white-roses"] .monogram { background:none; -webkit-text-fill-color:var(--gold); color:var(--gold); }
+
+/* headings in capitals ("WEDDING DETAILS") */
+.inv[data-template="white-roses"] .script.tl-title { font-family:var(--wr-head); text-transform:uppercase; letter-spacing:.08em; font-size:calc(30px * var(--k,1)); line-height:1.15; color:var(--gold); }
+.inv[data-template="white-roses"] .rsvp-title { flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:baseline; column-gap:0; margin-bottom:3cqh; }
+.inv[data-template="white-roses"] .rsvp-lead { flex-basis:100%; text-align:center; margin-bottom:0; }
+.inv[data-template="white-roses"] .rsvp-big { font-family:var(--wr-head); font-size:calc(48px * var(--k,1)); letter-spacing:.12em; margin-right:0; color:var(--gold); }
+.inv[data-template="white-roses"] .rsvp-by, .inv[data-template="white-roses"] .rsvp-mail, .inv[data-template="white-roses"] .closing-text { font-family:var(--wr-head); color:var(--ink); }
+.inv[data-template="white-roses"] .rsvp-note { font-family:var(--wr-body); font-weight:300; letter-spacing:.06em; }
+.inv[data-template="white-roses"] .closing-text { letter-spacing:.06em; }
+
+/* small capitals in the light sans */
+.inv[data-template="white-roses"] .cover-top, .inv[data-template="white-roses"] .cover-bottom, .inv[data-template="white-roses"] .env-hint,
+.inv[data-template="white-roses"] .venue-intro, .inv[data-template="white-roses"] .venue-link, .inv[data-template="white-roses"] .caps,
+.inv[data-template="white-roses"] .tiny, .inv[data-template="white-roses"] .qrbox, .inv[data-template="white-roses"] .dt-month, .inv[data-template="white-roses"] .dt-year,
+.inv[data-template="white-roses"] .dt-row, .inv[data-template="white-roses"] .tl li span, .inv[data-template="white-roses"] .venue-addr,
+.inv[data-template="white-roses"] .dtl-text, .inv[data-template="white-roses"] .val { font-family:var(--wr-body); font-weight:300; }
+.inv[data-template="white-roses"] .cover-top { font-size:calc(14px * var(--k,1)); letter-spacing:.34em; color:var(--ink); }
+.inv[data-template="white-roses"] .venue-name, .inv[data-template="white-roses"] .tl li b, .inv[data-template="white-roses"] .dt-row b { font-family:var(--wr-head); color:var(--gold); }
+.inv[data-template="white-roses"] .venue-name { letter-spacing:.1em; }
+.inv[data-template="white-roses"] .venue-addr, .inv[data-template="white-roses"] .dtl-text { letter-spacing:.06em; }
+.inv[data-template="white-roses"] .tl li b { letter-spacing:.08em; }
+
+/* the date: month, then "weekday | day | time" between two thin lines, then the year */
+.inv[data-template="white-roses"] .dt { color:var(--ink); }
+.inv[data-template="white-roses"] .dt-row { border-top:1px solid var(--gold); border-bottom:1px solid var(--gold); padding:1.1cqh 0; margin:.6cqh 0; }
+.inv[data-template="white-roses"] .dt-row b { border-left:0; border-right:0; font-size:9cqw; padding:0 3.4cqw; }
+.inv[data-template="white-roses"] .sheet-in.no-photo .dt-row b { font-size:12cqw; }
+
+/* the plain paper envelope needs a soft shadow to stand out on white */
+.inv[data-template="white-roses"] .env-art { filter:drop-shadow(0 8px 16px rgba(70,66,40,.22)); }
+
+/* the photo keeps its arch with a hairline */
+.inv[data-template="white-roses"] .arch { border-color:var(--gold); background:#fff; }
+
+/* the layouts were made around the flower borders of the first design; with plain white they sit more evenly */
+.inv[data-template="white-roses"] .sheet-in { padding-top:12cqh; }
+.inv[data-template="white-roses"] .sheet-in.no-photo { padding-top:10cqh; }
+.inv[data-template="white-roses"] .venue-in { padding:10cqh 9cqw 8cqh; }
+.inv[data-template="white-roses"] .tl-in { padding:14cqh 9cqw 10cqh; }
+.inv[data-template="white-roses"] .dtl-in { padding:14cqh 9cqw 10cqh; }
+.inv[data-template="white-roses"] .rsvp-in { padding:18cqh 9cqw 8cqh; }
+.inv[data-template="white-roses"] .closing-in { padding:16cqw 12cqw; }
+
+/* the reply form inside this design */
+.inv[data-template="white-roses"] .rsvp-open { color:var(--gold); border-color:var(--gold); font-family:var(--wr-body); font-weight:400; }
+.inv[data-template="white-roses"] .rsvp-sheet { font-family:var(--wr-body); background:#fff; color:var(--ink); }
+.inv[data-template="white-roses"] .rsvp-sheet-title { font-family:var(--wr-head); color:var(--gold); }
+.inv[data-template="white-roses"] .rsvp-choice[aria-checked="true"], .inv[data-template="white-roses"] .rsvp-send { background:var(--gold); border-color:var(--gold); }
+.inv[data-template="white-roses"] .rsvp-field input, .inv[data-template="white-roses"] .rsvp-field textarea, .inv[data-template="white-roses"] .rsvp-choice, .inv[data-template="white-roses"] .rsvp-count button { border-color:rgba(138,116,36,.5); }

@@ -1,3 +1,4 @@
+import { templateOf } from "@/lib/template-of";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
@@ -33,6 +34,7 @@ export default async function EditorPage({ params, searchParams }: { params: Pro
       initialDraft={parseContent(row.draft)}
       initialVersion={row.draft_version}
       dateOrder={dateOrder}
+      template={await templateOf(id)}
       initialStep={Number(step) >= 1 ? Math.floor(Number(step)) : undefined}
     />
   );

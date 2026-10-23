@@ -11,6 +11,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
+import type { TemplateSlug } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -18,7 +19,7 @@ import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
 type Props = {
   id: string; title: string; slug: string; status: string;
-  features: PlanFeatures; initialDraft: Content; initialVersion: number; initialStep?: number; dateOrder?: DateOrder;
+  features: PlanFeatures; initialDraft: Content; initialVersion: number; initialStep?: number; dateOrder?: DateOrder; template?: TemplateSlug;
 };
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
@@ -133,7 +134,7 @@ async function prepareImage(file: File): Promise<Blob> {
   return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/webp", 0.85));
 }
 
-export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialStep, dateOrder }: Props) {
+export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialStep, dateOrder, template }: Props) {
   const [draft, setDraft] = useState<Content>(initialDraft);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
@@ -539,7 +540,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
               <div className="wiz-preview" data-step={STEPS[Math.min(step, GUEST_IDX - 1)].n}>
-                <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} />
+                <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} template={template} />
               </div>
             )}
           </div>
@@ -725,7 +726,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <aside className="hidden lg:block">
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
             <p className="ui-caption">Static preview · use “Preview animation” to test the envelope</p>
-            <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} />
+            <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} template={template} />
           </div>
         </aside>
       </div>

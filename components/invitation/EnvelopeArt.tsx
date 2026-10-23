@@ -1,4 +1,4 @@
-const ART = "/templates/sage-story/v1";
+import { DEFAULT_TEMPLATE, ENVELOPE_ART, type TemplateSlug } from "@/lib/templates";
 
 /**
  * Three real envelope layers, stacked in the body's coordinate system (see globals.css):
@@ -9,14 +9,15 @@ const ART = "/templates/sage-story/v1";
  *
  * `monogram` (the couple's initials) is drawn ON the closed flap, so it swings open with it.
  */
-export function EnvelopeArt({ monogram }: { monogram?: React.ReactNode }) {
+export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE }: { monogram?: React.ReactNode; template?: TemplateSlug }) {
+  const { base: ART, ext } = ENVELOPE_ART[template];
   return (
     <span className="env-art" aria-hidden="true">
       {/* eslint-disable @next/next/no-img-element */}
-      <img className="env-body" src={`${ART}/envelope-body.webp`} alt="" width={1200} height={772} decoding="async" draggable={false} />
-      <img className="env-flap-open" src={`${ART}/envelope-flap-open.webp`} alt="" width={1182} height={587} decoding="async" draggable={false} />
+      <img className="env-body" src={`${ART}/envelope-body.${ext}`} alt="" width={1200} height={772} decoding="async" draggable={false} />
+      <img className="env-flap-open" src={`${ART}/envelope-flap-open.${ext}`} alt="" width={1182} height={587} decoding="async" draggable={false} />
       <span className="env-flap-closed">
-        <img src={`${ART}/envelope-flap-closed.webp`} alt="" width={1200} height={605} decoding="async" draggable={false} />
+        <img src={`${ART}/envelope-flap-closed.${ext}`} alt="" width={1200} height={605} decoding="async" draggable={false} />
         {monogram}
       </span>
       {/* eslint-enable @next/next/no-img-element */}

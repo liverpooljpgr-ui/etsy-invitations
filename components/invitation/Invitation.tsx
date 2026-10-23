@@ -1,3 +1,4 @@
+import { DEFAULT_TEMPLATE, type TemplateSlug } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
@@ -76,6 +77,7 @@ export function Invitation({
   envelope,
   calendarHref,
   rsvpSlug,
+  template,
 }: {
   content: Content;
   mode: "preview" | "public";
@@ -87,6 +89,8 @@ export function Invitation({
   calendarHref?: string;
   /** Public invitations only: the address replies are sent to. Without it the reply form is a preview that sends nothing. */
   rsvpSlug?: string;
+  /** Which design to paint (the invitation's template). */
+  template?: TemplateSlug;
 }) {
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "Beloved" : "");
@@ -113,11 +117,11 @@ export function Invitation({
     ) : null;
 
   return (
-    <div className="inv" data-theme={c.theme} data-phase={phase}>
+    <div className="inv" data-theme={c.theme} data-template={template ?? DEFAULT_TEMPLATE} data-phase={phase}>
       {/* 1 — cover (static view; the animated experience puts the same cover, tappable, over card 2) */}
       {!phase && (
         <section className="card cover cover-static" data-card="1" aria-label="Cover">
-          <CoverInner content={c} mode={mode} />
+          <CoverInner content={c} mode={mode} template={template} />
         </section>
       )}
 

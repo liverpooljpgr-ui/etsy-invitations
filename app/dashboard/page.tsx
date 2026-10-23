@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import { parseContent } from "@/lib/content/schema";
 import { CoverInner } from "@/components/invitation/Cover";
+import { templatesOf } from "@/lib/template-of";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const shortDate = (iso: string) => {
@@ -23,6 +24,7 @@ export default async function Dashboard() {
     supabase.from("profiles").select("role").eq("id", user.id).maybeSingle(),
     ids.length ? supabase.from("invitation_content").select("invitation_id, draft").in("invitation_id", ids) : Promise.resolve({ data: [] as { invitation_id: string; draft: unknown }[] }),
   ]);
+  const tplOf = await templatesOf(ids);
   const draftOf = new Map((contents ?? []).map((c) => [c.invitation_id, parseContent(c.draft)]));
 
   async function logout() {
@@ -60,7 +62,7 @@ export default async function Dashboard() {
                   <span className="dash-thumb" aria-hidden="true">
                     {c && (
                       <span className="inv dash-thumb-inner">
-                        <span className="card cover cover-static"><CoverInner content={c} mode="preview" /></span>
+                        <span className="card cover cover-static"><CoverInner content={c} mode="preview" template={tplOf.get(i.id)} /></span>
                       </span>
                     )}
                   </span>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Experience } from "@/components/invitation/Experience";
 import { Invitation } from "@/components/invitation/Invitation";
 import { defaultContent, type Content } from "@/lib/content/schema";
+import { templateSlug } from "@/lib/templates";
 
 /**
  * DEV ONLY (returns 404 in production): lets you edit the template files and see them update live,
@@ -33,9 +34,10 @@ const sample: Content = {
   rsvp: { deadline: "2027-07-16", email: "adele@mail.com", note: "Please include the names of all guests attending in your RSVP.", online: true, maxParty: 6 },
 };
 
-export default async function DevTemplate({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+export default async function DevTemplate({ searchParams }: { searchParams: Promise<{ view?: string; template?: string }> }) {
   if (process.env.NODE_ENV === "production") notFound();
-  const { view } = await searchParams;
+  const { view, template } = await searchParams;
+  const tpl = templateSlug(template); // ?template=white-roses shows the other design
   return (
     <main className="px-4 py-6">
       <p className="mb-4 text-center text-xs text-stone-500">
@@ -43,7 +45,7 @@ export default async function DevTemplate({ searchParams }: { searchParams: Prom
         {view === "static" ? <Link className="underline" href="/dev-template">animated view</Link> : <Link className="underline" href="/dev-template?view=static">static (editor) view</Link>}
         {" "}· reload to replay the animation
       </p>
-      {view === "static" ? <Invitation content={sample} mode="preview" /> : <Experience content={sample} mode="public" />}
+      {view === "static" ? <Invitation content={sample} mode="preview" template={tpl} /> : <Experience content={sample} mode="public" template={tpl} />}
     </main>
   );
 }

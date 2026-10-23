@@ -1,3 +1,4 @@
+import { templateOfSlug } from "@/lib/template-of";
 import { createHash } from "node:crypto";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -42,7 +43,7 @@ export default async function PublicInvitation({ params }: { params: Promise<{ s
   }
   return (
     <main className="px-4 py-6">
-      <Experience content={parseContent(inv.content)} mode="public" calendarHref={`/${slug}/calendar.ics`} rsvpSlug={slug} />
+      <Experience content={parseContent(inv.content)} mode="public" calendarHref={`/${slug}/calendar.ics`} rsvpSlug={slug} template={await templateOfSlug(slug)} />
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import type { Content } from "@/lib/content/schema";
+import type { TemplateSlug } from "@/lib/templates";
 import { EnvelopeArt } from "./EnvelopeArt";
 
 /**
@@ -6,7 +7,7 @@ import { EnvelopeArt } from "./EnvelopeArt";
  * Used both by the static card 1 (editor preview) and by the tappable overlay (published page).
  * Rendered with spans only, because the published version lives inside a <button>.
  */
-export function CoverInner({ content: c, mode, hint }: { content: Content; mode: "preview" | "public"; hint?: boolean }) {
+export function CoverInner({ content: c, mode, hint, template }: { content: Content; mode: "preview" | "public"; hint?: boolean; template?: TemplateSlug }) {
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "Beloved" : "");
   const second = c.couple.second || (ph ? "Beloved" : "");
@@ -30,7 +31,7 @@ export function CoverInner({ content: c, mode, hint }: { content: Content; mode:
         <span>{second}</span>
       </span>
       <span className="cover-env">
-        <EnvelopeArt monogram={monogram} />
+        <EnvelopeArt monogram={monogram} template={template} />
       </span>
       {c.texts.coverBottom && <span className="cover-bottom">{c.texts.coverBottom}</span>}
       {hint && <span className="env-hint">Tap to open</span>}
