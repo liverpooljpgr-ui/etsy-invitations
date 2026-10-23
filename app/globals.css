@@ -685,10 +685,13 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .venue-name { letter-spacing:.1em; }
 .inv[data-template="white-roses"] .venue-addr, .inv[data-template="white-roses"] .dtl-text { letter-spacing:.06em; }
 .inv[data-template="white-roses"] .tl li b { letter-spacing:.08em; }
+/* timeline separators: a thin line with a small heart */
+.inv[data-template="white-roses"] .tl li + li::before { height:calc(12px * var(--k,1)); -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='12' viewBox='0 0 92 12'%3E%3Cpath d='M0 6H37M55 6H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 10.4C40.6 6.8 41.4 2.2 44.4 2.2c1 0 1.6.7 1.6 1.5 0-.8.6-1.5 1.6-1.5 3 0 3.8 4.6-1.6 8.2z' fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='12' viewBox='0 0 92 12'%3E%3Cpath d='M0 6H37M55 6H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 10.4C40.6 6.8 41.4 2.2 44.4 2.2c1 0 1.6.7 1.6 1.5 0-.8.6-1.5 1.6-1.5 3 0 3.8 4.6-1.6 8.2z' fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 
 /* the narrow sans looks smaller than the wide one, so the small lines get a little more size */
 .inv[data-template="white-roses"] .venue-addr { font-size:calc(18px * var(--k,1)); }
-.inv[data-template="white-roses"] .dtl-text { font-size:calc(17px * var(--k,1)); }
+.inv[data-template="white-roses"] .dtl-text { font-size:calc(12px * var(--k,1)); } /* the hotel address */
+.inv[data-template="white-roses"] .dtl-pair .val { font-weight:600; } /* the hotel name */
 .inv[data-template="white-roses"] .rsvp-note { font-size:calc(16px * var(--k,1)); }
 .inv[data-template="white-roses"] .tl li span { font-size:calc(12.5px * var(--k,1)); }
 .inv[data-template="white-roses"] .dt-row { font-size:3.8cqw; }
