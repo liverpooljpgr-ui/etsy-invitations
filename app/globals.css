@@ -691,7 +691,6 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 /* the narrow sans looks smaller than the wide one, so the small lines get a little more size */
 .inv[data-template="white-roses"] .venue-addr { font-size:calc(18px * var(--k,1)); }
 .inv[data-template="white-roses"] .dtl-text { font-size:calc(12px * var(--k,1)); } /* the hotel address */
-.inv[data-template="white-roses"] .dtl-pair .val { font-weight:600; } /* the hotel name */
 .inv[data-template="white-roses"] .rsvp-note { font-size:calc(16px * var(--k,1)); }
 .inv[data-template="white-roses"] .tl li span { font-size:calc(12.5px * var(--k,1)); }
 .inv[data-template="white-roses"] .dt-row { font-size:3.8cqw; }
