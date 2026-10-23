@@ -12,3 +12,7 @@ export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "s
   "sage-story": { base: "/templates/sage-story/v1", ext: "webp" },
   "white-roses": { base: "/templates/white-roses/v1", ext: "svg" },
 };
+
+/** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval. */
+export type PhotoShape = "arch" | "oval";
+export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval" };

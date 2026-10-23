@@ -11,7 +11,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
-import type { TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_SHAPE, type TemplateSlug } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -575,15 +575,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={2} mobileHidden={step !== 1} title="Card 2 · Photo, date & save the date">
             <div className="ui-field">
-              <span className="ui-label">Photo (shown in an arch)</span>
+              <span className="ui-label">Photo (shown in {PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE] === "oval" ? "an oval" : "an arch"})</span>
               <div className="ui-media">
                 {draft.photo && cropOpen && (
                   <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
-                    <PhotoCrop photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
+                    <PhotoCrop shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
                     <button type="button" onClick={() => setCropOpen(false)} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>Save photo</button>
                   </div>
                 )}
-                {draft.photo && !cropOpen && <PhotoArchThumb photo={draft.photo} />}
+                {draft.photo && !cropOpen && <PhotoArchThumb shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} />}
                 <FilePick accept="image/jpeg,image/png,image/webp" label={draft.photo ? "Change photo" : "Choose a photo"} onFile={(f) => void onPhoto(f)} />
                 {draft.photo && !cropOpen && <button type="button" onClick={() => setCropOpen(true)} className="ui-btn ui-btn-gray ui-btn-sm">Adjust</button>}
                 {draft.photo && <button type="button" onClick={() => { set("photo", null); setCropOpen(false); }} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}

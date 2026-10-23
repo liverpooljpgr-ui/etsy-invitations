@@ -695,8 +695,9 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 /* the plain paper envelope needs a soft shadow to stand out on white */
 .inv[data-template="white-roses"] .env-art { filter:drop-shadow(0 8px 16px rgba(70,66,40,.22)); }
 
-/* the photo keeps its arch with a hairline */
-.inv[data-template="white-roses"] .arch { border-color:var(--gold); background:#fff; }
+/* the photo is an oval with a hairline */
+.inv[data-template="white-roses"] .arch { border-color:var(--gold); background:#fff; border-radius:50%; padding:calc(6px * var(--k,1)); }
+.inv[data-template="white-roses"] .arch-in { border-radius:50%; }
 
 /* the layouts were made around the flower borders of the first design; with plain white they sit more evenly */
 .inv[data-template="white-roses"] .sheet-in { padding-top:12cqh; }

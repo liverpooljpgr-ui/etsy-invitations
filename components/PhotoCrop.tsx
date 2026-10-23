@@ -2,6 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import { clampCrop, FRAME_RATIO, imageSize, photoImgStyle, type Crop } from "@/lib/photo-crop";
+import type { PhotoShape } from "@/lib/templates";
+
+const radius = (shape: PhotoShape | undefined, archRadius: string) => (shape === "oval" ? "50%" : archRadius);
 
 type Photo = { url: string; ar?: number; cx?: number; cy?: number; zoom?: number };
 
@@ -9,7 +12,7 @@ type Photo = { url: string; ar?: number; cx?: number; cy?: number; zoom?: number
  * Crop and zoom for the photo in the arch: drag the photo to move it, pinch or use the slider to zoom. What you see in
  * this frame is exactly what the invitation shows (both use the same placement maths).
  */
-export function PhotoCrop({ photo, onChange }: { photo: Photo; onChange: (patch: Partial<Photo>) => void }) {
+export function PhotoCrop({ photo, onChange, shape }: { photo: Photo; onChange: (patch: Partial<Photo>) => void; shape?: PhotoShape }) {
   const frame = useRef<HTMLDivElement>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const img = useRef<HTMLImageElement>(null);
@@ -50,8 +53,8 @@ export function PhotoCrop({ photo, onChange }: { photo: Photo; onChange: (patch:
       <div
         ref={frame}
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
-        role="img" aria-label="Your photo in the arch. Drag to move it, pinch or use the zoom bar to zoom."
-        style={{ position: "relative", width: "min(240px, 70%)", aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: "999px 999px 8px 8px", background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a, 0 8px 22px -10px rgba(72,37,82,.35)", cursor: "grab", touchAction: "none", userSelect: "none" }}
+        role="img" aria-label={`Your photo in the ${shape === "oval" ? "oval" : "arch"}. Drag to move it, pinch or use the zoom bar to zoom.`}
+        style={{ position: "relative", width: "min(240px, 70%)", aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: radius(shape, "999px 999px 8px 8px"), background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a, 0 8px 22px -10px rgba(72,37,82,.35)", cursor: "grab", touchAction: "none", userSelect: "none" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img ref={img} src={photo.url} alt="" draggable={false} style={photoImgStyle(photo)} onLoad={(e) => report(e.currentTarget)} />
@@ -68,11 +71,11 @@ export function PhotoCrop({ photo, onChange }: { photo: Photo; onChange: (patch:
 }
 
 /** The saved photo as it sits in the arch (small, not editable). */
-export function PhotoArchThumb({ photo }: { photo: Photo }) {
+export function PhotoArchThumb({ photo, shape }: { photo: Photo; shape?: PhotoShape }) {
   return (
     <div
-      role="img" aria-label="Your photo in the arch"
-      style={{ position: "relative", width: 55, aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: "999px 999px 6px 6px", background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a", flex: "none" }}
+      role="img" aria-label={`Your photo in the ${shape === "oval" ? "oval" : "arch"}`}
+      style={{ position: "relative", width: 55, aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: radius(shape, "999px 999px 6px 6px"), background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a", flex: "none" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={photo.url} alt="" draggable={false} style={photoImgStyle(photo)} />
