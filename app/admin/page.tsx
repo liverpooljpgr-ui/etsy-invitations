@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { AdminTabs } from "./AdminTabs";
-import { CreateForm, CreateOwnForm } from "./CreateForm";
+import { CreateForm } from "./CreateForm";
 import { OrdersGrid, type OrderRow } from "./OrdersGrid";
 import { PasswordForm } from "./PasswordForm";
 
@@ -68,9 +68,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           counts={{ orders: rows.length }}
           panels={{
             new: (
-              <div style={{ maxWidth: "34rem", display: "flex", flexDirection: "column", gap: 22 }}>
+              <div style={{ maxWidth: "34rem" }}>
                 <CreateForm templates={(templates ?? []).map((t) => ({ id: t.id, name: t.name }))} />
-                <CreateOwnForm templates={(templates ?? []).map((t) => ({ id: t.id, name: t.name }))} />
                 <p className="ui-help" style={{ marginTop: 14 }}>Send the personal link to your customer through Etsy messages. It can be used once; the customer enters their email and starts personalising. You can find the order later in the Orders tab.</p>
               </div>
             ),

@@ -5,6 +5,8 @@ import { signOut } from "@/app/login/actions";
 import { parseContent } from "@/lib/content/schema";
 import { CoverInner } from "@/components/invitation/Cover";
 import { templatesOf } from "@/lib/template-of";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { CreateOwnForm } from "@/app/admin/CreateForm";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const shortDate = (iso: string) => {
@@ -25,6 +27,8 @@ export default async function Dashboard() {
     ids.length ? supabase.from("invitation_content").select("invitation_id, draft").in("invitation_id", ids) : Promise.resolve({ data: [] as { invitation_id: string; draft: unknown }[] }),
   ]);
   const tplOf = await templatesOf(ids);
+  // admins (designers) can start an invitation of their own right here, without a purchase link
+  const { data: tpls } = me?.role === "admin" ? await createAdminClient().from("templates").select("id, name").eq("is_active", true).order("name") : { data: null };
   const draftOf = new Map((contents ?? []).map((c) => [c.invitation_id, parseContent(c.draft)]));
 
   async function logout() {
@@ -78,6 +82,7 @@ export default async function Dashboard() {
             );
           })}
         </ul>
+        {tpls && <div style={{ marginTop: 28 }}><CreateOwnForm templates={tpls} /></div>}
       </main>
     </div>
   );
