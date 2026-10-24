@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { clampCrop, FRAME_RATIO, imageSize, photoImgStyle, type Crop } from "@/lib/photo-crop";
 import type { PhotoShape } from "@/lib/templates";
 
-const radius = (shape: PhotoShape | undefined, archRadius: string) => (shape === "oval" ? "50%" : archRadius);
+const radius = (shape: PhotoShape | undefined, archRadius: string) => (shape === "oval" ? "50%" : shape === "rect" ? "2px" : archRadius);
 
 type Photo = { url: string; ar?: number; cx?: number; cy?: number; zoom?: number };
 
@@ -53,7 +53,7 @@ export function PhotoCrop({ photo, onChange, shape }: { photo: Photo; onChange: 
       <div
         ref={frame}
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
-        role="img" aria-label={`Your photo in the ${shape === "oval" ? "oval" : "arch"}. Drag to move it, pinch or use the zoom bar to zoom.`}
+        role="img" aria-label={`Your photo in the ${shape === "oval" ? "oval" : shape === "rect" ? "frame" : "arch"}. Drag to move it, pinch or use the zoom bar to zoom.`}
         style={{ position: "relative", width: "min(240px, 70%)", aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: radius(shape, "999px 999px 8px 8px"), background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a, 0 8px 22px -10px rgba(72,37,82,.35)", cursor: "grab", touchAction: "none", userSelect: "none" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -74,7 +74,7 @@ export function PhotoCrop({ photo, onChange, shape }: { photo: Photo; onChange: 
 export function PhotoArchThumb({ photo, shape }: { photo: Photo; shape?: PhotoShape }) {
   return (
     <div
-      role="img" aria-label={`Your photo in the ${shape === "oval" ? "oval" : "arch"}`}
+      role="img" aria-label={`Your photo in the ${shape === "oval" ? "oval" : shape === "rect" ? "frame" : "arch"}`}
       style={{ position: "relative", width: 55, aspectRatio: String(FRAME_RATIO), overflow: "hidden", borderRadius: radius(shape, "999px 999px 6px 6px"), background: "var(--ui-fill)", boxShadow: "0 0 0 1px #c9a45a", flex: "none" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

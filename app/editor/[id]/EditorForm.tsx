@@ -585,7 +585,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={2} mobileHidden={step !== 1} title="Card 2 · Photo, date & save the date">
             <div className="ui-field">
-              <span className="ui-label">Photo (shown in {PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE] === "oval" ? "an oval" : "an arch"})</span>
+              <span className="ui-label">Photo (shown in {{ oval: "an oval", rect: "a frame", arch: "an arch" }[PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]]})</span>
               <div className="ui-media">
                 {draft.photo && cropOpen && (
                   <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>

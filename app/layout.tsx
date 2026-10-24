@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed } from "next/font/google";
+import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
@@ -15,6 +15,9 @@ const wrScript = Licorice({ variable: "--font-wr-script", subsets: ["latin"], we
 const wrHead = Marcellus({ variable: "--font-wr-head", subsets: ["latin", "latin-ext"], weight: "400" });
 const wrBody = Barlow_Semi_Condensed({ variable: "--font-wr-body", subsets: ["latin", "latin-ext", "vietnamese"], weight: ["300", "400", "600"] });
 
+// "Mono Elegance" invitation: classic letterpress capitals (Cormorant) and a swash script for the monogram (Pinyon, shared with the first design)
+const meSerif = Cormorant_Garamond({ variable: "--font-me-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600"] });
+
 export const metadata: Metadata = {
   title: "PixelBridge Invitations",
   description: "Interactive digital invitations",
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable}`}>
+    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${meSerif.variable}`}>
       <body>{children}</body>
     </html>
   );
