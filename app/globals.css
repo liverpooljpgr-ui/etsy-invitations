@@ -865,3 +865,12 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .card-sheet .arch::before { content:""; position:absolute; inset:0; pointer-events:none; border:1px solid transparent;
   border-image-source:url(/templates/mono/v1/photo-frame.png); border-image-slice:120 100 351 100; border-image-width:10.55% 11.95% 30.87% 11.95%; border-image-repeat:stretch; }
 .inv[data-template="mono-elegance"] .card-sheet .arch-in { position:absolute; left:13.5%; right:13.5%; top:11.43%; bottom:17%; width:auto; height:auto; border-radius:0; }
+/* Mono Elegance: embossed paper backgrounds for the date, venue and timeline pages (public/templates/mono/v1/bg-*.webp) */
+.inv[data-template="mono-elegance"] .card-sheet    { background:#f3f3f1 url(/templates/mono/v1/bg-photo.webp) center / cover no-repeat; }
+.inv[data-template="mono-elegance"] .card-venue    { background:#f3f3f1 url(/templates/mono/v1/bg-venue.webp) center / cover no-repeat; }
+.inv[data-template="mono-elegance"] .card-timeline { background:#f3f3f1 url(/templates/mono/v1/bg-timeline.webp) center / cover no-repeat; }
+/* the date page has flowers across its top, the timeline page along its bottom */
+.inv[data-template="mono-elegance"] .sheet-in { padding-top:21cqh; }
+.inv[data-template="mono-elegance"] .sheet-in.no-photo { padding-top:26cqh; }
+.inv[data-template="mono-elegance"] .card-sheet .arch { height:43cqh; width:calc(43cqh * 837 / 1137); }
+.inv[data-template="mono-elegance"] .tl-in { padding:12cqh 11cqw 24cqh; }
