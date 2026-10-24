@@ -1,6 +1,7 @@
 import type { Content } from "@/lib/content/schema";
 import type { TemplateSlug } from "@/lib/templates";
 import { EnvelopeArt } from "./EnvelopeArt";
+import { CoverNames } from "./CoverNames";
 
 /**
  * Inside of the first screen ("cover"): small line, the couple's names, the envelope, a closing line.
@@ -25,11 +26,7 @@ export function CoverInner({ content: c, mode, hint, template }: { content: Cont
   return (
     <>
       {c.texts.coverTop && <span className="cover-top">{c.texts.coverTop}</span>}
-      <span className="cover-names">
-        <span>{first}</span>
-        <span className="amp">&amp;</span>
-        <span>{second}</span>
-      </span>
+      <CoverNames first={first} second={second} />
       <span className="cover-env">
         <EnvelopeArt monogram={monogram} template={template} />
       </span>
