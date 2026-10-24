@@ -852,3 +852,10 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border-color:rgba(0,0,0,.35); background:rgba(255,255,255,.95); }
 .inv[data-template="mono-elegance"] { font-variant-numeric:lining-nums; }
 .inv[data-template="mono-elegance"] .venue-in, .inv[data-template="mono-elegance"] .tl-in, .inv[data-template="mono-elegance"] .rsvp-in { justify-content:center; }
+/* Mono Elegance: the soft lines (save the date, reception to follow, thank you, section titles) in a handwritten cursive */
+.inv[data-template="mono-elegance"] .save, .inv[data-template="mono-elegance"] .venue-recep, .inv[data-template="mono-elegance"] .closing-text,
+.inv[data-template="mono-elegance"] .script.tl-title { font-family:var(--me-script); font-weight:400; text-transform:none; letter-spacing:.02em; color:#2a2a2a; }
+.inv[data-template="mono-elegance"] .save { font-size:calc(34px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .venue-recep { font-size:calc(28px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .closing-text { font-size:calc(26px * var(--k,1)); line-height:1.3; }
+.inv[data-template="mono-elegance"] .script.tl-title { font-size:calc(40px * var(--k,1)); line-height:1.1; }
