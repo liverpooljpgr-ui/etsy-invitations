@@ -16,4 +16,4 @@ export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "s
 
 /** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval, Mono Elegance a plain frame. */
 export type PhotoShape = "arch" | "oval" | "rect";
-export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-elegance": "rect" };
+export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-elegance": "oval" };

@@ -908,3 +908,13 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .venue-rule { background:#acacac; }
 .inv[data-template="mono-elegance"] .venue-link { border-bottom-color:#acacac; }
 .inv[data-template="mono-elegance"] .venue-addr { text-transform:none; letter-spacing:normal; font-size:calc(14px * var(--k,1)); }
+/* Mono Elegance: the elegant words (save the date, reception to follow, thank you, timeline, details) are set in Ballet */
+.inv[data-template="mono-elegance"] .save, .inv[data-template="mono-elegance"] .venue-recep, .inv[data-template="mono-elegance"] .closing-text,
+.inv[data-template="mono-elegance"] .script.tl-title { font-family:var(--font-me-script),var(--me-script); }
+/* Mono Elegance: the photo is an oval again and comes first, above the save the date text */
+.inv[data-template="mono-elegance"] .card-sheet .arch { order:0; margin-top:0; margin-bottom:1.5cqh; height:33cqh; width:calc(33cqh * 3 / 4); border-radius:50%; }
+.inv[data-template="mono-elegance"] .card-sheet .arch-in { border-radius:50%; }
+.inv[data-template="mono-elegance"] .save { font-size:calc(37px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .venue-recep { font-size:calc(31px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .closing-text { font-size:calc(29px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .script.tl-title { font-size:calc(44px * var(--k,1)); }
