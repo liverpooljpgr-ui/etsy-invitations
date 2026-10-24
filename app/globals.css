@@ -891,6 +891,6 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 /* no padding beside the weekday and the time */
 .inv[data-template="mono-elegance"] .dt-row > span:first-child { padding-right:0; }
 .inv[data-template="mono-elegance"] .dt-row > span:last-child:not(:first-child) { padding-left:0; }
-/* Mono Elegance: no padding anywhere inside the date row */
-.inv[data-template="mono-elegance"] .dt-row, .inv[data-template="mono-elegance"] .dt-row > span, .inv[data-template="mono-elegance"] .dt-row b,
-.inv[data-template="mono-elegance"] .sheet-in.no-photo .dt-row b { padding-left:0 !important; padding-right:0 !important; }
+/* Mono Elegance: the date row touches its two lines (no space above or below the text) */
+.inv[data-template="mono-elegance"] .dt-row { padding-top:0; padding-bottom:0; margin-top:0; margin-bottom:0; }
+.inv[data-template="mono-elegance"] .dt-row b { line-height:1; padding-top:0; padding-bottom:0; }
