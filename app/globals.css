@@ -874,3 +874,9 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .sheet-in.no-photo { padding-top:26cqh; }
 .inv[data-template="mono-elegance"] .card-sheet .arch { height:43cqh; width:calc(43cqh * 837 / 1137); }
 .inv[data-template="mono-elegance"] .tl-in { padding:12cqh 11cqw 24cqh; }
+/* Mono Elegance: the photo stands on its own, no frame around it */
+.inv[data-template="mono-elegance"] .card-sheet .arch { height:42cqh; width:calc(42cqh * 3 / 4); aspect-ratio:3/4; }
+.inv[data-template="mono-elegance"] .card-sheet .arch::before { display:none; }
+.inv[data-template="mono-elegance"] .card-sheet .arch-in { inset:0; }
+/* Mono Elegance: no double rule at the edges of the pages */
+.inv[data-template="mono-elegance"] .card:not(.cover)::after { display:none; }
