@@ -887,7 +887,7 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .dt-row > span:last-child:not(:first-child)::before { content:"at "; }
 /* Mono Elegance: the photo comes last, after the date and time */
 .inv[data-template="mono-elegance"] .card-sheet .arch { order:5; margin-top:2cqh; height:37cqh; width:calc(37cqh * 3 / 4); }
-.inv[data-template="mono-elegance"] .sheet-in { padding-top:22cqh; gap:1.2cqh; }
+.inv[data-template="mono-elegance"] .sheet-in { padding-top:27cqh; gap:1.2cqh; }
 /* no padding beside the weekday and the time */
 .inv[data-template="mono-elegance"] .dt-row > span:first-child { padding-right:0; }
 .inv[data-template="mono-elegance"] .dt-row > span:last-child:not(:first-child) { padding-left:0; }
