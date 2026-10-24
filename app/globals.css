@@ -908,7 +908,7 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .venue-rule { background:#acacac; }
 .inv[data-template="mono-elegance"] .venue-link { border-bottom-color:#acacac; }
 .inv[data-template="mono-elegance"] .venue-addr { text-transform:none; letter-spacing:normal; font-size:calc(14px * var(--k,1)); }
-/* Mono Elegance: the elegant words (save the date, reception to follow, thank you, timeline, details) are set in Ballet */
+/* Mono Elegance: the elegant words (save the date, reception to follow, thank you, timeline, details) are set in Herr Von Muellerhoff */
 .inv[data-template="mono-elegance"] .save, .inv[data-template="mono-elegance"] .venue-recep, .inv[data-template="mono-elegance"] .closing-text,
 .inv[data-template="mono-elegance"] .script.tl-title { font-family:var(--font-me-script),var(--me-script); }
 /* Mono Elegance: the photo is an oval again and comes first, above the save the date text */
@@ -922,3 +922,8 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .card-sheet { background:#f3f3f1 url(/templates/mono/v1/bg-photo.webp) center / cover no-repeat; isolation:auto; }
 .inv[data-template="mono-elegance"] .card-sheet::before, .inv[data-template="mono-elegance"] .card.card-sheet:not(.cover)::after { display:none; }
 .inv[data-template="mono-elegance"] .sheet-in { padding-top:4cqh; padding-bottom:6cqh; justify-content:center; }
+/* Herr Von Muellerhoff is a small, light hand: the words are set a little larger */
+.inv[data-template="mono-elegance"] .save { font-size:calc(46px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .venue-recep { font-size:calc(38px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .closing-text { font-size:calc(36px * var(--k,1)); }
+.inv[data-template="mono-elegance"] .script.tl-title { font-size:calc(54px * var(--k,1)); }

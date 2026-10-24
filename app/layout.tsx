@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed, Cormorant_Garamond, Ballet } from "next/font/google";
+import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed, Cormorant_Garamond, Herr_Von_Muellerhoff } from "next/font/google";
 import "./globals.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
@@ -17,7 +17,7 @@ const wrBody = Barlow_Semi_Condensed({ variable: "--font-wr-body", subsets: ["la
 
 // "Mono Elegance" invitation: classic letterpress capitals (Cormorant) and a swash script for the monogram (Pinyon, shared with the first design)
 const meSerif = Cormorant_Garamond({ variable: "--font-me-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600"] });
-const meScript = Ballet({ variable: "--font-me-script", subsets: ["latin"] });
+const meScript = Herr_Von_Muellerhoff({ variable: "--font-me-script", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "PixelBridge Invitations",
