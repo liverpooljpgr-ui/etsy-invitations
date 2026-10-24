@@ -918,3 +918,7 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .venue-recep { font-size:calc(31px * var(--k,1)); }
 .inv[data-template="mono-elegance"] .closing-text { font-size:calc(29px * var(--k,1)); }
 .inv[data-template="mono-elegance"] .script.tl-title { font-size:calc(44px * var(--k,1)); }
+/* Mono Elegance, save the date page: its own background with garlands down both sides (public/templates/mono/v1/bg-photo.webp) */
+.inv[data-template="mono-elegance"] .card-sheet { background:#f3f3f1 url(/templates/mono/v1/bg-photo.webp) center / cover no-repeat; isolation:auto; }
+.inv[data-template="mono-elegance"] .card-sheet::before, .inv[data-template="mono-elegance"] .card.card-sheet:not(.cover)::after { display:none; }
+.inv[data-template="mono-elegance"] .sheet-in { padding-top:4cqh; padding-bottom:6cqh; justify-content:center; }
