@@ -894,3 +894,5 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 /* Mono Elegance: the date row touches its two lines (no space above or below the text) */
 .inv[data-template="mono-elegance"] .dt-row { padding-top:0; padding-bottom:0; margin-top:0; margin-bottom:0; }
 .inv[data-template="mono-elegance"] .dt-row b { line-height:1; padding-top:0; padding-bottom:0; }
+/* Mono Elegance: the weekday and the time are a little larger and black */
+.inv[data-template="mono-elegance"] .dt-row > span { font-size:3.4cqw; color:#111; }
