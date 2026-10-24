@@ -896,3 +896,15 @@ body:has(.inv[data-template="mono-elegance"]) .music-btn { color:#2a2a2a; border
 .inv[data-template="mono-elegance"] .dt-row b { line-height:1; padding-top:0; padding-bottom:0; }
 /* Mono Elegance: the weekday and the time are a little larger and black */
 .inv[data-template="mono-elegance"] .dt-row > span { font-size:3.4cqw; color:#111; }
+/* Mono Elegance, save the date page: the venue background is moved down a little so the flowers at the top show as much as the ones at the bottom;
+   the strip that opens at the top is the same picture mirrored, so the top flower continues smoothly. */
+.inv[data-template="mono-elegance"] .card-sheet { background:#f3f3f1; isolation:isolate; }
+.inv[data-template="mono-elegance"] .card-sheet::before, .inv[data-template="mono-elegance"] .card-sheet::after { content:""; display:block; position:absolute; inset:0; z-index:-1; pointer-events:none; background:url(/templates/mono/v1/bg-venue.webp) center / cover no-repeat; }
+.inv[data-template="mono-elegance"] .card-sheet::before { transform:translateY(6cqh); }
+.inv[data-template="mono-elegance"] .card-sheet::after { transform:translateY(calc(6cqh - 100%)) scaleY(-1); }
+.inv[data-template="mono-elegance"] .card.card-sheet:not(.cover)::after { display:block; content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; border:0; box-shadow:none; background:url(/templates/mono/v1/bg-venue.webp) center / cover no-repeat; transform:translateY(calc(6cqh - 100%)) scaleY(-1); }
+/* Mono Elegance: every line in the invitation has the light grey of the save the date rules; the venue address is plain, readable text */
+.inv[data-template="mono-elegance"] { --rule:#acacac; }
+.inv[data-template="mono-elegance"] .venue-rule { background:#acacac; }
+.inv[data-template="mono-elegance"] .venue-link { border-bottom-color:#acacac; }
+.inv[data-template="mono-elegance"] .venue-addr { text-transform:none; letter-spacing:normal; font-size:calc(14px * var(--k,1)); }
