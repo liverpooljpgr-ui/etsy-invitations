@@ -352,6 +352,11 @@ html:has(.ui) { background:#f2f2f7; } /* also behind the scrollbar gutter */
 .ui-row-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:56px; padding:8px 16px; border-bottom:.5px solid var(--ui-hair); font-size:16px; }
 .ui-fields { display:flex; flex-direction:column; gap:18px; padding:18px 16px 20px; transition:opacity .25s ease; }
 .ui-dim { opacity:.55; }
+/* while a photo uploads nothing else can be edited */
+.photo-lock { position:fixed; inset:0; z-index:200; display:grid; place-items:center; background:rgba(255,255,255,.6); backdrop-filter:blur(2px); cursor:progress; }
+.photo-lock-box { display:flex; align-items:center; gap:12px; padding:14px 20px; border-radius:14px; background:#fff; box-shadow:0 8px 30px rgba(0,0,0,.18); font-size:16px; font-weight:500; color:var(--ui-label); }
+.photo-spin { width:20px; height:20px; border-radius:50%; border:2.5px solid var(--ui-hair); border-top-color:var(--ui-tint); animation:photo-spin .8s linear infinite; }
+@keyframes photo-spin { to { transform:rotate(360deg); } }
 .ui-group-off { background:#e6e6eb; box-shadow:0 0 0 .5px rgba(60,60,67,.22); } /* a switched-off screen: the whole section turns grey */
 .ui-group-off .ui-row-switch { border-bottom-color:rgba(60,60,67,.18); }
 .ui-group-off .ui-input { background-color:#dcdce2; }

@@ -126,12 +126,12 @@ function Section({ title, n, children, toggle, mobileHidden }: { title: string; 
 /** Downscale + re-encode as WebP in the browser (also strips EXIF/GPS). */
 async function prepareImage(file: File): Promise<Blob> {
   const bmp = await createImageBitmap(file);
-  const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const scale = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bmp.width * scale);
   canvas.height = Math.round(bmp.height * scale);
   canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
-  return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/webp", 0.85));
+  return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/webp", 0.8));
 }
 
 export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialStep, dateOrder, template }: Props) {
@@ -162,6 +162,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [step]);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  // a photo is on its way: the editor is locked until it is uploaded and the draft holding it is saved
+  const [photoWait, setPhotoWait] = useState<null | "upload" | "save">(null);
   const [copied, setCopied] = useState(false);
 
   const [conflict, setConflict] = useState<{ version: number; draft: unknown } | null>(null);
@@ -235,7 +237,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           setSaveError("");
           setNotice((n) => (n && !n.ok ? null : n)); // a red message about a problem goes away once saving works again
           setConflict(null);
-          if (latest.current === sent && !again.current) { setSaveState("saved"); return true; }
+          if (latest.current === sent && !again.current) { setSaveState("saved"); setPhotoWait((w) => (w === "save" ? null : w)); return true; }
           continue;
         }
         if ("conflict" in r && r.conflict) {
@@ -246,11 +248,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           }
           setConflict(r.conflict);
           setSaveError("");
-          setSaveState("error");
+          setSaveState("error"); setPhotoWait((w) => (w === "save" ? null : w));
           return false;
         }
         setSaveError(r.error);
-        setSaveState("error");
+        setSaveState("error"); setPhotoWait((w) => (w === "save" ? null : w));
         return false;
       }
     } finally {
@@ -363,16 +365,19 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return setNotice({ ok: false, text: "Please choose a JPG, PNG or WebP image." });
     if (file.size > 15 * 1024 * 1024) return setNotice({ ok: false, text: "Image is too large (max 15 MB)." });
     setNotice(null);
+    setPhotoWait("upload");
     try {
       const blob = await prepareImage(file);
       const supabase = createBrowserSupabase();
       const path = `${id}/${crypto.randomUUID()}.webp`;
-      const { error } = await supabase.storage.from("invitation-media").upload(path, blob, { contentType: "image/webp" });
+      const { error } = await supabase.storage.from("invitation-media").upload(path, blob, { contentType: "image/webp", cacheControl: "31536000" });
       if (error) throw error;
       const { data } = supabase.storage.from("invitation-media").getPublicUrl(path);
       update((d) => ({ ...d, photo: { url: data.publicUrl, alt: d.photo?.alt ?? "" } }));
+      setPhotoWait("save");
       setCropOpen(true); // a new photo opens the crop / zoom tool
     } catch {
+      setPhotoWait(null);
       setNotice({ ok: false, text: "Photo upload failed. Please try again." });
     }
   }
@@ -546,6 +551,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </div>
         </div>
 
+        {photoWait && (
+          <div className="photo-lock" role="alert" aria-live="assertive">
+            <span className="photo-lock-box"><i className="photo-spin" aria-hidden="true" />{photoWait === "upload" ? "Uploading your photo…" : "Saving your photo…"}</span>
+          </div>
+        )}
         <div className="ui-sections">
 
           <Section n={1} mobileHidden={step !== 0} title="Card 1 · Cover (the envelope screen)">
