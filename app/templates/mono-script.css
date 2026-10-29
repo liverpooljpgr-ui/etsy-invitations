@@ -1,0 +1,141 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════
+   MONO SCRIPT  (slug: mono-script)  ·  black & grey  ·  everything aligned to the left
+   Fonts:  Mrs Saint Delafield (handwritten script)  +  Jost (wide-spaced capitals)
+
+   THIS IS THE FILE TO EDIT for this design: every rule applies only to  .inv[data-template="mono-script"].
+   Imported in app/layout.tsx.  The markup (which text is shown, in which order) is shared with the other designs:
+   components/invitation/Invitation.tsx (screens 2-7) and components/invitation/Cover.tsx (screen 1).
+
+   HOW TO READ SIZES
+     calc(40px * var(--k,1))   a font size / gap that scales with the phone (--k is 1 on a normal phone)
+     cqw / cqh                 % of the card's width / height (works inside .sheet-in, .venue-in, .tl-in, .dtl-in, .rsvp-in, .closing-in)
+   Screens:  1 cover (envelope) · 2 photo + date · 3 venue · 4 timeline · 5 details · 6 RSVP · 7 closing
+
+   ENVELOPE PICTURES: public/templates/script/v1/envelope-body | envelope-flap-closed | envelope-flap-open  (now simple grey outlines, .svg).
+   When you add your own pictures (.webp / .png) put them in that folder and change  ext  for "mono-script" in lib/templates.ts,
+   then set the position of the flaps in section 1b below (copy the numbers from the first design in app/globals.css as a starting point).
+   ═══════════════════════════════════════════════════════════════════════════════════════════════ */
+
+/* ───────── 0. Colours, fonts and the "knobs" you will most often change ───────── */
+.inv[data-template="mono-script"] {
+  --paper:#ffffff; --dark:#ffffff; --dark-ink:#111111; --ink:#4a4a4a; --gold:#111111;   /* base variables used by the shared styles */
+  --ms-black:#111111;      /* main text, big words */
+  --ms-grey:#8c8c8c;       /* small captions */
+  --ms-line:#cfcfcf;       /* thin lines */
+  --ms-script:var(--font-ms-script),"Brush Script MT",cursive;
+  --ms-sans:var(--font-sans),system-ui,sans-serif;       /* Jost */
+  --ms-track:.34em;        /* letter-spacing of the small capitals */
+  --ms-left:13cqw;         /* space on the left of every screen (the left edge of all text) */
+  --ms-right:9cqw;
+  font-family:var(--ms-sans); font-weight:300; letter-spacing:.12em; text-align:left; color:var(--ms-black); }
+
+/* every screen: white paper, square corners, text starts at the left */
+.inv[data-template="mono-script"] .card,
+.inv[data-template="mono-script"] .cover { background:#fff; border-radius:2px; box-shadow:0 8px 28px rgba(0,0,0,.12); align-items:flex-start; text-align:left; }
+.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-venue, .inv[data-template="mono-script"] .card-timeline,
+.inv[data-template="mono-script"] .card-details, .inv[data-template="mono-script"] .card-rsvp, .inv[data-template="mono-script"] .card-closing { background:#fff; }
+
+/* shared look of the small capitals (Jost, light, very spaced) */
+.inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint,
+.inv[data-template="mono-script"] .venue-intro, .inv[data-template="mono-script"] .venue-link, .inv[data-template="mono-script"] .caps,
+.inv[data-template="mono-script"] .tiny, .inv[data-template="mono-script"] .qrbox, .inv[data-template="mono-script"] .dt-month,
+.inv[data-template="mono-script"] .dt-year, .inv[data-template="mono-script"] .dt-row, .inv[data-template="mono-script"] .tl li span,
+.inv[data-template="mono-script"] .venue-addr, .inv[data-template="mono-script"] .dtl-text, .inv[data-template="mono-script"] .val,
+.inv[data-template="mono-script"] .rsvp-by, .inv[data-template="mono-script"] .rsvp-mail, .inv[data-template="mono-script"] .rsvp-note,
+.inv[data-template="mono-script"] .closing-text, .inv[data-template="mono-script"] .venue-name, .inv[data-template="mono-script"] .tl li b { font-family:var(--ms-sans); font-weight:300; text-transform:uppercase; letter-spacing:var(--ms-track); color:var(--ms-black); }
+
+/* shared look of the handwritten words (Mrs Saint Delafield) */
+.inv[data-template="mono-script"] .names, .inv[data-template="mono-script"] .script, .inv[data-template="mono-script"] .title i,
+.inv[data-template="mono-script"] .save, .inv[data-template="mono-script"] .venue-recep, .inv[data-template="mono-script"] .rsvp-lead,
+.inv[data-template="mono-script"] .closing-names, .inv[data-template="mono-script"] .cover-names, .inv[data-template="mono-script"] .monogram,
+.inv[data-template="mono-script"] .seal { font-family:var(--ms-script); font-weight:400; text-transform:none; letter-spacing:0; color:var(--ms-black); }
+
+/* ───────── 1. Screen 1: cover (the envelope) ───────── */
+.inv[data-template="mono-script"] .cover { padding:calc(54px * var(--k,1)) 10% calc(50px * var(--k,1)); gap:calc(16px * var(--k,1)); justify-content:flex-start; }
+.inv[data-template="mono-script"] .cover-top { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                       /* "The wedding of" */
+.inv[data-template="mono-script"] .cover-names { flex-direction:column; align-items:flex-start; white-space:normal; font-size:calc(66px * var(--k,1)); line-height:.95; gap:0; }   /* name / & / name, left */
+.inv[data-template="mono-script"] .cover-names .amp { font-family:var(--ms-script); font-size:.7em; color:var(--ms-grey); }
+.inv[data-template="mono-script"] .cover-names.stacked { align-items:flex-start; text-align:left; }
+.inv[data-template="mono-script"] .cover-bottom { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                      /* "You are invited" */
+.inv[data-template="mono-script"] .env-hint { font-size:calc(10.5px * var(--k,1)); color:var(--ms-grey); }                           /* "Tap to open" */
+
+/* 1b. Envelope geometry. These are the numbers of the first design (picture 948 x 610 around a 904 x 566 envelope) and they fit the grey placeholder
+       outlines. When you replace the pictures, adjust them: left / top / width / height are % of the whole envelope picture. */
+.inv[data-template="mono-script"] .cover-env { width:100%; aspect-ratio:904/566; }
+.inv[data-template="mono-script"] .env-art { width:calc(100% * 948 / 904); aspect-ratio:948/610; }
+.inv[data-template="mono-script"] .env-flap-closed { left:.633%; top:-.984%; width:100%; height:78.361%; transform-origin:50% 2.929%; }
+.inv[data-template="mono-script"] .env-flap-open { left:.633%; top:-73.279%; width:98.523%; height:76.066%; transform-origin:50% 98.06%; }
+.inv[data-template="mono-script"] .monogram { top:34%; justify-content:flex-start; left:14%; font-size:calc(46px * var(--k,1)); -webkit-text-fill-color:var(--ms-black); background:none; }   /* initials on the closed flap */
+
+/* ───────── 2. Screen 2: photo, "Save the date", date ───────── */
+.inv[data-template="mono-script"] .sheet-in { align-items:flex-start; justify-content:flex-start; gap:1.6cqh; padding:11cqh var(--ms-right) 8cqh var(--ms-left); }
+.inv[data-template="mono-script"] .card-sheet .arch { height:40cqh; width:calc(40cqh * 3 / 4); border:0; border-radius:0; padding:0; background:#eee; }   /* the photo, plain rectangle */
+.inv[data-template="mono-script"] .arch-in { border-radius:0; }
+.inv[data-template="mono-script"] .arch-empty { color:var(--ms-grey); font-size:calc(11px * var(--k,1)); letter-spacing:var(--ms-track); }
+.inv[data-template="mono-script"] .save { font-size:calc(58px * var(--k,1)); line-height:1; margin-top:2cqh; }                       /* "Save the date" */
+.inv[data-template="mono-script"] .dt { align-items:flex-start; gap:.8cqh; color:var(--ms-black); }
+.inv[data-template="mono-script"] .dt-month, .inv[data-template="mono-script"] .dt-year { font-size:calc(13px * var(--k,1)); padding-left:0; }
+.inv[data-template="mono-script"] .dt-row { display:flex; align-items:baseline; gap:calc(14px * var(--k,1)); font-size:calc(11.5px * var(--k,1)); border:0; padding:0; margin:0; }
+.inv[data-template="mono-script"] .dt-row > span:first-child, .inv[data-template="mono-script"] .dt-row > span:last-child:not(:first-child) { padding:0; text-align:left; }
+.inv[data-template="mono-script"] .dt-row b { font-family:var(--ms-sans); font-weight:200; font-size:calc(44px * var(--k,1)); line-height:1; letter-spacing:0; border:0; padding:0; color:var(--ms-black); }  /* the day number */
+.inv[data-template="mono-script"] .sheet-in.no-photo { padding-top:22cqh; }
+.inv[data-template="mono-script"] .sheet-in.no-photo .dt-row b { font-size:calc(60px * var(--k,1)); }
+
+/* ───────── 3. Screen 3: venue ───────── */
+.inv[data-template="mono-script"] .venue-in { align-items:flex-start; justify-content:center; gap:calc(12px * var(--k,1)); padding:10cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="mono-script"] .venue-intro { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }                           /* "Ceremony will take place" */
+.inv[data-template="mono-script"] .venue-name { font-size:calc(19px * var(--k,1)); line-height:1.5; font-weight:400; }
+.inv[data-template="mono-script"] .venue-rule { width:calc(36px * var(--k,1)); background:var(--ms-line); }
+.inv[data-template="mono-script"] .venue-addr { font-size:calc(12px * var(--k,1)); line-height:1.9; text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+.inv[data-template="mono-script"] .venue-link { font-size:calc(10.5px * var(--k,1)); border-bottom:1px solid var(--ms-black); padding-bottom:2px; }
+.inv[data-template="mono-script"] .venue-recep { font-size:calc(46px * var(--k,1)); line-height:1; margin-top:calc(34px * var(--k,1)); }   /* "Reception to follow" */
+
+/* ───────── 4. Screen 4: timeline ───────── */
+.inv[data-template="mono-script"] .tl-in { align-items:flex-start; gap:1.4cqh; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="mono-script"] .script.tl-title { font-size:calc(58px * var(--k,1)); line-height:1; text-align:left; }               /* "Timeline" */
+.inv[data-template="mono-script"] .tl li { align-items:flex-start; text-align:left; }
+.inv[data-template="mono-script"] .tl li span { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }
+.inv[data-template="mono-script"] .tl li b { font-size:calc(22px * var(--k,1)); font-weight:200; letter-spacing:.14em; }
+.inv[data-template="mono-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1)); color:var(--ms-black); letter-spacing:var(--ms-track); }
+/* the small ornament between two items becomes a short grey line at the left edge */
+.inv[data-template="mono-script"] .tl li + li::before { left:0; width:calc(34px * var(--k,1)); height:1px; transform:translate(0,-50%); background:var(--ms-line); -webkit-mask:none; mask:none; }
+
+/* ───────── 5. Screen 5: details (registry, dress code, accommodation) ───────── */
+.inv[data-template="mono-script"] .dtl-in { align-items:flex-start; justify-content:center; gap:5cqh; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="mono-script"] .dtl-row { align-items:flex-start; justify-content:center; gap:5cqh; }
+.inv[data-template="mono-script"] .dtl-blk, .inv[data-template="mono-script"] .dtl-pair { align-items:flex-start; text-align:left; }
+.inv[data-template="mono-script"] .dtl-dress { justify-content:flex-start; }
+.inv[data-template="mono-script"] .dtl-row .qrs { justify-content:flex-start; }
+.inv[data-template="mono-script"] .dtl-row .qr { width:calc(78px * var(--k,1)); height:calc(78px * var(--k,1)); }
+.inv[data-template="mono-script"] .dtl-reg { order:1; } .inv[data-template="mono-script"] .dtl-dresscode { order:2; } .inv[data-template="mono-script"] .dtl-acc { order:3; }
+.inv[data-template="mono-script"] .caps { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }                                   /* block captions: REGISTRY, DRESS CODE ... */
+.inv[data-template="mono-script"] .tiny, .inv[data-template="mono-script"] .qrbox { font-size:calc(10px * var(--k,1)); color:var(--ms-grey); }
+.inv[data-template="mono-script"] .val { font-size:calc(14px * var(--k,1)); }
+.inv[data-template="mono-script"] .dtl-text { font-size:calc(12px * var(--k,1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+
+/* ───────── 6. Screen 6: RSVP ───────── */
+.inv[data-template="mono-script"] .rsvp-in { align-items:flex-start; justify-content:center; text-align:left; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="mono-script"] .rsvp-title { align-items:flex-start; margin-bottom:3cqh; }
+.inv[data-template="mono-script"] .rsvp-lead { font-size:calc(50px * var(--k,1)); text-transform:none; margin-bottom:0; color:var(--ms-black); }   /* "Please" */
+.inv[data-template="mono-script"] .rsvp-big { font-family:var(--ms-sans); font-weight:200; font-size:calc(42px * var(--k,1)); letter-spacing:.22em; white-space:nowrap; margin-right:0; color:var(--ms-black); }  /* "RSVP" */
+.inv[data-template="mono-script"] .rsvp-by { font-size:calc(12px * var(--k,1)); color:var(--ms-black); }                                /* "by August 28, 2027" */
+.inv[data-template="mono-script"] .rsvp-mail { font-size:calc(12px * var(--k,1)); text-transform:none; letter-spacing:.06em; color:var(--ms-grey); }
+.inv[data-template="mono-script"] .rsvp-note { max-width:100%; margin-top:4cqh; font-size:calc(10.5px * var(--k,1)); line-height:1.8; color:var(--ms-grey); }
+.inv[data-template="mono-script"] .rsvp-open { color:#fff; background:var(--ms-black); border:1px solid var(--ms-black); border-radius:0; font-family:var(--ms-sans); font-weight:400; letter-spacing:.3em; text-transform:uppercase; }
+
+/* the reply form that slides up inside the invitation */
+.inv[data-template="mono-script"] .rsvp-sheet { font-family:var(--ms-sans); background:#fff; color:var(--ms-black); border-radius:0; text-align:left; }
+.inv[data-template="mono-script"] .rsvp-sheet-title { font-family:var(--ms-script); font-size:calc(40px * var(--k,1)); letter-spacing:0; color:var(--ms-black); }
+.inv[data-template="mono-script"] .rsvp-choice[aria-checked="true"], .inv[data-template="mono-script"] .rsvp-send { background:var(--ms-black); border-color:var(--ms-black); color:#fff; border-radius:0; }
+.inv[data-template="mono-script"] .rsvp-field input, .inv[data-template="mono-script"] .rsvp-field textarea, .inv[data-template="mono-script"] .rsvp-choice,
+.inv[data-template="mono-script"] .rsvp-count button { border-color:var(--ms-line); border-radius:0; text-transform:none; letter-spacing:.04em; }
+
+/* ───────── 7. Screen 7: closing ───────── */
+.inv[data-template="mono-script"] .closing-in { align-items:flex-start; justify-content:center; text-align:left; padding:14cqh var(--ms-right) 14cqh var(--ms-left); }
+.inv[data-template="mono-script"] .closing-names { align-items:flex-start; font-size:calc(66px * var(--k,1)); line-height:.95; color:var(--ms-black); }
+.inv[data-template="mono-script"] .closing-names .amp { font-size:.7em; color:var(--ms-grey); }
+.inv[data-template="mono-script"] .closing-text { margin-top:calc(22px * var(--k,1)); font-size:calc(11.5px * var(--k,1)); line-height:2; color:var(--ms-grey); }
+
+/* ───────── 8. Small things ───────── */
+.inv[data-template="mono-script"] .swipe-hint { left:var(--ms-left); margin-left:0; color:var(--ms-black); }                           /* the little arrow at the bottom, now at the left */
+body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-color:rgba(0,0,0,.35); background:rgba(255,255,255,.95); }
