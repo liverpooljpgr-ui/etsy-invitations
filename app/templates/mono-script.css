@@ -139,3 +139,21 @@
 /* ───────── 8. Small things ───────── */
 .inv[data-template="mono-script"] .swipe-hint { left:var(--ms-left); margin-left:0; color:var(--ms-black); }                           /* the little arrow at the bottom, now at the left */
 body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-color:rgba(0,0,0,.35); background:rgba(255,255,255,.95); }
+
+/* ───────── 9. LAYOUT VARIANT for screen 2: full-bleed photo ─────────
+   The photo runs edge to edge across the top of the card (same 3:4 shape as the crop tool), a dark-grey fade rises from its bottom edge and
+   "Save the date" + the date are written over it in white, at the left. Without a photo the page stays white with dark text (see .no-photo). */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-end; padding:0 var(--ms-right) 11cqh var(--ms-left); gap:1.2cqh; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { position:absolute; left:0; top:0; width:100%; height:auto; aspect-ratio:3/4; margin:0; background:#222; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(17,17,17,0) 40%, rgba(17,17,17,.88) 100%); }          /* the fade: change the 40% / .88 to move or strengthen it */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) > .save, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) > .dt { position:relative; z-index:2; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b { color:#fff; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span { color:rgba(255,255,255,.82); }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:0; }
+.inv[data-template="mono-script"] .card-sheet .swipe-hint { color:#fff; z-index:3; }
+/* the photo has the 3:4 shape of the crop tool, so on a tall phone it ends before the bottom of the card: the card below it is the same dark grey the fade ends in */
+.inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#151515; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { background:linear-gradient(to bottom, rgba(21,21,21,0) 38%, rgba(21,21,21,.9) 78%, #151515 100%); }
