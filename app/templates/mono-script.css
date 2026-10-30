@@ -277,3 +277,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* a dress code written only in words: no empty space where the colour dots would be, so it lines up with the other text */
 .inv[data-template="mono-script"] .dtl-dress .dots:empty { display:none; }
 .inv[data-template="mono-script"] .dtl-dress:has(.dots:empty) { gap:0; }
+
+/* ───────── 33. Screen 3: "Ceremony will take place" is regular weight (400) ───────── */
+.inv[data-template="mono-script"] .venue-intro { font-weight:400; }
