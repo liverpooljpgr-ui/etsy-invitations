@@ -173,3 +173,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* "RSVP" is two pieces in the markup: keep them on one line, "Please" above */
 .inv[data-template="mono-script"] .rsvp-title { flex-direction:row; flex-wrap:wrap; align-items:baseline; column-gap:.3em; }
 .inv[data-template="mono-script"] .rsvp-lead { flex-basis:100%; }
+
+/* ───────── 11. Screen 2 (save the date) has its own paper: paper-2.webp ───────── */
+.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-2.webp) center / cover no-repeat; }
