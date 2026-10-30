@@ -259,7 +259,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
   --ms-bg-venue:url(/templates/script/v1/frame-100.webp);      /* 3 venue */
   --ms-bg-timeline:url(/templates/script/v1/frame-102.webp);     /* 4 timeline */
   --ms-bg-details:url(/templates/script/v1/frame-103.webp);      /* 5 details */
-  --ms-bg-rsvp:url(/templates/script/v1/paper-10.webp);         /* 6 RSVP */
+  --ms-bg-rsvp:url(/templates/script/v1/frame-104.webp);         /* 6 RSVP */
   --ms-bg-closing:url(/templates/script/v1/paper.webp); }    /* 7 closing */
 .inv[data-template="mono-script"] .card-sheet    { background:#f3f2f0 var(--ms-bg-sheet)    center / cover no-repeat !important; }
 .inv[data-template="mono-script"] .card-venue    { background:#f3f2f0 var(--ms-bg-venue)    center / cover no-repeat !important; }
