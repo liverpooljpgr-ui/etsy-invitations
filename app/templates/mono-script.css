@@ -189,3 +189,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:auto; aspect-ratio:3/4; border:0; padding:0; margin:0 0 1cqh; }
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo { padding-top:22cqh; }
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-start; }   /* photo starts at the top padding; the arrow at the bottom stays free */
+
+/* ───────── 14. Screen 2: the photo is 280px high (keeps the 3:4 shape of the crop tool, so it is 210px wide) ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { height:280px; width:210px; aspect-ratio:3/4; }
