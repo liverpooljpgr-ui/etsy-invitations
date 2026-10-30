@@ -271,3 +271,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .dt-month, .inv[data-template="mono-script"] .card-sheet .dt-row b,
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:400; }
+
+/* ───────── 30. Screen 3 (venue) uses paper-9.webp ───────── */
+.inv[data-template="mono-script"] .card-venue { background:#f3f2f0 url(/templates/script/v1/paper-9.webp) center / cover no-repeat; }
