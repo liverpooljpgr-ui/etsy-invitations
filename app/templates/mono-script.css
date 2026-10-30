@@ -321,3 +321,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* exactly 6 items: the space between them is 5cqh (scaled) */
 .inv[data-template="mono-script"] .tl:has(li:nth-child(6)):not(:has(li:nth-child(7))) { --ms-tl-gap:calc(5cqh * var(--ms-tl-s)); }
+
+/* ───────── 40. Screen 2: the date (month + day) and the time have the colour of the venue name on the next screen (--ms-black) ───────── */
+.inv[data-template="mono-script"] .card-sheet .dt-month, .inv[data-template="mono-script"] .card-sheet .dt-row b,
+.inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { color:var(--ms-black); }
