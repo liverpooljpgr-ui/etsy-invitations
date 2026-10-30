@@ -292,8 +292,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(18px * var(--k, 1)); font-weight:300; }
 
-/* ───────── 36. Registry QR codes: softer grey instead of near-black ───────── */
-.inv[data-template="mono-script"] .qr { color:#7a7a7a; opacity:.9; }
+/* ───────── 36. Registry QR codes: #545454 ───────── */
+.inv[data-template="mono-script"] .qr { color:#545454; }
 
 /* ───────── 37. Screen 4 (timeline): with fewer than 4 items each one still gets the space it has when there are 4 (a quarter of the list), so the gaps do not grow ───────── */
 .inv[data-template="mono-script"] .tl:not(:has(li:nth-child(4))) { justify-content:flex-start; }
@@ -303,3 +303,18 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .tl { --ms-tl-gap:6cqh; justify-content:flex-start; gap:0; }                    /* the space between two items: change 6cqh */
 .inv[data-template="mono-script"] .tl li, .inv[data-template="mono-script"] .tl:not(:has(li:nth-child(4))) li { flex:none; justify-content:flex-start; padding-bottom:var(--ms-tl-gap); }
 .inv[data-template="mono-script"] .tl li + li::before { top:calc(var(--ms-tl-gap) / -2); }                          /* the short line sits in the middle of the space */
+
+/* ───────── 39. Screen 4 (timeline): 6 to 10 items keep the same look (label above time) and everything gets proportionally smaller so all of them fit ───────── */
+.inv[data-template="mono-script"] .tl { --ms-tl-s:1; }
+.inv[data-template="mono-script"] .tl:has(li:nth-child(6)) { --ms-tl-s:.9; }
+.inv[data-template="mono-script"] .tl:has(li:nth-child(7)) { --ms-tl-s:.77; }
+.inv[data-template="mono-script"] .tl:has(li:nth-child(8)) { --ms-tl-s:.67; }
+.inv[data-template="mono-script"] .tl:has(li:nth-child(9)) { --ms-tl-s:.6; }
+.inv[data-template="mono-script"] .tl:has(li:nth-child(10)) { --ms-tl-s:.53; }          /* size factor for 6 / 7 / 8 / 9 / 10 items; 5 or fewer use full size */
+.inv[data-template="mono-script"] .tl { --ms-tl-gap:calc(6cqh * var(--ms-tl-s)); }
+.inv[data-template="mono-script"] .tl-dense li { flex-direction:column; gap:calc(2px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="mono-script"] .tl-dense li span, .inv[data-template="mono-script"] .tl-dense li b { order:0; }
+.inv[data-template="mono-script"] .tl li span { font-size:calc(11px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="mono-script"] .tl li b { font-size:calc(22px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="mono-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="mono-script"] .tl li + li::before { width:calc(34px * var(--k,1) * var(--ms-tl-s)); }
