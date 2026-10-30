@@ -160,8 +160,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 10. PAPER BACKGROUND on every screen except the cover (public/templates/script/v1/paper.webp; the original PNG is in assets/mono-script) ───────── */
 .inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-venue, .inv[data-template="mono-script"] .card-timeline,
-.inv[data-template="mono-script"] .card-details, .inv[data-template="mono-script"] .card-rsvp, .inv[data-template="mono-script"] .card-closing,
-.inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper.webp) center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-details, .inv[data-template="mono-script"] .card-rsvp, .inv[data-template="mono-script"] .card-closing { background:#f3f2f0 url(/templates/script/v1/paper.webp) center / cover no-repeat; }   /* (no :has() selector in this list: it would make every page in it hard to override) */
 /* screen 2: the photo now fades into the paper (a mask instead of a dark panel), and its text is dark again */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { background:none; -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent 100%); mask-image:linear-gradient(to bottom,#000 52%,transparent 100%); }   /* change 52% to move the fade */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { display:none; }
@@ -273,4 +272,4 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:400; }
 
 /* ───────── 30. Screen 3 (venue) uses paper-9.webp ───────── */
-.inv[data-template="mono-script"] .card-venue { background:#f3f2f0 url(/templates/script/v1/paper-9.webp) center / cover no-repeat; }
+.inv[data-template="mono-script"] .card.card-venue { background:#f3f2f0 url(/templates/script/v1/paper-9.webp) center / cover no-repeat; }
