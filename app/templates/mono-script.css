@@ -154,8 +154,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span { color:rgba(255,255,255,.82); }
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:0; }
 .inv[data-template="mono-script"] .card-sheet .swipe-hint { color:#fff; z-index:3; }
-/* the photo has the 3:4 shape of the crop tool, so on a tall phone it ends before the bottom of the card: the card below it is the same dark grey the fade ends in */
-.inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#151515; }
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { background:linear-gradient(to bottom, rgba(21,21,21,0) 38%, rgba(21,21,21,.9) 78%, #151515 100%); }
 
 /* ───────── 10. PAPER BACKGROUND on every screen except the cover (public/templates/script/v1/paper.webp; the original PNG is in assets/mono-script) ───────── */
@@ -172,9 +170,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* "RSVP" is two pieces in the markup: keep them on one line, "Please" above */
 .inv[data-template="mono-script"] .rsvp-title { flex-direction:row; flex-wrap:wrap; align-items:baseline; column-gap:.3em; }
 .inv[data-template="mono-script"] .rsvp-lead { flex-basis:100%; }
-
-/* ───────── 11. Screen 2 (save the date) has its own paper: paper-2.webp ───────── */
-.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-2.webp) center / cover no-repeat; }
 
 /* ───────── 12. Screen 2: the photo is a rectangle with a thin frame (replaces the full-bleed photo of sections 9-10) ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in { justify-content:flex-start; align-items:flex-start; padding:11cqh var(--ms-right) 8cqh var(--ms-left); gap:1.6cqh; }
@@ -217,12 +212,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .dt-row > span:first-child { margin-right:calc(8px * var(--k, 1)); }                       /* weekday → number */
 .inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { margin-left:calc(20px * var(--k, 1)); }   /* number → time (bigger) */
 
-/* ───────── 19. Screen 2 (save the date) uses paper-4.webp ───────── */
-.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-4.webp) center / cover no-repeat; }
-
-/* ───────── 20. Screen 2 (save the date) uses paper-5.webp ───────── */
-.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-5.webp) center / cover no-repeat; }
-
 /* ───────── 21. Screen 3 (venue): "Reception to follow" 35px, one underline under "Get directions", tighter venue name ───────── */
 .inv[data-template="mono-script"] .venue-recep { font-size:calc(35px * var(--k, 1)); }
 .inv[data-template="mono-script"] .venue-link { text-decoration:none; border-bottom:1px solid var(--ms-black); padding-bottom:2px; }   /* the shared style also draws an underline: this keeps one */
@@ -247,9 +236,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .link, .inv[data-template="mono-script"] .venue-link, .inv[data-template="mono-script"] .closing-cal, .inv[data-template="mono-script"] .rsvp-mail
   { text-decoration:none; border-bottom:1px solid #a7a7a7; padding-bottom:2px; display:inline-block; width:fit-content; }
 
-/* ───────── 24. Screen 2 (save the date) uses paper-6.webp ───────── */
-.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-6.webp) center / cover no-repeat; }
-
 /* ───────── 25. Screen 2: bigger bottom padding (above the arrow); tighter date gaps ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
 .inv[data-template="mono-script"] .card-sheet .dt { column-gap:.3em; row-gap:calc(5px * var(--k, 1)); }
@@ -258,11 +244,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:20px; }
 
-/* ───────── 27. Screen 2 (save the date) uses paper-7.webp ───────── */
-.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-7.webp) center / cover no-repeat; }
-
-/* ───────── 28. Screen 2: paper-8 background; "Save the date" 55px; no space under the photo (the text follows it, 20px below) ───────── */
-.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-8.webp) center / cover no-repeat; }
+/* ───────── 28. Screen 2: "Save the date" 55px; no space under the photo (the text follows it, 20px below) ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { font-size:calc(55px * var(--k, 1)); }
 
@@ -271,5 +253,17 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:400; }
 
-/* ───────── 30. Screen 3 (venue) uses paper-9.webp ───────── */
-.inv[data-template="mono-script"] .card.card-venue { background:#f3f2f0 url(/templates/script/v1/paper-9.webp) center / cover no-repeat; }
+/* ───────── 31. PAPER OF EACH PAGE: change a page's background here (one place, nothing else overrides it) ─────────
+   Files are in public/templates/script/v1/ (the original PNGs are in assets/mono-script/). Cover = no paper. */
+.inv[data-template="mono-script"] { --ms-bg-sheet:url(/templates/script/v1/paper-8.webp);      /* 2 save the date */
+  --ms-bg-venue:url(/templates/script/v1/paper-9.webp);      /* 3 venue */
+  --ms-bg-timeline:url(/templates/script/v1/paper.webp);     /* 4 timeline */
+  --ms-bg-details:url(/templates/script/v1/paper.webp);      /* 5 details */
+  --ms-bg-rsvp:url(/templates/script/v1/paper.webp);         /* 6 RSVP */
+  --ms-bg-closing:url(/templates/script/v1/paper.webp); }    /* 7 closing */
+.inv[data-template="mono-script"] .card-sheet    { background:#f3f2f0 var(--ms-bg-sheet)    center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-venue    { background:#f3f2f0 var(--ms-bg-venue)    center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-timeline { background:#f3f2f0 var(--ms-bg-timeline) center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-details  { background:#f3f2f0 var(--ms-bg-details)  center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-rsvp     { background:#f3f2f0 var(--ms-bg-rsvp)     center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-closing  { background:#f3f2f0 var(--ms-bg-closing)  center / cover no-repeat; }
