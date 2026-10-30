@@ -250,3 +250,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 24. Screen 2 (save the date) uses paper-6.webp ───────── */
 .inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-6.webp) center / cover no-repeat; }
+
+/* ───────── 25. Screen 2: bottom padding = top padding; tighter date gaps ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:var(--ms-side); }
+.inv[data-template="mono-script"] .card-sheet .dt { column-gap:.3em; row-gap:calc(5px * var(--k, 1)); }
+/* the arrow would sit on top of the last line now, so on this page it moves to the right edge */
+.inv[data-template="mono-script"] .card-sheet .swipe-hint { left:auto; right:var(--ms-side); margin-left:0; }
