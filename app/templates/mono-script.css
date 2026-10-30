@@ -19,7 +19,7 @@
 /* ───────── 0. Colours, fonts and the "knobs" you will most often change ───────── */
 .inv[data-template="mono-script"] {
   --paper:#ffffff; --dark:#ffffff; --dark-ink:#111111; --ink:#4a4a4a; --gold:#111111;   /* base variables used by the shared styles */
-  --ms-black:#111111;      /* main text, big words */
+  --ms-black:#545454;      /* main text, big words */
   --ms-grey:#8c8c8c;       /* small captions */
   --ms-line:#cfcfcf;       /* thin lines */
   --ms-script:var(--font-ms-script),"Brush Script MT",cursive;
