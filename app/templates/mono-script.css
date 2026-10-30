@@ -328,3 +328,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { color:var(--ms-black); }
+
+/* ───────── 41. Screen 2: the time is the same size as the weekday and the year (13px) ───────── */
+.inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(13px * var(--k, 1)); }
