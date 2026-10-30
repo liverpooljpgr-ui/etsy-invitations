@@ -25,7 +25,7 @@
   --ms-script:var(--font-ms-script),"Brush Script MT",cursive;
   --ms-sans:var(--font-sans),system-ui,sans-serif;       /* Jost */
   --ms-track:.25em;        /* letter-spacing of the small capitals */
-  --ms-left:13cqw;         /* space on the left of every screen (the left edge of all text) */
+  --ms-left:9cqw;          /* space on the left of every screen (the left edge of all text) */
   --ms-right:9cqw;
   font-family:var(--ms-sans); font-weight:300; letter-spacing:.12em; text-align:left; color:var(--ms-black); }
 
@@ -51,7 +51,7 @@
 .inv[data-template="mono-script"] .seal { font-family:var(--ms-script); font-weight:400; text-transform:none; letter-spacing:0; color:var(--ms-black); }
 
 /* ───────── 1. Screen 1: cover (the envelope) ───────── */
-.inv[data-template="mono-script"] .cover { padding:calc(54px * var(--k,1)) 10% calc(50px * var(--k,1)); gap:calc(16px * var(--k,1)); justify-content:flex-start; }
+.inv[data-template="mono-script"] .cover { padding:calc(54px * var(--k,1)) 9% calc(50px * var(--k,1)); gap:calc(16px * var(--k,1)); justify-content:flex-start; }
 .inv[data-template="mono-script"] .cover-top { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                       /* "The wedding of" */
 .inv[data-template="mono-script"] .cover-names { flex-direction:column; align-items:flex-start; white-space:normal; font-size:calc(66px * var(--k,1)); line-height:.95; gap:0; }   /* name / & / name, left */
 .inv[data-template="mono-script"] .cover-names .amp { font-family:var(--ms-script); font-size:.7em; color:var(--ms-grey); }
