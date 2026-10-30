@@ -205,3 +205,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .dt-row b,
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:300; font-size:calc(27px * var(--k, 1)); color:var(--ms-black); }
+
+/* ───────── 17. Screen 2: day number 25px; weekday, time and month all the same size (13px) ───────── */
+.inv[data-template="mono-script"] .card-sheet .dt-row b,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(25px * var(--k, 1)); }
+.inv[data-template="mono-script"] .card-sheet .dt-row, .inv[data-template="mono-script"] .card-sheet .dt-row > span,
+.inv[data-template="mono-script"] .card-sheet .dt-month, .inv[data-template="mono-script"] .card-sheet .dt-year { font-size:calc(13px * var(--k, 1)); }
