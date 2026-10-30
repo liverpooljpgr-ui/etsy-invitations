@@ -284,3 +284,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 34. Screen 4 (timeline): frame-102.webp has a column of ornaments down its left edge, so this page's text starts further in ───────── */
 .inv[data-template="mono-script"] .tl-in { padding-left:25cqw; }
 .inv[data-template="mono-script"] .card-timeline .swipe-hint { left:25cqw; }
+
+/* ───────── 35. Screen 2: the date (month + day) and the time are 18px, weight 300; weekday and year stay small ───────── */
+.inv[data-template="mono-script"] .card-sheet .dt-month, .inv[data-template="mono-script"] .card-sheet .dt-row b,
+.inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(18px * var(--k, 1)); font-weight:300; }
