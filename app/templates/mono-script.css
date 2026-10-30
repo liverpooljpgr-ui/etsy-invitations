@@ -267,3 +267,13 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-details  { background:#f3f2f0 var(--ms-bg-details)  center / cover no-repeat; }
 .inv[data-template="mono-script"] .card-rsvp     { background:#f3f2f0 var(--ms-bg-rsvp)     center / cover no-repeat; }
 .inv[data-template="mono-script"] .card-closing  { background:#f3f2f0 var(--ms-bg-closing)  center / cover no-repeat; }
+
+/* ───────── 32. Screen 5 (details): accommodation, then dress code, then registry; the blocks always start the same distance under the heading ───────── */
+.inv[data-template="mono-script"] .dtl-acc { order:1; }
+.inv[data-template="mono-script"] .dtl-dresscode { order:2; }
+.inv[data-template="mono-script"] .dtl-reg { order:3; }
+.inv[data-template="mono-script"] .dtl-in { justify-content:flex-start; gap:6cqh; }              /* heading, then 6% of the page height, then the blocks (change 6cqh to move them) */
+.inv[data-template="mono-script"] .dtl-row { flex:none; justify-content:flex-start; }
+/* a dress code written only in words: no empty space where the colour dots would be, so it lines up with the other text */
+.inv[data-template="mono-script"] .dtl-dress .dots:empty { display:none; }
+.inv[data-template="mono-script"] .dtl-dress:has(.dots:empty) { gap:0; }
