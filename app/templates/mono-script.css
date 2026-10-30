@@ -282,5 +282,5 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .venue-intro { font-weight:400; }
 
 /* ───────── 34. Screen 4 (timeline): frame-102.webp has a column of ornaments down its left edge, so this page's text starts further in ───────── */
-.inv[data-template="mono-script"] .tl-in { padding-left:20cqw; }
-.inv[data-template="mono-script"] .card-timeline .swipe-hint { left:20cqw; }
+.inv[data-template="mono-script"] .tl-in { padding-left:25cqw; }
+.inv[data-template="mono-script"] .card-timeline .swipe-hint { left:25cqw; }
