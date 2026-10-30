@@ -176,3 +176,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 11. Screen 2 (save the date) has its own paper: paper-2.webp ───────── */
 .inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-2.webp) center / cover no-repeat; }
+
+/* ───────── 12. Screen 2: the photo is a rectangle with a thin frame (replaces the full-bleed photo of sections 9-10) ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in { justify-content:flex-start; align-items:flex-start; padding:11cqh var(--ms-right) 8cqh var(--ms-left); gap:1.6cqh; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { position:relative; left:auto; top:auto; width:calc(40cqh * 3 / 4); height:40cqh; aspect-ratio:auto; flex:none; margin:0 0 2cqh;
+  border:1px solid var(--ms-black); border-radius:0; padding:calc(7px * var(--k,1)); background:transparent; -webkit-mask-image:none; mask-image:none; }   /* padding = the gap between the frame line and the photo */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch-in { border-radius:0; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:1cqh; }
