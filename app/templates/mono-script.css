@@ -298,3 +298,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 37. Screen 4 (timeline): with fewer than 4 items each one still gets the space it has when there are 4 (a quarter of the list), so the gaps do not grow ───────── */
 .inv[data-template="mono-script"] .tl:not(:has(li:nth-child(4))) { justify-content:flex-start; }
 .inv[data-template="mono-script"] .tl:not(:has(li:nth-child(4))) li { flex:0 0 25%; }
+
+/* ───────── 38. Screen 4 (timeline): every item starts at the top and follows the one before it with the same space between, whatever the number of items ───────── */
+.inv[data-template="mono-script"] .tl { --ms-tl-gap:6cqh; justify-content:flex-start; gap:0; }                    /* the space between two items: change 6cqh */
+.inv[data-template="mono-script"] .tl li, .inv[data-template="mono-script"] .tl:not(:has(li:nth-child(4))) li { flex:none; justify-content:flex-start; padding-bottom:var(--ms-tl-gap); }
+.inv[data-template="mono-script"] .tl li + li::before { top:calc(var(--ms-tl-gap) / -2); }                          /* the short line sits in the middle of the space */
