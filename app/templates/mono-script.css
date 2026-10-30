@@ -261,3 +261,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 27. Screen 2 (save the date) uses paper-7.webp ───────── */
 .inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-7.webp) center / cover no-repeat; }
+
+/* ───────── 28. Screen 2: paper-8 background; "Save the date" 55px; no space under the photo (the text follows it, 20px below) ───────── */
+.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-8.webp) center / cover no-repeat; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { font-size:calc(55px * var(--k, 1)); }
