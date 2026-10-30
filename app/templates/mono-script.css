@@ -247,3 +247,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 23. Links across the invitation (get directions, add to calendar, e-mail, …): one 1px #a7a7a7 line under them ───────── */
 .inv[data-template="mono-script"] .link, .inv[data-template="mono-script"] .venue-link, .inv[data-template="mono-script"] .closing-cal, .inv[data-template="mono-script"] .rsvp-mail
   { text-decoration:none; border-bottom:1px solid #a7a7a7; padding-bottom:2px; display:inline-block; width:fit-content; }
+
+/* ───────── 24. Screen 2 (save the date) uses paper-6.webp ───────── */
+.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-6.webp) center / cover no-repeat; }
