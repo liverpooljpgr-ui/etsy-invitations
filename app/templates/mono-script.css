@@ -318,3 +318,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .tl li b { font-size:calc(22px * var(--k,1) * var(--ms-tl-s)); }
 .inv[data-template="mono-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1) * var(--ms-tl-s)); }
 .inv[data-template="mono-script"] .tl li + li::before { width:calc(34px * var(--k,1) * var(--ms-tl-s)); }
+
+/* exactly 6 items: the space between them is 5cqh (scaled) */
+.inv[data-template="mono-script"] .tl:has(li:nth-child(6)):not(:has(li:nth-child(7))) { --ms-tl-gap:calc(5cqh * var(--ms-tl-s)); }
