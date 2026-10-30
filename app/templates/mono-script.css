@@ -256,7 +256,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 31. PAPER OF EACH PAGE: change a page's background here (one place, nothing else overrides it) ─────────
    Files are in public/templates/script/v1/ (the original PNGs are in assets/mono-script/). Cover = no paper. */
 .inv[data-template="mono-script"] { --ms-bg-sheet:url(/templates/script/v1/frame-99.webp);      /* 2 save the date */
-  --ms-bg-venue:url(/templates/script/v1/paper-venue.webp);      /* 3 venue */
+  --ms-bg-venue:url(/templates/script/v1/frame-100.webp);      /* 3 venue */
   --ms-bg-timeline:url(/templates/script/v1/paper-10.webp);     /* 4 timeline */
   --ms-bg-details:url(/templates/script/v1/paper-10.webp);      /* 5 details */
   --ms-bg-rsvp:url(/templates/script/v1/paper-10.webp);         /* 6 RSVP */
