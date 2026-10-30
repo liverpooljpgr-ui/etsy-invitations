@@ -217,3 +217,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .dt-row { gap:0; }
 .inv[data-template="mono-script"] .card-sheet .dt-row > span:first-child { margin-right:calc(8px * var(--k, 1)); }                       /* weekday → number */
 .inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { margin-left:calc(20px * var(--k, 1)); }   /* number → time (bigger) */
+
+/* ───────── 19. Screen 2 (save the date) uses paper-4.webp ───────── */
+.inv[data-template="mono-script"] .card-sheet, .inv[data-template="mono-script"] .card-sheet:has(.sheet-in:not(.no-photo)) { background:#f3f2f0 url(/templates/script/v1/paper-4.webp) center / cover no-repeat; }
