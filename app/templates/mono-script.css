@@ -332,3 +332,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 41. Screen 2: the time is the same size as the weekday and the year (13px) ───────── */
 .inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(13px * var(--k, 1)); }
+
+/* ───────── 42. Screen 5: the dress code colour circles have no outline ───────── */
+.inv[data-template="mono-script"] .dots i { border:0; }
