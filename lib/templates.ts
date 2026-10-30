@@ -19,3 +19,6 @@ export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "s
 /** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval, Mono Elegance a plain frame. */
 export type PhotoShape = "arch" | "oval" | "rect";
 export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-elegance": "oval", "mono-script": "rect" };
+
+/** Width / height of the photo frame (the crop tool and the invitation use the same one). 3 / 4 unless a design says otherwise. */
+export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-elegance": 3 / 4, "mono-script": 8 / 7 };

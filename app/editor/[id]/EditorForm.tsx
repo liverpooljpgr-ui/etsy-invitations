@@ -11,7 +11,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
-import { DEFAULT_TEMPLATE, PHOTO_SHAPE, type TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, type TemplateSlug } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -589,11 +589,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <div className="ui-media">
                 {draft.photo && cropOpen && (
                   <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
-                    <PhotoCrop shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
+                    <PhotoCrop shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} frameRatio={PHOTO_FRAME[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
                     <button type="button" onClick={() => setCropOpen(false)} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>Save photo</button>
                   </div>
                 )}
-                {draft.photo && !cropOpen && <PhotoArchThumb shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} />}
+                {draft.photo && !cropOpen && <PhotoArchThumb shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} frameRatio={PHOTO_FRAME[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} />}
                 <FilePick accept="image/jpeg,image/png,image/webp" label={draft.photo ? "Change photo" : "Choose a photo"} onFile={(f) => void onPhoto(f)} />
                 {draft.photo && !cropOpen && <button type="button" onClick={() => setCropOpen(true)} className="ui-btn ui-btn-gray ui-btn-sm">Adjust</button>}
                 {draft.photo && <button type="button" onClick={() => { set("photo", null); setCropOpen(false); }} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}

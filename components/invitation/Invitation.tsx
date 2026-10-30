@@ -1,4 +1,4 @@
-import { DEFAULT_TEMPLATE, type TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, type TemplateSlug } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
@@ -133,7 +133,7 @@ export function Invitation({
               <div className="arch" role="img" aria-label={c.photo.alt || `${first} and ${second}`}>
                 <span className="arch-in">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.photo.url} alt="" draggable={false} style={photoImgStyle(c.photo)} />
+                  <img src={c.photo.url} alt="" draggable={false} style={photoImgStyle(c.photo, PHOTO_FRAME[template ?? DEFAULT_TEMPLATE])} />
                 </span>
               </div>
             ) : ph ? (

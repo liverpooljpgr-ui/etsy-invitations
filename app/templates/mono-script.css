@@ -193,10 +193,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 14. Screen 2: the photo is 280px high (keeps the 3:4 shape of the crop tool, so it is 210px wide) ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { height:280px; width:210px; aspect-ratio:3/4; }
 
-/* ───────── 15. Screen 2: the photo is as wide as its container and 280px high; the picture fills the whole box ───────── */
-.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:280px; aspect-ratio:auto; }
-.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch-in img { position:absolute !important; inset:0 !important; width:100% !important; height:100% !important; left:0 !important; top:0 !important; max-width:none; object-fit:cover; object-position:center; }
-/* (this box is wider than the 3:4 shape of the crop tool, so the picture is centred and cut to fit; the zoom / move set in the editor does not apply here) */
+/* ───────── 15. Screen 2: the photo is as wide as its container; its box is 8:7 (about 280px high on a phone). The crop tool in the editor uses the same shape (PHOTO_FRAME in lib/templates.ts), so moving / zooming the photo there shows here ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:auto; aspect-ratio:8/7; }
 
 /* ───────── 16. Screen 2: the date. Order: weekday · day · time, then the month, then the year. The day number is lighter, smaller, black like "Save the date" ───────── */
 .inv[data-template="mono-script"] .card-sheet .dt-row { order:1; }
@@ -212,3 +210,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(25px * var(--k, 1)); }
 .inv[data-template="mono-script"] .card-sheet .dt-row, .inv[data-template="mono-script"] .card-sheet .dt-row > span,
 .inv[data-template="mono-script"] .card-sheet .dt-month, .inv[data-template="mono-script"] .card-sheet .dt-year { font-size:calc(13px * var(--k, 1)); }
+
+/* ───────── 18. Screen 2: the photo stays at the top, all the text sits at the bottom (above the arrow). Weekday ↔ number is closer than number ↔ time ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:auto; }
+.inv[data-template="mono-script"] .card-sheet .dt-row { gap:0; }
+.inv[data-template="mono-script"] .card-sheet .dt-row > span:first-child { margin-right:calc(8px * var(--k, 1)); }                       /* weekday → number */
+.inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { margin-left:calc(20px * var(--k, 1)); }   /* number → time (bigger) */
