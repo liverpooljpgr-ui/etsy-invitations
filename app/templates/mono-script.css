@@ -254,3 +254,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 25. Screen 2: bigger bottom padding (above the arrow); tighter date gaps ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
 .inv[data-template="mono-script"] .card-sheet .dt { column-gap:.3em; row-gap:calc(5px * var(--k, 1)); }
+
+/* ───────── 26. Screen 2: "Save the date" has margin-top:20px; the free space sits between the photo and the text, so the text stays at the bottom ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:20px; }
