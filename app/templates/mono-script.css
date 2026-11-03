@@ -335,3 +335,11 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 42. Screen 5: the dress code colour circles have no outline ───────── */
 .inv[data-template="mono-script"] .dots i { border:0; }
+
+/* ───────── 43. Screen 2: time, weekday and year are 12px (one px smaller); the rows of the date block are closer together ───────── */
+.inv[data-template="mono-script"] .card-sheet .dt-year, .inv[data-template="mono-script"] .card-sheet .dt-row > span:first-child,
+.inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:first-child,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); }
+.inv[data-template="mono-script"] .card-sheet .dt { row-gap:calc(1px * var(--k, 1)); }                 /* space between the rows (was 5px) */
+.inv[data-template="mono-script"] .card-sheet .dt > *, .inv[data-template="mono-script"] .card-sheet .dt-row > span, .inv[data-template="mono-script"] .card-sheet .dt-row b { line-height:1.15; }
