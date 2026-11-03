@@ -397,3 +397,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 54. Screen 4 (timeline): the descriptions are the size of the venue name (19px) ───────── */
 .inv[data-template="mono-script"] .tl li span, .inv[data-template="mono-script"] .tl li.no-time span { font-size:calc(19px * var(--k,1) * var(--ms-tl-s)); }
+
+/* ───────── 55. Screen 4 (timeline): twice the space between the heading and the list (1.4cqh → 2.8cqh) ───────── */
+.inv[data-template="mono-script"] .tl-in { gap:2.8cqh; }
