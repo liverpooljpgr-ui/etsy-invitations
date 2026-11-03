@@ -408,3 +408,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 57. Light weight (300) for the timeline times and the venue address ───────── */
 .inv[data-template="mono-script"] .tl li b, .inv[data-template="mono-script"] .venue-addr { font-weight:300; }
+
+/* ───────── 58. Timeline: the descriptions have the size of the times (12px) and the main text colour ───────── */
+.inv[data-template="mono-script"] .tl li span, .inv[data-template="mono-script"] .tl li.no-time span { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); color:var(--ms-black); }
