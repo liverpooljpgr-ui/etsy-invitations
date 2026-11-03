@@ -430,3 +430,11 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .monogram { left:0; right:0; justify-content:center; }
 /* a soft white glow keeps the small cover lines readable where a rose or leaf passes behind them */
 .inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint { text-shadow:0 0 6px rgba(255,255,255,.95), 0 0 12px rgba(255,255,255,.8); }
+
+/* ───────── 63. COVER names: 52px, on one line with a gap when they fit; when they do not fit they fall down (name / & / name), still centred. Cover padding. ───────── */
+.inv[data-template="mono-script"] .cover { padding:calc(92px * var(--k,1)) 9% calc(50px * var(--k,1)) !important; }
+.inv[data-template="mono-script"] .cover-names { flex-direction:row; flex-wrap:nowrap; white-space:nowrap; align-items:baseline; justify-content:center; gap:0 calc(14px * var(--k,1)); font-size:calc(52px * var(--k,1)); line-height:1.05; text-align:center; }
+.inv[data-template="mono-script"] .cover-names.stacked { flex-direction:column; align-items:center; justify-content:center; white-space:normal; gap:0; text-align:center; }
+.inv[data-template="mono-script"] .cover-names .amp { font-size:.7em; }
+/* the other cover texts are regular weight (400) */
+.inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint { font-weight:400; }
