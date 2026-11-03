@@ -379,3 +379,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .dt-row b, .inv[data-template="mono-script"] .card-sheet .dt-row > span:first-child,
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:first-child,
 .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(12px * var(--k, 1)); font-weight:400; letter-spacing:var(--ms-track); }
+
+/* ───────── 51. Screen 2: the photo and the text (title + date lines) are one group, centred vertically on the page ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:15px; }
