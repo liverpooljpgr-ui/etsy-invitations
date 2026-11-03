@@ -357,3 +357,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .sheet-in, .inv[data-template="mono-script"] .venue-in, .inv[data-template="mono-script"] .tl-in,
 .inv[data-template="mono-script"] .dtl-in, .inv[data-template="mono-script"] .rsvp-in, .inv[data-template="mono-script"] .closing-in { padding:5cqh !important; }
 .inv[data-template="mono-script"] .cover { padding:5% !important; }                      /* the cover has no cqh units: 5% of its width */
+
+/* ───────── 47. Screen 2: the title and the date lines form one group at the bottom of the page; the photo stays at the top ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:20px; }          /* least space between the photo and the group */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:auto; }               /* pushes "Save the date" and the date lines down together */
+.inv[data-template="mono-script"] .card-sheet .swipe-hint { left:auto; right:5cqh; margin-left:0; }            /* the arrow moves to the right so it does not sit on the last line */
