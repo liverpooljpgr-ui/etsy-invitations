@@ -8,6 +8,8 @@ import { Invitation } from "./Invitation";
 
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
+// a design with a slower envelope (its own transitions in its stylesheet) says how long the opening takes
+const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 4200 };
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
@@ -46,11 +48,11 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
 
   useEffect(() => {
     if (phase === "opening") {
-      const t = setTimeout(() => setPhase("open"), OPEN_MS);
+      const t = setTimeout(() => setPhase("open"), (template && OPEN_MS_BY_TEMPLATE[template]) || OPEN_MS);
       return () => clearTimeout(t);
     }
     if (phase === "open") root.current?.querySelector<HTMLElement>('[data-card="2"]')?.focus({ preventScroll: true });
-  }, [phase]);
+  }, [phase, template]);
 
   // Phones show the cards as full-screen slides: scale the fixed-px sizes of the 340×567 design to the screen.
   // Set before the first paint (no flash of unscaled text). The height used is the tallest seen for this width, so the

@@ -449,3 +449,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-art { width:calc(100% * 2072 / 1984); aspect-ratio:2072/1456; }
 .inv[data-template="mono-script"] .env-flap-closed { left:-.594%; top:-1.813%; width:103.43%; height:80.29%; transform-origin:50% 6.02%; }
 .inv[data-template="mono-script"] .env-flap-open { left:1.153%; top:-70.44%; width:96.91%; height:114.15%; transform-origin:50% 64.3%; }
+
+/* ───────── 66. COVER envelope: slower opening (about 1.6x; the page waits OPEN_MS_BY_TEMPLATE in components/invitation/Experience.tsx), the open flap sits lower on the body, 15px space above and below the envelope ───────── */
+.inv[data-template="mono-script"] .cover-env { margin-block:calc(15px * var(--k,1)); }
+.inv[data-template="mono-script"] .env-flap-closed { transition:transform .8s cubic-bezier(.45,0,.85,.6), visibility 0s linear .8s; }
+.inv[data-template="mono-script"] .env-flap-open { top:-67.4%; transition:transform 1.2s cubic-bezier(.12,.5,.3,1) .8s, visibility 0s linear .8s; }   /* top: was -70.44%; a bigger number sits lower */
+.inv[data-template="mono-script"][data-phase="opening"] .env-btn { transition:opacity .7s ease 2s, transform .95s cubic-bezier(.4,0,.2,1) 2s; }
+.inv[data-template="mono-script"][data-phase="opening"] .cover-top, .inv[data-template="mono-script"][data-phase="opening"] .cover-names, .inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transition:opacity .5s ease; }
