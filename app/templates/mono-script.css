@@ -441,3 +441,11 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 64. COVER: no initials on the envelope flap ───────── */
 .inv[data-template="mono-script"] .monogram { display:none !important; }
+
+/* ───────── 65. COVER: the real envelope pictures (envelope-body / envelope-flap-closed / envelope-flap-open .webp in public/templates/script/v1; originals in assets/mono-script/envelope).
+   Body paper 1984 x 1368 inside a 2072 x 1456 picture; closed flap picture 1065 x 581 (its top edge = the paper width); open flap picture 999 x 827 (its base edge at y 532).
+   Everything is in % of the body picture. ───────── */
+.inv[data-template="mono-script"] .cover-env { width:100%; aspect-ratio:1984/1368; }
+.inv[data-template="mono-script"] .env-art { width:calc(100% * 2072 / 1984); aspect-ratio:2072/1456; }
+.inv[data-template="mono-script"] .env-flap-closed { left:-.594%; top:-1.813%; width:103.43%; height:80.29%; transform-origin:50% 6.02%; }
+.inv[data-template="mono-script"] .env-flap-open { left:1.153%; top:-70.44%; width:96.91%; height:114.15%; transform-origin:50% 64.3%; }

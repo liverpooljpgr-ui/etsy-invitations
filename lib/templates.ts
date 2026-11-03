@@ -12,8 +12,7 @@ export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "s
   "sage-story": { base: "/templates/aquarelle/v1", ext: "webp" },
   "white-roses": { base: "/templates/jasmin/v1", ext: "webp" },
   "mono-elegance": { base: "/templates/mono/v1", ext: "webp" },
-  // placeholder outlines (.svg) until the real envelope pictures are added: put them in public/templates/script/v1 and change ext to "webp" or "png"
-  "mono-script": { base: "/templates/script/v1", ext: "svg" },
+  "mono-script": { base: "/templates/script/v1", ext: "webp" },
 };
 
 /** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval, Mono Elegance a plain frame. */
