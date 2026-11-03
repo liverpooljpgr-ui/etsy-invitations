@@ -417,3 +417,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 60. Timeline: the descriptions are regular weight (400) ───────── */
 .inv[data-template="mono-script"] .tl li span, .inv[data-template="mono-script"] .tl li.no-time span { font-weight:400; }
+
+/* ───────── 61. COVER background: ivory with white roses and a silk ribbon (public/templates/script/v1/cover-roses.webp) ───────── */
+.inv[data-template="mono-script"] .cover { background:#f4ecde url(/templates/script/v1/cover-roses.webp) center / cover no-repeat !important; }
+/* on the roses the small grey lines of the cover are too faint: they use the main text colour */
+.inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint { color:var(--ms-black); }
+.inv[data-template="mono-script"] .cover-names .amp { color:var(--ms-black); }
