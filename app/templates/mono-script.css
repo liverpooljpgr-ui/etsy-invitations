@@ -456,3 +456,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-flap-open { top:-67.4%; transition:transform 1.2s cubic-bezier(.12,.5,.3,1) .8s, visibility 0s linear .8s; }   /* top: was -70.44%; a bigger number sits lower */
 .inv[data-template="mono-script"][data-phase="opening"] .env-btn { transition:opacity .7s ease 2s, transform .95s cubic-bezier(.4,0,.2,1) 2s; }
 .inv[data-template="mono-script"][data-phase="opening"] .cover-top, .inv[data-template="mono-script"][data-phase="opening"] .cover-names, .inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transition:opacity .5s ease; }
+
+/* ───────── 67. COVER envelope: the open flap is a BACK layer (behind the body), so the body's soft shadow falls on it and there is no seam; it also reaches a little under the body edge ───────── */
+.inv[data-template="mono-script"] .env-flap-open { z-index:0; top:-65.8%; }
+.inv[data-template="mono-script"] .env-body { z-index:1; }
+.inv[data-template="mono-script"] .env-flap-closed { z-index:2; }
