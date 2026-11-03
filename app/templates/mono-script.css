@@ -438,3 +438,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .cover-names .amp { font-size:.7em; }
 /* the other cover texts are regular weight (400) */
 .inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint { font-weight:400; }
+
+/* ───────── 64. COVER: no initials on the envelope flap ───────── */
+.inv[data-template="mono-script"] .monogram { display:none !important; }
