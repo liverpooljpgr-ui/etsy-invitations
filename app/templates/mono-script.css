@@ -405,3 +405,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .venue-in, .inv[data-template="mono-script"] .tl-in, .inv[data-template="mono-script"] .dtl-in,
 .inv[data-template="mono-script"] .rsvp-in, .inv[data-template="mono-script"] .closing-in { justify-content:center; }
 .inv[data-template="mono-script"] .dtl-row { justify-content:center; flex:none; }
+
+/* ───────── 57. Light weight (300) for the timeline times and the venue address ───────── */
+.inv[data-template="mono-script"] .tl li b, .inv[data-template="mono-script"] .venue-addr { font-weight:300; }
