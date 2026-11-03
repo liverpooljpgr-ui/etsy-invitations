@@ -388,3 +388,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 52. Screen 3 (venue): no short line under the venue name; more space above "Reception to follow" ───────── */
 .inv[data-template="mono-script"] .venue-rule { display:none; }
 .inv[data-template="mono-script"] .venue-recep { margin-top:calc(64px * var(--k, 1)); }          /* was 34px */
+
+/* ───────── 53. Screen 4 (timeline): the heading and the items are centred vertically as one group (so it follows the number of items); heading = "Save the date" size; the time = the time of the save the date page ───────── */
+.inv[data-template="mono-script"] .tl-in { justify-content:center; }
+.inv[data-template="mono-script"] .tl { flex:none; }
+.inv[data-template="mono-script"] .tl-title, .inv[data-template="mono-script"] .script.tl-title { font-size:calc(40px * var(--k, 1)); }
+.inv[data-template="mono-script"] .tl li b { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); font-weight:400; color:var(--ms-black); letter-spacing:var(--ms-track); }
