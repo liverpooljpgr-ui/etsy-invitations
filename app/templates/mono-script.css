@@ -255,12 +255,12 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 31. PAPER OF EACH PAGE: change a page's background here (one place, nothing else overrides it) ─────────
    Files are in public/templates/script/v1/ (the original PNGs are in assets/mono-script/). Cover = no paper. */
-.inv[data-template="mono-script"] { --ms-bg-sheet:url(/templates/script/v1/frame-101.webp);      /* 2 save the date */
+.inv[data-template="mono-script"] { --ms-bg-sheet:url(/templates/script/v1/frame-100.webp);      /* 2 save the date */
   --ms-bg-venue:url(/templates/script/v1/frame-100.webp);      /* 3 venue */
-  --ms-bg-timeline:url(/templates/script/v1/frame-102.webp);     /* 4 timeline */
-  --ms-bg-details:url(/templates/script/v1/frame-103.webp);      /* 5 details */
-  --ms-bg-rsvp:url(/templates/script/v1/frame-104.webp);         /* 6 RSVP */
-  --ms-bg-closing:url(/templates/script/v1/paper.webp); }    /* 7 closing */
+  --ms-bg-timeline:url(/templates/script/v1/frame-100.webp);     /* 4 timeline */
+  --ms-bg-details:url(/templates/script/v1/frame-100.webp);      /* 5 details */
+  --ms-bg-rsvp:url(/templates/script/v1/frame-100.webp);         /* 6 RSVP */
+  --ms-bg-closing:url(/templates/script/v1/frame-100.webp); }    /* 7 closing */
 .inv[data-template="mono-script"] .card-sheet    { background:#f3f2f0 var(--ms-bg-sheet)    center / cover no-repeat !important; }
 .inv[data-template="mono-script"] .card-venue    { background:#f3f2f0 var(--ms-bg-venue)    center / cover no-repeat !important; }
 .inv[data-template="mono-script"] .card-timeline { background:#f3f2f0 var(--ms-bg-timeline) center / cover no-repeat !important; }
@@ -343,3 +343,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); }
 .inv[data-template="mono-script"] .card-sheet .dt { row-gap:calc(5px * var(--k, 1)); }                 /* space between the rows (back to 5px) */
 .inv[data-template="mono-script"] .card-sheet .dt > *, .inv[data-template="mono-script"] .card-sheet .dt-row > span, .inv[data-template="mono-script"] .card-sheet .dt-row b { line-height:1.3; }
+
+/* ───────── 44. Every screen but the cover uses frame-100.webp (ornament rows at the top and the bottom edge): content keeps clear of them ───────── */
+.inv[data-template="mono-script"] .tl-in { padding-left:var(--ms-left); }                          /* no ornament column on the left any more */
+.inv[data-template="mono-script"] .card-timeline .swipe-hint { left:var(--ms-left); }
+.inv[data-template="mono-script"] .card-sheet .sheet-in, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { padding-top:12cqh; }   /* the photo starts under the top ornament row */
