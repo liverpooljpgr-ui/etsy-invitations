@@ -400,3 +400,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 55. Screen 4 (timeline): twice the space between the heading and the list (1.4cqh → 2.8cqh) ───────── */
 .inv[data-template="mono-script"] .tl-in { gap:2.8cqh; }
+
+/* ───────── 56. Every screen's content (venue, timeline, details, RSVP, closing, save the date) is centred vertically ───────── */
+.inv[data-template="mono-script"] .venue-in, .inv[data-template="mono-script"] .tl-in, .inv[data-template="mono-script"] .dtl-in,
+.inv[data-template="mono-script"] .rsvp-in, .inv[data-template="mono-script"] .closing-in { justify-content:center; }
+.inv[data-template="mono-script"] .dtl-row { justify-content:center; flex:none; }
