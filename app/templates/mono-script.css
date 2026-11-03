@@ -419,7 +419,14 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .tl li span, .inv[data-template="mono-script"] .tl li.no-time span { font-weight:400; }
 
 /* ───────── 61. COVER background: ivory with white roses and a silk ribbon (public/templates/script/v1/cover-roses.webp) ───────── */
-.inv[data-template="mono-script"] .cover { background:#f4ecde url(/templates/script/v1/cover-roses.webp) center / cover no-repeat !important; }
+.inv[data-template="mono-script"] .cover { background:#f4ecde url(/templates/script/v1/cover-white-roses.webp) center / cover no-repeat !important; }
 /* on the roses the small grey lines of the cover are too faint: they use the main text colour */
 .inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint { color:var(--ms-black); }
 .inv[data-template="mono-script"] .cover-names .amp { color:var(--ms-black); }
+
+/* ───────── 62. COVER: all text centred ───────── */
+.inv[data-template="mono-script"] .cover { align-items:center; text-align:center; }
+.inv[data-template="mono-script"] .cover-names, .inv[data-template="mono-script"] .cover-names.stacked { align-items:center; text-align:center; justify-content:center; }
+.inv[data-template="mono-script"] .monogram { left:0; right:0; justify-content:center; }
+/* a soft white glow keeps the small cover lines readable where a rose or leaf passes behind them */
+.inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint { text-shadow:0 0 6px rgba(255,255,255,.95), 0 0 12px rgba(255,255,255,.8); }
