@@ -369,3 +369,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* the butterfly of the save the date background sits in the bottom-right corner, so the arrow goes back to the middle of the page */
 .inv[data-template="mono-script"] .card-sheet .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
+
+/* ───────── 49. Screen 2: month, time and year share one style: 12px, weight 400 (the day number keeps its own size) ───────── */
+.inv[data-template="mono-script"] .card-sheet .dt-month, .inv[data-template="mono-script"] .card-sheet .dt-year, .inv[data-template="mono-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); font-weight:400; }
