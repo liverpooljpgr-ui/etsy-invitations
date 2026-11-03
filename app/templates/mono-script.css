@@ -255,7 +255,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 31. PAPER OF EACH PAGE: change a page's background here (one place, nothing else overrides it) ─────────
    Files are in public/templates/script/v1/ (the original PNGs are in assets/mono-script/). Cover = no paper. */
-.inv[data-template="mono-script"] { --ms-bg-sheet:url(/templates/script/v1/frame-106.webp);      /* 2 save the date */
+.inv[data-template="mono-script"] { --ms-bg-sheet:url(/templates/script/v1/butterfly.webp);      /* 2 save the date */
   --ms-bg-venue:url(/templates/script/v1/frame-106.webp);      /* 3 venue */
   --ms-bg-timeline:url(/templates/script/v1/frame-106.webp);     /* 4 timeline */
   --ms-bg-details:url(/templates/script/v1/frame-106.webp);      /* 5 details */
@@ -366,3 +366,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 48. Screen 2: "Save the date" has margin-top:15px; the free space is moved under the photo so the group still sits at the bottom ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:15px; }
+
+/* the butterfly of the save the date background sits in the bottom-right corner, so the arrow goes back to the middle of the page */
+.inv[data-template="mono-script"] .card-sheet .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
