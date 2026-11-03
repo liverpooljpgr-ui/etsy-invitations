@@ -414,3 +414,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 59. Screen 3 (venue): the venue name and its address read as one block: 4px between them while the other gaps on the page stay 12px ───────── */
 .inv[data-template="mono-script"] .venue-addr { margin-top:calc(-8px * var(--k, 1)); }
+
+/* ───────── 60. Timeline: the descriptions are regular weight (400) ───────── */
+.inv[data-template="mono-script"] .tl li span, .inv[data-template="mono-script"] .tl li.no-time span { font-weight:400; }
