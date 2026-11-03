@@ -394,3 +394,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .tl { flex:none; }
 .inv[data-template="mono-script"] .tl-title, .inv[data-template="mono-script"] .script.tl-title { font-size:calc(40px * var(--k, 1)); }
 .inv[data-template="mono-script"] .tl li b { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); font-weight:400; color:var(--ms-black); letter-spacing:var(--ms-track); }
+
+/* ───────── 54. Screen 4 (timeline): the descriptions are the size of the venue name (19px) ───────── */
+.inv[data-template="mono-script"] .tl li span, .inv[data-template="mono-script"] .tl li.no-time span { font-size:calc(19px * var(--k,1) * var(--ms-tl-s)); }
