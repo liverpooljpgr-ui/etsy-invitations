@@ -351,3 +351,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 45. Screen 2: "Save the date" is 40px ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="mono-script"] .card-sheet .save { font-size:calc(40px * var(--k, 1)); }
+
+/* ───────── 46. Padding of every screen (all four sides): 5cqh ───────── */
+.inv[data-template="mono-script"] { --ms-left:5cqh; --ms-right:5cqh; }                     /* the arrow follows the same edge */
+.inv[data-template="mono-script"] .sheet-in, .inv[data-template="mono-script"] .venue-in, .inv[data-template="mono-script"] .tl-in,
+.inv[data-template="mono-script"] .dtl-in, .inv[data-template="mono-script"] .rsvp-in, .inv[data-template="mono-script"] .closing-in { padding:5cqh !important; }
+.inv[data-template="mono-script"] .cover { padding:5% !important; }                      /* the cover has no cqh units: 5% of its width */
