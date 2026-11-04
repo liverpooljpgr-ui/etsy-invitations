@@ -463,7 +463,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-flap-closed { z-index:2; }
 
 /* ───────── 68. COVER envelope: no shadow at all (the pictures have none baked in, and nothing is added with CSS) ───────── */
-.inv[data-template="mono-script"] .env-art, .inv[data-template="mono-script"] .env-art img, .inv[data-template="mono-script"] .env-flap-closed, .inv[data-template="mono-script"] .cover-env { filter:none !important; box-shadow:none !important; }
+.inv[data-template="mono-script"] .env-art, .inv[data-template="mono-script"] .env-art img, .inv[data-template="mono-script"] .env-flap-closed { filter:none !important; box-shadow:none !important; }   /* (the box around the envelope, .cover-env, has its own shadow: see section 75) */
 
 /* ───────── 69. COVER: positions for the updated envelope body picture. Body paper 1984 x 1348 inside a 2140 x 1504 picture (78px margin all round); the flap pictures are the same as before. Open flap: its base reaches ~68px under the body edge. ───────── */
 .inv[data-template="mono-script"] .cover-env { aspect-ratio:1984/1348; }
@@ -509,3 +509,13 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-art { width:100%; aspect-ratio:992/670; }
 .inv[data-template="mono-script"] .env-flap-closed { left:.151%; top:-.448%; width:99.7%; height:75.82%; transform-origin:50% .59%; }
 .inv[data-template="mono-script"] .env-flap-open { left:.151%; top:-76.72%; width:99.7%; height:79.7%; transform-origin:50% 96.25%; }
+
+/* ───────── 75. COVER: shadow under the envelope box; on tap the cover texts fly smoothly up and out of the screen ───────── */
+.inv[data-template="mono-script"] .cover-env { box-shadow:0px 11px 9px #b4b4b4; border-radius:1.1% / 1.64%; }
+.inv[data-template="mono-script"] .cover-top, .inv[data-template="mono-script"] .cover-names, .inv[data-template="mono-script"] .cover-bottom, .inv[data-template="mono-script"] .env-hint {
+  transition:transform 1.5s cubic-bezier(.55,0,.2,1), opacity 1.1s ease .35s; }
+.inv[data-template="mono-script"][data-phase="opening"] .cover-top, .inv[data-template="mono-script"][data-phase="opening"] .cover-names,
+.inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transform:translateY(-110vh); opacity:0; transition:transform 1.5s cubic-bezier(.55,0,.2,1), opacity 1.1s ease .35s; }   /* (the transition is repeated here because an earlier rule for the opening phase would win otherwise) */
+.inv[data-template="mono-script"][data-phase="opening"] .cover-names { transition-delay:.08s, .43s; }
+.inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transition-delay:.16s, .51s; }
+.inv[data-template="mono-script"] .cover-env { z-index:2; }    /* the texts fly up behind the envelope, not across it */
