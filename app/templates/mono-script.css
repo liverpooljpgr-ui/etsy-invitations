@@ -578,3 +578,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 90. Screen 5 (details): 20px of space left and right of the accommodation address (so a long address wraps earlier) ───────── */
 .inv[data-template="mono-script"] .dtl-acc .dtl-text { padding-inline:20px; }
+
+/* ───────── 91. Screen 6 (RSVP): the date is weight 400; the note is written like the venue address (14px, normal case and spacing, weight 300) with 20px left and right; the elements are 8cqh apart, like the details blocks ───────── */
+.inv[data-template="mono-script"] .rsvp-by { font-weight:400; margin:0; }
+.inv[data-template="mono-script"] .rsvp-note { font-size:calc(14px * var(--k, 1)); text-transform:none; letter-spacing:normal; line-height:1.9; font-weight:300; color:var(--ms-grey); padding-inline:20px; margin:0 auto; }
+.inv[data-template="mono-script"] .rsvp-in { gap:8cqh; }
+.inv[data-template="mono-script"] .rsvp-title { margin-bottom:0; }
+.inv[data-template="mono-script"] .rsvp-mail { margin:0; }
