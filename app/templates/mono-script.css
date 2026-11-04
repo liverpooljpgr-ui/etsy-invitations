@@ -654,3 +654,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 102. Screen 2: the photo is 10 : 16 (portrait). It is as wide as the content allows, but never taller than 52% of the screen, so the title and the date lines always fit under / over it. The crop tool uses the same shape (PHOTO_FRAME in lib/templates.ts). ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 32.5cqh); height:auto; aspect-ratio:10/16; }
+
+/* ───────── 103. Screen 2: the photo is 12 : 16 (3 : 4); at most 52% of the screen high (52% x 12/16 = 39% of the screen height as width) ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 39cqh); height:auto; aspect-ratio:12/16; }
