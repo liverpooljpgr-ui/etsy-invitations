@@ -551,3 +551,8 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 83. COVER seal: 20% smaller (30% -> 24% of the envelope width) ───────── */
 .inv[data-template="mono-script"] .env-seal { width:24%; }
+
+/* ───────── 84. Screen 2: "Save the date" is above the photo; the date lines stay below it ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { order:1; margin-top:0; margin-bottom:15px; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { order:2; margin-bottom:15px; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .dt { order:3; }
