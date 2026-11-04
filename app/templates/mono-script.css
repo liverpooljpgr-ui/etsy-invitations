@@ -500,3 +500,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .closing-names { align-items:center; }
 .inv[data-template="mono-script"] .swipe-hint, .inv[data-template="mono-script"] .card-sheet .swipe-hint, .inv[data-template="mono-script"] .card-timeline .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
 .inv[data-template="mono-script"] .card-sheet .sheet-in, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo), .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo { align-items:center; text-align:center; }
+
+/* ───────── 73. COVER: the envelope does not float up and down ───────── */
+.inv[data-template="mono-script"][data-phase="closed"] .cover-env, .inv[data-template="mono-script"][data-phase="opening"] .cover-env, .inv[data-template="mono-script"] .cover-env { animation:none !important; }
