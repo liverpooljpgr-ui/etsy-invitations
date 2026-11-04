@@ -1,0 +1,665 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════
+   CUPID SCRIPT  (slug: cupid-script)  ·  a copy of Mono Script with its own cover picture and gold cupid seal (public/templates/cupid/v1)
+   Fonts:  Mrs Saint Delafield (handwritten script)  +  Jost (wide-spaced capitals)
+
+   THIS IS THE FILE TO EDIT for this design: every rule applies only to  .inv[data-template="cupid-script"].
+   Imported in app/layout.tsx.  The markup (which text is shown, in which order) is shared with the other designs:
+   components/invitation/Invitation.tsx (screens 2-7) and components/invitation/Cover.tsx (screen 1).
+
+   HOW TO READ SIZES
+     calc(40px * var(--k,1))   a font size / gap that scales with the phone (--k is 1 on a normal phone)
+     cqw / cqh                 % of the card's width / height (works inside .sheet-in, .venue-in, .tl-in, .dtl-in, .rsvp-in, .closing-in)
+   Screens:  1 cover (envelope) · 2 photo + date · 3 venue · 4 timeline · 5 details · 6 RSVP · 7 closing
+
+   ENVELOPE PICTURES: public/templates/script/v1/envelope-body | envelope-flap-closed | envelope-flap-open  (now simple grey outlines, .svg).
+   When you add your own pictures (.webp / .png) put them in that folder and change  ext  for "cupid-script" in lib/templates.ts,
+   then set the position of the flaps in section 1b below (copy the numbers from the first design in app/globals.css as a starting point).
+   ═══════════════════════════════════════════════════════════════════════════════════════════════ */
+
+/* ───────── 0. Colours, fonts and the "knobs" you will most often change ───────── */
+.inv[data-template="cupid-script"] {
+  --paper:#ffffff; --dark:#ffffff; --dark-ink:#111111; --ink:#4a4a4a; --gold:#111111;   /* base variables used by the shared styles */
+  --ms-black:#545454;      /* main text, big words */
+  --ms-grey:#8c8c8c;       /* small captions */
+  --ms-line:#cfcfcf;       /* thin lines */
+  --ms-script:var(--font-ms-script),"Brush Script MT",cursive;
+  --ms-sans:var(--font-sans),system-ui,sans-serif;       /* Jost */
+  --ms-track:.25em;        /* letter-spacing of the small capitals */
+  --ms-left:9cqw;          /* space on the left of every screen (the left edge of all text) */
+  --ms-right:9cqw;
+  font-family:var(--ms-sans); font-weight:300; letter-spacing:.12em; text-align:left; color:var(--ms-black); }
+
+/* every screen: white paper, square corners, text starts at the left */
+.inv[data-template="cupid-script"] .card,
+.inv[data-template="cupid-script"] .cover { background:#fff; border-radius:2px; box-shadow:0 8px 28px rgba(0,0,0,.12); align-items:flex-start; text-align:left; }
+.inv[data-template="cupid-script"] .card-sheet, .inv[data-template="cupid-script"] .card-venue, .inv[data-template="cupid-script"] .card-timeline,
+.inv[data-template="cupid-script"] .card-details, .inv[data-template="cupid-script"] .card-rsvp, .inv[data-template="cupid-script"] .card-closing { background:#fff; }
+
+/* shared look of the small capitals (Jost, light, very spaced) */
+.inv[data-template="cupid-script"] .cover-top, .inv[data-template="cupid-script"] .cover-bottom, .inv[data-template="cupid-script"] .env-hint,
+.inv[data-template="cupid-script"] .venue-intro, .inv[data-template="cupid-script"] .venue-link, .inv[data-template="cupid-script"] .caps,
+.inv[data-template="cupid-script"] .tiny, .inv[data-template="cupid-script"] .qrbox, .inv[data-template="cupid-script"] .dt-month,
+.inv[data-template="cupid-script"] .dt-year, .inv[data-template="cupid-script"] .dt-row, .inv[data-template="cupid-script"] .tl li span,
+.inv[data-template="cupid-script"] .venue-addr, .inv[data-template="cupid-script"] .dtl-text, .inv[data-template="cupid-script"] .val,
+.inv[data-template="cupid-script"] .rsvp-by, .inv[data-template="cupid-script"] .rsvp-mail, .inv[data-template="cupid-script"] .rsvp-note,
+.inv[data-template="cupid-script"] .closing-text, .inv[data-template="cupid-script"] .venue-name, .inv[data-template="cupid-script"] .tl li b { font-family:var(--ms-sans); font-weight:300; text-transform:uppercase; letter-spacing:var(--ms-track); color:var(--ms-black); }
+
+/* shared look of the handwritten words (Mrs Saint Delafield) */
+.inv[data-template="cupid-script"] .names, .inv[data-template="cupid-script"] .script, .inv[data-template="cupid-script"] .title i,
+.inv[data-template="cupid-script"] .save, .inv[data-template="cupid-script"] .venue-recep, .inv[data-template="cupid-script"] .rsvp-lead,
+.inv[data-template="cupid-script"] .closing-names, .inv[data-template="cupid-script"] .cover-names, .inv[data-template="cupid-script"] .monogram,
+.inv[data-template="cupid-script"] .seal { font-family:var(--ms-script); font-weight:400; text-transform:none; letter-spacing:0; color:var(--ms-black); }
+
+/* ───────── 1. Screen 1: cover (the envelope) ───────── */
+.inv[data-template="cupid-script"] .cover { padding:calc(54px * var(--k,1)) 9% calc(50px * var(--k,1)); gap:calc(16px * var(--k,1)); justify-content:flex-start; }
+.inv[data-template="cupid-script"] .cover-top { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                       /* "The wedding of" */
+.inv[data-template="cupid-script"] .cover-names { flex-direction:column; align-items:flex-start; white-space:normal; font-size:calc(66px * var(--k,1)); line-height:.95; gap:0; }   /* name / & / name, left */
+.inv[data-template="cupid-script"] .cover-names .amp { font-family:var(--ms-script); font-size:.7em; color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .cover-names.stacked { align-items:flex-start; text-align:left; }
+.inv[data-template="cupid-script"] .cover-bottom { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                      /* "You are invited" */
+.inv[data-template="cupid-script"] .env-hint { font-size:calc(10.5px * var(--k,1)); color:var(--ms-grey); }                           /* "Tap to open" */
+
+/* 1b. Envelope geometry. These are the numbers of the first design (picture 948 x 610 around a 904 x 566 envelope) and they fit the grey placeholder
+       outlines. When you replace the pictures, adjust them: left / top / width / height are % of the whole envelope picture. */
+.inv[data-template="cupid-script"] .cover-env { width:100%; aspect-ratio:904/566; }
+.inv[data-template="cupid-script"] .env-art { width:calc(100% * 948 / 904); aspect-ratio:948/610; }
+.inv[data-template="cupid-script"] .env-flap-closed { left:.633%; top:-.984%; width:100%; height:78.361%; transform-origin:50% 2.929%; }
+.inv[data-template="cupid-script"] .env-flap-open { left:.633%; top:-73.279%; width:98.523%; height:76.066%; transform-origin:50% 98.06%; }
+.inv[data-template="cupid-script"] .monogram { top:34%; justify-content:flex-start; left:14%; font-size:calc(46px * var(--k,1)); -webkit-text-fill-color:var(--ms-black); background:none; }   /* initials on the closed flap */
+
+/* ───────── 2. Screen 2: photo, "Save the date", date ───────── */
+.inv[data-template="cupid-script"] .sheet-in { align-items:flex-start; justify-content:flex-start; gap:1.6cqh; padding:11cqh var(--ms-right) 8cqh var(--ms-left); }
+.inv[data-template="cupid-script"] .card-sheet .arch { height:40cqh; width:calc(40cqh * 3 / 4); border:0; border-radius:0; padding:0; background:#eee; }   /* the photo, plain rectangle */
+.inv[data-template="cupid-script"] .arch-in { border-radius:0; }
+.inv[data-template="cupid-script"] .arch-empty { color:var(--ms-grey); font-size:calc(11px * var(--k,1)); letter-spacing:var(--ms-track); }
+.inv[data-template="cupid-script"] .save { font-size:calc(58px * var(--k,1)); line-height:1; margin-top:2cqh; }                       /* "Save the date" */
+.inv[data-template="cupid-script"] .dt { align-items:flex-start; gap:.8cqh; color:var(--ms-black); }
+.inv[data-template="cupid-script"] .dt-month, .inv[data-template="cupid-script"] .dt-year { font-size:calc(13px * var(--k,1)); padding-left:0; }
+.inv[data-template="cupid-script"] .dt-row { display:flex; align-items:baseline; gap:calc(14px * var(--k,1)); font-size:calc(11.5px * var(--k,1)); border:0; padding:0; margin:0; }
+.inv[data-template="cupid-script"] .dt-row > span:first-child, .inv[data-template="cupid-script"] .dt-row > span:last-child:not(:first-child) { padding:0; text-align:left; }
+.inv[data-template="cupid-script"] .dt-row b { font-family:var(--ms-sans); font-weight:200; font-size:calc(44px * var(--k,1)); line-height:1; letter-spacing:0; border:0; padding:0; color:var(--ms-black); }  /* the day number */
+.inv[data-template="cupid-script"] .sheet-in.no-photo { padding-top:22cqh; }
+.inv[data-template="cupid-script"] .sheet-in.no-photo .dt-row b { font-size:calc(60px * var(--k,1)); }
+
+/* ───────── 3. Screen 3: venue ───────── */
+.inv[data-template="cupid-script"] .venue-in { align-items:flex-start; justify-content:center; gap:calc(12px * var(--k,1)); padding:10cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="cupid-script"] .venue-intro { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }                           /* "Ceremony will take place" */
+.inv[data-template="cupid-script"] .venue-name { font-size:calc(19px * var(--k,1)); line-height:1.5; font-weight:400; }
+.inv[data-template="cupid-script"] .venue-rule { width:calc(36px * var(--k,1)); background:var(--ms-line); }
+.inv[data-template="cupid-script"] .venue-addr { font-size:calc(12px * var(--k,1)); line-height:1.9; text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .venue-link { font-size:calc(10.5px * var(--k,1)); border-bottom:1px solid var(--ms-black); padding-bottom:2px; }
+.inv[data-template="cupid-script"] .venue-recep { font-size:calc(46px * var(--k,1)); line-height:1; margin-top:calc(34px * var(--k,1)); }   /* "Reception to follow" */
+
+/* ───────── 4. Screen 4: timeline ───────── */
+.inv[data-template="cupid-script"] .tl-in { align-items:flex-start; gap:1.4cqh; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="cupid-script"] .script.tl-title { font-size:calc(58px * var(--k,1)); line-height:1; text-align:left; }               /* "Timeline" */
+.inv[data-template="cupid-script"] .tl li { align-items:flex-start; text-align:left; }
+.inv[data-template="cupid-script"] .tl li span { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .tl li b { font-size:calc(22px * var(--k,1)); font-weight:200; letter-spacing:.14em; }
+.inv[data-template="cupid-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1)); color:var(--ms-black); letter-spacing:var(--ms-track); }
+/* the small ornament between two items becomes a short grey line at the left edge */
+.inv[data-template="cupid-script"] .tl li + li::before { left:0; width:calc(34px * var(--k,1)); height:1px; transform:translate(0,-50%); background:var(--ms-line); -webkit-mask:none; mask:none; }
+
+/* ───────── 5. Screen 5: details (registry, dress code, accommodation) ───────── */
+.inv[data-template="cupid-script"] .dtl-in { align-items:flex-start; justify-content:center; gap:5cqh; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="cupid-script"] .dtl-row { align-items:flex-start; justify-content:center; gap:5cqh; }
+.inv[data-template="cupid-script"] .dtl-blk, .inv[data-template="cupid-script"] .dtl-pair { align-items:flex-start; text-align:left; }
+.inv[data-template="cupid-script"] .dtl-dress { justify-content:flex-start; }
+.inv[data-template="cupid-script"] .dtl-row .qrs { justify-content:flex-start; }
+.inv[data-template="cupid-script"] .dtl-row .qr { width:calc(78px * var(--k,1)); height:calc(78px * var(--k,1)); }
+.inv[data-template="cupid-script"] .dtl-reg { order:1; } .inv[data-template="cupid-script"] .dtl-dresscode { order:2; } .inv[data-template="cupid-script"] .dtl-acc { order:3; }
+.inv[data-template="cupid-script"] .caps { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }                                   /* block captions: REGISTRY, DRESS CODE ... */
+.inv[data-template="cupid-script"] .tiny, .inv[data-template="cupid-script"] .qrbox { font-size:calc(10px * var(--k,1)); color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .val { font-size:calc(14px * var(--k,1)); }
+.inv[data-template="cupid-script"] .dtl-text { font-size:calc(12px * var(--k,1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+
+/* ───────── 6. Screen 6: RSVP ───────── */
+.inv[data-template="cupid-script"] .rsvp-in { align-items:flex-start; justify-content:center; text-align:left; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="cupid-script"] .rsvp-title { align-items:flex-start; margin-bottom:3cqh; }
+.inv[data-template="cupid-script"] .rsvp-lead { font-size:calc(50px * var(--k,1)); text-transform:none; margin-bottom:0; color:var(--ms-black); }   /* "Please" */
+.inv[data-template="cupid-script"] .rsvp-big { font-family:var(--ms-sans); font-weight:200; font-size:calc(42px * var(--k,1)); letter-spacing:.22em; white-space:nowrap; margin-right:0; color:var(--ms-black); }  /* "RSVP" */
+.inv[data-template="cupid-script"] .rsvp-by { font-size:calc(12px * var(--k,1)); color:var(--ms-black); }                                /* "by August 28, 2027" */
+.inv[data-template="cupid-script"] .rsvp-mail { font-size:calc(12px * var(--k,1)); text-transform:none; letter-spacing:.06em; color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .rsvp-note { max-width:100%; margin-top:4cqh; font-size:calc(10.5px * var(--k,1)); line-height:1.8; color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .rsvp-open { color:#fff; background:var(--ms-black); border:1px solid var(--ms-black); border-radius:0; font-family:var(--ms-sans); font-weight:400; letter-spacing:.3em; text-transform:uppercase; }
+
+/* the reply form that slides up inside the invitation */
+.inv[data-template="cupid-script"] .rsvp-sheet { font-family:var(--ms-sans); background:#fff; color:var(--ms-black); border-radius:0; text-align:left; }
+.inv[data-template="cupid-script"] .rsvp-sheet-title { font-family:var(--ms-script); font-size:calc(40px * var(--k,1)); letter-spacing:0; color:var(--ms-black); }
+.inv[data-template="cupid-script"] .rsvp-choice[aria-checked="true"], .inv[data-template="cupid-script"] .rsvp-send { background:var(--ms-black); border-color:var(--ms-black); color:#fff; border-radius:0; }
+.inv[data-template="cupid-script"] .rsvp-field input, .inv[data-template="cupid-script"] .rsvp-field textarea, .inv[data-template="cupid-script"] .rsvp-choice,
+.inv[data-template="cupid-script"] .rsvp-count button { border-color:var(--ms-line); border-radius:0; text-transform:none; letter-spacing:.04em; }
+
+/* ───────── 7. Screen 7: closing ───────── */
+.inv[data-template="cupid-script"] .closing-in { align-items:flex-start; justify-content:center; text-align:left; padding:14cqh var(--ms-right) 14cqh var(--ms-left); }
+.inv[data-template="cupid-script"] .closing-names { align-items:flex-start; font-size:calc(66px * var(--k,1)); line-height:.95; color:var(--ms-black); }
+.inv[data-template="cupid-script"] .closing-names .amp { font-size:.7em; color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .closing-text { margin-top:calc(22px * var(--k,1)); font-size:calc(11.5px * var(--k,1)); line-height:2; color:var(--ms-grey); }
+
+/* ───────── 8. Small things ───────── */
+.inv[data-template="cupid-script"] .swipe-hint { left:var(--ms-left); margin-left:0; color:var(--ms-black); }                           /* the little arrow at the bottom, now at the left */
+body:has(.inv[data-template="cupid-script"]) .music-btn { color:#111; border-color:rgba(0,0,0,.35); background:rgba(255,255,255,.95); }
+
+/* ───────── 9. LAYOUT VARIANT for screen 2: full-bleed photo ─────────
+   The photo runs edge to edge across the top of the card (same 3:4 shape as the crop tool), a dark-grey fade rises from its bottom edge and
+   "Save the date" + the date are written over it in white, at the left. Without a photo the page stays white with dark text (see .no-photo). */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-end; padding:0 var(--ms-right) 11cqh var(--ms-left); gap:1.2cqh; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { position:absolute; left:0; top:0; width:100%; height:auto; aspect-ratio:3/4; margin:0; background:#222; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(17,17,17,0) 40%, rgba(17,17,17,.88) 100%); }          /* the fade: change the 40% / .88 to move or strengthen it */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) > .save, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) > .dt { position:relative; z-index:2; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b { color:#fff; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span { color:rgba(255,255,255,.82); }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:0; }
+.inv[data-template="cupid-script"] .card-sheet .swipe-hint { color:#fff; z-index:3; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { background:linear-gradient(to bottom, rgba(21,21,21,0) 38%, rgba(21,21,21,.9) 78%, #151515 100%); }
+
+/* ───────── 10. PAPER BACKGROUND on every screen except the cover (public/templates/script/v1/paper.webp; the original PNG is in assets/mono-script) ───────── */
+.inv[data-template="cupid-script"] .card-sheet, .inv[data-template="cupid-script"] .card-venue, .inv[data-template="cupid-script"] .card-timeline,
+.inv[data-template="cupid-script"] .card-details, .inv[data-template="cupid-script"] .card-rsvp, .inv[data-template="cupid-script"] .card-closing { background:#f3f2f0 url(/templates/script/v1/paper.webp) center / cover no-repeat; }   /* (no :has() selector in this list: it would make every page in it hard to override) */
+/* screen 2: the photo now fades into the paper (a mask instead of a dark panel), and its text is dark again */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { background:none; -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent 100%); mask-image:linear-gradient(to bottom,#000 52%,transparent 100%); }   /* change 52% to move the fade */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { display:none; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b { color:var(--ms-black); }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span { color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .card-sheet .swipe-hint { color:var(--ms-black); }
+/* "RSVP" is two pieces in the markup: keep them on one line, "Please" above */
+.inv[data-template="cupid-script"] .rsvp-title { flex-direction:row; flex-wrap:wrap; align-items:baseline; column-gap:.3em; }
+.inv[data-template="cupid-script"] .rsvp-lead { flex-basis:100%; }
+
+/* ───────── 12. Screen 2: the photo is a rectangle with a thin frame (replaces the full-bleed photo of sections 9-10) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in { justify-content:flex-start; align-items:flex-start; padding:11cqh var(--ms-right) 8cqh var(--ms-left); gap:1.6cqh; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { position:relative; left:auto; top:auto; width:calc(40cqh * 3 / 4); height:40cqh; aspect-ratio:auto; flex:none; margin:0 0 2cqh;
+  border:1px solid var(--ms-black); border-radius:0; padding:calc(7px * var(--k,1)); background:transparent; -webkit-mask-image:none; mask-image:none; }   /* padding = the gap between the frame line and the photo */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch-in { border-radius:0; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:1cqh; }
+
+/* ───────── 13. Screen 2: no border; the photo is as wide as the page content, with the same padding on the left and the right ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { --ms-side:9cqw; padding:var(--ms-side) var(--ms-side) 5cqh; gap:1.2cqh; }                      /* change --ms-side to move both edges */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:auto; aspect-ratio:3/4; border:0; padding:0; margin:0 0 1cqh; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo { padding-top:22cqh; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-start; }   /* photo starts at the top padding; the arrow at the bottom stays free */
+
+/* ───────── 14. Screen 2: the photo is 280px high (keeps the 3:4 shape of the crop tool, so it is 210px wide) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { height:280px; width:210px; aspect-ratio:3/4; }
+
+/* ───────── 15. Screen 2: the photo is as wide as its container; its box is 8:7 (about 280px high on a phone). The crop tool in the editor uses the same shape (PHOTO_FRAME in lib/templates.ts), so moving / zooming the photo there shows here ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:auto; aspect-ratio:8/7; }
+
+/* ───────── 16. Screen 2: the date. Order: weekday · day · time, then the month, then the year. The day number is lighter, smaller, black like "Save the date" ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-row { order:1; }
+.inv[data-template="cupid-script"] .card-sheet .dt-month { order:2; }
+.inv[data-template="cupid-script"] .card-sheet .dt-year { order:3; }
+.inv[data-template="cupid-script"] .card-sheet .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:300; font-size:calc(27px * var(--k, 1)); color:var(--ms-black); }
+
+/* ───────── 17. Screen 2: day number 25px; weekday, time and month all the same size (13px) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(25px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .card-sheet .dt-row, .inv[data-template="cupid-script"] .card-sheet .dt-row > span,
+.inv[data-template="cupid-script"] .card-sheet .dt-month, .inv[data-template="cupid-script"] .card-sheet .dt-year { font-size:calc(13px * var(--k, 1)); }
+
+/* ───────── 18. Screen 2: the photo stays at the top, all the text sits at the bottom (above the arrow). Weekday ↔ number is closer than number ↔ time ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:auto; }
+.inv[data-template="cupid-script"] .card-sheet .dt-row { gap:0; }
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:first-child { margin-right:calc(8px * var(--k, 1)); }                       /* weekday → number */
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { margin-left:calc(20px * var(--k, 1)); }   /* number → time (bigger) */
+
+/* ───────── 21. Screen 3 (venue): "Reception to follow" 35px, one underline under "Get directions", tighter venue name ───────── */
+.inv[data-template="cupid-script"] .venue-recep { font-size:calc(35px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .venue-link { text-decoration:none; border-bottom:1px solid var(--ms-black); padding-bottom:2px; }   /* the shared style also draws an underline: this keeps one */
+.inv[data-template="cupid-script"] .venue-name { letter-spacing:.25em; }
+
+/* ───────── 22. Screen 2 (save the date): four lines in one font and colour: 1 time · 2 weekday · 3 month + day · 4 year ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt { --ms-date-color:#5c5a5a; display:grid; grid-template-columns:auto auto 1fr; justify-items:start; align-items:baseline; column-gap:.7em; row-gap:calc(8px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .card-sheet .dt-row { display:contents; }                                   /* its pieces become lines of the grid */
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { grid-column:1 / -1; grid-row:1; margin:0; }   /* 1 time */
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:first-child { grid-column:1 / -1; grid-row:2; margin:0; }                      /* 2 weekday */
+.inv[data-template="cupid-script"] .card-sheet .dt-month { grid-column:1; grid-row:3; order:0; }                                              /* 3 month … */
+.inv[data-template="cupid-script"] .card-sheet .dt-row b { grid-column:2; grid-row:3; }                                                       /* … and day */
+.inv[data-template="cupid-script"] .card-sheet .dt-year { grid-column:1 / -1; grid-row:4; order:0; }                                         /* 4 year */
+.inv[data-template="cupid-script"] .card-sheet .dt-month, .inv[data-template="cupid-script"] .card-sheet .dt-year, .inv[data-template="cupid-script"] .card-sheet .dt-row > span,
+.inv[data-template="cupid-script"] .card-sheet .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b, .inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span
+  { font-family:var(--ms-sans); font-weight:300; font-size:calc(13px * var(--k, 1)); line-height:1.3; letter-spacing:var(--ms-track); text-transform:uppercase; color:var(--ms-date-color, #5c5a5a); padding:0; }
+
+/* ───────── 23. Links across the invitation (get directions, add to calendar, e-mail, …): one 1px #a7a7a7 line under them ───────── */
+.inv[data-template="cupid-script"] .link, .inv[data-template="cupid-script"] .venue-link, .inv[data-template="cupid-script"] .closing-cal, .inv[data-template="cupid-script"] .rsvp-mail
+  { text-decoration:none; border-bottom:1px solid #a7a7a7; padding-bottom:2px; display:inline-block; width:fit-content; }
+
+/* ───────── 25. Screen 2: bigger bottom padding (above the arrow); tighter date gaps ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
+.inv[data-template="cupid-script"] .card-sheet .dt { column-gap:.3em; row-gap:calc(5px * var(--k, 1)); }
+
+/* ───────── 26. Screen 2: "Save the date" has margin-top:20px; the free space sits between the photo and the text, so the text stays at the bottom ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:20px; }
+
+/* ───────── 28. Screen 2: "Save the date" 55px; no space under the photo (the text follows it, 20px below) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { font-size:calc(55px * var(--k, 1)); }
+
+/* ───────── 29. Screen 2: the month and the day number are regular weight (400) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-month, .inv[data-template="cupid-script"] .card-sheet .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:400; }
+
+/* ───────── 31. PAPER OF EACH PAGE: change a page's background here (one place, nothing else overrides it) ─────────
+   Files are in public/templates/script/v1/ (the original PNGs are in assets/mono-script/). Cover = no paper. */
+.inv[data-template="cupid-script"] { --ms-bg-sheet:url(/templates/script/v1/paper-white.webp);      /* 2 save the date */
+  --ms-bg-venue:url(/templates/script/v1/paper-white.webp);      /* 3 venue */
+  --ms-bg-timeline:url(/templates/script/v1/paper-white.webp);     /* 4 timeline */
+  --ms-bg-details:url(/templates/script/v1/paper-white.webp);      /* 5 details */
+  --ms-bg-rsvp:url(/templates/script/v1/paper-white.webp);         /* 6 RSVP */
+  --ms-bg-closing:url(/templates/script/v1/paper-white.webp); }    /* 7 closing */
+.inv[data-template="cupid-script"] .card-sheet    { background:#f3f2f0 var(--ms-bg-sheet)    center / cover no-repeat !important; }
+.inv[data-template="cupid-script"] .card-venue    { background:#f3f2f0 var(--ms-bg-venue)    center / cover no-repeat !important; }
+.inv[data-template="cupid-script"] .card-timeline { background:#f3f2f0 var(--ms-bg-timeline) center / cover no-repeat !important; }
+.inv[data-template="cupid-script"] .card-details  { background:#f3f2f0 var(--ms-bg-details)  center / cover no-repeat !important; }
+.inv[data-template="cupid-script"] .card-rsvp     { background:#f3f2f0 var(--ms-bg-rsvp)     center / cover no-repeat !important; }
+.inv[data-template="cupid-script"] .card-closing  { background:#f3f2f0 var(--ms-bg-closing)  center / cover no-repeat !important; }
+
+/* ───────── 32. Screen 5 (details): accommodation, then dress code, then registry; the blocks always start the same distance under the heading ───────── */
+.inv[data-template="cupid-script"] .dtl-acc { order:1; }
+.inv[data-template="cupid-script"] .dtl-dresscode { order:2; }
+.inv[data-template="cupid-script"] .dtl-reg { order:3; }
+.inv[data-template="cupid-script"] .dtl-in { justify-content:flex-start; gap:6cqh; }              /* heading, then 6% of the page height, then the blocks (change 6cqh to move them) */
+.inv[data-template="cupid-script"] .dtl-row { flex:none; justify-content:flex-start; }
+/* a dress code written only in words: no empty space where the colour dots would be, so it lines up with the other text */
+.inv[data-template="cupid-script"] .dtl-dress .dots:empty { display:none; }
+.inv[data-template="cupid-script"] .dtl-dress:has(.dots:empty) { gap:0; }
+
+/* ───────── 33. Screen 3: "Ceremony will take place" is regular weight (400) ───────── */
+.inv[data-template="cupid-script"] .venue-intro { font-weight:400; }
+
+/* ───────── 34. Screen 4 (timeline): frame-102.webp has a column of ornaments down its left edge, so this page's text starts further in ───────── */
+.inv[data-template="cupid-script"] .tl-in { padding-left:30cqw; }
+.inv[data-template="cupid-script"] .card-timeline .swipe-hint { left:30cqw; }
+
+/* ───────── 35. Screen 2: the date (month + day) and the time are 18px, weight 300; weekday and year stay small ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-month, .inv[data-template="cupid-script"] .card-sheet .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(18px * var(--k, 1)); font-weight:300; }
+
+/* ───────── 36. Registry QR codes: #545454 ───────── */
+.inv[data-template="cupid-script"] .qr { color:#545454; }
+
+/* ───────── 37. Screen 4 (timeline): with fewer than 4 items each one still gets the space it has when there are 4 (a quarter of the list), so the gaps do not grow ───────── */
+.inv[data-template="cupid-script"] .tl:not(:has(li:nth-child(4))) { justify-content:flex-start; }
+.inv[data-template="cupid-script"] .tl:not(:has(li:nth-child(4))) li { flex:0 0 25%; }
+
+/* ───────── 38. Screen 4 (timeline): every item starts at the top and follows the one before it with the same space between, whatever the number of items ───────── */
+.inv[data-template="cupid-script"] .tl { --ms-tl-gap:6cqh; justify-content:flex-start; gap:0; }                    /* the space between two items: change 6cqh */
+.inv[data-template="cupid-script"] .tl li, .inv[data-template="cupid-script"] .tl:not(:has(li:nth-child(4))) li { flex:none; justify-content:flex-start; padding-bottom:var(--ms-tl-gap); }
+.inv[data-template="cupid-script"] .tl li + li::before { top:calc(var(--ms-tl-gap) / -2); }                          /* the short line sits in the middle of the space */
+
+/* ───────── 39. Screen 4 (timeline): 6 to 10 items keep the same look (label above time) and everything gets proportionally smaller so all of them fit ───────── */
+.inv[data-template="cupid-script"] .tl { --ms-tl-s:1; }
+.inv[data-template="cupid-script"] .tl:has(li:nth-child(6)) { --ms-tl-s:.9; }
+.inv[data-template="cupid-script"] .tl:has(li:nth-child(7)) { --ms-tl-s:.77; }
+.inv[data-template="cupid-script"] .tl:has(li:nth-child(8)) { --ms-tl-s:.67; }
+.inv[data-template="cupid-script"] .tl:has(li:nth-child(9)) { --ms-tl-s:.6; }
+.inv[data-template="cupid-script"] .tl:has(li:nth-child(10)) { --ms-tl-s:.53; }          /* size factor for 6 / 7 / 8 / 9 / 10 items; 5 or fewer use full size */
+.inv[data-template="cupid-script"] .tl { --ms-tl-gap:calc(6cqh * var(--ms-tl-s)); }
+.inv[data-template="cupid-script"] .tl-dense li { flex-direction:column; gap:calc(2px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="cupid-script"] .tl-dense li span, .inv[data-template="cupid-script"] .tl-dense li b { order:0; }
+.inv[data-template="cupid-script"] .tl li span { font-size:calc(11px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="cupid-script"] .tl li b { font-size:calc(22px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="cupid-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="cupid-script"] .tl li + li::before { width:calc(34px * var(--k,1) * var(--ms-tl-s)); }
+
+/* exactly 6 items: the space between them is 5cqh (scaled) */
+.inv[data-template="cupid-script"] .tl:has(li:nth-child(6)):not(:has(li:nth-child(7))) { --ms-tl-gap:calc(5cqh * var(--ms-tl-s)); }
+
+/* ───────── 40. Screen 2: the date (month + day) and the time have the colour of the venue name on the next screen (--ms-black) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-month, .inv[data-template="cupid-script"] .card-sheet .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b { color:var(--ms-black); }
+
+/* ───────── 41. Screen 2: the time is the same size as the weekday and the year (13px) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(13px * var(--k, 1)); }
+
+/* ───────── 42. Screen 5: the dress code colour circles have no outline ───────── */
+.inv[data-template="cupid-script"] .dots i { border:0; }
+
+/* ───────── 43. Screen 2: time, weekday and year are 12px (one px smaller); the rows of the date block keep their original spacing ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-year, .inv[data-template="cupid-script"] .card-sheet .dt-row > span:first-child,
+.inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:first-child,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .card-sheet .dt { row-gap:calc(5px * var(--k, 1)); }                 /* space between the rows (back to 5px) */
+.inv[data-template="cupid-script"] .card-sheet .dt > *, .inv[data-template="cupid-script"] .card-sheet .dt-row > span, .inv[data-template="cupid-script"] .card-sheet .dt-row b { line-height:1.3; }
+
+/* ───────── 44. Every screen but the cover uses frame-100.webp (ornament rows at the top and the bottom edge): content keeps clear of them ───────── */
+.inv[data-template="cupid-script"] .tl-in { padding-left:var(--ms-left); }                          /* no ornament column on the left any more */
+.inv[data-template="cupid-script"] .card-timeline .swipe-hint { left:var(--ms-left); }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { padding-top:12cqh; }   /* the photo starts under the top ornament row */
+
+/* ───────── 45. Screen 2: "Save the date" is 40px ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="cupid-script"] .card-sheet .save { font-size:calc(40px * var(--k, 1)); }
+
+/* ───────── 46. Padding of every screen (all four sides): 5cqh ───────── */
+.inv[data-template="cupid-script"] { --ms-left:5cqh; --ms-right:5cqh; }                     /* the arrow follows the same edge */
+.inv[data-template="cupid-script"] .sheet-in, .inv[data-template="cupid-script"] .venue-in, .inv[data-template="cupid-script"] .tl-in,
+.inv[data-template="cupid-script"] .dtl-in, .inv[data-template="cupid-script"] .rsvp-in, .inv[data-template="cupid-script"] .closing-in { padding:5cqh !important; }
+.inv[data-template="cupid-script"] .cover { padding:5% !important; }                      /* the cover has no cqh units: 5% of its width */
+
+/* ───────── 47. Screen 2: the title and the date lines form one group at the bottom of the page; the photo stays at the top ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:20px; }          /* least space between the photo and the group */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:auto; }               /* pushes "Save the date" and the date lines down together */
+.inv[data-template="cupid-script"] .card-sheet .swipe-hint { left:auto; right:5cqh; margin-left:0; }            /* the arrow moves to the right so it does not sit on the last line */
+
+/* ───────── 48. Screen 2: "Save the date" has margin-top:15px; the free space is moved under the photo so the group still sits at the bottom ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:15px; }
+
+/* the butterfly of the save the date background sits in the bottom-right corner, so the arrow goes back to the middle of the page */
+.inv[data-template="cupid-script"] .card-sheet .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
+
+/* ───────── 49. Screen 2: month, time and year share one style: 12px, weight 400 (the day number keeps its own size) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-month, .inv[data-template="cupid-script"] .card-sheet .dt-year, .inv[data-template="cupid-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); font-weight:400; }
+
+/* ───────── 50. Screen 2: the day number and the weekday join the same style: 12px, weight 400 ───────── */
+.inv[data-template="cupid-script"] .card-sheet .dt-row b, .inv[data-template="cupid-script"] .card-sheet .dt-row > span:first-child,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:first-child,
+.inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(12px * var(--k, 1)); font-weight:400; letter-spacing:var(--ms-track); }
+
+/* ───────── 51. Screen 2: the photo and the text (title + date lines) are one group, centred vertically on the page ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:15px; }
+
+/* ───────── 52. Screen 3 (venue): no short line under the venue name; more space above "Reception to follow" ───────── */
+.inv[data-template="cupid-script"] .venue-rule { display:none; }
+.inv[data-template="cupid-script"] .venue-recep { margin-top:calc(64px * var(--k, 1)); }          /* was 34px */
+
+/* ───────── 53. Screen 4 (timeline): the heading and the items are centred vertically as one group (so it follows the number of items); heading = "Save the date" size; the time = the time of the save the date page ───────── */
+.inv[data-template="cupid-script"] .tl-in { justify-content:center; }
+.inv[data-template="cupid-script"] .tl { flex:none; }
+.inv[data-template="cupid-script"] .tl-title, .inv[data-template="cupid-script"] .script.tl-title { font-size:calc(40px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .tl li b { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); font-weight:400; color:var(--ms-black); letter-spacing:var(--ms-track); }
+
+/* ───────── 54. Screen 4 (timeline): the descriptions are the size of the venue name (19px) ───────── */
+.inv[data-template="cupid-script"] .tl li span, .inv[data-template="cupid-script"] .tl li.no-time span { font-size:calc(19px * var(--k,1) * var(--ms-tl-s)); }
+
+/* ───────── 55. Screen 4 (timeline): twice the space between the heading and the list (1.4cqh → 2.8cqh) ───────── */
+.inv[data-template="cupid-script"] .tl-in { gap:2.8cqh; }
+
+/* ───────── 56. Every screen's content (venue, timeline, details, RSVP, closing, save the date) is centred vertically ───────── */
+.inv[data-template="cupid-script"] .venue-in, .inv[data-template="cupid-script"] .tl-in, .inv[data-template="cupid-script"] .dtl-in,
+.inv[data-template="cupid-script"] .rsvp-in, .inv[data-template="cupid-script"] .closing-in { justify-content:center; }
+.inv[data-template="cupid-script"] .dtl-row { justify-content:center; flex:none; }
+
+/* ───────── 57. Light weight (300) for the timeline times and the venue address ───────── */
+.inv[data-template="cupid-script"] .tl li b, .inv[data-template="cupid-script"] .venue-addr { font-weight:300; }
+
+/* ───────── 58. Timeline: the descriptions have the size of the times (12px) and the main text colour ───────── */
+.inv[data-template="cupid-script"] .tl li span, .inv[data-template="cupid-script"] .tl li.no-time span { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); color:var(--ms-black); }
+
+/* ───────── 59. Screen 3 (venue): the venue name and its address read as one block: 4px between them while the other gaps on the page stay 12px ───────── */
+.inv[data-template="cupid-script"] .venue-addr { margin-top:calc(-8px * var(--k, 1)); }
+
+/* ───────── 60. Timeline: the descriptions are regular weight (400) ───────── */
+.inv[data-template="cupid-script"] .tl li span, .inv[data-template="cupid-script"] .tl li.no-time span { font-weight:400; }
+
+/* ───────── 61. COVER background: ivory with white roses and a silk ribbon (public/templates/script/v1/cover-roses.webp) ───────── */
+.inv[data-template="cupid-script"] .cover { background:#f4ecde url(/templates/cupid/v1/cover.webp) center / cover no-repeat !important; }
+/* on the roses the small grey lines of the cover are too faint: they use the main text colour */
+.inv[data-template="cupid-script"] .cover-top, .inv[data-template="cupid-script"] .cover-bottom, .inv[data-template="cupid-script"] .env-hint { color:var(--ms-black); }
+.inv[data-template="cupid-script"] .cover-names .amp { color:var(--ms-black); }
+
+/* ───────── 62. COVER: all text centred ───────── */
+.inv[data-template="cupid-script"] .cover { align-items:center; text-align:center; }
+.inv[data-template="cupid-script"] .cover-names, .inv[data-template="cupid-script"] .cover-names.stacked { align-items:center; text-align:center; justify-content:center; }
+.inv[data-template="cupid-script"] .monogram { left:0; right:0; justify-content:center; }
+/* a soft white glow keeps the small cover lines readable where a rose or leaf passes behind them */
+.inv[data-template="cupid-script"] .cover-top, .inv[data-template="cupid-script"] .cover-bottom, .inv[data-template="cupid-script"] .env-hint { text-shadow:0 0 6px rgba(255,255,255,.95), 0 0 12px rgba(255,255,255,.8); }
+
+/* ───────── 63. COVER names: 52px, on one line with a gap when they fit; when they do not fit they fall down (name / & / name), still centred. Cover padding. ───────── */
+.inv[data-template="cupid-script"] .cover { padding:calc(92px * var(--k,1)) 9% calc(50px * var(--k,1)) !important; }
+.inv[data-template="cupid-script"] .cover-names { flex-direction:row; flex-wrap:nowrap; white-space:nowrap; align-items:baseline; justify-content:center; gap:0 calc(14px * var(--k,1)); font-size:calc(52px * var(--k,1)); line-height:1.05; text-align:center; }
+.inv[data-template="cupid-script"] .cover-names.stacked { flex-direction:column; align-items:center; justify-content:center; white-space:normal; gap:0; text-align:center; }
+.inv[data-template="cupid-script"] .cover-names .amp { font-size:.7em; }
+/* the other cover texts are regular weight (400) */
+.inv[data-template="cupid-script"] .cover-top, .inv[data-template="cupid-script"] .cover-bottom, .inv[data-template="cupid-script"] .env-hint { font-weight:400; }
+
+/* ───────── 64. COVER: no initials on the envelope flap ───────── */
+.inv[data-template="cupid-script"] .monogram { display:none !important; }
+
+/* ───────── 65. COVER: the real envelope pictures (envelope-body / envelope-flap-closed / envelope-flap-open .webp in public/templates/script/v1; originals in assets/mono-script/envelope).
+   Body paper 1984 x 1368 inside a 2072 x 1456 picture; closed flap picture 1065 x 581 (its top edge = the paper width); open flap picture 999 x 827 (its base edge at y 532).
+   Everything is in % of the body picture. ───────── */
+.inv[data-template="cupid-script"] .cover-env { width:100%; aspect-ratio:1984/1368; }
+.inv[data-template="cupid-script"] .env-art { width:calc(100% * 2072 / 1984); aspect-ratio:2072/1456; }
+.inv[data-template="cupid-script"] .env-flap-closed { left:-.594%; top:-1.813%; width:103.43%; height:80.29%; transform-origin:50% 6.02%; }
+.inv[data-template="cupid-script"] .env-flap-open { left:1.153%; top:-70.44%; width:96.91%; height:114.15%; transform-origin:50% 64.3%; }
+
+/* ───────── 66. COVER envelope: slower opening (about 1.6x; the page waits OPEN_MS_BY_TEMPLATE in components/invitation/Experience.tsx), the open flap sits lower on the body, 15px space above and below the envelope ───────── */
+.inv[data-template="cupid-script"] .cover-env { margin-block:calc(15px * var(--k,1)); }
+.inv[data-template="cupid-script"] .env-flap-closed { transition:transform .8s cubic-bezier(.45,0,.85,.6), visibility 0s linear .8s; }
+.inv[data-template="cupid-script"] .env-flap-open { top:-67.4%; transition:transform 1.2s cubic-bezier(.12,.5,.3,1) .8s, visibility 0s linear .8s; }   /* top: was -70.44%; a bigger number sits lower */
+.inv[data-template="cupid-script"][data-phase="opening"] .env-btn { transition:opacity .7s ease 2s, transform .95s cubic-bezier(.4,0,.2,1) 2s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-top, .inv[data-template="cupid-script"][data-phase="opening"] .cover-names, .inv[data-template="cupid-script"][data-phase="opening"] .cover-bottom, .inv[data-template="cupid-script"][data-phase="opening"] .env-hint { transition:opacity .5s ease; }
+
+/* ───────── 67. COVER envelope: the open flap is a BACK layer (behind the body), so the body's soft shadow falls on it and there is no seam; it also reaches a little under the body edge ───────── */
+.inv[data-template="cupid-script"] .env-flap-open { z-index:0; top:-65.8%; }
+.inv[data-template="cupid-script"] .env-body { z-index:1; }
+.inv[data-template="cupid-script"] .env-flap-closed { z-index:2; }
+
+/* ───────── 68. COVER envelope: no shadow at all (the pictures have none baked in, and nothing is added with CSS) ───────── */
+.inv[data-template="cupid-script"] .env-art, .inv[data-template="cupid-script"] .env-art img:not(.env-seal), .inv[data-template="cupid-script"] .env-flap-closed { filter:none !important; box-shadow:none !important; }   /* (the box around the envelope, .cover-env, has its own shadow: see section 75) */
+
+/* ───────── 69. COVER: positions for the updated envelope body picture. Body paper 1984 x 1348 inside a 2140 x 1504 picture (78px margin all round); the flap pictures are the same as before. Open flap: its base reaches ~68px under the body edge. ───────── */
+.inv[data-template="cupid-script"] .cover-env { aspect-ratio:1984/1348; }
+.inv[data-template="cupid-script"] .env-art { width:calc(100% * 2140 / 1984); aspect-ratio:2140/1504; }
+.inv[data-template="cupid-script"] .env-flap-closed { left:1.014%; top:.505%; width:100.14%; height:77.7%; transform-origin:50% 6.02%; }
+.inv[data-template="cupid-script"] .env-flap-open { left:2.706%; top:-61.5%; width:93.93%; height:110.64%; transform-origin:50% 64.3%; }
+
+/* ───────── 70. COVER: the envelope layers now come from the SVG files (assets/mono-script/envelope/svg, drawn without the roses background and without shadows; the site uses the light WebP renders).
+   Body paper 992 x 670 inside a 1072 x 750 picture (40 margin); closed flap 989 x 508 (hinged at its top edge); open flap 989 x 534 (its base is the bottom edge, sunk 20 under the body edge). ───────── */
+.inv[data-template="cupid-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="cupid-script"] .env-art { width:calc(100% * 1072 / 992); aspect-ratio:1072/750; }
+.inv[data-template="cupid-script"] .env-flap-closed { left:3.871%; top:4.533%; width:92.26%; height:67.73%; transform-origin:50% 1.18%; }   /* 6 units above the body edge so no strip of the liner shows over the closed flap */
+.inv[data-template="cupid-script"] .env-flap-open { left:3.871%; top:-63.2%; width:92.26%; height:71.2%; transform-origin:50% 96.25%; }
+
+/* ───────── 71. COVER: positions for the updated body SVG (paper 992 x 670 inside a 1070 x 748 picture, 39 margin on every side). Closed flap sits 3 units above the body edge; the open flap is sunk 20 under it. ───────── */
+.inv[data-template="cupid-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="cupid-script"] .env-art { width:calc(100% * 1070 / 992); aspect-ratio:1070/748; }
+.inv[data-template="cupid-script"] .env-flap-closed { left:3.785%; top:4.813%; width:92.43%; height:67.91%; transform-origin:50% .59%; }
+.inv[data-template="cupid-script"] .env-flap-open { left:3.785%; top:-63.5%; width:92.43%; height:71.39%; transform-origin:50% 96.25%; }
+
+/* ───────── 72. ALL CONTENT of the inner screens is centred horizontally (text, photo, date lines, lists, blocks); screens 2 to 7 ───────── */
+.inv[data-template="cupid-script"] .sheet-in, .inv[data-template="cupid-script"] .venue-in, .inv[data-template="cupid-script"] .tl-in,
+.inv[data-template="cupid-script"] .dtl-in, .inv[data-template="cupid-script"] .rsvp-in, .inv[data-template="cupid-script"] .closing-in { align-items:center; text-align:center; }
+.inv[data-template="cupid-script"] .card-sheet .dt { grid-template-columns:auto auto; justify-content:center; justify-items:center; }
+.inv[data-template="cupid-script"] .card-sheet .dt-month { justify-self:end; }
+.inv[data-template="cupid-script"] .card-sheet .dt-row b { justify-self:start; }
+.inv[data-template="cupid-script"] .tl li { align-items:center; text-align:center; }
+.inv[data-template="cupid-script"] .tl li + li::before { left:50%; transform:translate(-50%,-50%); }
+.inv[data-template="cupid-script"] .tl-title, .inv[data-template="cupid-script"] .script.tl-title { text-align:center; }
+.inv[data-template="cupid-script"] .dtl-row, .inv[data-template="cupid-script"] .dtl-blk, .inv[data-template="cupid-script"] .dtl-pair { align-items:center; text-align:center; }
+.inv[data-template="cupid-script"] .dtl-dress, .inv[data-template="cupid-script"] .dtl-row .qrs { justify-content:center; }
+.inv[data-template="cupid-script"] .rsvp-title { justify-content:center; align-items:baseline; text-align:center; }
+.inv[data-template="cupid-script"] .rsvp-note { margin-inline:auto; }
+.inv[data-template="cupid-script"] .closing-names { align-items:center; }
+.inv[data-template="cupid-script"] .swipe-hint, .inv[data-template="cupid-script"] .card-sheet .swipe-hint, .inv[data-template="cupid-script"] .card-timeline .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in, .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo), .inv[data-template="cupid-script"] .card-sheet .sheet-in.no-photo { align-items:center; text-align:center; }
+
+/* ───────── 73. COVER: the envelope does not float up and down ───────── */
+.inv[data-template="cupid-script"][data-phase="closed"] .cover-env, .inv[data-template="cupid-script"][data-phase="opening"] .cover-env, .inv[data-template="cupid-script"] .cover-env { animation:none !important; }
+
+/* ───────── 74. COVER: positions for the newest body SVG (the picture is exactly the paper, 992 x 670, no margin). Closed flap 3 units above the body edge; open flap sunk 20 under it. ───────── */
+.inv[data-template="cupid-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="cupid-script"] .env-art { width:100%; aspect-ratio:992/670; }
+.inv[data-template="cupid-script"] .env-flap-closed { left:.151%; top:-.448%; width:99.7%; height:75.82%; transform-origin:50% .59%; }
+.inv[data-template="cupid-script"] .env-flap-open { left:.151%; top:-76.72%; width:99.7%; height:79.7%; transform-origin:50% 96.25%; }
+
+/* ───────── 75. COVER: shadow under the envelope box; on tap the cover texts fly smoothly up and out of the screen ───────── */
+.inv[data-template="cupid-script"] .cover-env { box-shadow:0px 11px 9px #b4b4b4; border-radius:1.1% / 1.64%; }
+.inv[data-template="cupid-script"] .cover-top, .inv[data-template="cupid-script"] .cover-names, .inv[data-template="cupid-script"] .cover-bottom, .inv[data-template="cupid-script"] .env-hint {
+  transition:transform 1.5s cubic-bezier(.55,0,.2,1), opacity 1.1s ease .35s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-top, .inv[data-template="cupid-script"][data-phase="opening"] .cover-names,
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-bottom, .inv[data-template="cupid-script"][data-phase="opening"] .env-hint { transform:translateY(-110vh); opacity:0; transition:transform 1.5s cubic-bezier(.55,0,.2,1), opacity 1.1s ease .35s; }   /* (the transition is repeated here because an earlier rule for the opening phase would win otherwise) */
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-names { transition-delay:.08s, .43s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-bottom, .inv[data-template="cupid-script"][data-phase="opening"] .env-hint { transition-delay:.16s, .51s; }
+.inv[data-template="cupid-script"] .cover-env { z-index:2; }    /* the texts fly up behind the envelope, not across it */
+
+/* ───────── 76. COVER: the updated closed-flap SVG is 989 x 496 (was 508 high); hinge 3 units below its top edge ───────── */
+.inv[data-template="cupid-script"] .env-flap-closed { height:74.03%; transform-origin:50% .6%; }
+
+/* ───────── 77. COVER: when the names take several lines (name / & / name) the screen top padding is 45px and the envelope has no top margin ───────── */
+.inv[data-template="cupid-script"] .cover:has(.cover-names.stacked) { padding-top:calc(45px * var(--k,1)) !important; }
+.inv[data-template="cupid-script"] .cover:has(.cover-names.stacked) .cover-env { margin-top:0; }
+
+/* ───────── 78. COVER: the closed flap is the SVG WITH its own drop shadow (picture 1051 x 557: the flap, 989 x 496, sits at 31,26 inside it). The flap itself sits 3 units above the body edge; hinge 29 units from the picture top. ───────── */
+.inv[data-template="cupid-script"] .env-flap-closed { left:-2.974%; top:-4.328%; width:105.95%; height:83.13%; transform-origin:50% 5.21%; }
+
+/* ───────── 80. COVER: slower opening (about 1.5x slower than before). The page waits OPEN_MS_BY_TEMPLATE (5800 ms) in components/invitation/Experience.tsx: keep it a little longer than the last transition below (3s + 1.2s). ───────── */
+.inv[data-template="cupid-script"] .env-flap-closed { transition:transform 1.2s cubic-bezier(.45,0,.85,.6), visibility 0s linear 1.2s; }
+.inv[data-template="cupid-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.12,.5,.3,1) 1.2s, visibility 0s linear 1.2s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .env-btn { transition:opacity .9s ease 3s, transform 1.2s cubic-bezier(.4,0,.2,1) 3s; }
+.inv[data-template="cupid-script"] .cover-top, .inv[data-template="cupid-script"] .cover-names, .inv[data-template="cupid-script"] .cover-bottom, .inv[data-template="cupid-script"] .env-hint { transition:transform 2.2s cubic-bezier(.55,0,.2,1), opacity 1.6s ease .5s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-top, .inv[data-template="cupid-script"][data-phase="opening"] .cover-names,
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-bottom, .inv[data-template="cupid-script"][data-phase="opening"] .env-hint { transition:transform 2.2s cubic-bezier(.55,0,.2,1), opacity 1.6s ease .5s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-names { transition-delay:.12s, .62s; }
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-bottom, .inv[data-template="cupid-script"][data-phase="opening"] .env-hint { transition-delay:.24s, .74s; }
+
+/* ───────── 81. COVER: no "Tap to open"; a seal (seal.webp, from your Mask group.svg) sits on the tip of the closed flap and dissolves when the envelope is tapped ───────── */
+.inv[data-template="cupid-script"] .env-hint { display:none !important; }
+.inv[data-template="cupid-script"] .env-seal { position:absolute; left:50%; top:71.6%; width:15%; aspect-ratio:232/210; height:auto; translate:-50% -50%; z-index:3; pointer-events:none;
+  transition:opacity .9s ease, transform .9s ease, filter .9s ease; }     /* left / top = the tip of the flap; width = size of the seal */
+.inv[data-template="cupid-script"][data-phase="opening"] .env-seal { opacity:0; transform:scale(1.3); filter:blur(7px); }
+
+/* ───────── 82. COVER seal: updated picture, twice as big (30% of the envelope width) and higher (centre at 62% of the envelope height instead of 71.6%) ───────── */
+.inv[data-template="cupid-script"] .env-seal { width:30%; top:62%; }
+
+/* ───────── 83. COVER seal: 20% smaller (30% -> 24% of the envelope width) ───────── */
+.inv[data-template="cupid-script"] .env-seal { width:24%; }
+
+/* ───────── 84. Screen 2: "Save the date" is above the photo; the date lines stay below it ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { order:1; margin-top:0; margin-bottom:15px; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { order:2; margin-bottom:15px; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt { order:3; }
+
+/* ───────── 85. COVER seal: the newest seal picture is 240 x 228 and has its own soft shadow (the seal itself is 222 wide in it), so the picture is 26% of the envelope width to keep the seal the same size as before ───────── */
+.inv[data-template="cupid-script"] .env-seal { width:26%; aspect-ratio:240/228; }
+
+/* ───────── 86. Screen 2: "Save the date" is 45px ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="cupid-script"] .card-sheet .save { font-size:calc(45px * var(--k, 1)); }
+
+/* ───────── 87. Screen 3 (venue): venue name line-height 1.4; 21px between the lines of the page ───────── */
+.inv[data-template="cupid-script"] .venue-name { line-height:1.4; }
+.inv[data-template="cupid-script"] .venue-in { gap:21px; }
+
+/* ───────── 88. Screen 5 (details): the hotel name is weight 400, its address weight 300 with some space above it; 8cqh between the blocks ───────── */
+.inv[data-template="cupid-script"] .dtl-acc .val { font-weight:400; }
+.inv[data-template="cupid-script"] .dtl-acc .dtl-text { font-weight:300; margin-top:calc(6px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .dtl-row { gap:8cqh; }
+
+/* ───────── 89. Screen 5 (details): the dress code text is weight 400; no names (Amazon, Target, …) under the registry QR codes ───────── */
+.inv[data-template="cupid-script"] .dtl-dress .val, .inv[data-template="cupid-script"] .dtl-dresscode .val { font-weight:400; }
+.inv[data-template="cupid-script"] .qrbox > span { display:none; }
+
+/* ───────── 90. Screen 5 (details): 20px of space left and right of the accommodation address (so a long address wraps earlier) ───────── */
+.inv[data-template="cupid-script"] .dtl-acc .dtl-text { padding-inline:20px; }
+
+/* ───────── 91. Screen 6 (RSVP): the date is weight 400; the note is written like the venue address (14px, normal case and spacing, weight 300) with 20px left and right; the elements are 8cqh apart, like the details blocks ───────── */
+.inv[data-template="cupid-script"] .rsvp-by { font-weight:400; margin:0; }
+.inv[data-template="cupid-script"] .rsvp-note { font-size:calc(14px * var(--k, 1)); text-transform:none; letter-spacing:normal; line-height:1.9; font-weight:300; color:var(--ms-grey); padding-inline:20px; margin:0 auto; }
+.inv[data-template="cupid-script"] .rsvp-in { gap:8cqh; }
+.inv[data-template="cupid-script"] .rsvp-title { margin-bottom:0; }
+.inv[data-template="cupid-script"] .rsvp-mail { margin:0; }
+
+/* ───────── 92. Screen 6 (RSVP): note styled as given (12px, normal case, .08em, grey) and placed under the button; "or answer by e-mail …" under the date; 4cqh between all the elements ───────── */
+.inv[data-template="cupid-script"] .rsvp-in { gap:4cqh; }
+.inv[data-template="cupid-script"] .rsvp-note { font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); order:5; margin-top:calc(-4cqh + 14px); }   /* 14px under the button */
+.inv[data-template="cupid-script"] .rsvp-open { order:4; }
+.inv[data-template="cupid-script"] .rsvp-or { margin:0; font-family:var(--ms-sans); font-weight:300; font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+.inv[data-template="cupid-script"] .rsvp-or .rsvp-mail { color:var(--ms-black); font-size:inherit; letter-spacing:inherit; }
+
+/* ───────── 93. Screen 7 (closing): the names are 50px with more line height (the default sentence is now "Share this moment with us", set in components/invitation/Invitation.tsx) ───────── */
+.inv[data-template="cupid-script"] .closing-names { font-size:calc(50px * var(--k, 1)); line-height:1.3; }
+
+/* ───────── 94. Screen 6 (RSVP): "or answer by e-mail …" has 20px left and right and line-height 1.5; the note under the button has line-height 1.5 and 24px of space above it ───────── */
+.inv[data-template="cupid-script"] .rsvp-or { padding:0 20px; line-height:1.5; }
+.inv[data-template="cupid-script"] .rsvp-note { line-height:1.5; margin-top:calc(-4cqh + 24px); }   /* 24px under the button (was 14px) */
+
+/* ───────── 95. Screen 7 (closing): the sentence has 20px left and right, weight 400 and the main text colour; twice the space under the names (22px -> 44px) ───────── */
+.inv[data-template="cupid-script"] .closing-text { padding-inline:20px; font-weight:400; color:var(--ms-black); margin-top:calc(44px * var(--k, 1)); }
+
+/* ───────── 96. Screen 7 (closing): the roses of the cover picture along the top, fading into the paper (cover-white-roses.webp; change the 34% to make the band higher or lower) ───────── */
+.inv[data-template="cupid-script"] .card-closing { position:relative; }
+.inv[data-template="cupid-script"] .card-closing::before { content:""; position:absolute; left:0; right:0; top:0; height:34%; z-index:0; pointer-events:none;
+  background:url(/templates/cupid/v1/cover.webp) top center / 100% auto no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); }
+.inv[data-template="cupid-script"] .closing-in { position:relative; z-index:1; }
+.inv[data-template="cupid-script"] .closing-text { text-wrap:balance; }   /* when the sentence needs two lines they are about the same length (no lone last word) */
+
+/* ───────── 97. A simple double hairline border inside screens 2 to 6 (not the cover, not the closing page). Distances are from the edge of the screen; colours are the two greys. ───────── */
+.inv[data-template="cupid-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before,
+.inv[data-template="cupid-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after { content:""; position:absolute; pointer-events:none; z-index:0; border:1px solid; }
+.inv[data-template="cupid-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before { inset:calc(14px * var(--k, 1)); border-color:#b4b4b4; }
+.inv[data-template="cupid-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after { inset:calc(19px * var(--k, 1)); border-color:#d2d2d2; }
+.inv[data-template="cupid-script"] :is(.sheet-in, .venue-in, .tl-in, .dtl-in, .rsvp-in) { position:relative; z-index:1; }
+
+/* ───────── 98. COVER: a small "tap me" hint. While the envelope waits (data-phase="closed") the seal pulses with a soft glow and the closed flap lifts a little and settles, together, every 3.4 seconds; on hover / press the flap lifts further. Not shown with "reduce motion". ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="cupid-script"][data-phase="closed"] .env-seal { animation:ms-seal-tease 3.4s ease-in-out infinite; }
+  .inv[data-template="cupid-script"][data-phase="closed"] .env-flap-closed img { transform-origin:50% 0; animation:ms-flap-tease 3.4s ease-in-out infinite; }
+  .inv[data-template="cupid-script"][data-phase="closed"] .env-btn:hover .env-flap-closed img { animation:none; transform:perspective(1100px) rotateX(11deg); transition:transform .35s ease; }
+  .inv[data-template="cupid-script"][data-phase="closed"] .env-btn:hover .env-seal { animation:none; scale:1.07; transition:scale .35s ease; }
+}
+@keyframes ms-seal-tease {
+  0%, 52%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
+  66% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.85)); }
+  80% { scale:1.02; filter:drop-shadow(0 0 4px rgba(222,160,150,.35)); }
+}
+@keyframes ms-flap-tease {
+  0%, 52%, 100% { transform:perspective(1100px) rotateX(0deg); }
+  66% { transform:perspective(1100px) rotateX(9deg); }
+  76% { transform:perspective(1100px) rotateX(2deg); }
+  84% { transform:perspective(1100px) rotateX(5deg); }
+}
+
+/* ───────── 99. COVER seal: pulses smoothly back and forth all the time while the envelope waits (1.8 s per beat) ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="cupid-script"][data-phase="closed"] .env-seal { animation:ms-seal-pulse 1.8s ease-in-out infinite; }
+}
+@keyframes ms-seal-pulse {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
+  50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.8)); }
+}
+
+/* ───────── 100. COVER: the envelope (flaps, seal and all) is 15% smaller: 100% -> 85% of the content width ───────── */
+.inv[data-template="cupid-script"] .cover-env { width:85%; }
+
+/* ───────── 101. Screen 3 (venue): 20px left and right of the address ───────── */
+.inv[data-template="cupid-script"] .venue-addr { padding-inline:20px; }
+
+/* ───────── 102. Screen 2: the photo is 10 : 16 (portrait). It is as wide as the content allows, but never taller than 52% of the screen, so the title and the date lines always fit under / over it. The crop tool uses the same shape (PHOTO_FRAME in lib/templates.ts). ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 32.5cqh); height:auto; aspect-ratio:10/16; }
+
+/* ───────── 103. Screen 2: the photo is 12 : 16 (3 : 4); at most 52% of the screen high (52% x 12/16 = 39% of the screen height as width) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 39cqh); height:auto; aspect-ratio:12/16; }
+
+/* ───────── 104. COVER: when the envelope is tapped "You are invited" slides DOWN and out of the screen (the other texts fly up) ───────── */
+.inv[data-template="cupid-script"][data-phase="opening"] .cover-bottom { transform:translateY(110vh); }
+
+/* ───────── 105. Screen 2: a shorter photo, 12 : 14 (it was 12 : 16); at most 52% of the screen high ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 44.6cqh); height:auto; aspect-ratio:12/14; }

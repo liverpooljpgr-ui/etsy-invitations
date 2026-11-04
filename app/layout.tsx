@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield } from "next/font/google";
 import "./globals.css";
 import "./templates/mono-script.css";
+import "./templates/cupid-script.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });

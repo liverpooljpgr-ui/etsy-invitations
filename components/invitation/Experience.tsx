@@ -9,7 +9,7 @@ import { Invitation } from "./Invitation";
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
 // a design with a slower envelope (its own transitions in its stylesheet) says how long the opening takes
-const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 5800 };
+const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 5800, "cupid-script": 5800 };
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
