@@ -235,7 +235,9 @@ export function Invitation({
           <div className="rsvp-in">
             <RsvpTitle text="Please RSVP" />
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
-            {c.rsvp.email && <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>}
+            {c.rsvp.email && (template === "mono-script"
+              ? <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>
+              : <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>)}
             {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
             {c.rsvp.online && <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} />}
           </div>

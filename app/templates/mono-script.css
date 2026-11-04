@@ -585,3 +585,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .rsvp-in { gap:8cqh; }
 .inv[data-template="mono-script"] .rsvp-title { margin-bottom:0; }
 .inv[data-template="mono-script"] .rsvp-mail { margin:0; }
+
+/* ───────── 92. Screen 6 (RSVP): note styled as given (12px, normal case, .08em, grey) and placed under the button; "or answer by e-mail …" under the date; 4cqh between all the elements ───────── */
+.inv[data-template="mono-script"] .rsvp-in { gap:4cqh; }
+.inv[data-template="mono-script"] .rsvp-note { font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); order:5; margin-top:calc(-4cqh + 14px); }   /* 14px under the button */
+.inv[data-template="mono-script"] .rsvp-open { order:4; }
+.inv[data-template="mono-script"] .rsvp-or { margin:0; font-family:var(--ms-sans); font-weight:300; font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+.inv[data-template="mono-script"] .rsvp-or .rsvp-mail { color:var(--ms-black); font-size:inherit; letter-spacing:inherit; }
