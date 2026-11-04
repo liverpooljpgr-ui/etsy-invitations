@@ -663,3 +663,30 @@ body:has(.inv[data-template="cupid-script"]) .music-btn { color:#111; border-col
 
 /* ───────── 105. Screen 2: a shorter photo, 12 : 14 (it was 12 : 16); at most 52% of the screen high ───────── */
 .inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 44.6cqh); height:auto; aspect-ratio:12/14; }
+
+/* ───────── 106. More air at the sides: the text of every screen keeps 12% of the screen width from the edge (it was 5% of the height), the cover 9% ───────── */
+.inv[data-template="cupid-script"] .sheet-in, .inv[data-template="cupid-script"] .venue-in, .inv[data-template="cupid-script"] .tl-in,
+.inv[data-template="cupid-script"] .dtl-in, .inv[data-template="cupid-script"] .rsvp-in, .inv[data-template="cupid-script"] .closing-in { padding-inline:12cqw !important; }   /* change 12cqw to move the text */
+.inv[data-template="cupid-script"] .cover { padding-inline:9% !important; }
+.inv[data-template="cupid-script"] .cover-env { width:93%; }                      /* (85% of the old, wider content: the envelope keeps its size) */
+.inv[data-template="cupid-script"] .venue-addr, .inv[data-template="cupid-script"] .dtl-acc .dtl-text, .inv[data-template="cupid-script"] .rsvp-note, .inv[data-template="cupid-script"] .closing-text { padding-inline:0; }
+
+/* ───────── 107. Screen 2: "Save the date" lives UNDER the photo (photo, title, date lines) ───────── */
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .arch { order:1; margin-bottom:0; }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .save { order:2; margin-top:calc(18px * var(--k, 1)); margin-bottom:calc(10px * var(--k, 1)); }
+.inv[data-template="cupid-script"] .card-sheet .sheet-in:not(.no-photo) .dt { order:3; }
+
+/* ───────── 108. COVER → SCREEN 2: when the envelope opens, the photo card slides out of it, grows, flies to its place on the next screen
+   and the "save the date" texts appear below it (the script in Experience.tsx measures where the photo lands: --fly-x / --fly-y / --fly-s). Timings: starts 2.3 s after the tap, lands at 5.0 s ───────── */
+.inv[data-template="cupid-script"] .env-photo { position:absolute; left:25%; top:12%; width:50%; aspect-ratio:12/14; z-index:1; display:block; background:#eee; box-shadow:0 4px 14px rgba(0,0,0,.16); }
+.inv[data-template="cupid-script"][data-phase="opening"] .env-photo { animation:cupid-photo-fly 2.7s linear 2.3s both; }
+@keyframes cupid-photo-fly {
+  0%   { transform:none; z-index:1; animation-timing-function:cubic-bezier(.3,0,.2,1); }
+  38%  { transform:translateY(-120%); z-index:1; animation-timing-function:step-end; }
+  39%  { transform:translateY(-120%); z-index:6; animation-timing-function:cubic-bezier(.5,0,.2,1); }
+  100% { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+/* the photo of screen 2 simply waits under the envelope; the texts come in after it has landed; then the cover fades away */
+.inv[data-template="cupid-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .arch { animation:none !important; }
+.inv[data-template="cupid-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:5s !important; }
+.inv[data-template="cupid-script"][data-fly][data-phase="opening"] .env-btn { transform:none; transition:opacity .8s ease 5s; }

@@ -1,4 +1,6 @@
-import { DEFAULT_TEMPLATE, ENVELOPE_ART, ENVELOPE_SEAL, type TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, ENVELOPE_ART, ENVELOPE_SEAL, PHOTO_FRAME, type TemplateSlug } from "@/lib/templates";
+import { photoImgStyle } from "@/lib/photo-crop";
+import type { Content } from "@/lib/content/schema";
 
 /**
  * Three real envelope layers, stacked in the body's coordinate system (see globals.css):
@@ -9,12 +11,19 @@ import { DEFAULT_TEMPLATE, ENVELOPE_ART, ENVELOPE_SEAL, type TemplateSlug } from
  *
  * `monogram` (the couple's initials) is drawn ON the closed flap, so it swings open with it.
  */
-export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE }: { monogram?: React.ReactNode; template?: TemplateSlug }) {
+export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE, photo }: { monogram?: React.ReactNode; template?: TemplateSlug; photo?: Content["photo"] }) {
   const { base: ART, ext } = ENVELOPE_ART[template];
   const seal = ENVELOPE_SEAL[template];
   return (
     <span className="env-art" aria-hidden="true">
       {/* eslint-disable @next/next/no-img-element */}
+      {photo && (
+        <span className="env-photo">
+          <span className="arch-in">
+            <img src={photo.url} alt="" draggable={false} style={photoImgStyle(photo, PHOTO_FRAME[template])} />
+          </span>
+        </span>
+      )}
       <img className="env-body" src={`${ART}/envelope-body.${ext}`} alt="" width={1200} height={772} decoding="async" draggable={false} />
       <img className="env-flap-open" src={`${ART}/envelope-flap-open.${ext}`} alt="" width={1182} height={587} decoding="async" draggable={false} />
       <span className="env-flap-closed">

@@ -1,4 +1,4 @@
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, type TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, type TemplateSlug, FLYING_PHOTO } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
@@ -117,7 +117,7 @@ export function Invitation({
     ) : null;
 
   return (
-    <div className="inv" data-theme={c.theme} data-template={template ?? DEFAULT_TEMPLATE} data-phase={phase}>
+    <div className="inv" data-theme={c.theme} data-template={template ?? DEFAULT_TEMPLATE} data-phase={phase} data-fly={template && FLYING_PHOTO[template] && c.photo ? "1" : undefined}>
       {/* 1 — cover (static view; the animated experience puts the same cover, tappable, over card 2) */}
       {!phase && (
         <section className="card cover cover-static" data-card="1" aria-label="Cover">

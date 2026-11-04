@@ -39,9 +39,35 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
   }
   useEffect(() => () => { audio.current?.pause(); audio.current = null; }, []);
 
+  // The photo that slides out of the envelope must land exactly on the photo of the next screen: measure both (the next screen without its
+  // "waiting" offset) and hand the distance and the size change to the stylesheet.
+  function flyPhotoTo() {
+    const r = root.current;
+    const fly = r?.querySelector<HTMLElement>(".env-photo");
+    const card = r?.querySelector<HTMLElement>('.card[data-card="2"]');
+    const target = card?.querySelector<HTMLElement>(".arch");
+    if (!fly || !card || !target) return;
+    // the next screen waits slightly lower and smaller until the envelope opens: undo that (scale about its centre, then a shift)
+    const m = new DOMMatrix(getComputedStyle(card).transform);
+    const k = m.a || 1;
+    const a = fly.getBoundingClientRect();
+    const c = card.getBoundingClientRect();
+    const t = target.getBoundingClientRect();
+    const cx = c.left + c.width / 2 - m.e;
+    const cy = c.top + c.height / 2 - m.f; // the screen's own centre
+    const tw = t.width / k;
+    const tx = cx + (t.left + t.width / 2 - (c.left + c.width / 2)) / k;
+    const ty = cy + (t.top + t.height / 2 - (c.top + c.height / 2)) / k;
+    if (!a.width || !tw) return;
+    fly.style.setProperty("--fly-x", `${tx - (a.left + a.width / 2)}px`);
+    fly.style.setProperty("--fly-y", `${ty - (a.top + a.height / 2)}px`);
+    fly.style.setProperty("--fly-s", String(tw / a.width));
+  }
+
   function open() {
     if (phase !== "closed") return;
     startMusic();
+    flyPhotoTo();
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setPhase(reduce ? "open" : "opening");
   }

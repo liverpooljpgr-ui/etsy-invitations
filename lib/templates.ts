@@ -24,3 +24,6 @@ export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, 
 
 /** A wax seal picture lying on the closed envelope (it dissolves when the envelope is tapped). Only the designs listed here have one. */
 export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp", "cupid-script": "/templates/cupid/v1/seal.webp" };
+
+/** Designs where the couple's photo slides out of the opening envelope and lands on the second screen. */
+export const FLYING_PHOTO: Partial<Record<TemplateSlug, true>> = { "cupid-script": true };
