@@ -1,5 +1,5 @@
 /** The invitation designs we sell. The slug is what the `templates` table stores; the page paints itself from it. */
-export const TEMPLATES = ["sage-story", "white-roses", "mono-elegance", "mono-script"] as const;
+export const TEMPLATES = ["sage-story", "white-roses", "mono-script"] as const;
 export type TemplateSlug = (typeof TEMPLATES)[number];
 export const DEFAULT_TEMPLATE: TemplateSlug = "sage-story";
 
@@ -11,16 +11,15 @@ export function templateSlug(v: unknown): TemplateSlug {
 export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "svg" }> = {
   "sage-story": { base: "/templates/aquarelle/v1", ext: "webp" },
   "white-roses": { base: "/templates/jasmin/v1", ext: "webp" },
-  "mono-elegance": { base: "/templates/mono/v1", ext: "webp" },
   "mono-script": { base: "/templates/script/v1", ext: "webp" },
 };
 
-/** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval, Mono Elegance a plain frame. */
+/** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval. */
 export type PhotoShape = "arch" | "oval" | "rect";
-export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-elegance": "oval", "mono-script": "rect" };
+export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-script": "rect" };
 
 /** Width / height of the photo frame (the crop tool and the invitation use the same one). 3 / 4 unless a design says otherwise. */
-export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-elegance": 3 / 4, "mono-script": 12 / 16 };
+export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-script": 12 / 16 };
 
 /** A wax seal picture lying on the closed envelope (it dissolves when the envelope is tapped). Only the designs listed here have one. */
 export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp" };
