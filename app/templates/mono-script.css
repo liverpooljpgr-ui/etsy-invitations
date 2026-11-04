@@ -592,3 +592,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .rsvp-open { order:4; }
 .inv[data-template="mono-script"] .rsvp-or { margin:0; font-family:var(--ms-sans); font-weight:300; font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
 .inv[data-template="mono-script"] .rsvp-or .rsvp-mail { color:var(--ms-black); font-size:inherit; letter-spacing:inherit; }
+
+/* ───────── 93. Screen 7 (closing): the names are 50px with more line height (the default sentence is now "Share this moment with us", set in components/invitation/Invitation.tsx) ───────── */
+.inv[data-template="mono-script"] .closing-names { font-size:calc(50px * var(--k, 1)); line-height:1.3; }

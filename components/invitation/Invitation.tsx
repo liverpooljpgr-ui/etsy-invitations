@@ -250,7 +250,7 @@ export function Invitation({
         <section className="card card-closing" data-card="7">
           <div className="closing-in">
             <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
-            <p className="closing-text">{c.texts.closing || "Thank you for your time."}</p>
+            <p className="closing-text">{c.texts.closing || "Share this moment with us"}</p>
             {calendarHref && d && c.showCalendar && <a className="link venue-link closing-cal" href={calendarHref}>Add to calendar</a>}
           </div>
         </section>

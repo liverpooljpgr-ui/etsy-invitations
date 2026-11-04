@@ -699,7 +699,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
 
           <Section n={7} mobileHidden={step !== 6} toggle={screenToggle(7)} title="Card 7 · Closing">
-            <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Thank you for your time." {...tp("closing")} /></Field>
+            <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Share this moment with us" {...tp("closing")} /></Field>
             <div className="ui-switch-row">
               <span>Show “Add to calendar” <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
               <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show Add to calendar link" />
