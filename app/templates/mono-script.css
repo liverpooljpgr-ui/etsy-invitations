@@ -602,3 +602,11 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 95. Screen 7 (closing): the sentence has 20px left and right, weight 400 and the main text colour; twice the space under the names (22px -> 44px) ───────── */
 .inv[data-template="mono-script"] .closing-text { padding-inline:20px; font-weight:400; color:var(--ms-black); margin-top:calc(44px * var(--k, 1)); }
+
+/* ───────── 96. Screen 7 (closing): the roses of the cover picture along the top, fading into the paper (cover-white-roses.webp; change the 34% to make the band higher or lower) ───────── */
+.inv[data-template="mono-script"] .card-closing { position:relative; }
+.inv[data-template="mono-script"] .card-closing::before { content:""; position:absolute; left:0; right:0; top:0; height:34%; z-index:0; pointer-events:none;
+  background:url(/templates/script/v1/cover-white-roses.webp) top center / 100% auto no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); }
+.inv[data-template="mono-script"] .closing-in { position:relative; z-index:1; }
+.inv[data-template="mono-script"] .closing-text { text-wrap:balance; }   /* when the sentence needs two lines they are about the same length (no lone last word) */
