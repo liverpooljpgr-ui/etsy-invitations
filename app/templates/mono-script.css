@@ -599,3 +599,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 94. Screen 6 (RSVP): "or answer by e-mail …" has 20px left and right and line-height 1.5; the note under the button has line-height 1.5 and 24px of space above it ───────── */
 .inv[data-template="mono-script"] .rsvp-or { padding:0 20px; line-height:1.5; }
 .inv[data-template="mono-script"] .rsvp-note { line-height:1.5; margin-top:calc(-4cqh + 24px); }   /* 24px under the button (was 14px) */
+
+/* ───────── 95. Screen 7 (closing): the sentence has 20px left and right, weight 400 and the main text colour; twice the space under the names (22px -> 44px) ───────── */
+.inv[data-template="mono-script"] .closing-text { padding-inline:20px; font-weight:400; color:var(--ms-black); margin-top:calc(44px * var(--k, 1)); }
