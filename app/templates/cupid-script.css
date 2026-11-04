@@ -712,7 +712,18 @@ body:has(.inv[data-template="cupid-script"]) .music-btn { color:#111; border-col
   -webkit-mask-size:100% calc(12px * var(--k, 1)), 100% 100%; mask-size:100% calc(12px * var(--k, 1)), 100% 100%;
   -webkit-mask-position:top, top; mask-position:top, top; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
   -webkit-mask-composite:source-over; mask-composite:add; }   /* change 24% to make the line fade sooner or later */
-.inv[data-template="cupid-script"] .card-closing::after { z-index:2; }   /* the frame is drawn over the picture band, so its top line shows */
+/* the flowers are drawn OVER the frame: it goes under them and shows again below them; the band is see-through in the middle (no flowers there), so the top line stays visible */
+.inv[data-template="cupid-script"] .card-closing::before {
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%), linear-gradient(to right,#000 0,#000 33%,transparent 45%,transparent 55%,#000 67%,#000 100%);
+          mask-image:linear-gradient(to bottom,#000 62%,transparent 100%), linear-gradient(to right,#000 0,#000 33%,transparent 45%,transparent 55%,#000 67%,#000 100%);
+  -webkit-mask-composite:source-in; mask-composite:intersect; }
 
 /* ───────── 113. Screen 2: the photo and the texts sit a bit higher (more room at the bottom: the content is centred in what is left; 14cqh was 5cqh, so about 4.5% of the screen higher) ───────── */
 .inv[data-template="cupid-script"] .card-sheet .sheet-in { padding-bottom:14cqh !important; }
+
+/* ───────── 114. ENVELOPE LAYERS, back to front: opened flap · pink-beige lining (envelope-liner) · the photo · the pocket front (envelope-body) · closed flap.
+   So the photo lies INSIDE the envelope: in front of the lining, behind the front of the envelope ───────── */
+.inv[data-template="cupid-script"] .env-liner { inset:0; width:100%; height:100%; z-index:0; }
+.inv[data-template="cupid-script"] .env-photo { z-index:1; }
+.inv[data-template="cupid-script"] .env-body { z-index:2; }
+.inv[data-template="cupid-script"] .env-flap-closed { z-index:3; }

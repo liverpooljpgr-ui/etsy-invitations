@@ -1,4 +1,4 @@
-import { DEFAULT_TEMPLATE, ENVELOPE_ART, ENVELOPE_SEAL, PHOTO_FRAME, type TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, ENVELOPE_ART, ENVELOPE_LINER, ENVELOPE_SEAL, PHOTO_FRAME, type TemplateSlug } from "@/lib/templates";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
 
@@ -17,6 +17,7 @@ export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE, photo }: { 
   return (
     <span className="env-art" aria-hidden="true">
       {/* eslint-disable @next/next/no-img-element */}
+      {ENVELOPE_LINER[template] && <img className="env-liner" src={`${ART}/envelope-liner.${ext}`} alt="" width={1587} height={1072} decoding="async" draggable={false} />}
       {photo && (
         <span className="env-photo">
           <span className="arch-in">

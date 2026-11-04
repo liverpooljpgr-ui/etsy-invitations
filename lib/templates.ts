@@ -27,3 +27,6 @@ export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-scri
 
 /** Designs where the couple's photo slides out of the opening envelope and lands on the second screen. */
 export const FLYING_PHOTO: Partial<Record<TemplateSlug, true>> = { "mono-script": true, "cupid-script": true };
+
+/** Designs whose envelope has a separate lining picture (envelope-liner) seen in the V of the pocket: the photo slides out between it and the pocket front. */
+export const ENVELOPE_LINER: Partial<Record<TemplateSlug, true>> = { "mono-script": true, "cupid-script": true };
