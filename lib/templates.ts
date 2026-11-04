@@ -26,4 +26,4 @@ export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, 
 export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp", "cupid-script": "/templates/cupid/v1/seal.webp" };
 
 /** Designs where the couple's photo slides out of the opening envelope and lands on the second screen. */
-export const FLYING_PHOTO: Partial<Record<TemplateSlug, true>> = { "cupid-script": true };
+export const FLYING_PHOTO: Partial<Record<TemplateSlug, true>> = { "mono-script": true, "cupid-script": true };
