@@ -645,3 +645,12 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
   0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
   50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.8)); }
 }
+
+/* ───────── 100. COVER: the envelope (flaps, seal and all) is 15% smaller: 100% -> 85% of the content width ───────── */
+.inv[data-template="mono-script"] .cover-env { width:85%; }
+
+/* ───────── 101. Screen 3 (venue): 20px left and right of the address ───────── */
+.inv[data-template="mono-script"] .venue-addr { padding-inline:20px; }
+
+/* ───────── 102. Screen 2: the photo is 10 : 16 (portrait). It is as wide as the content allows, but never taller than 52% of the screen, so the title and the date lines always fit under / over it. The crop tool uses the same shape (PHOTO_FRAME in lib/templates.ts). ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 32.5cqh); height:auto; aspect-ratio:10/16; }
