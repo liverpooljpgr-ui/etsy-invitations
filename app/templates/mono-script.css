@@ -571,3 +571,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .dtl-acc .val { font-weight:400; }
 .inv[data-template="mono-script"] .dtl-acc .dtl-text { font-weight:300; margin-top:calc(6px * var(--k, 1)); }
 .inv[data-template="mono-script"] .dtl-row { gap:8cqh; }
+
+/* ───────── 89. Screen 5 (details): the dress code text is weight 400; no names (Amazon, Target, …) under the registry QR codes ───────── */
+.inv[data-template="mono-script"] .dtl-dress .val, .inv[data-template="mono-script"] .dtl-dresscode .val { font-weight:400; }
+.inv[data-template="mono-script"] .qrbox > span { display:none; }
