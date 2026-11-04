@@ -477,3 +477,26 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-art { width:calc(100% * 1072 / 992); aspect-ratio:1072/750; }
 .inv[data-template="mono-script"] .env-flap-closed { left:3.871%; top:4.533%; width:92.26%; height:67.73%; transform-origin:50% 1.18%; }   /* 6 units above the body edge so no strip of the liner shows over the closed flap */
 .inv[data-template="mono-script"] .env-flap-open { left:3.871%; top:-63.2%; width:92.26%; height:71.2%; transform-origin:50% 96.25%; }
+
+/* ───────── 71. COVER: positions for the updated body SVG (paper 992 x 670 inside a 1070 x 748 picture, 39 margin on every side). Closed flap sits 3 units above the body edge; the open flap is sunk 20 under it. ───────── */
+.inv[data-template="mono-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="mono-script"] .env-art { width:calc(100% * 1070 / 992); aspect-ratio:1070/748; }
+.inv[data-template="mono-script"] .env-flap-closed { left:3.785%; top:4.813%; width:92.43%; height:67.91%; transform-origin:50% .59%; }
+.inv[data-template="mono-script"] .env-flap-open { left:3.785%; top:-63.5%; width:92.43%; height:71.39%; transform-origin:50% 96.25%; }
+
+/* ───────── 72. ALL CONTENT of the inner screens is centred horizontally (text, photo, date lines, lists, blocks); screens 2 to 7 ───────── */
+.inv[data-template="mono-script"] .sheet-in, .inv[data-template="mono-script"] .venue-in, .inv[data-template="mono-script"] .tl-in,
+.inv[data-template="mono-script"] .dtl-in, .inv[data-template="mono-script"] .rsvp-in, .inv[data-template="mono-script"] .closing-in { align-items:center; text-align:center; }
+.inv[data-template="mono-script"] .card-sheet .dt { grid-template-columns:auto auto; justify-content:center; justify-items:center; }
+.inv[data-template="mono-script"] .card-sheet .dt-month { justify-self:end; }
+.inv[data-template="mono-script"] .card-sheet .dt-row b { justify-self:start; }
+.inv[data-template="mono-script"] .tl li { align-items:center; text-align:center; }
+.inv[data-template="mono-script"] .tl li + li::before { left:50%; transform:translate(-50%,-50%); }
+.inv[data-template="mono-script"] .tl-title, .inv[data-template="mono-script"] .script.tl-title { text-align:center; }
+.inv[data-template="mono-script"] .dtl-row, .inv[data-template="mono-script"] .dtl-blk, .inv[data-template="mono-script"] .dtl-pair { align-items:center; text-align:center; }
+.inv[data-template="mono-script"] .dtl-dress, .inv[data-template="mono-script"] .dtl-row .qrs { justify-content:center; }
+.inv[data-template="mono-script"] .rsvp-title { justify-content:center; align-items:baseline; text-align:center; }
+.inv[data-template="mono-script"] .rsvp-note { margin-inline:auto; }
+.inv[data-template="mono-script"] .closing-names { align-items:center; }
+.inv[data-template="mono-script"] .swipe-hint, .inv[data-template="mono-script"] .card-sheet .swipe-hint, .inv[data-template="mono-script"] .card-timeline .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
+.inv[data-template="mono-script"] .card-sheet .sheet-in, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo), .inv[data-template="mono-script"] .card-sheet .sheet-in.no-photo { align-items:center; text-align:center; }
