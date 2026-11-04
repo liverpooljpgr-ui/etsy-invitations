@@ -575,3 +575,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 89. Screen 5 (details): the dress code text is weight 400; no names (Amazon, Target, …) under the registry QR codes ───────── */
 .inv[data-template="mono-script"] .dtl-dress .val, .inv[data-template="mono-script"] .dtl-dresscode .val { font-weight:400; }
 .inv[data-template="mono-script"] .qrbox > span { display:none; }
+
+/* ───────── 90. Screen 5 (details): 20px of space left and right of the accommodation address (so a long address wraps earlier) ───────── */
+.inv[data-template="mono-script"] .dtl-acc .dtl-text { padding-inline:20px; }
