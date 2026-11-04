@@ -559,3 +559,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 85. COVER seal: the newest seal picture is 240 x 228 and has its own soft shadow (the seal itself is 222 wide in it), so the picture is 26% of the envelope width to keep the seal the same size as before ───────── */
 .inv[data-template="mono-script"] .env-seal { width:26%; aspect-ratio:240/228; }
+
+/* ───────── 86. Screen 2: "Save the date" is 45px ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="mono-script"] .card-sheet .save { font-size:calc(45px * var(--k, 1)); }
