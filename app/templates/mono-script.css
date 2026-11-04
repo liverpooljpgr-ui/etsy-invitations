@@ -690,3 +690,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .arch { animation:none !important; }
 .inv[data-template="mono-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:5s !important; }
 .inv[data-template="mono-script"][data-fly][data-phase="opening"] .env-btn { transform:none; transition:opacity .8s ease 5s; }
+
+/* ───────── 109. COVER: "The wedding of" is bigger (15px, it was 11.5px) and font-weight 400 ───────── */
+.inv[data-template="mono-script"] .cover-top { font-size:calc(15px * var(--k,1)); font-weight:400; }
