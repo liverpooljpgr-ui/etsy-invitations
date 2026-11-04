@@ -522,3 +522,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 76. COVER: the updated closed-flap SVG is 989 x 496 (was 508 high); hinge 3 units below its top edge ───────── */
 .inv[data-template="mono-script"] .env-flap-closed { height:74.03%; transform-origin:50% .6%; }
+
+/* ───────── 77. COVER: when the names take several lines (name / & / name) the screen top padding is 45px and the envelope has no top margin ───────── */
+.inv[data-template="mono-script"] .cover:has(.cover-names.stacked) { padding-top:calc(45px * var(--k,1)) !important; }
+.inv[data-template="mono-script"] .cover:has(.cover-names.stacked) .cover-env { margin-top:0; }
