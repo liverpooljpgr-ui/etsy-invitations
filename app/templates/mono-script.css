@@ -562,3 +562,12 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 86. Screen 2: "Save the date" is 45px ───────── */
 .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="mono-script"] .card-sheet .save { font-size:calc(45px * var(--k, 1)); }
+
+/* ───────── 87. Screen 3 (venue): venue name line-height 1.4; 21px between the lines of the page ───────── */
+.inv[data-template="mono-script"] .venue-name { line-height:1.4; }
+.inv[data-template="mono-script"] .venue-in { gap:21px; }
+
+/* ───────── 88. Screen 5 (details): the hotel name is weight 400, its address weight 300 with some space above it; 8cqh between the blocks ───────── */
+.inv[data-template="mono-script"] .dtl-acc .val { font-weight:400; }
+.inv[data-template="mono-script"] .dtl-acc .dtl-text { font-weight:300; margin-top:calc(6px * var(--k, 1)); }
+.inv[data-template="mono-script"] .dtl-row { gap:8cqh; }
