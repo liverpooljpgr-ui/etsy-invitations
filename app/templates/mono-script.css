@@ -470,3 +470,10 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-art { width:calc(100% * 2140 / 1984); aspect-ratio:2140/1504; }
 .inv[data-template="mono-script"] .env-flap-closed { left:1.014%; top:.505%; width:100.14%; height:77.7%; transform-origin:50% 6.02%; }
 .inv[data-template="mono-script"] .env-flap-open { left:2.706%; top:-61.5%; width:93.93%; height:110.64%; transform-origin:50% 64.3%; }
+
+/* ───────── 70. COVER: the envelope layers now come from the SVG files (assets/mono-script/envelope/svg, drawn without the roses background and without shadows; the site uses the light WebP renders).
+   Body paper 992 x 670 inside a 1072 x 750 picture (40 margin); closed flap 989 x 508 (hinged at its top edge); open flap 989 x 534 (its base is the bottom edge, sunk 20 under the body edge). ───────── */
+.inv[data-template="mono-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="mono-script"] .env-art { width:calc(100% * 1072 / 992); aspect-ratio:1072/750; }
+.inv[data-template="mono-script"] .env-flap-closed { left:3.871%; top:4.533%; width:92.26%; height:67.73%; transform-origin:50% 1.18%; }   /* 6 units above the body edge so no strip of the liner shows over the closed flap */
+.inv[data-template="mono-script"] .env-flap-open { left:3.871%; top:-63.2%; width:92.26%; height:71.2%; transform-origin:50% 96.25%; }
