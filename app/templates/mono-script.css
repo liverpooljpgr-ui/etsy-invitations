@@ -461,3 +461,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-flap-open { z-index:0; top:-65.8%; }
 .inv[data-template="mono-script"] .env-body { z-index:1; }
 .inv[data-template="mono-script"] .env-flap-closed { z-index:2; }
+
+/* ───────── 68. COVER envelope: no shadow at all (the pictures have none baked in, and nothing is added with CSS) ───────── */
+.inv[data-template="mono-script"] .env-art, .inv[data-template="mono-script"] .env-art img, .inv[data-template="mono-script"] .env-flap-closed, .inv[data-template="mono-script"] .cover-env { filter:none !important; box-shadow:none !important; }
