@@ -526,3 +526,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 /* ───────── 77. COVER: when the names take several lines (name / & / name) the screen top padding is 45px and the envelope has no top margin ───────── */
 .inv[data-template="mono-script"] .cover:has(.cover-names.stacked) { padding-top:calc(45px * var(--k,1)) !important; }
 .inv[data-template="mono-script"] .cover:has(.cover-names.stacked) .cover-env { margin-top:0; }
+
+/* ───────── 78. COVER: the closed flap is the SVG WITH its own drop shadow (picture 1051 x 557: the flap, 989 x 496, sits at 31,26 inside it). The flap itself sits 3 units above the body edge; hinge 29 units from the picture top. ───────── */
+.inv[data-template="mono-script"] .env-flap-closed { left:-2.974%; top:-4.328%; width:105.95%; height:83.13%; transform-origin:50% 5.21%; }
