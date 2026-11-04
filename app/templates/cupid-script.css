@@ -705,5 +705,11 @@ body:has(.inv[data-template="cupid-script"]) .music-btn { color:#111; border-col
 .inv[data-template="cupid-script"] .card-closing::after { content:""; position:absolute; inset:calc(14px * var(--k, 1)); border:1px solid #b4b4b4; outline:1px solid #d2d2d2; outline-offset:calc(-5px * var(--k, 1) - 1px); z-index:0; pointer-events:none;
   -webkit-mask-image:linear-gradient(to bottom, transparent 4%, #000 36%); mask-image:linear-gradient(to bottom, transparent 4%, #000 36%); }   /* change 4% / 36% to make the fade shorter or longer */
 
-/* ───────── 111. Screen 7 (closing): a flower at the top in the centre, between the two corner bunches (closing-flower.webp; change the 20% to make it bigger or smaller) ───────── */
-.inv[data-template="cupid-script"] .card-closing::before { background:url(/templates/cupid/v1/closing-flower.webp) top center / 20% auto no-repeat, url(/templates/cupid/v1/cover.webp) top center / 100% auto no-repeat; }
+/* ───────── 112. Screen 7 (closing): an elegant double line along the TOP of the frame too, fading out towards both ends (under the corner flowers) ───────── */
+.inv[data-template="cupid-script"] .card-closing::after {
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 24%, #000 76%, transparent 100%), linear-gradient(to bottom, transparent 4%, #000 36%);
+          mask-image:linear-gradient(to right, transparent 0, #000 24%, #000 76%, transparent 100%), linear-gradient(to bottom, transparent 4%, #000 36%);
+  -webkit-mask-size:100% calc(12px * var(--k, 1)), 100% 100%; mask-size:100% calc(12px * var(--k, 1)), 100% 100%;
+  -webkit-mask-position:top, top; mask-position:top, top; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-composite:source-over; mask-composite:add; }   /* change 24% to make the line fade sooner or later */
+.inv[data-template="cupid-script"] .card-closing::after { z-index:2; }   /* the frame is drawn over the picture band, so its top line shows */
