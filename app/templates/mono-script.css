@@ -636,3 +636,12 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
   76% { transform:perspective(1100px) rotateX(2deg); }
   84% { transform:perspective(1100px) rotateX(5deg); }
 }
+
+/* ───────── 99. COVER seal: pulses smoothly back and forth all the time while the envelope waits (1.8 s per beat) ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="mono-script"][data-phase="closed"] .env-seal { animation:ms-seal-pulse 1.8s ease-in-out infinite; }
+}
+@keyframes ms-seal-pulse {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
+  50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.8)); }
+}
