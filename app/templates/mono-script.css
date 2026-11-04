@@ -610,3 +610,29 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
   -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); }
 .inv[data-template="mono-script"] .closing-in { position:relative; z-index:1; }
 .inv[data-template="mono-script"] .closing-text { text-wrap:balance; }   /* when the sentence needs two lines they are about the same length (no lone last word) */
+
+/* ───────── 97. A simple double hairline border inside screens 2 to 6 (not the cover, not the closing page). Distances are from the edge of the screen; colours are the two greys. ───────── */
+.inv[data-template="mono-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before,
+.inv[data-template="mono-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after { content:""; position:absolute; pointer-events:none; z-index:0; border:1px solid; }
+.inv[data-template="mono-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before { inset:calc(14px * var(--k, 1)); border-color:#b4b4b4; }
+.inv[data-template="mono-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after { inset:calc(19px * var(--k, 1)); border-color:#d2d2d2; }
+.inv[data-template="mono-script"] :is(.sheet-in, .venue-in, .tl-in, .dtl-in, .rsvp-in) { position:relative; z-index:1; }
+
+/* ───────── 98. COVER: a small "tap me" hint. While the envelope waits (data-phase="closed") the seal pulses with a soft glow and the closed flap lifts a little and settles, together, every 3.4 seconds; on hover / press the flap lifts further. Not shown with "reduce motion". ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="mono-script"][data-phase="closed"] .env-seal { animation:ms-seal-tease 3.4s ease-in-out infinite; }
+  .inv[data-template="mono-script"][data-phase="closed"] .env-flap-closed img { transform-origin:50% 0; animation:ms-flap-tease 3.4s ease-in-out infinite; }
+  .inv[data-template="mono-script"][data-phase="closed"] .env-btn:hover .env-flap-closed img { animation:none; transform:perspective(1100px) rotateX(11deg); transition:transform .35s ease; }
+  .inv[data-template="mono-script"][data-phase="closed"] .env-btn:hover .env-seal { animation:none; scale:1.07; transition:scale .35s ease; }
+}
+@keyframes ms-seal-tease {
+  0%, 52%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
+  66% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.85)); }
+  80% { scale:1.02; filter:drop-shadow(0 0 4px rgba(222,160,150,.35)); }
+}
+@keyframes ms-flap-tease {
+  0%, 52%, 100% { transform:perspective(1100px) rotateX(0deg); }
+  66% { transform:perspective(1100px) rotateX(9deg); }
+  76% { transform:perspective(1100px) rotateX(2deg); }
+  84% { transform:perspective(1100px) rotateX(5deg); }
+}
