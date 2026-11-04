@@ -519,3 +519,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"][data-phase="opening"] .cover-names { transition-delay:.08s, .43s; }
 .inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transition-delay:.16s, .51s; }
 .inv[data-template="mono-script"] .cover-env { z-index:2; }    /* the texts fly up behind the envelope, not across it */
+
+/* ───────── 76. COVER: the updated closed-flap SVG is 989 x 496 (was 508 high); hinge 3 units below its top edge ───────── */
+.inv[data-template="mono-script"] .env-flap-closed { height:74.03%; transform-origin:50% .6%; }
