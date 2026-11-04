@@ -21,3 +21,6 @@ export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "ar
 
 /** Width / height of the photo frame (the crop tool and the invitation use the same one). 3 / 4 unless a design says otherwise. */
 export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-elegance": 3 / 4, "mono-script": 8 / 7 };
+
+/** A wax seal picture lying on the closed envelope (it dissolves when the envelope is tapped). Only the designs listed here have one. */
+export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp" };

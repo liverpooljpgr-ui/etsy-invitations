@@ -463,7 +463,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-flap-closed { z-index:2; }
 
 /* ───────── 68. COVER envelope: no shadow at all (the pictures have none baked in, and nothing is added with CSS) ───────── */
-.inv[data-template="mono-script"] .env-art, .inv[data-template="mono-script"] .env-art img, .inv[data-template="mono-script"] .env-flap-closed { filter:none !important; box-shadow:none !important; }   /* (the box around the envelope, .cover-env, has its own shadow: see section 75) */
+.inv[data-template="mono-script"] .env-art, .inv[data-template="mono-script"] .env-art img:not(.env-seal), .inv[data-template="mono-script"] .env-flap-closed { filter:none !important; box-shadow:none !important; }   /* (the box around the envelope, .cover-env, has its own shadow: see section 75) */
 
 /* ───────── 69. COVER: positions for the updated envelope body picture. Body paper 1984 x 1348 inside a 2140 x 1504 picture (78px margin all round); the flap pictures are the same as before. Open flap: its base reaches ~68px under the body edge. ───────── */
 .inv[data-template="mono-script"] .cover-env { aspect-ratio:1984/1348; }
@@ -539,3 +539,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transition:transform 2.2s cubic-bezier(.55,0,.2,1), opacity 1.6s ease .5s; }
 .inv[data-template="mono-script"][data-phase="opening"] .cover-names { transition-delay:.12s, .62s; }
 .inv[data-template="mono-script"][data-phase="opening"] .cover-bottom, .inv[data-template="mono-script"][data-phase="opening"] .env-hint { transition-delay:.24s, .74s; }
+
+/* ───────── 81. COVER: no "Tap to open"; a seal (seal.webp, from your Mask group.svg) sits on the tip of the closed flap and dissolves when the envelope is tapped ───────── */
+.inv[data-template="mono-script"] .env-hint { display:none !important; }
+.inv[data-template="mono-script"] .env-seal { position:absolute; left:50%; top:71.6%; width:15%; aspect-ratio:232/210; height:auto; translate:-50% -50%; z-index:3; pointer-events:none;
+  transition:opacity .9s ease, transform .9s ease, filter .9s ease; }     /* left / top = the tip of the flap; width = size of the seal */
+.inv[data-template="mono-script"][data-phase="opening"] .env-seal { opacity:0; transform:scale(1.3); filter:blur(7px); }

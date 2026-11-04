@@ -1,4 +1,4 @@
-import { DEFAULT_TEMPLATE, ENVELOPE_ART, type TemplateSlug } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, ENVELOPE_ART, ENVELOPE_SEAL, type TemplateSlug } from "@/lib/templates";
 
 /**
  * Three real envelope layers, stacked in the body's coordinate system (see globals.css):
@@ -11,6 +11,7 @@ import { DEFAULT_TEMPLATE, ENVELOPE_ART, type TemplateSlug } from "@/lib/templat
  */
 export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE }: { monogram?: React.ReactNode; template?: TemplateSlug }) {
   const { base: ART, ext } = ENVELOPE_ART[template];
+  const seal = ENVELOPE_SEAL[template];
   return (
     <span className="env-art" aria-hidden="true">
       {/* eslint-disable @next/next/no-img-element */}
@@ -20,6 +21,7 @@ export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE }: { monogra
         <img src={`${ART}/envelope-flap-closed.${ext}`} alt="" width={1200} height={605} decoding="async" draggable={false} />
         {monogram}
       </span>
+      {seal && <img className="env-seal" src={seal} alt="" width={232} height={210} decoding="async" draggable={false} />}
       {/* eslint-enable @next/next/no-img-element */}
     </span>
   );
