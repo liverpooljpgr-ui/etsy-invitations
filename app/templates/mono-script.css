@@ -503,3 +503,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 73. COVER: the envelope does not float up and down ───────── */
 .inv[data-template="mono-script"][data-phase="closed"] .cover-env, .inv[data-template="mono-script"][data-phase="opening"] .cover-env, .inv[data-template="mono-script"] .cover-env { animation:none !important; }
+
+/* ───────── 74. COVER: positions for the newest body SVG (the picture is exactly the paper, 992 x 670, no margin). Closed flap 3 units above the body edge; open flap sunk 20 under it. ───────── */
+.inv[data-template="mono-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="mono-script"] .env-art { width:100%; aspect-ratio:992/670; }
+.inv[data-template="mono-script"] .env-flap-closed { left:.151%; top:-.448%; width:99.7%; height:75.82%; transform-origin:50% .59%; }
+.inv[data-template="mono-script"] .env-flap-open { left:.151%; top:-76.72%; width:99.7%; height:79.7%; transform-origin:50% 96.25%; }
