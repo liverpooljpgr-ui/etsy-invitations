@@ -464,3 +464,9 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 68. COVER envelope: no shadow at all (the pictures have none baked in, and nothing is added with CSS) ───────── */
 .inv[data-template="mono-script"] .env-art, .inv[data-template="mono-script"] .env-art img, .inv[data-template="mono-script"] .env-flap-closed, .inv[data-template="mono-script"] .cover-env { filter:none !important; box-shadow:none !important; }
+
+/* ───────── 69. COVER: positions for the updated envelope body picture. Body paper 1984 x 1348 inside a 2140 x 1504 picture (78px margin all round); the flap pictures are the same as before. Open flap: its base reaches ~68px under the body edge. ───────── */
+.inv[data-template="mono-script"] .cover-env { aspect-ratio:1984/1348; }
+.inv[data-template="mono-script"] .env-art { width:calc(100% * 2140 / 1984); aspect-ratio:2140/1504; }
+.inv[data-template="mono-script"] .env-flap-closed { left:1.014%; top:.505%; width:100.14%; height:77.7%; transform-origin:50% 6.02%; }
+.inv[data-template="mono-script"] .env-flap-open { left:2.706%; top:-61.5%; width:93.93%; height:110.64%; transform-origin:50% 64.3%; }
