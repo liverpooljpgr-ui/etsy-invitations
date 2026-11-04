@@ -660,3 +660,6 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 
 /* ───────── 104. COVER: when the envelope is tapped "You are invited" slides DOWN and out of the screen (the other texts fly up) ───────── */
 .inv[data-template="mono-script"][data-phase="opening"] .cover-bottom { transform:translateY(110vh); }
+
+/* ───────── 105. Screen 2: a shorter photo, 12 : 14 (it was 12 : 16); at most 52% of the screen high ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 44.6cqh); height:auto; aspect-ratio:12/14; }
