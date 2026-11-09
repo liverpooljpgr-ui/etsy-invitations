@@ -12,16 +12,18 @@ import type { Content } from "@/lib/content/schema";
  * `monogram` (the couple's initials) is drawn ON the closed flap, so it swings open with it.
  */
 export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE, photo }: { monogram?: React.ReactNode; template?: TemplateSlug; photo?: Content["photo"] }) {
-  const { base: ART, ext } = ENVELOPE_ART[template];
-  const seal = ENVELOPE_SEAL[template];
+  // an unknown design name (e.g. a stale browser copy of the design list) falls back to the default envelope instead of crashing the page
+  const tpl: TemplateSlug = template in ENVELOPE_ART ? template : DEFAULT_TEMPLATE;
+  const { base: ART, ext } = ENVELOPE_ART[tpl];
+  const seal = ENVELOPE_SEAL[tpl];
   return (
     <span className="env-art" aria-hidden="true">
       {/* eslint-disable @next/next/no-img-element */}
-      {ENVELOPE_LINER[template] && <img className="env-liner" src={`${ART}/envelope-liner.${ext}`} alt="" width={1587} height={1072} decoding="async" draggable={false} />}
+      {ENVELOPE_LINER[tpl] && <img className="env-liner" src={`${ART}/envelope-liner.${ext}`} alt="" width={1587} height={1072} decoding="async" draggable={false} />}
       {photo && (
         <span className="env-photo">
           <span className="arch-in">
-            <img src={photo.url} alt="" draggable={false} style={photoImgStyle(photo, PHOTO_FRAME[template])} />
+            <img src={photo.url} alt="" draggable={false} style={photoImgStyle(photo, PHOTO_FRAME[tpl])} />
           </span>
         </span>
       )}

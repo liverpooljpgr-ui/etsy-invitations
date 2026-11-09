@@ -1,0 +1,1071 @@
+/* LILAC SCRIPT (slug: lilac-script): a copy of Cupid Script with the lilac flowers cover and lilac paper. EDIT THIS FILE for this design: every rule applies only to .inv[data-template="lilac-script"].
+   Pictures: public/templates/lilac/v1 (cover.webp = the lilac flowers, paper.webp = the paper grain, seal.webp, envelope-*.webp, frame.svg). */
+
+/* ───────── 0. Colours, fonts and the "knobs" you will most often change ───────── */
+.inv[data-template="lilac-script"] {
+  --paper:#ffffff; --dark:#ffffff; --dark-ink:#111111; --ink:#4a4a4a; --gold:#111111;   /* base variables used by the shared styles */
+  --ms-black:#545454;      /* main text, big words */
+  --ms-grey:#8c8c8c;       /* small captions */
+  --ms-line:#cfcfcf;       /* thin lines */
+  --ms-script:var(--font-ms-script),"Brush Script MT",cursive;
+  --ms-sans:var(--font-sans),system-ui,sans-serif;       /* Jost */
+  --ms-track:.25em;        /* letter-spacing of the small capitals */
+  --ms-left:9cqw;          /* space on the left of every screen (the left edge of all text) */
+  --ms-right:9cqw;
+  font-family:var(--ms-sans); font-weight:300; letter-spacing:.12em; text-align:left; color:var(--ms-black); }
+
+/* every screen: white paper, square corners, text starts at the left */
+.inv[data-template="lilac-script"] .card,
+.inv[data-template="lilac-script"] .cover { background:#fff; border-radius:2px; box-shadow:0 8px 28px rgba(0,0,0,.12); align-items:flex-start; text-align:left; }
+.inv[data-template="lilac-script"] .card-sheet, .inv[data-template="lilac-script"] .card-venue, .inv[data-template="lilac-script"] .card-timeline,
+.inv[data-template="lilac-script"] .card-details, .inv[data-template="lilac-script"] .card-rsvp, .inv[data-template="lilac-script"] .card-closing { background:#fff; }
+
+/* shared look of the small capitals (Jost, light, very spaced) */
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint,
+.inv[data-template="lilac-script"] .venue-intro, .inv[data-template="lilac-script"] .venue-link, .inv[data-template="lilac-script"] .caps,
+.inv[data-template="lilac-script"] .tiny, .inv[data-template="lilac-script"] .qrbox, .inv[data-template="lilac-script"] .dt-month,
+.inv[data-template="lilac-script"] .dt-year, .inv[data-template="lilac-script"] .dt-row, .inv[data-template="lilac-script"] .tl li span,
+.inv[data-template="lilac-script"] .venue-addr, .inv[data-template="lilac-script"] .dtl-text, .inv[data-template="lilac-script"] .val,
+.inv[data-template="lilac-script"] .rsvp-by, .inv[data-template="lilac-script"] .rsvp-mail, .inv[data-template="lilac-script"] .rsvp-note,
+.inv[data-template="lilac-script"] .closing-text, .inv[data-template="lilac-script"] .venue-name, .inv[data-template="lilac-script"] .tl li b { font-family:var(--ms-sans); font-weight:300; text-transform:uppercase; letter-spacing:var(--ms-track); color:var(--ms-black); }
+
+/* shared look of the handwritten words (Mrs Saint Delafield) */
+.inv[data-template="lilac-script"] .names, .inv[data-template="lilac-script"] .script, .inv[data-template="lilac-script"] .title i,
+.inv[data-template="lilac-script"] .save, .inv[data-template="lilac-script"] .venue-recep, .inv[data-template="lilac-script"] .rsvp-lead,
+.inv[data-template="lilac-script"] .closing-names, .inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .monogram,
+.inv[data-template="lilac-script"] .seal { font-family:var(--ms-script); font-weight:400; text-transform:none; letter-spacing:0; color:var(--ms-black); }
+
+/* ───────── 1. Screen 1: cover (the envelope) ───────── */
+.inv[data-template="lilac-script"] .cover { padding:calc(54px * var(--k,1)) 9% calc(50px * var(--k,1)); gap:calc(16px * var(--k,1)); justify-content:flex-start; }
+.inv[data-template="lilac-script"] .cover-top { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                       /* "The wedding of" */
+.inv[data-template="lilac-script"] .cover-names { flex-direction:column; align-items:flex-start; white-space:normal; font-size:calc(66px * var(--k,1)); line-height:.95; gap:0; }   /* name / & / name, left */
+.inv[data-template="lilac-script"] .cover-names .amp { font-family:var(--ms-script); font-size:.7em; color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .cover-names.stacked { align-items:flex-start; text-align:left; }
+.inv[data-template="lilac-script"] .cover-bottom { font-size:calc(11.5px * var(--k,1)); color:var(--ms-grey); }                      /* "You are invited" */
+.inv[data-template="lilac-script"] .env-hint { font-size:calc(10.5px * var(--k,1)); color:var(--ms-grey); }                           /* "Tap to open" */
+
+/* 1b. Envelope geometry. These are the numbers of the first design (picture 948 x 610 around a 904 x 566 envelope) and they fit the grey placeholder
+       outlines. When you replace the pictures, adjust them: left / top / width / height are % of the whole envelope picture. */
+.inv[data-template="lilac-script"] .cover-env { width:100%; aspect-ratio:904/566; }
+.inv[data-template="lilac-script"] .env-art { width:calc(100% * 948 / 904); aspect-ratio:948/610; }
+.inv[data-template="lilac-script"] .env-flap-closed { left:.633%; top:-.984%; width:100%; height:78.361%; transform-origin:50% 2.929%; }
+.inv[data-template="lilac-script"] .env-flap-open { left:.633%; top:-73.279%; width:98.523%; height:76.066%; transform-origin:50% 98.06%; }
+.inv[data-template="lilac-script"] .monogram { top:34%; justify-content:flex-start; left:14%; font-size:calc(46px * var(--k,1)); -webkit-text-fill-color:var(--ms-black); background:none; }   /* initials on the closed flap */
+
+/* ───────── 2. Screen 2: photo, "Save the date", date ───────── */
+.inv[data-template="lilac-script"] .sheet-in { align-items:flex-start; justify-content:flex-start; gap:1.6cqh; padding:11cqh var(--ms-right) 8cqh var(--ms-left); }
+.inv[data-template="lilac-script"] .card-sheet .arch { height:40cqh; width:calc(40cqh * 3 / 4); border:0; border-radius:0; padding:0; background:#eee; }   /* the photo, plain rectangle */
+.inv[data-template="lilac-script"] .arch-in { border-radius:0; }
+.inv[data-template="lilac-script"] .arch-empty { color:var(--ms-grey); font-size:calc(11px * var(--k,1)); letter-spacing:var(--ms-track); }
+.inv[data-template="lilac-script"] .save { font-size:calc(58px * var(--k,1)); line-height:1; margin-top:2cqh; }                       /* "Save the date" */
+.inv[data-template="lilac-script"] .dt { align-items:flex-start; gap:.8cqh; color:var(--ms-black); }
+.inv[data-template="lilac-script"] .dt-month, .inv[data-template="lilac-script"] .dt-year { font-size:calc(13px * var(--k,1)); padding-left:0; }
+.inv[data-template="lilac-script"] .dt-row { display:flex; align-items:baseline; gap:calc(14px * var(--k,1)); font-size:calc(11.5px * var(--k,1)); border:0; padding:0; margin:0; }
+.inv[data-template="lilac-script"] .dt-row > span:first-child, .inv[data-template="lilac-script"] .dt-row > span:last-child:not(:first-child) { padding:0; text-align:left; }
+.inv[data-template="lilac-script"] .dt-row b { font-family:var(--ms-sans); font-weight:200; font-size:calc(44px * var(--k,1)); line-height:1; letter-spacing:0; border:0; padding:0; color:var(--ms-black); }  /* the day number */
+.inv[data-template="lilac-script"] .sheet-in.no-photo { padding-top:22cqh; }
+.inv[data-template="lilac-script"] .sheet-in.no-photo .dt-row b { font-size:calc(60px * var(--k,1)); }
+
+/* ───────── 3. Screen 3: venue ───────── */
+.inv[data-template="lilac-script"] .venue-in { align-items:flex-start; justify-content:center; gap:calc(12px * var(--k,1)); padding:10cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="lilac-script"] .venue-intro { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }                           /* "Ceremony will take place" */
+.inv[data-template="lilac-script"] .venue-name { font-size:calc(19px * var(--k,1)); line-height:1.5; font-weight:400; }
+.inv[data-template="lilac-script"] .venue-rule { width:calc(36px * var(--k,1)); background:var(--ms-line); }
+.inv[data-template="lilac-script"] .venue-addr { font-size:calc(12px * var(--k,1)); line-height:1.9; text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .venue-link { font-size:calc(10.5px * var(--k,1)); border-bottom:1px solid var(--ms-black); padding-bottom:2px; }
+.inv[data-template="lilac-script"] .venue-recep { font-size:calc(46px * var(--k,1)); line-height:1; margin-top:calc(34px * var(--k,1)); }   /* "Reception to follow" */
+
+/* ───────── 4. Screen 4: timeline ───────── */
+.inv[data-template="lilac-script"] .tl-in { align-items:flex-start; gap:1.4cqh; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="lilac-script"] .script.tl-title { font-size:calc(58px * var(--k,1)); line-height:1; text-align:left; }               /* "Timeline" */
+.inv[data-template="lilac-script"] .tl li { align-items:flex-start; text-align:left; }
+.inv[data-template="lilac-script"] .tl li span { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .tl li b { font-size:calc(22px * var(--k,1)); font-weight:200; letter-spacing:.14em; }
+.inv[data-template="lilac-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1)); color:var(--ms-black); letter-spacing:var(--ms-track); }
+/* the small ornament between two items becomes a short grey line at the left edge */
+.inv[data-template="lilac-script"] .tl li + li::before { left:0; width:calc(34px * var(--k,1)); height:1px; transform:translate(0,-50%); background:var(--ms-line); -webkit-mask:none; mask:none; }
+
+/* ───────── 5. Screen 5: details (registry, dress code, accommodation) ───────── */
+.inv[data-template="lilac-script"] .dtl-in { align-items:flex-start; justify-content:center; gap:5cqh; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="lilac-script"] .dtl-row { align-items:flex-start; justify-content:center; gap:5cqh; }
+.inv[data-template="lilac-script"] .dtl-blk, .inv[data-template="lilac-script"] .dtl-pair { align-items:flex-start; text-align:left; }
+.inv[data-template="lilac-script"] .dtl-dress { justify-content:flex-start; }
+.inv[data-template="lilac-script"] .dtl-row .qrs { justify-content:flex-start; }
+.inv[data-template="lilac-script"] .dtl-row .qr { width:calc(78px * var(--k,1)); height:calc(78px * var(--k,1)); }
+.inv[data-template="lilac-script"] .dtl-reg { order:1; } .inv[data-template="lilac-script"] .dtl-dresscode { order:2; } .inv[data-template="lilac-script"] .dtl-acc { order:3; }
+.inv[data-template="lilac-script"] .caps { font-size:calc(11px * var(--k,1)); color:var(--ms-grey); }                                   /* block captions: REGISTRY, DRESS CODE ... */
+.inv[data-template="lilac-script"] .tiny, .inv[data-template="lilac-script"] .qrbox { font-size:calc(10px * var(--k,1)); color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .val { font-size:calc(14px * var(--k,1)); }
+.inv[data-template="lilac-script"] .dtl-text { font-size:calc(12px * var(--k,1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+
+/* ───────── 6. Screen 6: RSVP ───────── */
+.inv[data-template="lilac-script"] .rsvp-in { align-items:flex-start; justify-content:center; text-align:left; padding:12cqh var(--ms-right) 10cqh var(--ms-left); }
+.inv[data-template="lilac-script"] .rsvp-title { align-items:flex-start; margin-bottom:3cqh; }
+.inv[data-template="lilac-script"] .rsvp-lead { font-size:calc(50px * var(--k,1)); text-transform:none; margin-bottom:0; color:var(--ms-black); }   /* "Please" */
+.inv[data-template="lilac-script"] .rsvp-big { font-family:var(--ms-sans); font-weight:200; font-size:calc(42px * var(--k,1)); letter-spacing:.22em; white-space:nowrap; margin-right:0; color:var(--ms-black); }  /* "RSVP" */
+.inv[data-template="lilac-script"] .rsvp-by { font-size:calc(12px * var(--k,1)); color:var(--ms-black); }                                /* "by August 28, 2027" */
+.inv[data-template="lilac-script"] .rsvp-mail { font-size:calc(12px * var(--k,1)); text-transform:none; letter-spacing:.06em; color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .rsvp-note { max-width:100%; margin-top:4cqh; font-size:calc(10.5px * var(--k,1)); line-height:1.8; color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .rsvp-open { color:#fff; background:var(--ms-black); border:1px solid var(--ms-black); border-radius:0; font-family:var(--ms-sans); font-weight:400; letter-spacing:.3em; text-transform:uppercase; }
+
+/* the reply form that slides up inside the invitation */
+.inv[data-template="lilac-script"] .rsvp-sheet { font-family:var(--ms-sans); background:#fff; color:var(--ms-black); border-radius:0; text-align:left; }
+.inv[data-template="lilac-script"] .rsvp-sheet-title { font-family:var(--ms-script); font-size:calc(40px * var(--k,1)); letter-spacing:0; color:var(--ms-black); }
+.inv[data-template="lilac-script"] .rsvp-choice[aria-checked="true"], .inv[data-template="lilac-script"] .rsvp-send { background:var(--ms-black); border-color:var(--ms-black); color:#fff; border-radius:0; }
+.inv[data-template="lilac-script"] .rsvp-field input, .inv[data-template="lilac-script"] .rsvp-field textarea, .inv[data-template="lilac-script"] .rsvp-choice,
+.inv[data-template="lilac-script"] .rsvp-count button { border-color:var(--ms-line); border-radius:0; text-transform:none; letter-spacing:.04em; }
+
+/* ───────── 7. Screen 7: closing ───────── */
+.inv[data-template="lilac-script"] .closing-in { align-items:flex-start; justify-content:center; text-align:left; padding:14cqh var(--ms-right) 14cqh var(--ms-left); }
+.inv[data-template="lilac-script"] .closing-names { align-items:flex-start; font-size:calc(66px * var(--k,1)); line-height:.95; color:var(--ms-black); }
+.inv[data-template="lilac-script"] .closing-names .amp { font-size:.7em; color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .closing-text { margin-top:calc(22px * var(--k,1)); font-size:calc(11.5px * var(--k,1)); line-height:2; color:var(--ms-grey); }
+
+/* ───────── 8. Small things ───────── */
+.inv[data-template="lilac-script"] .swipe-hint { left:var(--ms-left); margin-left:0; color:var(--ms-black); }                           /* the little arrow at the bottom, now at the left */
+body:has(.inv[data-template="lilac-script"]) .music-btn { color:#111; border-color:rgba(0,0,0,.35); background:rgba(255,255,255,.95); }
+
+/* ───────── 9. LAYOUT VARIANT for screen 2: full-bleed photo ─────────
+   The photo runs edge to edge across the top of the card (same 3:4 shape as the crop tool), a dark-grey fade rises from its bottom edge and
+   "Save the date" + the date are written over it in white, at the left. Without a photo the page stays white with dark text (see .no-photo). */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-end; padding:0 var(--ms-right) 11cqh var(--ms-left); gap:1.2cqh; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { position:absolute; left:0; top:0; width:100%; height:auto; aspect-ratio:3/4; margin:0; background:#222; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(17,17,17,0) 40%, rgba(17,17,17,.88) 100%); }          /* the fade: change the 40% / .88 to move or strengthen it */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) > .save, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) > .dt { position:relative; z-index:2; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b { color:#fff; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span { color:rgba(255,255,255,.82); }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:0; }
+.inv[data-template="lilac-script"] .card-sheet .swipe-hint { color:#fff; z-index:3; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { background:linear-gradient(to bottom, rgba(21,21,21,0) 38%, rgba(21,21,21,.9) 78%, #151515 100%); }
+
+/* ───────── 10. PAPER BACKGROUND on every screen except the cover (public/templates/script/v1/paper.webp; the original PNG is in assets/mono-script) ───────── */
+.inv[data-template="lilac-script"] .card-sheet, .inv[data-template="lilac-script"] .card-venue, .inv[data-template="lilac-script"] .card-timeline,
+.inv[data-template="lilac-script"] .card-details, .inv[data-template="lilac-script"] .card-rsvp, .inv[data-template="lilac-script"] .card-closing { background:#f3f2f0 url(/templates/script/v1/paper.webp) center / cover no-repeat; }   /* (no :has() selector in this list: it would make every page in it hard to override) */
+/* screen 2: the photo now fades into the paper (a mask instead of a dark panel), and its text is dark again */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { background:none; -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent 100%); mask-image:linear-gradient(to bottom,#000 52%,transparent 100%); }   /* change 52% to move the fade */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after { display:none; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b { color:var(--ms-black); }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span { color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .card-sheet .swipe-hint { color:var(--ms-black); }
+/* "RSVP" is two pieces in the markup: keep them on one line, "Please" above */
+.inv[data-template="lilac-script"] .rsvp-title { flex-direction:row; flex-wrap:wrap; align-items:baseline; column-gap:.3em; }
+.inv[data-template="lilac-script"] .rsvp-lead { flex-basis:100%; }
+
+/* ───────── 12. Screen 2: the photo is a rectangle with a thin frame (replaces the full-bleed photo of sections 9-10) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in { justify-content:flex-start; align-items:flex-start; padding:11cqh var(--ms-right) 8cqh var(--ms-left); gap:1.6cqh; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { position:relative; left:auto; top:auto; width:calc(40cqh * 3 / 4); height:40cqh; aspect-ratio:auto; flex:none; margin:0 0 2cqh;
+  border:1px solid var(--ms-black); border-radius:0; padding:calc(7px * var(--k,1)); background:transparent; -webkit-mask-image:none; mask-image:none; }   /* padding = the gap between the frame line and the photo */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch-in { border-radius:0; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:1cqh; }
+
+/* ───────── 13. Screen 2: no border; the photo is as wide as the page content, with the same padding on the left and the right ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { --ms-side:9cqw; padding:var(--ms-side) var(--ms-side) 5cqh; gap:1.2cqh; }                      /* change --ms-side to move both edges */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:auto; aspect-ratio:3/4; border:0; padding:0; margin:0 0 1cqh; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo { padding-top:22cqh; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-start; }   /* photo starts at the top padding; the arrow at the bottom stays free */
+
+/* ───────── 14. Screen 2: the photo is 280px high (keeps the 3:4 shape of the crop tool, so it is 210px wide) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { height:280px; width:210px; aspect-ratio:3/4; }
+
+/* ───────── 15. Screen 2: the photo is as wide as its container; its box is 8:7 (about 280px high on a phone). The crop tool in the editor uses the same shape (PHOTO_FRAME in lib/templates.ts), so moving / zooming the photo there shows here ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:100%; height:auto; aspect-ratio:8/7; }
+
+/* ───────── 16. Screen 2: the date. Order: weekday · day · time, then the month, then the year. The day number is lighter, smaller, black like "Save the date" ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-row { order:1; }
+.inv[data-template="lilac-script"] .card-sheet .dt-month { order:2; }
+.inv[data-template="lilac-script"] .card-sheet .dt-year { order:3; }
+.inv[data-template="lilac-script"] .card-sheet .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:300; font-size:calc(27px * var(--k, 1)); color:var(--ms-black); }
+
+/* ───────── 17. Screen 2: day number 25px; weekday, time and month all the same size (13px) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(25px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .card-sheet .dt-row, .inv[data-template="lilac-script"] .card-sheet .dt-row > span,
+.inv[data-template="lilac-script"] .card-sheet .dt-month, .inv[data-template="lilac-script"] .card-sheet .dt-year { font-size:calc(13px * var(--k, 1)); }
+
+/* ───────── 18. Screen 2: the photo stays at the top, all the text sits at the bottom (above the arrow). Weekday ↔ number is closer than number ↔ time ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:auto; }
+.inv[data-template="lilac-script"] .card-sheet .dt-row { gap:0; }
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:first-child { margin-right:calc(8px * var(--k, 1)); }                       /* weekday → number */
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { margin-left:calc(20px * var(--k, 1)); }   /* number → time (bigger) */
+
+/* ───────── 21. Screen 3 (venue): "Reception to follow" 35px, one underline under "Get directions", tighter venue name ───────── */
+.inv[data-template="lilac-script"] .venue-recep { font-size:calc(35px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .venue-link { text-decoration:none; border-bottom:1px solid var(--ms-black); padding-bottom:2px; }   /* the shared style also draws an underline: this keeps one */
+.inv[data-template="lilac-script"] .venue-name { letter-spacing:.25em; }
+
+/* ───────── 22. Screen 2 (save the date): four lines in one font and colour: 1 time · 2 weekday · 3 month + day · 4 year ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt { --ms-date-color:#5c5a5a; display:grid; grid-template-columns:auto auto 1fr; justify-items:start; align-items:baseline; column-gap:.7em; row-gap:calc(8px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .card-sheet .dt-row { display:contents; }                                   /* its pieces become lines of the grid */
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child) { grid-column:1 / -1; grid-row:1; margin:0; }   /* 1 time */
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:first-child { grid-column:1 / -1; grid-row:2; margin:0; }                      /* 2 weekday */
+.inv[data-template="lilac-script"] .card-sheet .dt-month { grid-column:1; grid-row:3; order:0; }                                              /* 3 month … */
+.inv[data-template="lilac-script"] .card-sheet .dt-row b { grid-column:2; grid-row:3; }                                                       /* … and day */
+.inv[data-template="lilac-script"] .card-sheet .dt-year { grid-column:1 / -1; grid-row:4; order:0; }                                         /* 4 year */
+.inv[data-template="lilac-script"] .card-sheet .dt-month, .inv[data-template="lilac-script"] .card-sheet .dt-year, .inv[data-template="lilac-script"] .card-sheet .dt-row > span,
+.inv[data-template="lilac-script"] .card-sheet .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b, .inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span
+  { font-family:var(--ms-sans); font-weight:300; font-size:calc(13px * var(--k, 1)); line-height:1.3; letter-spacing:var(--ms-track); text-transform:uppercase; color:var(--ms-date-color, #5c5a5a); padding:0; }
+
+/* ───────── 23. Links across the invitation (get directions, add to calendar, e-mail, …): one 1px #a7a7a7 line under them ───────── */
+.inv[data-template="lilac-script"] .link, .inv[data-template="lilac-script"] .venue-link, .inv[data-template="lilac-script"] .closing-cal, .inv[data-template="lilac-script"] .rsvp-mail
+  { text-decoration:none; border-bottom:1px solid #a7a7a7; padding-bottom:2px; display:inline-block; width:fit-content; }
+
+/* ───────── 25. Screen 2: bigger bottom padding (above the arrow); tighter date gaps ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { padding-bottom:13cqh; }
+.inv[data-template="lilac-script"] .card-sheet .dt { column-gap:.3em; row-gap:calc(5px * var(--k, 1)); }
+
+/* ───────── 26. Screen 2: "Save the date" has margin-top:20px; the free space sits between the photo and the text, so the text stays at the bottom ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:20px; }
+
+/* ───────── 28. Screen 2: "Save the date" 55px; no space under the photo (the text follows it, 20px below) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { font-size:calc(55px * var(--k, 1)); }
+
+/* ───────── 29. Screen 2: the month and the day number are regular weight (400) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-month, .inv[data-template="lilac-script"] .card-sheet .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-weight:400; }
+
+/* ───────── 31. PAPER OF EACH PAGE: change a page's background here (one place, nothing else overrides it) ─────────
+   Files are in public/templates/script/v1/ (the original PNGs are in assets/mono-script/). Cover = no paper. */
+.inv[data-template="lilac-script"] { --ms-bg-sheet:url(/templates/script/v1/paper-white.webp);      /* 2 save the date */
+  --ms-bg-venue:url(/templates/script/v1/paper-white.webp);      /* 3 venue */
+  --ms-bg-timeline:url(/templates/script/v1/paper-white.webp);     /* 4 timeline */
+  --ms-bg-details:url(/templates/script/v1/paper-white.webp);      /* 5 details */
+  --ms-bg-rsvp:url(/templates/script/v1/paper-white.webp);         /* 6 RSVP */
+  --ms-bg-closing:url(/templates/script/v1/paper-white.webp); }    /* 7 closing */
+.inv[data-template="lilac-script"] .card-sheet    { background:#f3f2f0 var(--ms-bg-sheet)    center / cover no-repeat !important; }
+.inv[data-template="lilac-script"] .card-venue    { background:#f3f2f0 var(--ms-bg-venue)    center / cover no-repeat !important; }
+.inv[data-template="lilac-script"] .card-timeline { background:#f3f2f0 var(--ms-bg-timeline) center / cover no-repeat !important; }
+.inv[data-template="lilac-script"] .card-details  { background:#f3f2f0 var(--ms-bg-details)  center / cover no-repeat !important; }
+.inv[data-template="lilac-script"] .card-rsvp     { background:#f3f2f0 var(--ms-bg-rsvp)     center / cover no-repeat !important; }
+.inv[data-template="lilac-script"] .card-closing  { background:#f3f2f0 var(--ms-bg-closing)  center / cover no-repeat !important; }
+
+/* ───────── 32. Screen 5 (details): accommodation, then dress code, then registry; the blocks always start the same distance under the heading ───────── */
+.inv[data-template="lilac-script"] .dtl-acc { order:1; }
+.inv[data-template="lilac-script"] .dtl-dresscode { order:2; }
+.inv[data-template="lilac-script"] .dtl-reg { order:3; }
+.inv[data-template="lilac-script"] .dtl-in { justify-content:flex-start; gap:6cqh; }              /* heading, then 6% of the page height, then the blocks (change 6cqh to move them) */
+.inv[data-template="lilac-script"] .dtl-row { flex:none; justify-content:flex-start; }
+/* a dress code written only in words: no empty space where the colour dots would be, so it lines up with the other text */
+.inv[data-template="lilac-script"] .dtl-dress .dots:empty { display:none; }
+.inv[data-template="lilac-script"] .dtl-dress:has(.dots:empty) { gap:0; }
+
+/* ───────── 33. Screen 3: "Ceremony will take place" is regular weight (400) ───────── */
+.inv[data-template="lilac-script"] .venue-intro { font-weight:400; }
+
+/* ───────── 34. Screen 4 (timeline): frame-102.webp has a column of ornaments down its left edge, so this page's text starts further in ───────── */
+.inv[data-template="lilac-script"] .tl-in { padding-left:30cqw; }
+.inv[data-template="lilac-script"] .card-timeline .swipe-hint { left:30cqw; }
+
+/* ───────── 35. Screen 2: the date (month + day) and the time are 18px, weight 300; weekday and year stay small ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-month, .inv[data-template="lilac-script"] .card-sheet .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(18px * var(--k, 1)); font-weight:300; }
+
+/* ───────── 36. Registry QR codes: #545454 ───────── */
+.inv[data-template="lilac-script"] .qr { color:#545454; }
+
+/* ───────── 37. Screen 4 (timeline): with fewer than 4 items each one still gets the space it has when there are 4 (a quarter of the list), so the gaps do not grow ───────── */
+.inv[data-template="lilac-script"] .tl:not(:has(li:nth-child(4))) { justify-content:flex-start; }
+.inv[data-template="lilac-script"] .tl:not(:has(li:nth-child(4))) li { flex:0 0 25%; }
+
+/* ───────── 38. Screen 4 (timeline): every item starts at the top and follows the one before it with the same space between, whatever the number of items ───────── */
+.inv[data-template="lilac-script"] .tl { --ms-tl-gap:6cqh; justify-content:flex-start; gap:0; }                    /* the space between two items: change 6cqh */
+.inv[data-template="lilac-script"] .tl li, .inv[data-template="lilac-script"] .tl:not(:has(li:nth-child(4))) li { flex:none; justify-content:flex-start; padding-bottom:var(--ms-tl-gap); }
+.inv[data-template="lilac-script"] .tl li + li::before { top:calc(var(--ms-tl-gap) / -2); }                          /* the short line sits in the middle of the space */
+
+/* ───────── 39. Screen 4 (timeline): 6 to 10 items keep the same look (label above time) and everything gets proportionally smaller so all of them fit ───────── */
+.inv[data-template="lilac-script"] .tl { --ms-tl-s:1; }
+.inv[data-template="lilac-script"] .tl:has(li:nth-child(6)) { --ms-tl-s:.9; }
+.inv[data-template="lilac-script"] .tl:has(li:nth-child(7)) { --ms-tl-s:.77; }
+.inv[data-template="lilac-script"] .tl:has(li:nth-child(8)) { --ms-tl-s:.67; }
+.inv[data-template="lilac-script"] .tl:has(li:nth-child(9)) { --ms-tl-s:.6; }
+.inv[data-template="lilac-script"] .tl:has(li:nth-child(10)) { --ms-tl-s:.53; }          /* size factor for 6 / 7 / 8 / 9 / 10 items; 5 or fewer use full size */
+.inv[data-template="lilac-script"] .tl { --ms-tl-gap:calc(6cqh * var(--ms-tl-s)); }
+.inv[data-template="lilac-script"] .tl-dense li { flex-direction:column; gap:calc(2px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="lilac-script"] .tl-dense li span, .inv[data-template="lilac-script"] .tl-dense li b { order:0; }
+.inv[data-template="lilac-script"] .tl li span { font-size:calc(11px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="lilac-script"] .tl li b { font-size:calc(22px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="lilac-script"] .tl li.no-time span { font-size:calc(14px * var(--k,1) * var(--ms-tl-s)); }
+.inv[data-template="lilac-script"] .tl li + li::before { width:calc(34px * var(--k,1) * var(--ms-tl-s)); }
+
+/* exactly 6 items: the space between them is 5cqh (scaled) */
+.inv[data-template="lilac-script"] .tl:has(li:nth-child(6)):not(:has(li:nth-child(7))) { --ms-tl-gap:calc(5cqh * var(--ms-tl-s)); }
+
+/* ───────── 40. Screen 2: the date (month + day) and the time have the colour of the venue name on the next screen (--ms-black) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-month, .inv[data-template="lilac-script"] .card-sheet .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b { color:var(--ms-black); }
+
+/* ───────── 41. Screen 2: the time is the same size as the weekday and the year (13px) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(13px * var(--k, 1)); }
+
+/* ───────── 42. Screen 5: the dress code colour circles have no outline ───────── */
+.inv[data-template="lilac-script"] .dots i { border:0; }
+
+/* ───────── 43. Screen 2: time, weekday and year are 12px (one px smaller); the rows of the date block keep their original spacing ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-year, .inv[data-template="lilac-script"] .card-sheet .dt-row > span:first-child,
+.inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:first-child,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .card-sheet .dt { row-gap:calc(5px * var(--k, 1)); }                 /* space between the rows (back to 5px) */
+.inv[data-template="lilac-script"] .card-sheet .dt > *, .inv[data-template="lilac-script"] .card-sheet .dt-row > span, .inv[data-template="lilac-script"] .card-sheet .dt-row b { line-height:1.3; }
+
+/* ───────── 44. Every screen but the cover uses frame-100.webp (ornament rows at the top and the bottom edge): content keeps clear of them ───────── */
+.inv[data-template="lilac-script"] .tl-in { padding-left:var(--ms-left); }                          /* no ornament column on the left any more */
+.inv[data-template="lilac-script"] .card-timeline .swipe-hint { left:var(--ms-left); }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { padding-top:12cqh; }   /* the photo starts under the top ornament row */
+
+/* ───────── 45. Screen 2: "Save the date" is 40px ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="lilac-script"] .card-sheet .save { font-size:calc(40px * var(--k, 1)); }
+
+/* ───────── 46. Padding of every screen (all four sides): 5cqh ───────── */
+.inv[data-template="lilac-script"] { --ms-left:5cqh; --ms-right:5cqh; }                     /* the arrow follows the same edge */
+.inv[data-template="lilac-script"] .sheet-in, .inv[data-template="lilac-script"] .venue-in, .inv[data-template="lilac-script"] .tl-in,
+.inv[data-template="lilac-script"] .dtl-in, .inv[data-template="lilac-script"] .rsvp-in, .inv[data-template="lilac-script"] .closing-in { padding:5cqh !important; }
+.inv[data-template="lilac-script"] .cover { padding:5% !important; }                      /* the cover has no cqh units: 5% of its width */
+
+/* ───────── 47. Screen 2: the title and the date lines form one group at the bottom of the page; the photo stays at the top ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:20px; }          /* least space between the photo and the group */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:auto; }               /* pushes "Save the date" and the date lines down together */
+.inv[data-template="lilac-script"] .card-sheet .swipe-hint { left:auto; right:5cqh; margin-left:0; }            /* the arrow moves to the right so it does not sit on the last line */
+
+/* ───────── 48. Screen 2: "Save the date" has margin-top:15px; the free space is moved under the photo so the group still sits at the bottom ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:auto; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:15px; }
+
+/* the butterfly of the save the date background sits in the bottom-right corner, so the arrow goes back to the middle of the page */
+.inv[data-template="lilac-script"] .card-sheet .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
+
+/* ───────── 49. Screen 2: month, time and year share one style: 12px, weight 400 (the day number keeps its own size) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-month, .inv[data-template="lilac-script"] .card-sheet .dt-year, .inv[data-template="lilac-script"] .card-sheet .dt-row > span:last-child:not(:first-child),
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-month, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-year,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:last-child:not(:first-child) { font-size:calc(12px * var(--k, 1)); font-weight:400; }
+
+/* ───────── 50. Screen 2: the day number and the weekday join the same style: 12px, weight 400 ───────── */
+.inv[data-template="lilac-script"] .card-sheet .dt-row b, .inv[data-template="lilac-script"] .card-sheet .dt-row > span:first-child,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row b, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt-row > span:first-child,
+.inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo .dt-row b { font-size:calc(12px * var(--k, 1)); font-weight:400; letter-spacing:var(--ms-track); }
+
+/* ───────── 51. Screen 2: the photo and the text (title + date lines) are one group, centred vertically on the page ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { margin-bottom:0; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:15px; }
+
+/* ───────── 52. Screen 3 (venue): no short line under the venue name; more space above "Reception to follow" ───────── */
+.inv[data-template="lilac-script"] .venue-rule { display:none; }
+.inv[data-template="lilac-script"] .venue-recep { margin-top:calc(64px * var(--k, 1)); }          /* was 34px */
+
+/* ───────── 53. Screen 4 (timeline): the heading and the items are centred vertically as one group (so it follows the number of items); heading = "Save the date" size; the time = the time of the save the date page ───────── */
+.inv[data-template="lilac-script"] .tl-in { justify-content:center; }
+.inv[data-template="lilac-script"] .tl { flex:none; }
+.inv[data-template="lilac-script"] .tl-title, .inv[data-template="lilac-script"] .script.tl-title { font-size:calc(40px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .tl li b { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); font-weight:400; color:var(--ms-black); letter-spacing:var(--ms-track); }
+
+/* ───────── 54. Screen 4 (timeline): the descriptions are the size of the venue name (19px) ───────── */
+.inv[data-template="lilac-script"] .tl li span, .inv[data-template="lilac-script"] .tl li.no-time span { font-size:calc(19px * var(--k,1) * var(--ms-tl-s)); }
+
+/* ───────── 55. Screen 4 (timeline): twice the space between the heading and the list (1.4cqh → 2.8cqh) ───────── */
+.inv[data-template="lilac-script"] .tl-in { gap:2.8cqh; }
+
+/* ───────── 56. Every screen's content (venue, timeline, details, RSVP, closing, save the date) is centred vertically ───────── */
+.inv[data-template="lilac-script"] .venue-in, .inv[data-template="lilac-script"] .tl-in, .inv[data-template="lilac-script"] .dtl-in,
+.inv[data-template="lilac-script"] .rsvp-in, .inv[data-template="lilac-script"] .closing-in { justify-content:center; }
+.inv[data-template="lilac-script"] .dtl-row { justify-content:center; flex:none; }
+
+/* ───────── 57. Light weight (300) for the timeline times and the venue address ───────── */
+.inv[data-template="lilac-script"] .tl li b, .inv[data-template="lilac-script"] .venue-addr { font-weight:300; }
+
+/* ───────── 58. Timeline: the descriptions have the size of the times (12px) and the main text colour ───────── */
+.inv[data-template="lilac-script"] .tl li span, .inv[data-template="lilac-script"] .tl li.no-time span { font-size:calc(12px * var(--k,1) * var(--ms-tl-s)); color:var(--ms-black); }
+
+/* ───────── 59. Screen 3 (venue): the venue name and its address read as one block: 4px between them while the other gaps on the page stay 12px ───────── */
+.inv[data-template="lilac-script"] .venue-addr { margin-top:calc(-8px * var(--k, 1)); }
+
+/* ───────── 60. Timeline: the descriptions are regular weight (400) ───────── */
+.inv[data-template="lilac-script"] .tl li span, .inv[data-template="lilac-script"] .tl li.no-time span { font-weight:400; }
+
+/* ───────── 61. COVER background: ivory with white roses and a silk ribbon (public/templates/script/v1/cover-roses.webp) ───────── */
+.inv[data-template="lilac-script"] .cover { background:#f4ecde url(/templates/lilac/v1/cover.webp) center / cover no-repeat !important; }
+/* on the roses the small grey lines of the cover are too faint: they use the main text colour */
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint { color:var(--ms-black); }
+.inv[data-template="lilac-script"] .cover-names .amp { color:var(--ms-black); }
+
+/* ───────── 62. COVER: all text centred ───────── */
+.inv[data-template="lilac-script"] .cover { align-items:center; text-align:center; }
+.inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .cover-names.stacked { align-items:center; text-align:center; justify-content:center; }
+.inv[data-template="lilac-script"] .monogram { left:0; right:0; justify-content:center; }
+/* a soft white glow keeps the small cover lines readable where a rose or leaf passes behind them */
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint { text-shadow:0 0 6px rgba(255,255,255,.95), 0 0 12px rgba(255,255,255,.8); }
+
+/* ───────── 63. COVER names: 52px, on one line with a gap when they fit; when they do not fit they fall down (name / & / name), still centred. Cover padding. ───────── */
+.inv[data-template="lilac-script"] .cover { padding:calc(92px * var(--k,1)) 9% calc(50px * var(--k,1)) !important; }
+.inv[data-template="lilac-script"] .cover-names { flex-direction:row; flex-wrap:nowrap; white-space:nowrap; align-items:baseline; justify-content:center; gap:0 calc(14px * var(--k,1)); font-size:calc(52px * var(--k,1)); line-height:1.05; text-align:center; }
+.inv[data-template="lilac-script"] .cover-names.stacked { flex-direction:column; align-items:center; justify-content:center; white-space:normal; gap:0; text-align:center; }
+.inv[data-template="lilac-script"] .cover-names .amp { font-size:.7em; }
+/* the other cover texts are regular weight (400) */
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint { font-weight:400; }
+
+/* ───────── 64. COVER: no initials on the envelope flap ───────── */
+.inv[data-template="lilac-script"] .monogram { display:none !important; }
+
+/* ───────── 65. COVER: the real envelope pictures (envelope-body / envelope-flap-closed / envelope-flap-open .webp in public/templates/script/v1; originals in assets/mono-script/envelope).
+   Body paper 1984 x 1368 inside a 2072 x 1456 picture; closed flap picture 1065 x 581 (its top edge = the paper width); open flap picture 999 x 827 (its base edge at y 532).
+   Everything is in % of the body picture. ───────── */
+.inv[data-template="lilac-script"] .cover-env { width:100%; aspect-ratio:1984/1368; }
+.inv[data-template="lilac-script"] .env-art { width:calc(100% * 2072 / 1984); aspect-ratio:2072/1456; }
+.inv[data-template="lilac-script"] .env-flap-closed { left:-.594%; top:-1.813%; width:103.43%; height:80.29%; transform-origin:50% 6.02%; }
+.inv[data-template="lilac-script"] .env-flap-open { left:1.153%; top:-70.44%; width:96.91%; height:114.15%; transform-origin:50% 64.3%; }
+
+/* ───────── 66. COVER envelope: slower opening (about 1.6x; the page waits OPEN_MS_BY_TEMPLATE in components/invitation/Experience.tsx), the open flap sits lower on the body, 15px space above and below the envelope ───────── */
+.inv[data-template="lilac-script"] .cover-env { margin-block:calc(15px * var(--k,1)); }
+.inv[data-template="lilac-script"] .env-flap-closed { transition:transform .8s cubic-bezier(.45,0,.85,.6), visibility 0s linear .8s; }
+.inv[data-template="lilac-script"] .env-flap-open { top:-67.4%; transition:transform 1.2s cubic-bezier(.12,.5,.3,1) .8s, visibility 0s linear .8s; }   /* top: was -70.44%; a bigger number sits lower */
+.inv[data-template="lilac-script"][data-phase="opening"] .env-btn { transition:opacity .7s ease 2s, transform .95s cubic-bezier(.4,0,.2,1) 2s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-top, .inv[data-template="lilac-script"][data-phase="opening"] .cover-names, .inv[data-template="lilac-script"][data-phase="opening"] .cover-bottom, .inv[data-template="lilac-script"][data-phase="opening"] .env-hint { transition:opacity .5s ease; }
+
+/* ───────── 67. COVER envelope: the open flap is a BACK layer (behind the body), so the body's soft shadow falls on it and there is no seam; it also reaches a little under the body edge ───────── */
+.inv[data-template="lilac-script"] .env-flap-open { z-index:0; top:-65.8%; }
+.inv[data-template="lilac-script"] .env-body { z-index:1; }
+.inv[data-template="lilac-script"] .env-flap-closed { z-index:2; }
+
+/* ───────── 68. COVER envelope: no shadow at all (the pictures have none baked in, and nothing is added with CSS) ───────── */
+.inv[data-template="lilac-script"] .env-art, .inv[data-template="lilac-script"] .env-art img:not(.env-seal), .inv[data-template="lilac-script"] .env-flap-closed { filter:none !important; box-shadow:none !important; }   /* (the box around the envelope, .cover-env, has its own shadow: see section 75) */
+
+/* ───────── 69. COVER: positions for the updated envelope body picture. Body paper 1984 x 1348 inside a 2140 x 1504 picture (78px margin all round); the flap pictures are the same as before. Open flap: its base reaches ~68px under the body edge. ───────── */
+.inv[data-template="lilac-script"] .cover-env { aspect-ratio:1984/1348; }
+.inv[data-template="lilac-script"] .env-art { width:calc(100% * 2140 / 1984); aspect-ratio:2140/1504; }
+.inv[data-template="lilac-script"] .env-flap-closed { left:1.014%; top:.505%; width:100.14%; height:77.7%; transform-origin:50% 6.02%; }
+.inv[data-template="lilac-script"] .env-flap-open { left:2.706%; top:-61.5%; width:93.93%; height:110.64%; transform-origin:50% 64.3%; }
+
+/* ───────── 70. COVER: the envelope layers now come from the SVG files (assets/mono-script/envelope/svg, drawn without the roses background and without shadows; the site uses the light WebP renders).
+   Body paper 992 x 670 inside a 1072 x 750 picture (40 margin); closed flap 989 x 508 (hinged at its top edge); open flap 989 x 534 (its base is the bottom edge, sunk 20 under the body edge). ───────── */
+.inv[data-template="lilac-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="lilac-script"] .env-art { width:calc(100% * 1072 / 992); aspect-ratio:1072/750; }
+.inv[data-template="lilac-script"] .env-flap-closed { left:3.871%; top:4.533%; width:92.26%; height:67.73%; transform-origin:50% 1.18%; }   /* 6 units above the body edge so no strip of the liner shows over the closed flap */
+.inv[data-template="lilac-script"] .env-flap-open { left:3.871%; top:-63.2%; width:92.26%; height:71.2%; transform-origin:50% 96.25%; }
+
+/* ───────── 71. COVER: positions for the updated body SVG (paper 992 x 670 inside a 1070 x 748 picture, 39 margin on every side). Closed flap sits 3 units above the body edge; the open flap is sunk 20 under it. ───────── */
+.inv[data-template="lilac-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="lilac-script"] .env-art { width:calc(100% * 1070 / 992); aspect-ratio:1070/748; }
+.inv[data-template="lilac-script"] .env-flap-closed { left:3.785%; top:4.813%; width:92.43%; height:67.91%; transform-origin:50% .59%; }
+.inv[data-template="lilac-script"] .env-flap-open { left:3.785%; top:-63.5%; width:92.43%; height:71.39%; transform-origin:50% 96.25%; }
+
+/* ───────── 72. ALL CONTENT of the inner screens is centred horizontally (text, photo, date lines, lists, blocks); screens 2 to 7 ───────── */
+.inv[data-template="lilac-script"] .sheet-in, .inv[data-template="lilac-script"] .venue-in, .inv[data-template="lilac-script"] .tl-in,
+.inv[data-template="lilac-script"] .dtl-in, .inv[data-template="lilac-script"] .rsvp-in, .inv[data-template="lilac-script"] .closing-in { align-items:center; text-align:center; }
+.inv[data-template="lilac-script"] .card-sheet .dt { grid-template-columns:auto auto; justify-content:center; justify-items:center; }
+.inv[data-template="lilac-script"] .card-sheet .dt-month { justify-self:end; }
+.inv[data-template="lilac-script"] .card-sheet .dt-row b { justify-self:start; }
+.inv[data-template="lilac-script"] .tl li { align-items:center; text-align:center; }
+.inv[data-template="lilac-script"] .tl li + li::before { left:50%; transform:translate(-50%,-50%); }
+.inv[data-template="lilac-script"] .tl-title, .inv[data-template="lilac-script"] .script.tl-title { text-align:center; }
+.inv[data-template="lilac-script"] .dtl-row, .inv[data-template="lilac-script"] .dtl-blk, .inv[data-template="lilac-script"] .dtl-pair { align-items:center; text-align:center; }
+.inv[data-template="lilac-script"] .dtl-dress, .inv[data-template="lilac-script"] .dtl-row .qrs { justify-content:center; }
+.inv[data-template="lilac-script"] .rsvp-title { justify-content:center; align-items:baseline; text-align:center; }
+.inv[data-template="lilac-script"] .rsvp-note { margin-inline:auto; }
+.inv[data-template="lilac-script"] .closing-names { align-items:center; }
+.inv[data-template="lilac-script"] .swipe-hint, .inv[data-template="lilac-script"] .card-sheet .swipe-hint, .inv[data-template="lilac-script"] .card-timeline .swipe-hint { left:50%; right:auto; margin-left:calc(-24px * var(--k,1)); }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo), .inv[data-template="lilac-script"] .card-sheet .sheet-in.no-photo { align-items:center; text-align:center; }
+
+/* ───────── 73. COVER: the envelope does not float up and down ───────── */
+.inv[data-template="lilac-script"][data-phase="closed"] .cover-env, .inv[data-template="lilac-script"][data-phase="opening"] .cover-env, .inv[data-template="lilac-script"] .cover-env { animation:none !important; }
+
+/* ───────── 74. COVER: positions for the newest body SVG (the picture is exactly the paper, 992 x 670, no margin). Closed flap 3 units above the body edge; open flap sunk 20 under it. ───────── */
+.inv[data-template="lilac-script"] .cover-env { aspect-ratio:992/670; }
+.inv[data-template="lilac-script"] .env-art { width:100%; aspect-ratio:992/670; }
+.inv[data-template="lilac-script"] .env-flap-closed { left:.151%; top:-.448%; width:99.7%; height:75.82%; transform-origin:50% .59%; }
+.inv[data-template="lilac-script"] .env-flap-open { left:.151%; top:-76.72%; width:99.7%; height:79.7%; transform-origin:50% 96.25%; }
+
+/* ───────── 75. COVER: shadow under the envelope box; on tap the cover texts fly smoothly up and out of the screen ───────── */
+.inv[data-template="lilac-script"] .cover-env { box-shadow:0px 11px 9px #b4b4b4; border-radius:1.1% / 1.64%; }
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint {
+  transition:transform 1.5s cubic-bezier(.55,0,.2,1), opacity 1.1s ease .35s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-top, .inv[data-template="lilac-script"][data-phase="opening"] .cover-names,
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-bottom, .inv[data-template="lilac-script"][data-phase="opening"] .env-hint { transform:translateY(-110vh); opacity:0; transition:transform 1.5s cubic-bezier(.55,0,.2,1), opacity 1.1s ease .35s; }   /* (the transition is repeated here because an earlier rule for the opening phase would win otherwise) */
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-names { transition-delay:.08s, .43s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-bottom, .inv[data-template="lilac-script"][data-phase="opening"] .env-hint { transition-delay:.16s, .51s; }
+.inv[data-template="lilac-script"] .cover-env { z-index:2; }    /* the texts fly up behind the envelope, not across it */
+
+/* ───────── 76. COVER: the updated closed-flap SVG is 989 x 496 (was 508 high); hinge 3 units below its top edge ───────── */
+.inv[data-template="lilac-script"] .env-flap-closed { height:74.03%; transform-origin:50% .6%; }
+
+/* ───────── 77. COVER: when the names take several lines (name / & / name) the screen top padding is 45px and the envelope has no top margin ───────── */
+.inv[data-template="lilac-script"] .cover:has(.cover-names.stacked) { padding-top:calc(45px * var(--k,1)) !important; }
+.inv[data-template="lilac-script"] .cover:has(.cover-names.stacked) .cover-env { margin-top:0; }
+
+/* ───────── 78. COVER: the closed flap is the SVG WITH its own drop shadow (picture 1051 x 557: the flap, 989 x 496, sits at 31,26 inside it). The flap itself sits 3 units above the body edge; hinge 29 units from the picture top. ───────── */
+.inv[data-template="lilac-script"] .env-flap-closed { left:-2.974%; top:-4.328%; width:105.95%; height:83.13%; transform-origin:50% 5.21%; }
+
+/* ───────── 80. COVER: slower opening (about 1.5x slower than before). The page waits OPEN_MS_BY_TEMPLATE (5800 ms) in components/invitation/Experience.tsx: keep it a little longer than the last transition below (3s + 1.2s). ───────── */
+.inv[data-template="lilac-script"] .env-flap-closed { transition:transform 1.2s cubic-bezier(.45,0,.85,.6), visibility 0s linear 1.2s; }
+.inv[data-template="lilac-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.12,.5,.3,1) 1.2s, visibility 0s linear 1.2s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .env-btn { transition:opacity .9s ease 3s, transform 1.2s cubic-bezier(.4,0,.2,1) 3s; }
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint { transition:transform 2.2s cubic-bezier(.55,0,.2,1), opacity 1.6s ease .5s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-top, .inv[data-template="lilac-script"][data-phase="opening"] .cover-names,
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-bottom, .inv[data-template="lilac-script"][data-phase="opening"] .env-hint { transition:transform 2.2s cubic-bezier(.55,0,.2,1), opacity 1.6s ease .5s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-names { transition-delay:.12s, .62s; }
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-bottom, .inv[data-template="lilac-script"][data-phase="opening"] .env-hint { transition-delay:.24s, .74s; }
+
+/* ───────── 81. COVER: no "Tap to open"; a seal (seal.webp, from your Mask group.svg) sits on the tip of the closed flap and dissolves when the envelope is tapped ───────── */
+.inv[data-template="lilac-script"] .env-hint { display:none !important; }
+.inv[data-template="lilac-script"] .env-seal { position:absolute; left:50%; top:71.6%; width:15%; aspect-ratio:232/210; height:auto; translate:-50% -50%; z-index:3; pointer-events:none;
+  transition:opacity .9s ease, transform .9s ease, filter .9s ease; }     /* left / top = the tip of the flap; width = size of the seal */
+.inv[data-template="lilac-script"][data-phase="opening"] .env-seal { opacity:0; transform:scale(1.3); filter:blur(7px); }
+
+/* ───────── 82. COVER seal: updated picture, twice as big (30% of the envelope width) and higher (centre at 62% of the envelope height instead of 71.6%) ───────── */
+.inv[data-template="lilac-script"] .env-seal { width:30%; top:62%; }
+
+/* ───────── 83. COVER seal: 20% smaller (30% -> 24% of the envelope width) ───────── */
+.inv[data-template="lilac-script"] .env-seal { width:24%; }
+
+/* ───────── 84. Screen 2: "Save the date" is above the photo; the date lines stay below it ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { order:1; margin-top:0; margin-bottom:15px; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { order:2; margin-bottom:15px; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt { order:3; }
+
+/* ───────── 85. COVER seal: the newest seal picture is 240 x 228 and has its own soft shadow (the seal itself is 222 wide in it), so the picture is 26% of the envelope width to keep the seal the same size as before ───────── */
+.inv[data-template="lilac-script"] .env-seal { width:26%; aspect-ratio:240/228; }
+
+/* ───────── 86. Screen 2: "Save the date" is 45px ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="lilac-script"] .card-sheet .save { font-size:calc(45px * var(--k, 1)); }
+
+/* ───────── 87. Screen 3 (venue): venue name line-height 1.4; 21px between the lines of the page ───────── */
+.inv[data-template="lilac-script"] .venue-name { line-height:1.4; }
+.inv[data-template="lilac-script"] .venue-in { gap:21px; }
+
+/* ───────── 88. Screen 5 (details): the hotel name is weight 400, its address weight 300 with some space above it; 8cqh between the blocks ───────── */
+.inv[data-template="lilac-script"] .dtl-acc .val { font-weight:400; }
+.inv[data-template="lilac-script"] .dtl-acc .dtl-text { font-weight:300; margin-top:calc(6px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .dtl-row { gap:8cqh; }
+
+/* ───────── 89. Screen 5 (details): the dress code text is weight 400; no names (Amazon, Target, …) under the registry QR codes ───────── */
+.inv[data-template="lilac-script"] .dtl-dress .val, .inv[data-template="lilac-script"] .dtl-dresscode .val { font-weight:400; }
+.inv[data-template="lilac-script"] .qrbox > span { display:none; }
+
+/* ───────── 90. Screen 5 (details): 20px of space left and right of the accommodation address (so a long address wraps earlier) ───────── */
+.inv[data-template="lilac-script"] .dtl-acc .dtl-text { padding-inline:20px; }
+
+/* ───────── 91. Screen 6 (RSVP): the date is weight 400; the note is written like the venue address (14px, normal case and spacing, weight 300) with 20px left and right; the elements are 8cqh apart, like the details blocks ───────── */
+.inv[data-template="lilac-script"] .rsvp-by { font-weight:400; margin:0; }
+.inv[data-template="lilac-script"] .rsvp-note { font-size:calc(14px * var(--k, 1)); text-transform:none; letter-spacing:normal; line-height:1.9; font-weight:300; color:var(--ms-grey); padding-inline:20px; margin:0 auto; }
+.inv[data-template="lilac-script"] .rsvp-in { gap:8cqh; }
+.inv[data-template="lilac-script"] .rsvp-title { margin-bottom:0; }
+.inv[data-template="lilac-script"] .rsvp-mail { margin:0; }
+
+/* ───────── 92. Screen 6 (RSVP): note styled as given (12px, normal case, .08em, grey) and placed under the button; "or answer by e-mail …" under the date; 4cqh between all the elements ───────── */
+.inv[data-template="lilac-script"] .rsvp-in { gap:4cqh; }
+.inv[data-template="lilac-script"] .rsvp-note { font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); order:5; margin-top:calc(-4cqh + 14px); }   /* 14px under the button */
+.inv[data-template="lilac-script"] .rsvp-open { order:4; }
+.inv[data-template="lilac-script"] .rsvp-or { margin:0; font-family:var(--ms-sans); font-weight:300; font-size:calc(12px * var(--k, 1)); text-transform:none; letter-spacing:.08em; color:var(--ms-grey); }
+.inv[data-template="lilac-script"] .rsvp-or .rsvp-mail { color:var(--ms-black); font-size:inherit; letter-spacing:inherit; }
+
+/* ───────── 93. Screen 7 (closing): the names are 50px with more line height (the default sentence is now "Share this moment with us", set in components/invitation/Invitation.tsx) ───────── */
+.inv[data-template="lilac-script"] .closing-names { font-size:calc(50px * var(--k, 1)); line-height:1.3; }
+
+/* ───────── 94. Screen 6 (RSVP): "or answer by e-mail …" has 20px left and right and line-height 1.5; the note under the button has line-height 1.5 and 24px of space above it ───────── */
+.inv[data-template="lilac-script"] .rsvp-or { padding:0 20px; line-height:1.5; }
+.inv[data-template="lilac-script"] .rsvp-note { line-height:1.5; margin-top:calc(-4cqh + 24px); }   /* 24px under the button (was 14px) */
+
+/* ───────── 95. Screen 7 (closing): the sentence has 20px left and right, weight 400 and the main text colour; twice the space under the names (22px -> 44px) ───────── */
+.inv[data-template="lilac-script"] .closing-text { padding-inline:20px; font-weight:400; color:var(--ms-black); margin-top:calc(44px * var(--k, 1)); }
+
+/* ───────── 96. Screen 7 (closing): the roses of the cover picture along the top, fading into the paper (cover-white-roses.webp; change the 34% to make the band higher or lower) ───────── */
+.inv[data-template="lilac-script"] .card-closing { position:relative; }
+.inv[data-template="lilac-script"] .card-closing::before { content:""; position:absolute; left:0; right:0; top:0; height:34%; z-index:0; pointer-events:none;
+  background:url(/templates/lilac/v1/cover.webp) top center / 100% auto no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); }
+.inv[data-template="lilac-script"] .closing-in { position:relative; z-index:1; }
+.inv[data-template="lilac-script"] .closing-text { text-wrap:balance; }   /* when the sentence needs two lines they are about the same length (no lone last word) */
+
+/* ───────── 97. A simple double hairline border inside screens 2 to 6 (not the cover, not the closing page). Distances are from the edge of the screen; colours are the two greys. ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before,
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after { content:""; position:absolute; pointer-events:none; z-index:0; border:1px solid; }
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before { inset:calc(14px * var(--k, 1)); border-color:#b4b4b4; }
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after { inset:calc(19px * var(--k, 1)); border-color:#d2d2d2; }
+.inv[data-template="lilac-script"] :is(.sheet-in, .venue-in, .tl-in, .dtl-in, .rsvp-in) { position:relative; z-index:1; }
+
+/* ───────── 98. COVER: a small "tap me" hint. While the envelope waits (data-phase="closed") the seal pulses with a soft glow and the closed flap lifts a little and settles, together, every 3.4 seconds; on hover / press the flap lifts further. Not shown with "reduce motion". ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-seal { animation:ms-seal-tease 3.4s ease-in-out infinite; }
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-flap-closed img { transform-origin:50% 0; animation:ms-flap-tease 3.4s ease-in-out infinite; }
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-btn:hover .env-flap-closed img { animation:none; transform:perspective(1100px) rotateX(11deg); transition:transform .35s ease; }
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-btn:hover .env-seal { animation:none; scale:1.07; transition:scale .35s ease; }
+}
+@keyframes ms-seal-tease {
+  0%, 52%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
+  66% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.85)); }
+  80% { scale:1.02; filter:drop-shadow(0 0 4px rgba(222,160,150,.35)); }
+}
+@keyframes ms-flap-tease {
+  0%, 52%, 100% { transform:perspective(1100px) rotateX(0deg); }
+  66% { transform:perspective(1100px) rotateX(9deg); }
+  76% { transform:perspective(1100px) rotateX(2deg); }
+  84% { transform:perspective(1100px) rotateX(5deg); }
+}
+
+/* ───────── 99. COVER seal: pulses smoothly back and forth all the time while the envelope waits (1.8 s per beat) ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-seal { animation:ms-seal-pulse 1.8s ease-in-out infinite; }
+}
+@keyframes ms-seal-pulse {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,160,150,0)); }
+  50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,160,150,.8)); }
+}
+
+/* ───────── 100. COVER: the envelope (flaps, seal and all) is 15% smaller: 100% -> 85% of the content width ───────── */
+.inv[data-template="lilac-script"] .cover-env { width:85%; }
+
+/* ───────── 101. Screen 3 (venue): 20px left and right of the address ───────── */
+.inv[data-template="lilac-script"] .venue-addr { padding-inline:20px; }
+
+/* ───────── 102. Screen 2: the photo is 10 : 16 (portrait). It is as wide as the content allows, but never taller than 52% of the screen, so the title and the date lines always fit under / over it. The crop tool uses the same shape (PHOTO_FRAME in lib/templates.ts). ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 32.5cqh); height:auto; aspect-ratio:10/16; }
+
+/* ───────── 103. Screen 2: the photo is 12 : 16 (3 : 4); at most 52% of the screen high (52% x 12/16 = 39% of the screen height as width) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 39cqh); height:auto; aspect-ratio:12/16; }
+
+/* ───────── 104. COVER: when the envelope is tapped "You are invited" slides DOWN and out of the screen (the other texts fly up) ───────── */
+.inv[data-template="lilac-script"][data-phase="opening"] .cover-bottom { transform:translateY(110vh); }
+
+/* ───────── 105. Screen 2: a shorter photo, 12 : 14 (it was 12 : 16); at most 52% of the screen high ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(100%, 44.6cqh); height:auto; aspect-ratio:12/14; }
+
+/* ───────── 106. More air at the sides: the text of every screen keeps 12% of the screen width from the edge (it was 5% of the height), the cover 9% ───────── */
+.inv[data-template="lilac-script"] .sheet-in, .inv[data-template="lilac-script"] .venue-in, .inv[data-template="lilac-script"] .tl-in,
+.inv[data-template="lilac-script"] .dtl-in, .inv[data-template="lilac-script"] .rsvp-in, .inv[data-template="lilac-script"] .closing-in { padding-inline:12cqw !important; }   /* change 12cqw to move the text */
+.inv[data-template="lilac-script"] .cover { padding-inline:9% !important; }
+.inv[data-template="lilac-script"] .cover-env { width:93%; }                      /* (85% of the old, wider content: the envelope keeps its size) */
+.inv[data-template="lilac-script"] .venue-addr, .inv[data-template="lilac-script"] .dtl-acc .dtl-text, .inv[data-template="lilac-script"] .rsvp-note, .inv[data-template="lilac-script"] .closing-text { padding-inline:0; }
+
+/* ───────── 107. Screen 2: "Save the date" lives UNDER the photo (photo, title, date lines) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { order:1; margin-bottom:0; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { order:2; margin-top:calc(18px * var(--k, 1)); margin-bottom:calc(10px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .dt { order:3; }
+
+/* ───────── 108. COVER → SCREEN 2: when the envelope opens, the photo card slides out of it, grows, flies to its place on the next screen
+   and the "save the date" texts appear below it (the script in Experience.tsx measures where the photo lands: --fly-x / --fly-y / --fly-s). Timings: starts 2.3 s after the tap, lands at 5.0 s ───────── */
+.inv[data-template="lilac-script"] .env-photo { position:absolute; left:25%; top:12%; width:50%; aspect-ratio:12/14; z-index:1; display:block; background:#eee; box-shadow:0 4px 14px rgba(0,0,0,.16); }
+.inv[data-template="lilac-script"][data-phase="opening"] .env-photo { animation:cupid-photo-fly 5s linear 0s both; }
+@keyframes cupid-photo-fly {
+  /* 0 - 1.1 s: hidden in the envelope while the closed flap swings open; then it is IN the open envelope, its top edge peeking out (1.7 - 2.3 s),
+     then it slides fully out (2.9 s), grows and flies to its place on screen 2 (lands at 5 s) */
+  0%    { transform:none; opacity:0; z-index:1; }
+  22%   { transform:none; opacity:0; z-index:1; animation-timing-function:step-end; }
+  22.1% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.3,0,.2,1); }
+  34%   { transform:translateY(-48%); opacity:1; z-index:1; }
+  46%   { transform:translateY(-48%); opacity:1; z-index:1; animation-timing-function:cubic-bezier(.4,0,.3,1); }
+  58%   { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  58.1% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.5,0,.2,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+/* the photo of screen 2 simply waits under the envelope; the texts come in after it has landed; then the cover fades away */
+.inv[data-template="lilac-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .arch { animation:none !important; }
+.inv[data-template="lilac-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:5s !important; }
+.inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-btn { transform:none; transition:opacity .8s ease 5s; }
+
+/* ───────── 109. COVER: "The wedding of" is bigger (15px, it was 11.5px) and font-weight 400 ───────── */
+.inv[data-template="lilac-script"] .cover-top { font-size:calc(15px * var(--k,1)); font-weight:400; }
+
+/* ───────── 110. Screen 7 (closing): the same double border as the other screens; it runs UNDER the flowers and fades out smoothly towards the top (the flowers are drawn over it) ───────── */
+.inv[data-template="lilac-script"] .card-closing::before { z-index:1; }
+.inv[data-template="lilac-script"] .card-closing::after { content:""; position:absolute; inset:calc(14px * var(--k, 1)); border:1px solid #b4b4b4; outline:1px solid #d2d2d2; outline-offset:calc(-5px * var(--k, 1) - 1px); z-index:0; pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 4%, #000 36%); mask-image:linear-gradient(to bottom, transparent 4%, #000 36%); }   /* change 4% / 36% to make the fade shorter or longer */
+
+/* ───────── 112. Screen 7 (closing): an elegant double line along the TOP of the frame too, fading out towards both ends (under the corner flowers) ───────── */
+.inv[data-template="lilac-script"] .card-closing::after {
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 24%, #000 76%, transparent 100%), linear-gradient(to bottom, transparent 4%, #000 36%);
+          mask-image:linear-gradient(to right, transparent 0, #000 24%, #000 76%, transparent 100%), linear-gradient(to bottom, transparent 4%, #000 36%);
+  -webkit-mask-size:100% calc(12px * var(--k, 1)), 100% 100%; mask-size:100% calc(12px * var(--k, 1)), 100% 100%;
+  -webkit-mask-position:top, top; mask-position:top, top; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-composite:source-over; mask-composite:add; }   /* change 24% to make the line fade sooner or later */
+/* the flowers are drawn OVER the frame: it goes under them and shows again below them; the band is see-through in the middle (no flowers there), so the top line stays visible */
+.inv[data-template="lilac-script"] .card-closing::before {
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%), linear-gradient(to right,#000 0,#000 33%,transparent 45%,transparent 55%,#000 67%,#000 100%);
+          mask-image:linear-gradient(to bottom,#000 62%,transparent 100%), linear-gradient(to right,#000 0,#000 33%,transparent 45%,transparent 55%,#000 67%,#000 100%);
+  -webkit-mask-composite:source-in; mask-composite:intersect; }
+
+/* ───────── 113. Screen 2: the photo and the texts sit a bit higher (more room at the bottom: the content is centred in what is left; 14cqh was 5cqh, so about 4.5% of the screen higher) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in { padding-bottom:14cqh !important; }
+
+/* ───────── 114. ENVELOPE LAYERS, back to front: opened flap · pink-beige lining (envelope-liner) · the photo · the pocket front (envelope-body) · closed flap.
+   So the photo lies INSIDE the envelope: in front of the lining, behind the front of the envelope ───────── */
+.inv[data-template="lilac-script"] .env-liner { inset:0; width:100%; height:100%; z-index:0; }
+.inv[data-template="lilac-script"] .env-photo { z-index:1; }
+.inv[data-template="lilac-script"] .env-body { z-index:2; }
+.inv[data-template="lilac-script"] .env-flap-closed { z-index:3; }
+
+/* ───────── 115. The photo inside the envelope is invisible until the envelope is tapped (the opening animation shows it), so it never flashes while the envelope pictures are still loading ───────── */
+.inv[data-template="lilac-script"] .env-photo { opacity:0; }
+
+/* ───────── 116. Screen 2: the top space equals the left / right space (12% of the screen width) and the photo is a bit shorter (12 : 13, it was 12 : 14) ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in { padding-top:12cqw !important; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch { aspect-ratio:12/13; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-start; }   /* the photo starts right at the top space (it was centred in the screen) */
+
+/* ───────── 117. RSVP is ONE block (no gap between "RS" and "VP", both halves appear together); the grey text is darker so it reads on a phone (#8c8c8c -> #6b6b6b); the accommodation address gets 20px on the left and right ───────── */
+.inv[data-template="lilac-script"] { --ms-grey:#6b6b6b; }   /* change to make all grey captions lighter or darker */
+.inv[data-template="lilac-script"] .rsvp-title { column-gap:0; }
+.inv[data-template="lilac-script"] .rsvp-big { margin:0; }
+.inv[data-phase] .card.in .rsvp-title > .rsvp-big { animation-delay:.65s !important; }
+.inv[data-template="lilac-script"] .dtl-acc .dtl-text { padding-inline:20px; }
+
+/* ───────── 118. COVER: the wax seal sits 5% higher on the envelope (62% -> 57% of the envelope's height; a smaller number is higher) ───────── */
+.inv[data-template="lilac-script"] .env-seal { top:57%; }
+
+/* ───────── 119. COVER (Cupid Script): no "the wedding of" line; the line under the envelope ("you are invited to our wedding") has 20px left and right and may take two lines ───────── */
+.inv[data-template="lilac-script"] .cover-bottom { text-wrap:balance; text-align:center; max-width:100%; padding-inline:20px; }   /* 20px left and right */
+
+/* ───────── 120. COVER (Cupid Script): the new gold seal (253 : 244) glows gold; the names are 50px and ALWAYS on separate lines (name / & / name); 85px of space above the first line ───────── */
+.inv[data-template="lilac-script"] .env-seal { aspect-ratio:253/244; }
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-seal { animation:cupid-seal-pulse 1.8s ease-in-out infinite; }
+}
+@keyframes cupid-seal-pulse {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(222,176,80,0)); }
+  50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(222,176,80,.85)); }
+}
+.inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .cover-names.stacked { flex-direction:column; flex-wrap:nowrap; align-items:center; justify-content:center; white-space:normal; overflow-wrap:anywhere; text-align:center; gap:0; font-size:calc(50px * var(--k,1)); line-height:.98; }   /* change 50px for bigger / smaller names */
+.inv[data-template="lilac-script"] .cover { padding-top:85px !important; justify-content:flex-start; }   /* 85px above the first line */
+
+/* ───────── 121. Cupid Script: all the handwritten words (names, titles, "&") are set in Alex Brush ───────── */
+.inv[data-template="lilac-script"] { --ms-script:var(--font-alex-brush),"Brush Script MT",cursive; }
+
+/* ───────── 122. Cupid Script: every inner screen has the new paper (paper.webp), zoomed in (190% of the screen width; use a bigger number to zoom in more); no frame lines on any screen ───────── */
+.inv[data-template="lilac-script"] {
+  --cu-paper:url(/templates/lilac/v1/paper.webp);
+  --ms-bg-sheet:var(--cu-paper); --ms-bg-venue:var(--cu-paper); --ms-bg-timeline:var(--cu-paper); --ms-bg-details:var(--cu-paper); --ms-bg-rsvp:var(--cu-paper); --ms-bg-closing:var(--cu-paper);
+  --cu-paper-size:cover;   /* the paper fills the screen at its smallest size (it was zoomed to 190% of the width); a number like 150% auto zooms in again, but must be big enough to cover the screen */
+}
+.inv[data-template="lilac-script"] .card-sheet, .inv[data-template="lilac-script"] .card-venue, .inv[data-template="lilac-script"] .card-timeline,
+.inv[data-template="lilac-script"] .card-details, .inv[data-template="lilac-script"] .card-rsvp, .inv[data-template="lilac-script"] .card-closing { background:#f3f3f2 var(--cu-paper) center / var(--cu-paper-size) no-repeat !important; }
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::before,
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp)::after,
+.inv[data-template="lilac-script"] .card-closing::after { display:none !important; }   /* (the flowers band of the last screen stays) */
+
+/* ───────── 123. COVER (Cupid Script): the new paper texture in the middle, the flowers (cover-flowers.webp, the flowers cut out of the old cover) stay around it ───────── */
+.inv[data-template="lilac-script"] .cover { background:url(/templates/lilac/v1/cover-flowers.webp) center / cover no-repeat, #f3f3f2 var(--cu-paper) center / var(--cu-paper-size) no-repeat !important; }
+
+/* ───────── 124. Cupid Script: a very slight warm tint over the paper of every screen (the cover's flowers stay untouched). --cu-tint is the colour and its last number the strength: .035 = very, very slight, .08 = visible ───────── */
+.inv[data-template="lilac-script"] { --cu-tint:rgba(240,200,150,.035); }
+.inv[data-template="lilac-script"] .card-sheet, .inv[data-template="lilac-script"] .card-venue, .inv[data-template="lilac-script"] .card-timeline,
+.inv[data-template="lilac-script"] .card-details, .inv[data-template="lilac-script"] .card-rsvp, .inv[data-template="lilac-script"] .card-closing {
+  background:linear-gradient(var(--cu-tint), var(--cu-tint)), #f3f3f2 var(--cu-paper) center / var(--cu-paper-size) no-repeat !important; }
+.inv[data-template="lilac-script"] .cover {
+  background:url(/templates/lilac/v1/cover-flowers.webp) center / cover no-repeat, linear-gradient(var(--cu-tint), var(--cu-tint)), #f3f3f2 var(--cu-paper) center / var(--cu-paper-size) no-repeat !important; }
+.inv[data-template="lilac-script"] .card-closing::before {
+  background:linear-gradient(var(--cu-tint), var(--cu-tint)), url(/templates/lilac/v1/cover.webp) top center / 100% auto no-repeat; }
+
+/* ───────── 125. Cupid Script: "Save the date" is 40px, "Reception to follow" is 30px ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save, .inv[data-template="lilac-script"] .card-sheet .save { font-size:calc(40px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .venue-recep { font-size:calc(30px * var(--k, 1)); }
+
+/* ───────── 126. Cupid Script, timeline: a bigger gap between the title and the first item (change 24px) ───────── */
+.inv[data-template="lilac-script"] .tl-title, .inv[data-template="lilac-script"] .script.tl-title { margin-bottom:calc(24px * var(--k, 1)); }
+
+/* ───────── 127. Cupid Script, RSVP screen: "Please" is 40px, "RSVP" is 65px (it is one single block of letters now) ───────── */
+.inv[data-template="lilac-script"] .rsvp-lead { font-size:calc(40px * var(--k, 1)); }
+.inv[data-template="lilac-script"] .rsvp-big { font-size:calc(65px * var(--k, 1)); }
+
+/* ───────── 128. RSVP screen: "RSVP" is centred exactly on the screen (the space after the last letter is balanced by the same space before the first one) ───────── */
+.inv[data-template="lilac-script"] .rsvp-big { padding-left:.22em; }
+.inv[data-template="lilac-script"] .rsvp-by { padding-left:var(--ms-track); }   /* same balance for the date line */
+
+/* ───────── 129. Cupid Script: a long scroll divider (ornament.webp) along the TOP and the BOTTOM of every screen except the cover. Width = 80% of the screen; 14px from the top; the bottom one sits 56px above the bottom edge (above the arrow) ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after {
+  content:""; display:block !important; position:absolute; inset:0; z-index:2; pointer-events:none; border:0; outline:0; -webkit-mask-image:none; mask-image:none;
+  background:url(/templates/lilac/v1/ornament.webp) center top calc(14px * var(--k, 1)) / 80% auto no-repeat, url(/templates/lilac/v1/ornament.webp) center bottom calc(56px * var(--k, 1)) / 80% auto no-repeat;
+  opacity:.9; }   /* change 80% for a longer / shorter divider */
+
+/* ───────── 130. Cupid Script, screen 2: the photo looks like a real print glued to the paper: a thin white print edge, a tight contact shadow and a soft wider one (light from the top left), a faint sheen over the picture and a light edge on its top-left. ───────── */
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch {
+  -webkit-mask-image:none; mask-image:none; overflow:visible; background:#fbfaf6;
+  box-shadow:
+    0 0 0 calc(5px * var(--k, 1)) #fbfaf6,                         /* the white edge of the print */
+    0 0 0 calc(5.6px * var(--k, 1)) rgba(120,100,80,.16),          /* its fine outline on the paper */
+    calc(1px * var(--k, 1)) calc(2px * var(--k, 1)) calc(2px * var(--k, 1)) calc(5px * var(--k, 1)) rgba(70,55,40,.20),   /* contact shadow: the print lies flat on the paper */
+    calc(3px * var(--k, 1)) calc(9px * var(--k, 1)) calc(18px * var(--k, 1)) calc(2px * var(--k, 1)) rgba(70,55,40,.16);   /* soft shadow */
+}
+.inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after {
+  content:""; display:block !important; position:absolute; inset:0; z-index:2; pointer-events:none; background:
+    linear-gradient(135deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,.07) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,.05), rgba(0,0,0,0) 8%, rgba(0,0,0,0) 92%, rgba(0,0,0,.06));
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.45), inset -1px -1px 0 rgba(0,0,0,.10), inset 0 0 calc(14px * var(--k, 1)) rgba(0,0,0,.07); }
+
+/* ───────── 131. Cupid Script, closing screen: the flowers band is the flowers only (cover-flowers.webp, no paper), drawn OVER the scroll divider, so the line at the top goes under the petals and shows again between them ───────── */
+.inv[data-template="lilac-script"] .card-closing::before {
+  background:url(/templates/lilac/v1/cover-flowers.webp) top center / 100% auto no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom, #000 62%, transparent 100%); mask-image:linear-gradient(to bottom, #000 62%, transparent 100%);
+  -webkit-mask-composite:source-over; mask-composite:add; }
+.inv[data-template="lilac-script"] .card-closing::after { z-index:0; }
+
+/* ───────── 132. Cupid Script: the divider is now the diamond line (ornament.webp), 50% transparent, 20px from the top and 20px from the bottom of every screen except the cover; the arrow sits just above the bottom line ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after {
+  background:url(/templates/lilac/v1/ornament.webp) center top 20px / 80% auto no-repeat, url(/templates/lilac/v1/ornament.webp) center bottom 20px / 80% auto no-repeat;
+  opacity:.5; }   /* .5 = 50% transparent; change 80% for a longer / shorter line, 20px for the distance from the edge */
+.inv[data-template="lilac-script"] .swipe-hint { bottom:calc(30px * var(--k, 1)); }
+
+/* ───────── 133. Cupid Script, Save the date: no divider line at the top (only the bottom one) ───────── */
+.inv[data-template="lilac-script"] .card-sheet::after { background:url(/templates/lilac/v1/ornament.webp) center bottom 20px / 80% auto no-repeat; }
+
+/* ───────── 134. Cupid Script: the diamond line is wider (90% of the screen) and more transparent (30% visible) ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after {
+  background:url(/templates/lilac/v1/ornament.webp) center top 20px / 90% auto no-repeat, url(/templates/lilac/v1/ornament.webp) center bottom 20px / 90% auto no-repeat;
+  opacity:.3; }   /* .3 = 30% visible; change 90% for a longer / shorter line */
+.inv[data-template="lilac-script"] .card-sheet::after { background:url(/templates/lilac/v1/ornament.webp) center bottom 20px / 90% auto no-repeat; }
+
+/* ───────── 135. Cupid Script: the diamond line is even more transparent (20% visible); the closing screen has no line at the top either (only the bottom one, like Save the date) ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after { opacity:.2; }   /* .2 = 20% visible */
+.inv[data-template="lilac-script"] .card-closing::after { background:url(/templates/lilac/v1/ornament.webp) center bottom 20px / 90% auto no-repeat; }
+
+/* ───────── 136. Cupid Script: the diamond lines are gone; instead an elegant double frame (frame.svg: two fine lines with a small diamond in every corner) runs around the very edge of every screen except the cover. It lies under the flowers on the closing screen. ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after,
+.inv[data-template="lilac-script"] .card-sheet::after, .inv[data-template="lilac-script"] .card-closing::after {
+  background:none; opacity:.5; inset:calc(4px * var(--k, 1));
+  border:calc(30px * var(--k, 1)) solid transparent;
+  border-image:url(/templates/lilac/v1/frame.svg) 60 / calc(30px * var(--k, 1)) stretch; }   /* opacity .5 = how strong the frame is; inset = distance from the very edge */
+.inv[data-template="lilac-script"] .swipe-hint { bottom:calc(14px * var(--k, 1)); }
+
+/* ───────── 137. Cupid Script: the frame is pressed INTO the paper (blind emboss) instead of printed: a soft shadow on one side of the groove and a light edge on the other (see frame.svg) ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after,
+.inv[data-template="lilac-script"] .card-sheet::after, .inv[data-template="lilac-script"] .card-closing::after { opacity:1; }
+
+/* ───────── 138. Cupid Script: the pressed frame is subtler (55% strength; 1 = full, .3 = barely there) ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after,
+.inv[data-template="lilac-script"] .card-sheet::after, .inv[data-template="lilac-script"] .card-closing::after { opacity:.55; }
+
+
+/* ───────── 200. LILAC SCRIPT: the cover is the lilac flowers picture (cover.webp); the inner screens are lilac paper (the paper grain tinted lilac); the flowers band of the closing screen is the same picture fading into the paper ───────── */
+.inv[data-template="lilac-script"] { --lc-paper-tint:#f8f3fb; --cu-tint:rgba(0,0,0,0); }   /* #efe6f6 x the paper grain = the lilac of the cover; a lighter value = paler, more neutral paper (#efe6f6 matched the cover exactly) */
+.inv[data-template="lilac-script"] .cover { background:url(/templates/lilac/v1/cover.webp) center / cover no-repeat !important; }
+.inv[data-template="lilac-script"] .card-sheet, .inv[data-template="lilac-script"] .card-venue, .inv[data-template="lilac-script"] .card-timeline,
+.inv[data-template="lilac-script"] .card-details, .inv[data-template="lilac-script"] .card-rsvp, .inv[data-template="lilac-script"] .card-closing {
+  background:var(--lc-paper-tint) var(--cu-paper) center / var(--cu-paper-size) no-repeat !important; background-blend-mode:multiply; }
+.inv[data-template="lilac-script"] .card-closing::before {
+  background:url(/templates/lilac/v1/cover.webp) top center / 100% auto no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom, #000 62%, transparent 100%); mask-image:linear-gradient(to bottom, #000 62%, transparent 100%);
+  -webkit-mask-composite:source-over; mask-composite:add; }
+
+/* ───────── 201. LILAC SCRIPT: the new green seal with the flower pot (a perfect circle); it glows soft green while it waits ───────── */
+.inv[data-template="lilac-script"] .env-seal { aspect-ratio:1/1; }
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="lilac-script"][data-phase="closed"] .env-seal { animation:lilac-seal-pulse 1.8s ease-in-out infinite; }
+}
+@keyframes lilac-seal-pulse {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(110,150,112,0)); }
+  50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(110,150,112,.8)); }
+}
+.inv[data-template="lilac-script"] .env-seal { aspect-ratio:253/244; }   /* the new bird seal (253 : 244) */
+
+/* ───────── 202. SEAL SIZE: 15% smaller (26% -> 22.1% of the envelope width; change the number to resize) ───────── */
+.inv[data-template="lilac-script"] .env-seal { width:22.1%; }
+
+/* ───────── SEAL POSITION: 10px lower (57% of the envelope height + 10px) ───────── */
+.inv[data-template="lilac-script"] .env-seal { top:calc(57% + 10px); }
+
+/* ───────── 203. LILAC SCRIPT: the new lilac key seal; it glows soft lilac while it waits ───────── */
+@keyframes lilac-seal-pulse {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 0 rgba(160,130,210,0)); }
+  50% { scale:1.09; filter:drop-shadow(0 0 9px rgba(160,130,210,.8)); }
+}
+
+/* ───────── 204. LILAC SCRIPT: no frame around any screen ───────── */
+.inv[data-template="lilac-script"] :is(.card-sheet, .card-venue, .card-timeline, .card-details, .card-rsvp, .card-closing)::after,
+.inv[data-template="lilac-script"] .card-sheet::after, .inv[data-template="lilac-script"] .card-closing::after { display:none !important; }
+
+/* ───────── 205. LILAC SCRIPT: all the handwritten words (names, titles, "&") are set in Mea Culpa ───────── */
+.inv[data-template="lilac-script"] { --ms-script:var(--font-mea-culpa),"Brush Script MT",cursive; }
+
+/* ───────── 206. LILAC SCRIPT: the envelope's shadow ───────── */
+.inv[data-template="lilac-script"] .cover-env { box-shadow:0 6px 11px #57455c99; }
+
+/* ───────── 207. LILAC SCRIPT: the small texts of the cover have a soft plum shadow (instead of the white glow made for photos), which suits the violet background; change the colour / numbers to make it stronger or lighter ───────── */
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint { text-shadow:0 1px 2px rgba(70,48,92,.28), 0 0 8px rgba(70,48,92,.12); }
+
+/* ───────── 208. LILAC SCRIPT cover: no text shadow; the texts on the cover (the small line under the envelope, the names) are a deep plum that reads on the purple (#3f2f57), and the grey captions of every screen are a purple-grey (--ms-grey) instead of neutral grey ───────── */
+.inv[data-template="lilac-script"] { --ms-grey:#5d4d75; }   /* the grey captions: change for lighter / darker */
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint,
+.inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .cover-names .amp { text-shadow:none !important; }
+.inv[data-template="lilac-script"] .cover-top, .inv[data-template="lilac-script"] .cover-bottom, .inv[data-template="lilac-script"] .env-hint { color:#3f2f57 !important; }   /* the small cover texts (the names stay the template black) */
+
+/* ───────── ENVELOPE OPENING: the inside flap rises SMOOTHLY (2.2 s, soft start and soft landing; it used to shoot up in the first third of a second) ───────── */
+.inv[data-template="lilac-script"] .env-flap-open { transition:transform 2.2s cubic-bezier(.38,.04,.22,1) 1.2s, visibility 0s linear 1.2s; }
+
+/* ───────── PHOTO IN THE ENVELOPE: it is visible inside the open envelope the whole time the flap is opening (until 3.2 s, when the flap has landed); only then it slides out smoothly (3.2 - 3.9 s), grows and flies to its place on the next screen (lands at 5.3 s). The cover fades at 5.3 s, the texts of the next screen follow. ───────── */
+.inv[data-template="lilac-script"][data-phase="opening"] .env-photo { animation:cupid-photo-fly 5.3s linear 0s both; }
+@keyframes cupid-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  60.4% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,.05,.25,1); }
+  73.6% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  73.7% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.5,0,.2,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+.inv[data-template="lilac-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:5.3s !important; }
+.inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-btn { transition:opacity .8s ease 5.3s; }
+
+/* ───────── PHOTO IN THE ENVELOPE = THE PRINT: the photo inside the envelope already has the white edge, the shadows and the sheen of the print on the Save the date screen (their sizes are divided by the photo's growth --fly-s, so after growing they are exactly the size of the real ones). It only slides out, grows and lands on its place. ───────── */
+.inv[data-template="lilac-script"] .env-photo { --pe:calc(var(--k, 1) / var(--fly-s, 1.6)); background:#fbfaf6;
+  box-shadow:
+    0 0 0 calc(5px * var(--pe)) #fbfaf6,
+    0 0 0 calc(5.6px * var(--pe)) rgba(120,100,80,.16),
+    calc(1px * var(--pe)) calc(2px * var(--pe)) calc(2px * var(--pe)) calc(5px * var(--pe)) rgba(70,55,40,.20),
+    calc(3px * var(--pe)) calc(9px * var(--pe)) calc(18px * var(--pe)) calc(2px * var(--pe)) rgba(70,55,40,.16); }
+.inv[data-template="lilac-script"] .env-photo::after { content:""; position:absolute; inset:0; z-index:2; pointer-events:none; background:
+    linear-gradient(135deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,.07) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,.05), rgba(0,0,0,0) 8%, rgba(0,0,0,0) 92%, rgba(0,0,0,.06));
+  box-shadow:inset calc(1px * var(--pe)) calc(1px * var(--pe)) 0 rgba(255,255,255,.45), inset calc(-1px * var(--pe)) calc(-1px * var(--pe)) 0 rgba(0,0,0,.10), inset 0 0 calc(14px * var(--pe)) rgba(0,0,0,.07); }
+.inv[data-template="lilac-script"][data-phase="opening"] .env-photo { animation:print-photo-fly 5.3s linear 0s both; }
+@keyframes print-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  60.4% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,.05,.25,1); }
+  73.6% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  73.7% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.5,0,.2,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; }
+}
+
+/* ───────── PHOTO IN THE ENVELOPE: the same proportions as the photo on the next screen (12 : 13), so it is only scaled, never stretched or re-cropped ───────── */
+.inv[data-template="lilac-script"] .env-photo { aspect-ratio:12/13; }
+
+/* ───────── 211. LILAC SCRIPT: the paper stays the pastel purple on every screen; all the text on the inner screens is black and grey only (the grey captions are neutral grey, --ms-grey) ───────── */
+.inv[data-template="lilac-script"] { --ms-grey:#6b6b6b; }
+
+/* ───────── SMOOTH OPENING (no stop in the middle): the inside flap lands at 3.0 s; the photo waits for it, then rises out with a ACCELERATING move (3.0 - 3.7 s) that goes straight on into a DECELERATING flight to its place (3.7 - 5.3 s), so there is no standstill between the two moves ───────── */
+.inv[data-template="lilac-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.38,.04,.22,1) 1.2s, visibility 0s linear 1.2s; }
+@keyframes cupid-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  56.6% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  69.8% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  69.9% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.55,.25,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+@keyframes print-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  56.6% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  69.8% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  69.9% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.55,.25,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; }
+}
+
+/* ───────── OPENING, FINAL TIMING (4.8 s of photo motion): waits inside the open envelope until the flap has landed (3.0 s), rises out 3.0 - 3.6 s (accelerating), flies on 3.6 - 4.8 s (decelerating, shorter tail so it does not crawl), the cover fades from 4.6 s, the texts of the next screen from 4.9 s ───────── */
+.inv[data-template="lilac-script"][data-phase="opening"] .env-photo { animation:print-photo-fly 4.8s linear 0s both; }
+@keyframes cupid-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  62.5% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  75%   { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  75.1% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.6,.3,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+@keyframes print-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  62.5% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  75%   { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  75.1% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.6,.3,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; }
+}
+.inv[data-template="lilac-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:4.9s !important; }
+.inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-btn { transition:opacity .8s ease 4.6s; }
+
+/* ───────── TALL NARROW PHONES (up to 360px wide, at least 680px tall: e.g. 340 x 738): the content of the cover is centred in the screen (it used to sit at the top over the flowers) and the flowers at the top of the cover and of the closing screen are seen well: the closing flowers band is taller and fades out later ───────── */
+@media (max-width: 360px) and (min-height: 680px) {
+  .inv[data-template="lilac-script"] .cover { justify-content:center !important; padding-top:5% !important; padding-bottom:5% !important; }
+  .inv[data-template="lilac-script"] .card-closing::before { height:46%; -webkit-mask-image:linear-gradient(to bottom,#000 74%,transparent 100%); mask-image:linear-gradient(to bottom,#000 74%,transparent 100%); }
+}
+
+/* ───────── TALL NARROW PHONES (up to 360px wide, at least 680px tall): the Save the date screen is centred in the screen (photo + title + date lines as one block, equal space above and below), and the gap between the title and the date lines grows with the height of the screen (8% of it, plus 4% above the title) so the space is used properly ───────── */
+@media (max-width: 360px) and (min-height: 680px) {
+  .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; padding-bottom:12cqw !important; }
+  .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:4cqh; margin-bottom:8cqh; }
+}
+
+/* ───────── 144. LILAC SCRIPT on screens 738px tall or more: the names on the cover are bigger (50 -> 62px) and the cover picture is moved a little to the left, so the flowers in the top right corner are seen too (background-position: 50% = centred, bigger % = picture moves further left) ───────── */
+@media (min-height: 738px) {
+  .inv[data-template="lilac-script"] .cover-names, .inv[data-template="lilac-script"] .cover-names.stacked { font-size:calc(62px * var(--k,1)); }
+  .inv[data-template="lilac-script"] .cover { background-position:72% center !important; }
+}
+
+/* ───────── 145. SMOOTH FLAP TURN (no blink): the open flap starts turning at the speed the closed flap had when it went edge-on (fast start, then a long soft landing), so the two halves of the turn join without a pause ───────── */
+.inv[data-template="lilac-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.1,.4,.3,1) 1.06s, visibility 0s linear 1.06s; }
+
+/* ───────── 145. SMOOTH FLAP TURN (no blink): the open flap starts turning at the speed the closed flap had when it went edge-on (fast start, then a long soft landing), so the two halves of the turn join without a pause ───────── */
+.inv[data-template="lilac-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.1,.4,.3,1) 1.06s, visibility 0s linear 1.06s; }
+
+/* ───────── 146. ONE CONTINUOUS FLAP TURN (smoother opening): the closed flap and the open flap are two halves of the same 180 degree turn that follows ONE ease-in-out curve (3.0 s, with a little perspective), so there is no change of speed or empty moment when the flap goes edge-on. The flap lands at 3.0 s as before. ───────── */
+@keyframes lc-flap-closed {
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  2.08% { transform:perspective(1500px) rotateX(0.19deg); visibility:visible; }
+  4.17% { transform:perspective(1500px) rotateX(0.77deg); visibility:visible; }
+  6.25% { transform:perspective(1500px) rotateX(1.73deg); visibility:visible; }
+  8.33% { transform:perspective(1500px) rotateX(3.07deg); visibility:visible; }
+  10.42% { transform:perspective(1500px) rotateX(4.78deg); visibility:visible; }
+  12.5% { transform:perspective(1500px) rotateX(6.85deg); visibility:visible; }
+  14.58% { transform:perspective(1500px) rotateX(9.28deg); visibility:visible; }
+  16.67% { transform:perspective(1500px) rotateX(12.06deg); visibility:visible; }
+  18.75% { transform:perspective(1500px) rotateX(15.17deg); visibility:visible; }
+  20.83% { transform:perspective(1500px) rotateX(18.6deg); visibility:visible; }
+  22.92% { transform:perspective(1500px) rotateX(22.33deg); visibility:visible; }
+  25% { transform:perspective(1500px) rotateX(26.36deg); visibility:visible; }
+  27.08% { transform:perspective(1500px) rotateX(30.66deg); visibility:visible; }
+  29.17% { transform:perspective(1500px) rotateX(35.21deg); visibility:visible; }
+  31.25% { transform:perspective(1500px) rotateX(40deg); visibility:visible; }
+  33.33% { transform:perspective(1500px) rotateX(45deg); visibility:visible; }
+  35.42% { transform:perspective(1500px) rotateX(50.19deg); visibility:visible; }
+  37.5% { transform:perspective(1500px) rotateX(55.56deg); visibility:visible; }
+  39.58% { transform:perspective(1500px) rotateX(61.07deg); visibility:visible; }
+  41.67% { transform:perspective(1500px) rotateX(66.71deg); visibility:visible; }
+  43.75% { transform:perspective(1500px) rotateX(72.44deg); visibility:visible; }
+  45.83% { transform:perspective(1500px) rotateX(78.25deg); visibility:visible; }
+  47.92% { transform:perspective(1500px) rotateX(84.11deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50.01%, 100% { transform:perspective(1500px) rotateX(90deg); visibility:hidden; }
+}
+@keyframes lc-flap-open {
+  0%, 49.99% { transform:perspective(1500px) rotateX(-90deg); visibility:hidden; }
+  50% { transform:perspective(1500px) rotateX(-90deg); visibility:visible; }
+  52.08% { transform:perspective(1500px) rotateX(-84.11deg); visibility:visible; }
+  54.17% { transform:perspective(1500px) rotateX(-78.25deg); visibility:visible; }
+  56.25% { transform:perspective(1500px) rotateX(-72.44deg); visibility:visible; }
+  58.33% { transform:perspective(1500px) rotateX(-66.71deg); visibility:visible; }
+  60.42% { transform:perspective(1500px) rotateX(-61.07deg); visibility:visible; }
+  62.5% { transform:perspective(1500px) rotateX(-55.56deg); visibility:visible; }
+  64.58% { transform:perspective(1500px) rotateX(-50.19deg); visibility:visible; }
+  66.67% { transform:perspective(1500px) rotateX(-45deg); visibility:visible; }
+  68.75% { transform:perspective(1500px) rotateX(-40deg); visibility:visible; }
+  70.83% { transform:perspective(1500px) rotateX(-35.21deg); visibility:visible; }
+  72.92% { transform:perspective(1500px) rotateX(-30.66deg); visibility:visible; }
+  75% { transform:perspective(1500px) rotateX(-26.36deg); visibility:visible; }
+  77.08% { transform:perspective(1500px) rotateX(-22.33deg); visibility:visible; }
+  79.17% { transform:perspective(1500px) rotateX(-18.6deg); visibility:visible; }
+  81.25% { transform:perspective(1500px) rotateX(-15.17deg); visibility:visible; }
+  83.33% { transform:perspective(1500px) rotateX(-12.06deg); visibility:visible; }
+  85.42% { transform:perspective(1500px) rotateX(-9.28deg); visibility:visible; }
+  87.5% { transform:perspective(1500px) rotateX(-6.85deg); visibility:visible; }
+  89.58% { transform:perspective(1500px) rotateX(-4.78deg); visibility:visible; }
+  91.67% { transform:perspective(1500px) rotateX(-3.07deg); visibility:visible; }
+  93.75% { transform:perspective(1500px) rotateX(-1.73deg); visibility:visible; }
+  95.83% { transform:perspective(1500px) rotateX(-0.77deg); visibility:visible; }
+  97.92% { transform:perspective(1500px) rotateX(-0.19deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+}
+.inv[data-template="lilac-script"][data-phase="opening"] .env-flap-closed { animation:lc-flap-closed 3s linear both; }
+.inv[data-template="lilac-script"][data-phase="opening"] .env-flap-open { animation:lc-flap-open 3s linear both; }

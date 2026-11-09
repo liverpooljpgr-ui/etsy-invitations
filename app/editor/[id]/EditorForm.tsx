@@ -11,7 +11,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, type TemplateSlug } from "@/lib/templates";
+import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -133,6 +133,10 @@ async function prepareImage(file: File): Promise<Blob> {
   canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
   return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/webp", 0.8));
 }
+
+/** A new dress-code colour starts as the first of these that is not used yet, so added colours do not all look the same. */
+const DRESS_STARTERS = ["#8a9a78", "#d8c3a5", "#c08f86", "#44505f"];
+const nextDressColor = (used: string[]) => DRESS_STARTERS.find((c) => !used.includes(c)) ?? DRESS_STARTERS[used.length % DRESS_STARTERS.length];
 
 export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialStep, dateOrder, template }: Props) {
   const [draft, setDraft] = useState<Content>(initialDraft);
@@ -559,12 +563,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className="ui-sections">
 
           <Section n={1} mobileHidden={step !== 0} title="Card 1 · Cover (the envelope screen)">
-            <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
+            {!(template && TEMPLATE_COVER[template]?.hideTop) && <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>}
             <div className="ui-two">
               <Field label="Beloved 1"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
               <Field label="Beloved 2"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
             </div>
-            <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} /></Field>
+            <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} value={coverBottomText(template, draft.texts.coverBottom)} /></Field>
             <div className="ui-field">
               <span className="ui-label">Background music (optional)</span>
               <SongPicker currentUrl={draft.music?.url ?? null} onPick={(song) => set("music", { url: song.url, name: song.name })} />
@@ -661,7 +665,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                       <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="ui-x" style={{ width: 32, height: 32, marginLeft: -6 }}>✕</button>
                     </span>
                   ))}
-                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, "#8a9a78"] })} className="ui-btn ui-btn-soft ui-btn-sm">+ Colour</button>}
+                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, nextDressColor(draft.dressCode.colors)] })} className="ui-btn ui-btn-soft ui-btn-sm">+ Colour</button>}
                 </div>
               </div>
             ) : <p className="ui-help">Dress code is not included in your plan.</p>}

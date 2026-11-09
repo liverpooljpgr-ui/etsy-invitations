@@ -754,3 +754,114 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .rsvp-sheet-title { font-family:var(--wr-head); color:var(--gold); }
 .inv[data-template="white-roses"] .rsvp-choice[aria-checked="true"], .inv[data-template="white-roses"] .rsvp-send { background:var(--gold); border-color:var(--gold); }
 .inv[data-template="white-roses"] .rsvp-field input, .inv[data-template="white-roses"] .rsvp-field textarea, .inv[data-template="white-roses"] .rsvp-choice, .inv[data-template="white-roses"] .rsvp-count button { border-color:rgba(138,116,36,.5); }
+
+/* The envelope on the cover is the same width in every design as in Mono Script (the script designs: 93% of a narrower content box = 76% of the screen; here 94% -> 87% of the content box = the same 76%). */
+.inv[data-template="sage-story"] .cover-env, .inv[data-template="white-roses"] .cover-env { width:87%; }
+
+/* ───────── 146. ONE CONTINUOUS FLAP TURN for Floral Aquarelle and White Roses (like the script designs): the closed flap (0 to 90 degrees) and the open flap (-90 to 0) follow ONE ease-in-out curve over 1.25 s, so there is no change of speed or empty moment when the flap goes edge-on ───────── */
+@keyframes sg-flap-closed {
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  2.5% { transform:perspective(1500px) rotateX(0.28deg); visibility:visible; }
+  5% { transform:perspective(1500px) rotateX(1.11deg); visibility:visible; }
+  7.5% { transform:perspective(1500px) rotateX(2.49deg); visibility:visible; }
+  10% { transform:perspective(1500px) rotateX(4.4deg); visibility:visible; }
+  12.5% { transform:perspective(1500px) rotateX(6.85deg); visibility:visible; }
+  15% { transform:perspective(1500px) rotateX(9.81deg); visibility:visible; }
+  17.5% { transform:perspective(1500px) rotateX(13.26deg); visibility:visible; }
+  20% { transform:perspective(1500px) rotateX(17.19deg); visibility:visible; }
+  22.5% { transform:perspective(1500px) rotateX(21.56deg); visibility:visible; }
+  25% { transform:perspective(1500px) rotateX(26.36deg); visibility:visible; }
+  27.5% { transform:perspective(1500px) rotateX(31.55deg); visibility:visible; }
+  30% { transform:perspective(1500px) rotateX(37.1deg); visibility:visible; }
+  32.5% { transform:perspective(1500px) rotateX(42.98deg); visibility:visible; }
+  35% { transform:perspective(1500px) rotateX(49.14deg); visibility:visible; }
+  37.5% { transform:perspective(1500px) rotateX(55.56deg); visibility:visible; }
+  40% { transform:perspective(1500px) rotateX(62.19deg); visibility:visible; }
+  42.5% { transform:perspective(1500px) rotateX(68.99deg); visibility:visible; }
+  45% { transform:perspective(1500px) rotateX(75.92deg); visibility:visible; }
+  47.5% { transform:perspective(1500px) rotateX(82.94deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50.01%, 100% { transform:perspective(1500px) rotateX(90deg); visibility:hidden; }
+}
+@keyframes sg-flap-open {
+  0%, 49.99% { transform:perspective(1500px) rotateX(-90deg); visibility:hidden; }
+  50% { transform:perspective(1500px) rotateX(-90deg); visibility:visible; }
+  52.5% { transform:perspective(1500px) rotateX(-82.94deg); visibility:visible; }
+  55% { transform:perspective(1500px) rotateX(-75.92deg); visibility:visible; }
+  57.5% { transform:perspective(1500px) rotateX(-68.99deg); visibility:visible; }
+  60% { transform:perspective(1500px) rotateX(-62.19deg); visibility:visible; }
+  62.5% { transform:perspective(1500px) rotateX(-55.56deg); visibility:visible; }
+  65% { transform:perspective(1500px) rotateX(-49.14deg); visibility:visible; }
+  67.5% { transform:perspective(1500px) rotateX(-42.98deg); visibility:visible; }
+  70% { transform:perspective(1500px) rotateX(-37.1deg); visibility:visible; }
+  72.5% { transform:perspective(1500px) rotateX(-31.55deg); visibility:visible; }
+  75% { transform:perspective(1500px) rotateX(-26.36deg); visibility:visible; }
+  77.5% { transform:perspective(1500px) rotateX(-21.56deg); visibility:visible; }
+  80% { transform:perspective(1500px) rotateX(-17.19deg); visibility:visible; }
+  82.5% { transform:perspective(1500px) rotateX(-13.26deg); visibility:visible; }
+  85% { transform:perspective(1500px) rotateX(-9.81deg); visibility:visible; }
+  87.5% { transform:perspective(1500px) rotateX(-6.85deg); visibility:visible; }
+  90% { transform:perspective(1500px) rotateX(-4.4deg); visibility:visible; }
+  92.5% { transform:perspective(1500px) rotateX(-2.49deg); visibility:visible; }
+  95% { transform:perspective(1500px) rotateX(-1.11deg); visibility:visible; }
+  97.5% { transform:perspective(1500px) rotateX(-0.28deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+}
+.inv[data-template="sage-story"][data-phase="opening"] .env-flap-closed { animation:sg-flap-closed 1.25s linear both; }
+.inv[data-template="sage-story"][data-phase="opening"] .env-flap-open { animation:sg-flap-open 1.25s linear both; }
+@keyframes wr-flap-closed {
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  2.5% { transform:perspective(1500px) rotateX(0.28deg); visibility:visible; }
+  5% { transform:perspective(1500px) rotateX(1.11deg); visibility:visible; }
+  7.5% { transform:perspective(1500px) rotateX(2.49deg); visibility:visible; }
+  10% { transform:perspective(1500px) rotateX(4.4deg); visibility:visible; }
+  12.5% { transform:perspective(1500px) rotateX(6.85deg); visibility:visible; }
+  15% { transform:perspective(1500px) rotateX(9.81deg); visibility:visible; }
+  17.5% { transform:perspective(1500px) rotateX(13.26deg); visibility:visible; }
+  20% { transform:perspective(1500px) rotateX(17.19deg); visibility:visible; }
+  22.5% { transform:perspective(1500px) rotateX(21.56deg); visibility:visible; }
+  25% { transform:perspective(1500px) rotateX(26.36deg); visibility:visible; }
+  27.5% { transform:perspective(1500px) rotateX(31.55deg); visibility:visible; }
+  30% { transform:perspective(1500px) rotateX(37.1deg); visibility:visible; }
+  32.5% { transform:perspective(1500px) rotateX(42.98deg); visibility:visible; }
+  35% { transform:perspective(1500px) rotateX(49.14deg); visibility:visible; }
+  37.5% { transform:perspective(1500px) rotateX(55.56deg); visibility:visible; }
+  40% { transform:perspective(1500px) rotateX(62.19deg); visibility:visible; }
+  42.5% { transform:perspective(1500px) rotateX(68.99deg); visibility:visible; }
+  45% { transform:perspective(1500px) rotateX(75.92deg); visibility:visible; }
+  47.5% { transform:perspective(1500px) rotateX(82.94deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50.01%, 100% { transform:perspective(1500px) rotateX(90deg); visibility:hidden; }
+}
+@keyframes wr-flap-open {
+  0%, 49.99% { transform:perspective(1500px) rotateX(-90deg); visibility:hidden; }
+  50% { transform:perspective(1500px) rotateX(-90deg); visibility:visible; }
+  52.5% { transform:perspective(1500px) rotateX(-82.94deg); visibility:visible; }
+  55% { transform:perspective(1500px) rotateX(-75.92deg); visibility:visible; }
+  57.5% { transform:perspective(1500px) rotateX(-68.99deg); visibility:visible; }
+  60% { transform:perspective(1500px) rotateX(-62.19deg); visibility:visible; }
+  62.5% { transform:perspective(1500px) rotateX(-55.56deg); visibility:visible; }
+  65% { transform:perspective(1500px) rotateX(-49.14deg); visibility:visible; }
+  67.5% { transform:perspective(1500px) rotateX(-42.98deg); visibility:visible; }
+  70% { transform:perspective(1500px) rotateX(-37.1deg); visibility:visible; }
+  72.5% { transform:perspective(1500px) rotateX(-31.55deg); visibility:visible; }
+  75% { transform:perspective(1500px) rotateX(-26.36deg); visibility:visible; }
+  77.5% { transform:perspective(1500px) rotateX(-21.56deg); visibility:visible; }
+  80% { transform:perspective(1500px) rotateX(-17.19deg); visibility:visible; }
+  82.5% { transform:perspective(1500px) rotateX(-13.26deg); visibility:visible; }
+  85% { transform:perspective(1500px) rotateX(-9.81deg); visibility:visible; }
+  87.5% { transform:perspective(1500px) rotateX(-6.85deg); visibility:visible; }
+  90% { transform:perspective(1500px) rotateX(-4.4deg); visibility:visible; }
+  92.5% { transform:perspective(1500px) rotateX(-2.49deg); visibility:visible; }
+  95% { transform:perspective(1500px) rotateX(-1.11deg); visibility:visible; }
+  97.5% { transform:perspective(1500px) rotateX(-0.28deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+}
+.inv[data-template="white-roses"][data-phase="opening"] .env-flap-closed { animation:wr-flap-closed 1.25s linear both; }
+.inv[data-template="white-roses"][data-phase="opening"] .env-flap-open { animation:wr-flap-open 1.25s linear both; }

@@ -1,5 +1,5 @@
 import type { Content } from "@/lib/content/schema";
-import { FLYING_PHOTO, type TemplateSlug } from "@/lib/templates";
+import { coverBottomText, FLYING_PHOTO, TEMPLATE_COVER, type TemplateSlug } from "@/lib/templates";
 import { EnvelopeArt } from "./EnvelopeArt";
 import { CoverNames } from "./CoverNames";
 
@@ -25,12 +25,12 @@ export function CoverInner({ content: c, mode, hint, template }: { content: Cont
     ) : null;
   return (
     <>
-      {c.texts.coverTop && <span className="cover-top">{c.texts.coverTop}</span>}
+      {c.texts.coverTop && !(template && TEMPLATE_COVER[template]?.hideTop) && <span className="cover-top">{c.texts.coverTop}</span>}
       <CoverNames first={first} second={second} />
       <span className="cover-env">
         <EnvelopeArt monogram={monogram} template={template} photo={template && FLYING_PHOTO[template] ? c.photo ?? undefined : undefined} />
       </span>
-      {c.texts.coverBottom && <span className="cover-bottom">{c.texts.coverBottom}</span>}
+      {c.texts.coverBottom && <span className="cover-bottom">{coverBottomText(template, c.texts.coverBottom)}</span>}
       {hint && <span className="env-hint">Tap to open</span>}
     </>
   );

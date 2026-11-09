@@ -1,4 +1,4 @@
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, type TemplateSlug, FLYING_PHOTO } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
@@ -42,12 +42,12 @@ function titleCase(text: string) {
   return text.replace(/\S+/g, (w, i: number) => (i > 0 && SMALL.has(w.toLowerCase()) ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1)));
 }
 
-function RsvpTitle({ text }: { text: string }) {
+function RsvpTitle({ text, oneBlock }: { text: string; oneBlock?: boolean }) {
   const words = text.trim().split(/\s+/).filter(Boolean);
   const lead = words.length >= 2 ? words[0] : "please";
   const bigText = (words.length >= 2 ? words.slice(1).join(" ") : words[0] || "").toUpperCase();
   const half = Math.ceil(bigText.length / 2);
-  const big = !bigText.includes(" ") && bigText.length >= 4 ? [bigText.slice(0, half), bigText.slice(half)] : [bigText];
+  const big = !oneBlock && !bigText.includes(" ") && bigText.length >= 4 ? [bigText.slice(0, half), bigText.slice(half)] : [bigText];
   return (
     <h2 className="rsvp-title" aria-label={text}>
       {lead && <span className="rsvp-lead" aria-hidden="true">{lead}</span>}
@@ -77,7 +77,7 @@ export function Invitation({
   envelope,
   calendarHref,
   rsvpSlug,
-  template,
+  template: templateProp,
 }: {
   content: Content;
   mode: "preview" | "public";
@@ -92,6 +92,7 @@ export function Invitation({
   /** Which design to paint (the invitation's template). */
   template?: TemplateSlug;
 }) {
+  const template = templateSlug(templateProp); // unknown / missing design names fall back to the default design
   const ph = mode === "preview";
   const first = c.couple.first || (ph ? "Beloved" : "");
   const second = c.couple.second || (ph ? "Beloved" : "");
@@ -203,7 +204,7 @@ export function Invitation({
                     <p className="caps tiny">Dress code</p>
                     <div className="dtl-dress">
                       <p className="dots">
-                        {c.dressCode.colors.map((col) => <i key={col} style={{ background: col }} />)}
+                        {c.dressCode.colors.map((col, i) => <i key={i} style={{ background: col }} />)}
                       </p>
                       {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
                     </div>
@@ -233,9 +234,9 @@ export function Invitation({
       {!off(6) && hasRsvp && (
         <section className="card card-rsvp" data-card="6">
           <div className="rsvp-in">
-            <RsvpTitle text="Please RSVP" />
+            <RsvpTitle text="Please RSVP" oneBlock={template === "mono-script" || template === "cupid-script" || template === "lilac-script"} />
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
-            {c.rsvp.email && ((template === "mono-script" || template === "cupid-script")
+            {c.rsvp.email && ((template === "mono-script" || template === "cupid-script" || template === "lilac-script")
               ? <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>
               : <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>)}
             {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}

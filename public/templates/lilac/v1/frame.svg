@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <filter id="soft" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="0.8"/></filter>
+    <g id="lines" stroke-linejoin="miter">
+      <rect x="8" y="8" width="184" height="184" stroke-width="2.4"/>
+      <rect x="19" y="19" width="162" height="162" stroke-width="1.9"/>
+    </g>
+    <g id="dia">
+      <path d="M8 -1 L17 8 L8 17 L-1 8 Z"/><path d="M192 -1 L201 8 L192 17 L183 8 Z"/>
+      <path d="M8 183 L17 192 L8 201 L-1 192 Z"/><path d="M192 183 L201 192 L192 201 L183 192 Z"/>
+    </g>
+  </defs>
+  <!-- the floor of the groove: a faint darkening -->
+  <g transform="translate(1.2 1.2)" opacity=".10"><use href="#lines" stroke="#3a2f26" stroke-width="3.4"/></g>
+  <!-- the shadow on the top-left wall of the groove -->
+  <g filter="url(#soft)" opacity=".62"><use href="#lines" stroke="#4a3f36"/><use href="#dia" fill="#4a3f36"/></g>
+  <!-- the light catching the bottom-right wall -->
+  <g transform="translate(2.1 2.1)" opacity=".78"><use href="#lines" stroke="#ffffff" stroke-width="1.5"/><use href="#dia" fill="#ffffff"/></g>
+</svg>

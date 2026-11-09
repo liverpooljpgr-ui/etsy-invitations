@@ -727,3 +727,173 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 .inv[data-template="mono-script"] .env-photo { z-index:1; }
 .inv[data-template="mono-script"] .env-body { z-index:2; }
 .inv[data-template="mono-script"] .env-flap-closed { z-index:3; }
+
+/* ───────── 115. The photo inside the envelope is invisible until the envelope is tapped (the opening animation shows it), so it never flashes while the envelope pictures are still loading ───────── */
+.inv[data-template="mono-script"] .env-photo { opacity:0; }
+
+/* ───────── 116. Screen 2: the top space equals the left / right space (12% of the screen width) and the photo is a bit shorter (12 : 13, it was 12 : 14) ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in { padding-top:12cqw !important; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch { aspect-ratio:12/13; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:flex-start; }   /* the photo starts right at the top space (it was centred in the screen) */
+
+/* ───────── 117. RSVP is ONE block (no gap between "RS" and "VP", both halves appear together); the grey text is darker so it reads on a phone (#8c8c8c -> #6b6b6b); the accommodation address gets 20px on the left and right ───────── */
+.inv[data-template="mono-script"] { --ms-grey:#6b6b6b; }   /* change to make all grey captions lighter or darker */
+.inv[data-template="mono-script"] .rsvp-title { column-gap:0; }
+.inv[data-template="mono-script"] .rsvp-big { margin:0; }
+.inv[data-phase] .card.in .rsvp-title > .rsvp-big { animation-delay:.65s !important; }
+.inv[data-template="mono-script"] .dtl-acc .dtl-text { padding-inline:20px; }
+
+/* ───────── 118. COVER: the wax seal sits 5% higher on the envelope (62% -> 57% of the envelope's height; a smaller number is higher) ───────── */
+.inv[data-template="mono-script"] .env-seal { top:57%; }
+
+/* ───────── 128. RSVP screen: "RSVP" is centred exactly on the screen (the space after the last letter is balanced by the same space before the first one) ───────── */
+.inv[data-template="mono-script"] .rsvp-big { padding-left:.22em; }
+.inv[data-template="mono-script"] .rsvp-by { padding-left:var(--ms-track); }   /* same balance for the date line */
+
+/* ───────── 139. SEAL SIZE: 15% smaller (26% -> 22.1% of the envelope width; change the number to resize) ───────── */
+.inv[data-template="mono-script"] .env-seal { width:22.1%; }
+
+/* ───────── SEAL POSITION: 10px lower (57% of the envelope height + 10px) ───────── */
+.inv[data-template="mono-script"] .env-seal { top:calc(57% + 10px); }
+
+/* ───────── ENVELOPE OPENING: the inside flap rises SMOOTHLY (2.2 s, soft start and soft landing; it used to shoot up in the first third of a second) ───────── */
+.inv[data-template="mono-script"] .env-flap-open { transition:transform 2.2s cubic-bezier(.38,.04,.22,1) 1.2s, visibility 0s linear 1.2s; }
+
+/* ───────── PHOTO IN THE ENVELOPE: it is visible inside the open envelope the whole time the flap is opening (until 3.2 s, when the flap has landed); only then it slides out smoothly (3.2 - 3.9 s), grows and flies to its place on the next screen (lands at 5.3 s). The cover fades at 5.3 s, the texts of the next screen follow. ───────── */
+.inv[data-template="mono-script"][data-phase="opening"] .env-photo { animation:cupid-photo-fly 5.3s linear 0s both; }
+@keyframes cupid-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  60.4% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,.05,.25,1); }
+  73.6% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  73.7% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.5,0,.2,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+.inv[data-template="mono-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:5.3s !important; }
+.inv[data-template="mono-script"][data-fly][data-phase="opening"] .env-btn { transition:opacity .8s ease 5.3s; }
+
+/* ───────── PHOTO IN THE ENVELOPE: the same proportions as the photo on the next screen (12 : 13), so it is only scaled, never stretched or re-cropped ───────── */
+.inv[data-template="mono-script"] .env-photo { aspect-ratio:12/13; }
+
+/* ───────── SMOOTH OPENING (no stop in the middle): the inside flap lands at 3.0 s; the photo waits for it, then rises out with a ACCELERATING move (3.0 - 3.7 s) that goes straight on into a DECELERATING flight to its place (3.7 - 5.3 s), so there is no standstill between the two moves ───────── */
+.inv[data-template="mono-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.38,.04,.22,1) 1.2s, visibility 0s linear 1.2s; }
+@keyframes cupid-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  56.6% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  69.8% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  69.9% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.55,.25,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+@keyframes print-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  56.6% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  69.8% { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  69.9% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.55,.25,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; }
+}
+
+/* ───────── OPENING, FINAL TIMING (4.8 s of photo motion): waits inside the open envelope until the flap has landed (3.0 s), rises out 3.0 - 3.6 s (accelerating), flies on 3.6 - 4.8 s (decelerating, shorter tail so it does not crawl), the cover fades from 4.6 s, the texts of the next screen from 4.9 s ───────── */
+.inv[data-template="mono-script"][data-phase="opening"] .env-photo { animation:print-photo-fly 4.8s linear 0s both; }
+@keyframes cupid-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  62.5% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  75%   { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  75.1% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.6,.3,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+@keyframes print-photo-fly {
+  0%    { transform:none; opacity:1; z-index:1; }
+  62.5% { transform:none; opacity:1; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  75%   { transform:translateY(-120%); opacity:1; z-index:1; animation-timing-function:step-end; }
+  75.1% { transform:translateY(-120%); opacity:1; z-index:6; animation-timing-function:cubic-bezier(.12,.6,.3,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); opacity:1; z-index:6; }
+}
+.inv[data-template="mono-script"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:4.9s !important; }
+.inv[data-template="mono-script"][data-fly][data-phase="opening"] .env-btn { transition:opacity .8s ease 4.6s; }
+
+/* ───────── TALL NARROW PHONES (up to 360px wide, at least 680px tall: e.g. 340 x 738): the content of the cover is centred in the screen (it used to sit at the top over the flowers) and the flowers at the top of the cover and of the closing screen are seen well: the closing flowers band is taller and fades out later ───────── */
+@media (max-width: 360px) and (min-height: 680px) {
+  .inv[data-template="mono-script"] .cover { justify-content:center !important; padding-top:5% !important; padding-bottom:5% !important; }
+  .inv[data-template="mono-script"] .card-closing::before { height:46%; -webkit-mask-image:linear-gradient(to bottom,#000 74%,transparent 100%); mask-image:linear-gradient(to bottom,#000 74%,transparent 100%); }
+}
+
+/* ───────── TALL NARROW PHONES (up to 360px wide, at least 680px tall): the roses at the top of the cover are shown at the full width of the screen (the cover picture is cut at the sides on such a tall screen, so its corner roses almost disappeared): the top part of the picture is laid over the cover at full width and fades out downwards ───────── */
+@media (max-width: 360px) and (min-height: 680px) {
+  .inv[data-template="mono-script"] .cover::before { content:""; position:absolute; left:0; right:0; top:0; height:50%; z-index:-1; pointer-events:none;
+    background:url(/templates/script/v1/cover-white-roses.webp) top center / 100% auto no-repeat;
+    -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); mask-image:linear-gradient(to bottom,#000 62%,transparent 100%); }
+}
+
+/* ───────── TALL NARROW PHONES (up to 360px wide, at least 680px tall): the Save the date screen is centred in the screen (photo + title + date lines as one block, equal space above and below), and the gap between the title and the date lines grows with the height of the screen (8% of it, plus 4% above the title) so the space is used properly ───────── */
+@media (max-width: 360px) and (min-height: 680px) {
+  .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; padding-bottom:12cqw !important; }
+  .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .save { margin-top:4cqh; margin-bottom:8cqh; }
+}
+
+/* ───────── 145. SMOOTH FLAP TURN (no blink): the open flap starts turning at the speed the closed flap had when it went edge-on (fast start, then a long soft landing), so the two halves of the turn join without a pause ───────── */
+.inv[data-template="mono-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.1,.4,.3,1) 1.06s, visibility 0s linear 1.06s; }
+
+/* ───────── 145. SMOOTH FLAP TURN (no blink): the open flap starts turning at the speed the closed flap had when it went edge-on (fast start, then a long soft landing), so the two halves of the turn join without a pause ───────── */
+.inv[data-template="mono-script"] .env-flap-open { transition:transform 1.8s cubic-bezier(.1,.4,.3,1) 1.06s, visibility 0s linear 1.06s; }
+
+/* ───────── 146. ONE CONTINUOUS FLAP TURN (smoother opening): the closed flap and the open flap are two halves of the same 180 degree turn that follows ONE ease-in-out curve (3.0 s, with a little perspective), so there is no change of speed or empty moment when the flap goes edge-on. The flap lands at 3.0 s as before. ───────── */
+@keyframes ms-flap-closed {
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  0% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  2.08% { transform:perspective(1500px) rotateX(0.19deg); visibility:visible; }
+  4.17% { transform:perspective(1500px) rotateX(0.77deg); visibility:visible; }
+  6.25% { transform:perspective(1500px) rotateX(1.73deg); visibility:visible; }
+  8.33% { transform:perspective(1500px) rotateX(3.07deg); visibility:visible; }
+  10.42% { transform:perspective(1500px) rotateX(4.78deg); visibility:visible; }
+  12.5% { transform:perspective(1500px) rotateX(6.85deg); visibility:visible; }
+  14.58% { transform:perspective(1500px) rotateX(9.28deg); visibility:visible; }
+  16.67% { transform:perspective(1500px) rotateX(12.06deg); visibility:visible; }
+  18.75% { transform:perspective(1500px) rotateX(15.17deg); visibility:visible; }
+  20.83% { transform:perspective(1500px) rotateX(18.6deg); visibility:visible; }
+  22.92% { transform:perspective(1500px) rotateX(22.33deg); visibility:visible; }
+  25% { transform:perspective(1500px) rotateX(26.36deg); visibility:visible; }
+  27.08% { transform:perspective(1500px) rotateX(30.66deg); visibility:visible; }
+  29.17% { transform:perspective(1500px) rotateX(35.21deg); visibility:visible; }
+  31.25% { transform:perspective(1500px) rotateX(40deg); visibility:visible; }
+  33.33% { transform:perspective(1500px) rotateX(45deg); visibility:visible; }
+  35.42% { transform:perspective(1500px) rotateX(50.19deg); visibility:visible; }
+  37.5% { transform:perspective(1500px) rotateX(55.56deg); visibility:visible; }
+  39.58% { transform:perspective(1500px) rotateX(61.07deg); visibility:visible; }
+  41.67% { transform:perspective(1500px) rotateX(66.71deg); visibility:visible; }
+  43.75% { transform:perspective(1500px) rotateX(72.44deg); visibility:visible; }
+  45.83% { transform:perspective(1500px) rotateX(78.25deg); visibility:visible; }
+  47.92% { transform:perspective(1500px) rotateX(84.11deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50% { transform:perspective(1500px) rotateX(90deg); visibility:visible; }
+  50.01%, 100% { transform:perspective(1500px) rotateX(90deg); visibility:hidden; }
+}
+@keyframes ms-flap-open {
+  0%, 49.99% { transform:perspective(1500px) rotateX(-90deg); visibility:hidden; }
+  50% { transform:perspective(1500px) rotateX(-90deg); visibility:visible; }
+  52.08% { transform:perspective(1500px) rotateX(-84.11deg); visibility:visible; }
+  54.17% { transform:perspective(1500px) rotateX(-78.25deg); visibility:visible; }
+  56.25% { transform:perspective(1500px) rotateX(-72.44deg); visibility:visible; }
+  58.33% { transform:perspective(1500px) rotateX(-66.71deg); visibility:visible; }
+  60.42% { transform:perspective(1500px) rotateX(-61.07deg); visibility:visible; }
+  62.5% { transform:perspective(1500px) rotateX(-55.56deg); visibility:visible; }
+  64.58% { transform:perspective(1500px) rotateX(-50.19deg); visibility:visible; }
+  66.67% { transform:perspective(1500px) rotateX(-45deg); visibility:visible; }
+  68.75% { transform:perspective(1500px) rotateX(-40deg); visibility:visible; }
+  70.83% { transform:perspective(1500px) rotateX(-35.21deg); visibility:visible; }
+  72.92% { transform:perspective(1500px) rotateX(-30.66deg); visibility:visible; }
+  75% { transform:perspective(1500px) rotateX(-26.36deg); visibility:visible; }
+  77.08% { transform:perspective(1500px) rotateX(-22.33deg); visibility:visible; }
+  79.17% { transform:perspective(1500px) rotateX(-18.6deg); visibility:visible; }
+  81.25% { transform:perspective(1500px) rotateX(-15.17deg); visibility:visible; }
+  83.33% { transform:perspective(1500px) rotateX(-12.06deg); visibility:visible; }
+  85.42% { transform:perspective(1500px) rotateX(-9.28deg); visibility:visible; }
+  87.5% { transform:perspective(1500px) rotateX(-6.85deg); visibility:visible; }
+  89.58% { transform:perspective(1500px) rotateX(-4.78deg); visibility:visible; }
+  91.67% { transform:perspective(1500px) rotateX(-3.07deg); visibility:visible; }
+  93.75% { transform:perspective(1500px) rotateX(-1.73deg); visibility:visible; }
+  95.83% { transform:perspective(1500px) rotateX(-0.77deg); visibility:visible; }
+  97.92% { transform:perspective(1500px) rotateX(-0.19deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+  100% { transform:perspective(1500px) rotateX(0deg); visibility:visible; }
+}
+.inv[data-template="mono-script"][data-phase="opening"] .env-flap-closed { animation:ms-flap-closed 3s linear both; }
+.inv[data-template="mono-script"][data-phase="opening"] .env-flap-open { animation:ms-flap-open 3s linear both; }
