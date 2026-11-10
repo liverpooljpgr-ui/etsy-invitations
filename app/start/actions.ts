@@ -50,7 +50,7 @@ async function issueClaim(invitationId: string): Promise<string | null> {
 }
 
 const sentTo = (to: string) => `We sent a confirmation link to ${to}. Open your email and click the link in it to start your invitation. The link works once, on any phone or computer. Not there? Look in your spam folder, or enter the same order number and email again and we send a new one.`;
-const USED = "This order number has already been used. If it is your order and you need help, contact us through your Etsy order messages.";
+const USED = "This order number has already been used. If it is your order and you need help, please contact Tamara from PIXELINVITE on Etsy.";
 
 /** The buyer activates their purchase themselves with the Etsy order number; it works once per order number. */
 export async function redeemOrder(_prev: StartState, fd: FormData): Promise<StartState> {
@@ -89,7 +89,7 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
 
   // a single email address cannot start unlimited unverified orders
   const { count } = await db.from("audit_log").select("id", { count: "exact", head: true }).eq("action", "order.self_start").contains("metadata", { email });
-  if ((count ?? 0) >= MAX_UNVERIFIED_PER_EMAIL) return { ok: false, message: "Please contact us through your Etsy order messages and we will set it up for you." };
+  if ((count ?? 0) >= MAX_UNVERIFIED_PER_EMAIL) return { ok: false, message: "Please contact Tamara from PIXELINVITE on Etsy and she will set it up for you." };
 
   const { data: order, error: oErr } = await db.from("orders").insert({
     plan_code: PLAN, etsy_order_ref: ref, payment_status: "pending_verification", purchased_at: new Date().toISOString(),

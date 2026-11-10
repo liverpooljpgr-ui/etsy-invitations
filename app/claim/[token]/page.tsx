@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthLogo } from "@/components/AuthLogo";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -24,6 +25,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
       return (
         <div className="ui ui-center">
           <main className="ui-auth">
+<AuthLogo />
             <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>You are signed in as admin</h1>
             <p className="ui-lede">This is a customer&apos;s personal link, so it was not used. To see what the customer sees, sign out here (or open the link in a private window).</p>
             <div className="ui-card ui-auth-stack">
@@ -45,7 +47,8 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
-        <p className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", color: "var(--ui-label)" }}>{status === "used" ? "Welcome back" : "Welcome"}</p>
+<AuthLogo />
+        {status !== "invalid" && <p className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", color: "var(--ui-label)" }}>{status === "used" ? "Welcome back" : "Welcome"}</p>}
         {status !== "used" && (
           <h1 className="ui-large-title" style={{ margin: "0 0 12px", textAlign: "center", fontSize: 30, fontWeight: 400 }}>{status === "ok" ? "Your invitation is waiting" : "Link not valid"}</h1>
         )}
@@ -61,7 +64,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ token: s
             <div className="ui-card"><ClaimForm token={token} label="Sign in" /></div>
           </>
         )}
-        {status === "invalid" && <p className="ui-lede" style={{ textAlign: "center" }}>This link is invalid or has expired. Contact support for a new one.</p>}
+        {status === "invalid" && <p className="ui-lede" style={{ textAlign: "center" }}>This link is invalid or has expired. Please contact Tamara from PIXELINVITE on Etsy for a new one.</p>}
         {status === "ok" && <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}><Link href="/login" className="ui-link">Already have an invitation? Sign in</Link></p>}
       </main>
     </div>

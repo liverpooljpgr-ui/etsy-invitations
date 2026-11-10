@@ -78,7 +78,7 @@ export async function publishInvitation(id: string): Promise<PublishResult> {
 
   const snapshot = applyPlan(parsed.data, plan.features);
   const { error } = await createAdminClient().rpc("publish_invitation", { p_actor: a.user.id, p_invitation: id, p_snapshot: snapshot });
-  if (error) return { ok: false, error: "Could not publish. Your hosting may be inactive — contact support." };
+  if (error) return { ok: false, error: "Could not publish. Your hosting may be inactive. Please contact Tamara from PIXELINVITE on Etsy." };
 
   // First publish, before the link has gone to anyone: swap the random code for the couple's names ("anna-and-richard").
   // Addresses chosen by hand are left alone, and so is every later publish (the link must keep working).

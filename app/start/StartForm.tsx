@@ -26,7 +26,10 @@ export function StartForm({ template, templateName, keyValue }: { template: stri
     <form action={action} className="ui-auth-stack">
       <input type="hidden" name="template" value={template} />
       <input type="hidden" name="key" value={keyValue} />
-      <p className="ui-help" style={{ margin: 0 }}>Your design: <b>{templateName}</b></p>
+      <div style={{ textAlign: "center", padding: "2px 0 6px" }}>
+        <p className="ui-label" style={{ margin: 0, fontSize: 11, letterSpacing: ".26em", textTransform: "uppercase" }}>Your design</p>
+        <p style={{ margin: "6px 0 0", fontSize: 28, lineHeight: 1.15, fontWeight: 700, letterSpacing: ".01em", color: "var(--ui-label)" }}>{templateName}</p>
+      </div>
       <label className="ui-field">
         <span className="ui-label">Etsy order number</span>
         <input name="order" required inputMode="numeric" autoComplete="off" placeholder="3912345678" className="ui-input" />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthLogo } from "@/components/AuthLogo";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { startKeyOk } from "@/lib/start-key";
 import { StartForm } from "./StartForm";
@@ -23,8 +24,9 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
-        <p className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", color: "var(--ui-label)" }}>{returning ? "Welcome back" : "Welcome"}</p>
-        {!returning && <h1 className="ui-large-title" style={{ margin: "0 0 12px", textAlign: "center", fontSize: 30, fontWeight: 400 }}>{tpl ? "Start your invitation" : "Link not valid"}</h1>}
+        <AuthLogo />
+        {tpl && <p className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", color: "var(--ui-label)" }}>{returning ? "Welcome back" : "Welcome"}</p>}
+        {!returning && !tpl && <h1 className="ui-large-title" style={{ margin: "0 0 12px", textAlign: "center", fontSize: 30, fontWeight: 400 }}>Link not valid</h1>}
         {returning && tpl ? (
           <>
             <p className="ui-lede" style={{ textAlign: "center" }}>Enter the email you used the first time and your invitation opens.</p>
@@ -33,12 +35,11 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           </>
         ) : tpl ? (
           <>
-            <p className="ui-lede" style={{ textAlign: "center" }}>Enter your Etsy order number and your email. We send you a confirmation link, and then you can personalise your invitation.</p>
             <div className="ui-card"><StartForm template={tpl.slug} templateName={tpl.name} keyValue={key} /></div>
             <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}>You find the order number in your Etsy purchases, or in the confirmation email from Etsy.</p>
           </>
         ) : (
-          <p className="ui-lede" style={{ textAlign: "center" }}>This link is not valid. Please open the link in the PDF you downloaded from Etsy.</p>
+          <p className="ui-lede" style={{ textAlign: "center" }}>This link is not valid. Please open the link in the PDF you downloaded from Etsy, or contact Tamara from PIXELINVITE on Etsy.</p>
         )}
       </main>
     </div>

@@ -15,6 +15,7 @@ import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_C
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { PdfLoader } from "@/components/PdfLoader";
 import { publishInvitation, saveDraft, unpublishInvitation } from "./actions";
 
 type Props = {
@@ -508,6 +509,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
   return (
     <div className="ui">
+      {pdfBusy && <PdfLoader />}
       <header className="ui-top">
         <div className="ui-bar">
           <Link href="/dashboard" className="ui-icon-btn" aria-label="Back to my invitations">

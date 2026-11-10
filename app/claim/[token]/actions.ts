@@ -53,7 +53,7 @@ export async function startClaim(token: string, _prev: ClaimState, formData: For
     if (!(await signInWithoutLink(email.data))) return { ok: false, message: "Could not sign you in. Please try again." };
     redirect(`/editor/${inv.id}`);
   }
-  if (status !== "ok") return { ok: false, message: "This link is invalid or expired. Contact support for a new one." };
+  if (status !== "ok") return { ok: false, message: "This link is invalid or expired. Please contact Tamara from PIXELINVITE on Etsy for a new one." };
   if (!(await allowAttempt("claim", email.data))) return { ok: false, message: "Too many attempts. Please wait a few minutes and try again." };
 
   const customer = await findReturningCustomer(email.data);

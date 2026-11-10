@@ -865,3 +865,24 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 }
 .inv[data-template="white-roses"][data-phase="opening"] .env-flap-closed { animation:wr-flap-closed 1.25s linear both; }
 .inv[data-template="white-roses"][data-phase="opening"] .env-flap-open { animation:wr-flap-open 1.25s linear both; }
+
+/* ───────── PDF loader: a heart flies out of an open envelope while the keepsake PDF is made ───────── */
+.pdf-loader { position:fixed; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; background:rgba(250,246,248,.78); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+.pdf-loader-card { background:#fff; border:1px solid #ecdde4; border-radius:22px; padding:22px 30px 24px; text-align:center; box-shadow:0 18px 50px rgba(90,50,70,.18); max-width:min(86vw, 330px); }
+.pdf-loader-title { margin:6px 0 2px; font-weight:700; font-size:1.05rem; color:#4a2f45; }
+.pdf-loader-sub { margin:0; font-size:.85rem; color:#8a7482; }
+.pdf-heart { transform-box:fill-box; transform-origin:center; animation:pdf-heart-fly 2.3s ease-in-out infinite; }
+@keyframes pdf-heart-fly {
+  0%   { transform:translateY(34px) scale(.55) rotate(0deg); opacity:0; }
+  18%  { opacity:1; }
+  55%  { transform:translateY(-24px) scale(1) rotate(-7deg); opacity:1; }
+  78%  { transform:translateY(-38px) scale(1.06) rotate(6deg); opacity:1; }
+  100% { transform:translateY(-52px) scale(.85) rotate(0deg); opacity:0; }
+}
+.pdf-spark { animation:pdf-spark 2.3s ease-in-out infinite; }
+@keyframes pdf-spark { 0%,30% { opacity:0; } 60%,80% { opacity:.9; } 100% { opacity:0; } }
+@media (prefers-reduced-motion: reduce) {
+  .pdf-heart { animation:none; transform:translateY(-24px); }
+  .pdf-spark { animation:none; opacity:.8; }
+}
+.pdf-loader-card svg { display:block; margin:0 auto; }
