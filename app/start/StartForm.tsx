@@ -1,11 +1,27 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { redeemOrder } from "./actions";
 
 export function StartForm({ template, templateName, keyValue }: { template: string; templateName: string; keyValue: string }) {
   const [state, action, pending] = useActionState(redeemOrder, null);
-  if (state?.ok) return <p role="status" className="ui-note ui-note-ok" style={{ margin: 0 }}>{state.message}</p>;
+  // remember on this device that this design was started: the NEXT visit then asks only for the email
+  useEffect(() => {
+    if (!state?.ok) return;
+    try {
+      const have = (document.cookie.split("; ").find((c) => c.startsWith("pi_started="))?.slice(11) ?? "").split(",").filter(Boolean);
+      if (!have.includes(template)) have.push(template);
+      document.cookie = `pi_started=${have.slice(-8).join(",")}; path=/; max-age=${400 * 86400}; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`;
+    } catch { /* cookies blocked: the full form simply shows again next time */ }
+  }, [state, template]);
+  if (state?.ok) {
+    return (
+      <div role="status" className="ui-auth-stack" style={{ textAlign: "center" }}>
+        <h2 className="ui-large-title" style={{ margin: 0, fontSize: 24, fontWeight: 500 }}>Check your email</h2>
+        <p className="ui-note ui-note-ok" style={{ margin: 0 }}>{state.message}</p>
+      </div>
+    );
+  }
   return (
     <form action={action} className="ui-auth-stack">
       <input type="hidden" name="template" value={template} />

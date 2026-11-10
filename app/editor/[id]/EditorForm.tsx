@@ -312,6 +312,26 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
   const [mailOpen, setMailOpen] = useState(false); // the Email choices (mail app, Gmail, Outlook, copy)
   const [mailCopied, setMailCopied] = useState(false);
+  const [pdfBusy, setPdfBusy] = useState(false); // making the keepsake PDF takes a few seconds
+  async function onDownloadPdf() {
+    if (pdfBusy) return;
+    setPdfBusy(true); setNotice(null);
+    try {
+      const res = await fetch(`/api/invitations/${id}/pdf`, { cache: "no-store" });
+      if (!res.ok) {
+        const j = await res.json().catch(() => null);
+        setNotice({ ok: false, text: j?.error ?? "Could not create the PDF. Please try again in a minute." });
+        return;
+      }
+      const url = URL.createObjectURL(await res.blob());
+      const a = document.createElement("a");
+      a.href = url; a.download = `${liveSlug}-invitation.pdf`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      setNotice({ ok: true, text: "Your PDF is ready." });
+    } catch { setNotice({ ok: false, text: "Network error. The PDF was not created." }); }
+    finally { setPdfBusy(false); }
+  }
   const [liveSlug, setLiveSlug] = useState(slug); // the first publish can swap the random code for the couple's names
   const publicUrl = `${origin}/${liveSlug}`;
   // the email is the one place a full, warm message is written (chat apps show a preview card instead)
@@ -476,6 +496,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <button type="button" className="ui-btn ui-btn-soft ui-btn-sm" onClick={async () => { try { await navigator.clipboard.writeText(`${mail.subject}\n\n${mail.body}`); setMailCopied(true); setTimeout(() => setMailCopied(false), 2000); } catch { /* the choices above still work */ } }}>{mailCopied ? "Copied" : "Copy the message"}</button>
         </div>
       )}
+      <div className="ui-actions" style={{ marginTop: 10 }}>
+        <button type="button" onClick={onDownloadPdf} disabled={pdfBusy} className="ui-btn ui-btn-soft ui-btn-sm">{pdfBusy ? "Preparing your PDF…" : "Download as PDF (keepsake)"}</button>
+      </div>
+      <p className="ui-help">A copy of your invitation, one page per screen, to keep for your memories. It shows the published version.</p>
       <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>
     <RsvpReplies invitationId={id} />

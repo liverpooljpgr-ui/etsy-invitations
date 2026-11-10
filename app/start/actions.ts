@@ -1,7 +1,7 @@
 "use server";
 
 import { createHash, randomBytes, randomInt } from "node:crypto";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -49,20 +49,12 @@ async function issueClaim(invitationId: string): Promise<string | null> {
   return error ? null : token;
 }
 
-/** This browser remembers which designs were started here, so the link opens with just the email field next time (the cookie holds no personal data). */
-async function rememberStarted(slug: string) {
-  const jar = await cookies();
-  const have = (jar.get("pi_started")?.value ?? "").split(",").filter(Boolean);
-  if (!have.includes(slug)) have.push(slug);
-  jar.set("pi_started", have.slice(-8).join(","), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 400 * 864e3 });
-}
-
-const SENT = "Check your inbox: we sent you a confirmation link (once only). Open it on any device and your invitation opens right away. If you can't find it, look in spam, or enter the same order number and email again to get a new one.";
+const sentTo = (to: string) => `We sent a confirmation link to ${to}. Open your email and click the link in it to start your invitation. The link works once, on any phone or computer. Not there? Look in your spam folder, or enter the same order number and email again and we send a new one.`;
 const USED = "This order number has already been used. If it is your order and you need help, contact us through your Etsy order messages.";
 
 /** The buyer activates their purchase themselves with the Etsy order number; it works once per order number. */
 export async function redeemOrder(_prev: StartState, fd: FormData): Promise<StartState> {
-  if (String(fd.get("website") ?? "").trim() !== "") return { ok: true, message: SENT }; // honeypot: bots fill every field
+  if (String(fd.get("website") ?? "").trim() !== "") return { ok: true, message: sentTo("your email") }; // honeypot: bots fill every field
   const p = input.safeParse({ key: fd.get("key") ?? "", template: fd.get("template"), order: fd.get("order"), email: fd.get("email") });
   if (!p.success) return { ok: false, message: p.error.issues[0].message };
   const { template, order: ref, email, key } = p.data;
@@ -82,7 +74,6 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
       // the owner comes back with the order number (another device): a sign-in link goes to the email, nothing else
       const { data: owner } = await db.from("profiles").select("email, role").eq("id", inv.owner_id).maybeSingle();
       if (owner?.role === "customer" && owner.email === email && (await sendConfirmationLink(email, `/editor/${inv.id}`, origin))) {
-        await rememberStarted(template);
         return { ok: true, message: "This order is already set up. We sent a sign-in link to your email: open it and your invitation opens." };
       }
       return { ok: false, message: USED };
@@ -93,8 +84,7 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
     await db.from("edit_claims").update({ revoked_at: new Date().toISOString() }).eq("invitation_id", inv.id).is("redeemed_at", null).is("revoked_at", null);
     const token = await issueClaim(inv.id);
     if (!token || !(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) return { ok: false, message: "Could not send the email. Please wait a minute and try again." };
-    await rememberStarted(template);
-    return { ok: true, message: SENT };
+    return { ok: true, message: sentTo(email) };
   }
 
   // a single email address cannot start unlimited unverified orders
@@ -128,8 +118,7 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
   if (!(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) {
     return { ok: false, message: "Your order was saved, but the email could not be sent. Please wait a minute and enter the same order number and email again." };
   }
-  await rememberStarted(template);
-  return { ok: true, message: SENT };
+  return { ok: true, message: sentTo(email) };
 }
 
 /**

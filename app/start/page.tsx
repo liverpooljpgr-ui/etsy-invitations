@@ -23,8 +23,8 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   return (
     <div className="ui ui-center">
       <main className="ui-auth">
-        <p className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", color: "var(--ui-label)" }}>Welcome</p>
-        <h1 className="ui-large-title" style={{ margin: "0 0 12px", textAlign: "center", fontSize: 30, fontWeight: 400 }}>{!tpl ? "Link not valid" : returning ? "Welcome back" : "Start your invitation"}</h1>
+        <p className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", color: "var(--ui-label)" }}>{returning ? "Welcome back" : "Welcome"}</p>
+        {!returning && <h1 className="ui-large-title" style={{ margin: "0 0 12px", textAlign: "center", fontSize: 30, fontWeight: 400 }}>{tpl ? "Start your invitation" : "Link not valid"}</h1>}
         {returning && tpl ? (
           <>
             <p className="ui-lede" style={{ textAlign: "center" }}>Enter the email you used the first time and your invitation opens.</p>
