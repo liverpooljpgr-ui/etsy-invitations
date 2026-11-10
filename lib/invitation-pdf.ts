@@ -1,12 +1,19 @@
 import "server-only";
 import { existsSync } from "node:fs";
 import { PDFDocument } from "pdf-lib";
+import sharp from "sharp";
 import puppeteer, { type Browser } from "puppeteer-core";
 
 /** Phone-sized pages: the same screens a guest sees on a phone, in the same order (cover, photo & date, venue, timeline, details, RSVP, closing). */
 const W = 390;
 const H = 844;
 const SCALE = 2;
+const JPEG_QUALITY = 80; // about 430 KB for the 7 pages: the same look on a phone as the first, heavier version (780 KB)
+
+/** Chrome takes a lossless picture; one careful compression here keeps the PDF small. */
+async function pack(png: Uint8Array): Promise<Buffer> {
+  return sharp(png).jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toBuffer();
+}
 
 const LOCAL_CHROME = [
   process.env.PDF_CHROME_PATH,
@@ -45,7 +52,7 @@ export async function renderInvitationPdf(publicUrl: string, title: string): Pro
 
     const shots: Buffer[] = [];
     // 1. the cover with the closed envelope
-    shots.push(Buffer.from(await page.screenshot({ type: "jpeg", quality: 90 })));
+    shots.push(await pack(await page.screenshot({ type: "png" })));
     // 2. tap the envelope (reduced motion: it opens without the animation), then each screen in turn
     await page.click(".env-btn");
     await page.waitForSelector('[data-card="2"]', { timeout: 15000 });
@@ -61,7 +68,7 @@ export async function renderInvitationPdf(publicUrl: string, title: string): Pro
       }, n);
       if (!found) continue;
       await new Promise((r) => setTimeout(r, 700));
-      shots.push(Buffer.from(await page.screenshot({ type: "jpeg", quality: 90 })));
+      shots.push(await pack(await page.screenshot({ type: "png" })));
     }
 
     const pdf = await PDFDocument.create();
