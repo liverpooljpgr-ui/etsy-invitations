@@ -1,11 +1,12 @@
 "use server";
 
 import { createHash, randomBytes, randomInt } from "node:crypto";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { defaultContent } from "@/lib/content/schema";
-import { sendConfirmationLink } from "@/lib/email-login";
+import { allowAttempt, findReturningCustomer, sendConfirmationLink, signInWithoutLink } from "@/lib/email-login";
 import { startKeyOk } from "@/lib/start-key";
 
 export type StartState = { ok: boolean; message: string } | null;
@@ -48,6 +49,14 @@ async function issueClaim(invitationId: string): Promise<string | null> {
   return error ? null : token;
 }
 
+/** This browser remembers which designs were started here, so the link opens with just the email field next time (the cookie holds no personal data). */
+async function rememberStarted(slug: string) {
+  const jar = await cookies();
+  const have = (jar.get("pi_started")?.value ?? "").split(",").filter(Boolean);
+  if (!have.includes(slug)) have.push(slug);
+  jar.set("pi_started", have.slice(-8).join(","), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 400 * 864e3 });
+}
+
 const SENT = "Check your inbox: we sent you a confirmation link (once only). Open it on any device and your invitation opens right away. If you can't find it, look in spam, or enter the same order number and email again to get a new one.";
 const USED = "This order number has already been used. If it is your order and you need help, contact us through your Etsy order messages.";
 
@@ -69,12 +78,22 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
   const { data: existing } = await db.from("orders").select("id").eq("etsy_order_ref", ref).maybeSingle();
   if (existing) {
     const { data: inv } = await db.from("invitations").select("id, owner_id").eq("order_id", existing.id).maybeSingle();
-    if (!inv || inv.owner_id) return { ok: false, message: USED };
+    if (inv?.owner_id) {
+      // the owner comes back with the order number (another device): a sign-in link goes to the email, nothing else
+      const { data: owner } = await db.from("profiles").select("email, role").eq("id", inv.owner_id).maybeSingle();
+      if (owner?.role === "customer" && owner.email === email && (await sendConfirmationLink(email, `/editor/${inv.id}`, origin))) {
+        await rememberStarted(template);
+        return { ok: true, message: "This order is already set up. We sent a sign-in link to your email: open it and your invitation opens." };
+      }
+      return { ok: false, message: USED };
+    }
+    if (!inv) return { ok: false, message: USED };
     const { data: log } = await db.from("audit_log").select("id").eq("action", "order.self_start").eq("entity_id", inv.id).contains("metadata", { email }).limit(1);
     if (!log?.length) return { ok: false, message: USED };
     await db.from("edit_claims").update({ revoked_at: new Date().toISOString() }).eq("invitation_id", inv.id).is("redeemed_at", null).is("revoked_at", null);
     const token = await issueClaim(inv.id);
     if (!token || !(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) return { ok: false, message: "Could not send the email. Please wait a minute and try again." };
+    await rememberStarted(template);
     return { ok: true, message: SENT };
   }
 
@@ -109,5 +128,35 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
   if (!(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) {
     return { ok: false, message: "Your order was saved, but the email could not be sent. Please wait a minute and enter the same order number and email again." };
   }
+  await rememberStarted(template);
   return { ok: true, message: SENT };
+}
+
+/**
+ * Second visit on the same device: only the email is asked, and only the email used the first time works.
+ *  - confirmed customer -> straight into the editor (same sign-in as /login);
+ *  - email of an order that was started but whose confirmation link was never opened -> a fresh confirmation email;
+ *  - any other email -> refused.
+ */
+export async function returnByEmail(_prev: StartState, fd: FormData): Promise<StartState> {
+  const p = z.string().trim().toLowerCase().pipe(z.email("Please enter a valid email address.")).safeParse(fd.get("email"));
+  if (!p.success) return { ok: false, message: p.error.issues[0].message };
+  const email = p.data;
+  if (!(await allowAttempt("return", email))) return { ok: false, message: "Too many attempts. Please wait a few minutes and try again." };
+  const WRONG = "This is not the right email. Enter the email you used the first time.";
+  const customer = await findReturningCustomer(email);
+  if (customer) {
+    if (!(await signInWithoutLink(email))) return { ok: false, message: "Could not sign you in. Please try again." };
+    redirect(customer.invitations.length === 1 ? `/editor/${customer.invitations[0]}` : "/dashboard");
+  }
+  const db = createAdminClient();
+  const { data: log } = await db.from("audit_log").select("entity_id").eq("action", "order.self_start").contains("metadata", { email }).order("created_at", { ascending: false }).limit(1);
+  const invId = log?.[0]?.entity_id;
+  const { data: inv } = invId ? await db.from("invitations").select("id, owner_id").eq("id", invId).maybeSingle() : { data: null };
+  if (!inv || inv.owner_id) return { ok: false, message: WRONG };
+  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  await db.from("edit_claims").update({ revoked_at: new Date().toISOString() }).eq("invitation_id", inv.id).is("redeemed_at", null).is("revoked_at", null);
+  const token = await issueClaim(inv.id);
+  if (!token || !(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) return { ok: false, message: "Could not send the email. Please wait a minute and try again." };
+  return { ok: true, message: "We sent you a confirmation link. Open it on any device and your invitation opens right away." };
 }
