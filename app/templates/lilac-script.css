@@ -1069,3 +1069,8 @@ body:has(.inv[data-template="lilac-script"]) .music-btn { color:#111; border-col
 }
 .inv[data-template="lilac-script"][data-phase="opening"] .env-flap-closed { animation:lc-flap-closed 3s linear both; }
 .inv[data-template="lilac-script"][data-phase="opening"] .env-flap-open { animation:lc-flap-open 3s linear both; }
+
+/* ───────── 147. NO GHOST OF THE ENVELOPE OVER THE PHOTO (seen on iPhone Safari): while the envelope fades out, its open flap and lining could be drawn in front of the photo that has just landed. Once the photo covers them (4.7 s) the open flap and the lining are taken away quickly; only the pocket is left to fade under the photo. Only when there is a photo (data-fly). ───────── */
+@keyframes lc-env-gone { to { opacity:0; visibility:hidden; } }
+.inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-flap-open { animation:lc-flap-open 3s linear both, lc-env-gone .15s linear 4.7s forwards; }
+.inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-liner { animation:lc-env-gone .15s linear 4.7s forwards; }
