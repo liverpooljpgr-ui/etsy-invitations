@@ -732,7 +732,7 @@ body:has(.inv[data-template="lilac-script"]) .music-btn { color:#111; border-col
 .inv[data-template="lilac-script"] .env-seal { top:57%; }
 
 /* ───────── 119. COVER (Cupid Script): no "the wedding of" line; the line under the envelope ("you are invited to our wedding") has 20px left and right and may take two lines ───────── */
-.inv[data-template="lilac-script"] .cover-bottom { text-wrap:balance; text-align:center; max-width:100%; padding-inline:20px; }   /* 20px left and right */
+.inv[data-template="lilac-script"] .cover-bottom { text-wrap:balance; text-align:center; max-width:100%; padding:0 40px; }   /* 40px left and right */
 
 /* ───────── 120. COVER (Cupid Script): the new gold seal (253 : 244) glows gold; the names are 50px and ALWAYS on separate lines (name / & / name); 85px of space above the first line ───────── */
 .inv[data-template="lilac-script"] .env-seal { aspect-ratio:253/244; }
@@ -1074,3 +1074,6 @@ body:has(.inv[data-template="lilac-script"]) .music-btn { color:#111; border-col
 @keyframes lc-env-gone { to { opacity:0; visibility:hidden; } }
 .inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-flap-open { animation:lc-flap-open 3s linear both, lc-env-gone .15s linear 4.7s forwards; }
 .inv[data-template="lilac-script"][data-fly][data-phase="opening"] .env-liner { animation:lc-env-gone .15s linear 4.7s forwards; }
+
+/* ───────── 148. THE ARROW TO THE NEXT SCREEN WORKS ON EVERY SCREEN: the content blocks of the screens (position:relative; z-index:1) were drawn over the arrow button from the venue screen on, so a tap never reached it. The arrow is now above the content. ───────── */
+.inv[data-template="lilac-script"] .swipe-hint { z-index:5; }

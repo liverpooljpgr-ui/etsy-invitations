@@ -52,6 +52,21 @@ export async function publishInvitation(id: string): Promise<PublishResult> {
   const a = await authorize(id);
   if (!a) return { ok: false, error: "Please sign in again." };
 
+  // An order a buyer started themselves with an Etsy order number stays a draft until the shop owner has checked the number.
+  {
+    const db = createAdminClient();
+    const [{ data: inv }, { data: me }] = await Promise.all([
+      db.from("invitations").select("order_id").eq("id", id).maybeSingle(),
+      db.from("profiles").select("role").eq("id", a.user.id).maybeSingle(),
+    ]);
+    if (me?.role !== "admin" && inv?.order_id) {
+      const { data: ord } = await db.from("orders").select("payment_status").eq("id", inv.order_id).maybeSingle();
+      if (ord?.payment_status === "pending_verification") {
+        return { ok: false, error: "We are still checking your Etsy order. Your changes are saved. You can publish as soon as it is confirmed, usually within a few hours. Please try again later." };
+      }
+    }
+  }
+
   const [{ data: row }, { data: plan }] = await Promise.all([
     a.supabase.from("invitation_content").select("draft, published").eq("invitation_id", id).maybeSingle(),
     a.supabase.from("plans").select("features").eq("code", a.inv.plan_code).single(),

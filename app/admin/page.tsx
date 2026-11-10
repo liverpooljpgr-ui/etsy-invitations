@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { startKey } from "@/lib/start-key";
 import { requireAdmin } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -15,14 +17,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
 
   const [{ data: invs }, { data: templates }] = await Promise.all([
     db.from("invitations").select("id, status, owner_id, order_id, template_id, created_at").order("created_at", { ascending: false }).limit(1000),
-    db.from("templates").select("id, name").eq("is_active", true).order("name"),
+    db.from("templates").select("id, name, slug").eq("is_active", true).order("name"),
   ]);
   const ownerIds = [...new Set((invs ?? []).map((i) => i.owner_id).filter((x): x is string => !!x))];
   const orderIds = (invs ?? []).map((i) => i.order_id).filter((x): x is string => !!x);
   const invIds = (invs ?? []).map((i) => i.id);
   const [{ data: owners }, { data: orders }, { data: hosting }] = await Promise.all([
     ownerIds.length ? db.from("profiles").select("id, email").in("id", ownerIds) : Promise.resolve({ data: [] as { id: string; email: string }[] }),
-    orderIds.length ? db.from("orders").select("id, etsy_order_ref, buyer_note, purchased_at, created_at").in("id", orderIds) : Promise.resolve({ data: [] as { id: string; etsy_order_ref: string | null; buyer_note: string | null; purchased_at: string | null; created_at: string }[] }),
+    orderIds.length ? db.from("orders").select("id, etsy_order_ref, buyer_note, purchased_at, created_at, payment_status").in("id", orderIds) : Promise.resolve({ data: [] as { id: string; etsy_order_ref: string | null; buyer_note: string | null; purchased_at: string | null; created_at: string; payment_status: string }[] }),
     invIds.length ? db.from("hosting_entitlements").select("invitation_id, ends_at").in("invitation_id", invIds) : Promise.resolve({ data: [] as { invitation_id: string; ends_at: string | null }[] }),
   ]);
   const email = new Map((owners ?? []).map((o) => [o.id, o.email]));
@@ -42,6 +44,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       status: i.status,
       expires: ends.get(i.id) ?? null,
       note: o?.buyer_note ?? "",
+      unverified: o?.payment_status === "pending_verification",
     };
   }).filter((r) => r.orderId);
 
@@ -50,6 +53,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
     await signOut();
     redirect("/login");
   }
+
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "pixelinvite.app";
+  const base = `${host.startsWith("localhost") ? "http" : "https"}://${host}`;
+  const startLinks = (templates ?? []).map((t) => ({ name: t.name, url: `${base}/start?t=${t.slug}&k=${startKey(t.slug)}` }));
 
   const initial = tab === "orders" || tab === "settings" ? tab : "new";
 
@@ -89,6 +97,18 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                 <section>
                   <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Your sign-in password</h3>
                   <PasswordForm />
+                </section>
+                <section>
+                  <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Links for the Etsy download PDFs</h3>
+                  <div className="ui-card" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    <p className="ui-help" style={{ margin: 0 }}>One link per design, with its own key. Buyers enter their Etsy order number here. Put the matching link in that listing&apos;s PDF.</p>
+                    {startLinks.map((l) => (
+                      <div key={l.name}>
+                        <p className="ui-label" style={{ margin: 0 }}>{l.name}</p>
+                        <input className="ui-input" readOnly value={l.url} style={{ marginTop: 4 }} />
+                      </div>
+                    ))}
+                  </div>
                 </section>
                 <section>
                   <h3 className="ui-sec-head" style={{ marginLeft: 16 }}>Hosting rules</h3>

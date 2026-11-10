@@ -902,3 +902,21 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
 @keyframes ms-env-gone { to { opacity:0; visibility:hidden; } }
 .inv[data-template="mono-script"][data-fly][data-phase="opening"] .env-flap-open { animation:ms-flap-open 3s linear both, ms-env-gone .15s linear 4.7s forwards; }
 .inv[data-template="mono-script"][data-fly][data-phase="opening"] .env-liner { animation:ms-env-gone .15s linear 4.7s forwards; }
+
+/* ───────── 148. THE ARROW TO THE NEXT SCREEN WORKS ON EVERY SCREEN: the content blocks of the screens (position:relative; z-index:1) were drawn over the arrow button from the venue screen on, so a tap never reached it. The arrow is now above the content. ───────── */
+.inv[data-template="mono-script"] .swipe-hint { z-index:5; }
+
+/* ───────── 149. Mono Script, screen 2 (same as Cupid Script and Lilac Script): the photo looks like a real print glued to the paper: a thin white print edge, a tight contact shadow and a soft wider one (light from the top left), a faint sheen over the picture and a light edge on its top-left. ───────── */
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch {
+  -webkit-mask-image:none; mask-image:none; overflow:visible; background:#fbfaf6;
+  box-shadow:
+    0 0 0 calc(5px * var(--k, 1)) #fbfaf6,                         /* the white edge of the print */
+    0 0 0 calc(5.6px * var(--k, 1)) rgba(120,100,80,.16),          /* its fine outline on the paper */
+    calc(1px * var(--k, 1)) calc(2px * var(--k, 1)) calc(2px * var(--k, 1)) calc(5px * var(--k, 1)) rgba(70,55,40,.20),   /* contact shadow: the print lies flat on the paper */
+    calc(3px * var(--k, 1)) calc(9px * var(--k, 1)) calc(18px * var(--k, 1)) calc(2px * var(--k, 1)) rgba(70,55,40,.16);   /* soft shadow */
+}
+.inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) .arch::after {
+  content:""; display:block !important; position:absolute; inset:0; z-index:2; pointer-events:none; background:
+    linear-gradient(135deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,.07) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,.05), rgba(0,0,0,0) 8%, rgba(0,0,0,0) 92%, rgba(0,0,0,.06));
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.45), inset -1px -1px 0 rgba(0,0,0,.10), inset 0 0 calc(14px * var(--k, 1)) rgba(0,0,0,.07); }

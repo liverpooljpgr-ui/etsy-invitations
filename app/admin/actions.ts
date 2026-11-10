@@ -171,6 +171,16 @@ export async function setAdminPassword(_prev: CreateState, fd: FormData): Promis
   return { ok: true, message: "Password saved. From now on sign in at /login with your email and this password." };
 }
 
+/** You compared a self-service order number with your Etsy orders and it is real: remove the "unverified" mark. */
+export async function verifyOrder(orderId: string): Promise<{ ok: boolean; message?: string }> {
+  const { user } = await requireAdmin();
+  if (!z.uuid().safeParse(orderId).success) return { ok: false, message: "Invalid order." };
+  const { error } = await createAdminClient().from("orders").update({ payment_status: "verified", verified_by: user.id, verified_at: new Date().toISOString() }).eq("id", orderId);
+  if (error) return { ok: false, message: "Could not save." };
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
 /** A few words of private admin notes about an order (stored in orders.buyer_note, never shown to customers). */
 export async function saveOrderNote(orderId: string, note: string): Promise<{ ok: boolean; message?: string }> {
   await requireAdmin();

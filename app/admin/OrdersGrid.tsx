@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { saveOrderNote } from "./actions";
+import { saveOrderNote, verifyOrder } from "./actions";
 import { DeleteButton } from "./DeleteButton";
 import { NewLinkButton } from "./NewLinkButton";
 
 export type OrderRow = {
   id: string; orderId: string; purchased: string; template: string; etsy: string;
-  email: string | null; status: string; expires: string | null; note: string;
+  email: string | null; status: string; expires: string | null; note: string; unverified: boolean;
 };
 
 const fmt = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "");
@@ -34,6 +34,11 @@ function NoteField({ orderId, initial }: { orderId: string; initial: string }) {
       <span className="adm-note-state" data-s={saved} aria-live="polite">{saved === "saving" ? "Saving…" : saved === "ok" ? "Saved ✓" : saved === "err" ? "Not saved" : ""}</span>
     </div>
   );
+}
+
+function VerifyButton({ orderId }: { orderId: string }) {
+  const [busy, setBusy] = useState(false);
+  return <button className="ui-btn ui-btn-gray ui-btn-sm" disabled={busy} onClick={async () => { setBusy(true); await verifyOrder(orderId); setBusy(false); }}>{busy ? "…" : "Mark verified"}</button>;
 }
 
 export function OrdersGrid({ rows }: { rows: OrderRow[] }) {
@@ -66,12 +71,13 @@ export function OrdersGrid({ rows }: { rows: OrderRow[] }) {
           <div className="adm-line" role="row" key={r.id}>
             <span role="cell" data-label="Date">{fmt(r.purchased)}</span>
             <span role="cell" data-label="Template" className="adm-strong">{r.template}</span>
-            <span role="cell" data-label="Order #">{r.etsy}</span>
+            <span role="cell" data-label="Order #">{r.etsy}{r.unverified && <b className="dash-pill" style={{ marginTop: 4, display: "block", width: "fit-content" }} title="Self-service order: compare this number with your Etsy orders">Unverified</b>}</span>
             <span role="cell" data-label="Email">{r.email ?? <em className="adm-muted">link not opened yet</em>}</span>
             <span role="cell" data-label="Status"><b className={`dash-pill ${r.status === "published" ? "dash-live" : ""}`} style={{ marginTop: 0 }}>{r.status === "published" ? "Published" : r.status === "draft" ? "Draft" : r.status}</b></span>
             <span role="cell" data-label="Expires">{r.expires ? fmt(r.expires) : <em className="adm-muted">starts when published</em>}</span>
             <span role="cell" data-label="Notes"><NoteField orderId={r.orderId} initial={r.note} /></span>
             <span role="cell" className="adm-actions">
+              {r.unverified && <VerifyButton orderId={r.orderId} />}
               {!r.email && <NewLinkButton invitationId={r.id} />}
               <DeleteButton invitationId={r.id} label={`${r.template} · Etsy ${r.etsy}${r.email ? ` (${r.email})` : ""}`} />
             </span>

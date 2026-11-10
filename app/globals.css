@@ -110,7 +110,7 @@ body { background: var(--background); color: var(--foreground); font-family: var
 /* too long for one line: name / & / name, each on its own line, centred */
 .inv .cover-names.stacked { flex-direction:column; align-items:center; white-space:normal; text-align:center; overflow-wrap:anywhere; gap:calc(2px * var(--k,1)) 0; }
 .inv .cover-env { container-type:inline-size; position:relative; display:block; width:94%; aspect-ratio:904/566; margin-block:calc(32px * var(--k,1)); }
-.inv .cover-bottom { font-size:calc(13px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; }
+.inv .cover-bottom { font-size:calc(13px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; padding:0 40px; }   /* 40px left and right (all designs) */
 
 /* on tap: texts fade first, then (after the flap has opened) the whole cover leaves and card 2 rises */
 .inv .cover-top, .inv .cover-names, .inv .cover-bottom, .inv .env-hint { transition:opacity .3s ease; }
