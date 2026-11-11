@@ -35,8 +35,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           </>
         ) : tpl ? (
           <>
-            <div className="ui-card"><StartForm template={tpl.slug} templateName={tpl.name} keyValue={key} /></div>
-            <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}>You find the order number in your Etsy purchases, or in the confirmation email from Etsy.</p>
+            <StartForm template={tpl.slug} templateName={tpl.name} keyValue={key} />
           </>
         ) : (
           <p className="ui-lede" style={{ textAlign: "center" }}>This link is not valid. Please open the link in the PDF you downloaded from Etsy, or contact Tamara from PIXELINVITE on Etsy.</p>

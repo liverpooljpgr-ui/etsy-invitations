@@ -1,7 +1,7 @@
 "use server";
 
 import { createHash, randomBytes, randomInt } from "node:crypto";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -19,7 +19,7 @@ const MAX_UNVERIFIED_PER_EMAIL = 5;
 const input = z.object({
   key: z.string().trim().max(40),
   template: z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,60}$/, "Choose a design."),
-  order: z.string().trim().max(40).transform((v) => v.replace(/[\s#]/g, "")).pipe(z.string().regex(/^\d{8,14}$/, "Enter your Etsy order number: digits only, for example 3912345678.")),
+  order: z.string().trim().max(40).transform((v) => v.replace(/[\s#]/g, "")).pipe(z.union([z.literal(""), z.string().regex(/^\d{8,14}$/, "Enter your Etsy order number: digits only, for example 3912345678.")])),
   email: z.string().trim().toLowerCase().pipe(z.email("Please enter a valid email address.")),
 });
 
@@ -31,7 +31,7 @@ async function allowStart(email: string, order: string): Promise<boolean> {
   const hits = await Promise.all([
     db.rpc("hit_rate_limit", { p_key: `start:ip:${ip}`, p_window_seconds: 600, p_max: 12 }),
     db.rpc("hit_rate_limit", { p_key: `start:em:${email}`, p_window_seconds: 600, p_max: 6 }),
-    db.rpc("hit_rate_limit", { p_key: `start:ord:${order}`, p_window_seconds: 600, p_max: 5 }),
+    order ? db.rpc("hit_rate_limit", { p_key: `start:ord:${order}`, p_window_seconds: 600, p_max: 5 }) : Promise.resolve({ data: true }),
   ]);
   return hits.every((r) => r.data !== false);
 }
@@ -49,7 +49,44 @@ async function issueClaim(invitationId: string): Promise<string | null> {
   return error ? null : token;
 }
 
-const sentTo = (to: string) => `We sent a confirmation link to ${to}. Open your email and click the link in it to start your invitation. The link works once, on any phone or computer. Not there? Look in your spam folder, or enter the same order number and email again and we send a new one.`;
+/**
+ * A customer comes back through the same personal link and types only the email (the order number is for the first time).
+ * Only an email that belongs to an invitation of THIS design gets in, directly and without any emailed link.
+ */
+async function comeBackWithEmail(templateId: string, templateSlug: string, email: string, origin: string): Promise<StartState> {
+  const db = createAdminClient();
+  const customer = await findReturningCustomer(email);
+  if (customer) {
+    const { data: mine } = await db.from("invitations").select("id").eq("owner_id", customer.id).eq("template_id", templateId).order("created_at", { ascending: false });
+    if (mine?.length) {
+      if (!(await signInWithoutLink(email))) return { ok: false, message: "Could not sign you in. Please try again." };
+      await rememberStarted(templateSlug);
+      redirect(mine.length === 1 ? `/editor/${mine[0].id}` : "/dashboard");
+    }
+  }
+  // started, but the first confirmation email was never opened: send a fresh one
+  const { data: log } = await db.from("audit_log").select("entity_id").eq("action", "order.self_start").contains("metadata", { email }).order("created_at", { ascending: false }).limit(10);
+  for (const row of log ?? []) {
+    const { data: inv } = await db.from("invitations").select("id, owner_id, template_id").eq("id", row.entity_id).maybeSingle();
+    if (inv && !inv.owner_id && inv.template_id === templateId) {
+      await db.from("edit_claims").update({ revoked_at: new Date().toISOString() }).eq("invitation_id", inv.id).is("redeemed_at", null).is("revoked_at", null);
+      const token = await issueClaim(inv.id);
+      if (!token || !(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) return { ok: false, message: "Could not send the email. Please wait a minute and try again." };
+      return { ok: true, message: sentTo(email) };
+    }
+  }
+  return { ok: false, message: "We could not find an invitation for this email. First time here? Enter your Etsy order number. Otherwise use the email you used the first time." };
+}
+
+/** Remember on this device which designs were started, so the link opens with only the email field next time (no personal data in it). */
+async function rememberStarted(slug: string) {
+  const jar = await cookies();
+  const have = (jar.get("pi_started")?.value ?? "").split(",").filter(Boolean);
+  if (!have.includes(slug)) have.push(slug);
+  jar.set("pi_started", have.slice(-8).join(","), { sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 400 * 864e3 });
+}
+
+const sentTo = (to: string) => `We sent a confirmation link to ${to}. This link can be used only once.`;
 const USED = "This order number has already been used. If it is your order and you need help, please contact Tamara from PIXELINVITE on Etsy.";
 
 /** The buyer activates their purchase themselves with the Etsy order number; it works once per order number. */
@@ -65,16 +102,19 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
   const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const { data: tpl } = await db.from("templates").select("id, current_version, name").eq("slug", template).eq("is_active", true).maybeSingle();
   if (!tpl) return { ok: false, message: "Choose a design." };
+  if (!ref) return comeBackWithEmail(tpl.id, template, email, origin);
 
   // This order number was already used. Only the same person who started it, and only until they open the email link, may ask for a fresh email.
   const { data: existing } = await db.from("orders").select("id").eq("etsy_order_ref", ref).maybeSingle();
   if (existing) {
     const { data: inv } = await db.from("invitations").select("id, owner_id").eq("order_id", existing.id).maybeSingle();
     if (inv?.owner_id) {
-      // the owner comes back with the order number (another device): a sign-in link goes to the email, nothing else
+      // the owner comes back with the order number and the same email: straight in, no email link
       const { data: owner } = await db.from("profiles").select("email, role").eq("id", inv.owner_id).maybeSingle();
-      if (owner?.role === "customer" && owner.email === email && (await sendConfirmationLink(email, `/editor/${inv.id}`, origin))) {
-        return { ok: true, message: "This order is already set up. We sent a sign-in link to your email: open it and your invitation opens." };
+      if (owner?.role === "customer" && owner.email === email) {
+        if (!(await signInWithoutLink(email))) return { ok: false, message: "Could not sign you in. Please try again." };
+        await rememberStarted(template);
+        redirect(`/editor/${inv.id}`);
       }
       return { ok: false, message: USED };
     }

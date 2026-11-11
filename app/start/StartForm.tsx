@@ -16,13 +16,17 @@ export function StartForm({ template, templateName, keyValue }: { template: stri
   }, [state, template]);
   if (state?.ok) {
     return (
-      <div role="status" className="ui-auth-stack" style={{ textAlign: "center" }}>
-        <h2 className="ui-large-title" style={{ margin: 0, fontSize: 24, fontWeight: 500 }}>Check your email</h2>
-        <p className="ui-note ui-note-ok" style={{ margin: 0 }}>{state.message}</p>
+      <div className="ui-card">
+        <div role="status" className="ui-auth-stack" style={{ textAlign: "center" }}>
+          <h2 className="ui-large-title" style={{ margin: 0, fontSize: 24, fontWeight: 500 }}>Check your email</h2>
+          <p className="ui-note ui-note-ok" style={{ margin: 0 }}>{state.message}</p>
+          </div>
       </div>
     );
   }
   return (
+    <>
+    <div className="ui-card">
     <form action={action} className="ui-auth-stack">
       <input type="hidden" name="template" value={template} />
       <input type="hidden" name="key" value={keyValue} />
@@ -31,11 +35,11 @@ export function StartForm({ template, templateName, keyValue }: { template: stri
         <p style={{ margin: "6px 0 0", fontSize: 28, lineHeight: 1.15, fontWeight: 700, letterSpacing: ".01em", color: "var(--ui-label)" }}>{templateName}</p>
       </div>
       <label className="ui-field">
-        <span className="ui-label">Etsy order number</span>
-        <input name="order" required inputMode="numeric" autoComplete="off" placeholder="3912345678" className="ui-input" />
+        <span className="ui-label">Etsy order number <span aria-hidden="true" style={{ color: "#b3407a" }}>*</span></span>
+        <input name="order" required aria-required="true" inputMode="numeric" autoComplete="off" placeholder="3912345678" className="ui-input" />
       </label>
       <label className="ui-field">
-        <span className="ui-label">Your email</span>
+        <span className="ui-label">Your email <span aria-hidden="true" style={{ color: "#b3407a" }}>*</span></span>
         <input name="email" type="email" required autoComplete="email" inputMode="email" className="ui-input" />
       </label>
       {/* honeypot: people never see or fill this */}
@@ -43,5 +47,8 @@ export function StartForm({ template, templateName, keyValue }: { template: stri
       <button disabled={pending} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>{pending ? "Please wait…" : "Start my invitation"}</button>
       {state && <p role="status" className="ui-note ui-note-err" style={{ margin: 0 }}>{state.message}</p>}
     </form>
+    </div>
+    <p className="ui-help" style={{ textAlign: "center", marginTop: 20 }}>You find the order number in your Etsy purchases, or in the confirmation email from Etsy.</p>
+    </>
   );
 }
