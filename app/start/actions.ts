@@ -6,10 +6,10 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { defaultContent } from "@/lib/content/schema";
-import { allowAttempt, findReturningCustomer, sendConfirmationLink, signInWithoutLink } from "@/lib/email-login";
+import { findReturningCustomer, sendConfirmationLink, signInWithoutLink } from "@/lib/email-login";
 import { startKeyOk } from "@/lib/start-key";
 
-export type StartState = { ok: boolean; message: string } | null;
+export type StartState = { ok: boolean; message: string; needsOrder?: boolean } | null;
 
 const PLAN = "signature"; // same full plan as every Etsy purchase made in /admin
 const ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
@@ -75,7 +75,7 @@ async function comeBackWithEmail(templateId: string, templateSlug: string, email
       return { ok: true, message: sentTo(email) };
     }
   }
-  return { ok: false, message: "We could not find an invitation for this email. First time here? Enter your Etsy order number. Otherwise use the email you used the first time." };
+  return { ok: false, needsOrder: true, message: "First time here? Enter your Etsy order number to start your invitation." };
 }
 
 /** Remember on this device which designs were started, so the link opens with only the email field next time (no personal data in it). */
@@ -92,7 +92,7 @@ const USED = "This order number has already been used. If it is your order and y
 /** The buyer activates their purchase themselves with the Etsy order number; it works once per order number. */
 export async function redeemOrder(_prev: StartState, fd: FormData): Promise<StartState> {
   if (String(fd.get("website") ?? "").trim() !== "") return { ok: true, message: sentTo("your email") }; // honeypot: bots fill every field
-  const p = input.safeParse({ key: fd.get("key") ?? "", template: fd.get("template"), order: fd.get("order"), email: fd.get("email") });
+  const p = input.safeParse({ key: fd.get("key") ?? "", template: fd.get("template"), order: fd.get("order") ?? "", email: fd.get("email") });
   if (!p.success) return { ok: false, message: p.error.issues[0].message };
   const { template, order: ref, email, key } = p.data;
   if (!startKeyOk(template, key)) return { ok: false, message: "This link is not valid. Please open the link from your Etsy download again." };
@@ -159,33 +159,4 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
     return { ok: false, message: "Your order was saved, but the email could not be sent. Please wait a minute and enter the same order number and email again." };
   }
   return { ok: true, message: sentTo(email) };
-}
-
-/**
- * Second visit on the same device: only the email is asked, and only the email used the first time works.
- *  - confirmed customer -> straight into the editor (same sign-in as /login);
- *  - email of an order that was started but whose confirmation link was never opened -> a fresh confirmation email;
- *  - any other email -> refused.
- */
-export async function returnByEmail(_prev: StartState, fd: FormData): Promise<StartState> {
-  const p = z.string().trim().toLowerCase().pipe(z.email("Please enter a valid email address.")).safeParse(fd.get("email"));
-  if (!p.success) return { ok: false, message: p.error.issues[0].message };
-  const email = p.data;
-  if (!(await allowAttempt("return", email))) return { ok: false, message: "Too many attempts. Please wait a few minutes and try again." };
-  const WRONG = "This is not the right email. Enter the email you used the first time.";
-  const customer = await findReturningCustomer(email);
-  if (customer) {
-    if (!(await signInWithoutLink(email))) return { ok: false, message: "Could not sign you in. Please try again." };
-    redirect(customer.invitations.length === 1 ? `/editor/${customer.invitations[0]}` : "/dashboard");
-  }
-  const db = createAdminClient();
-  const { data: log } = await db.from("audit_log").select("entity_id").eq("action", "order.self_start").contains("metadata", { email }).order("created_at", { ascending: false }).limit(1);
-  const invId = log?.[0]?.entity_id;
-  const { data: inv } = invId ? await db.from("invitations").select("id, owner_id").eq("id", invId).maybeSingle() : { data: null };
-  if (!inv || inv.owner_id) return { ok: false, message: WRONG };
-  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  await db.from("edit_claims").update({ revoked_at: new Date().toISOString() }).eq("invitation_id", inv.id).is("redeemed_at", null).is("revoked_at", null);
-  const token = await issueClaim(inv.id);
-  if (!token || !(await sendConfirmationLink(email, `/claim/${token}/go`, origin))) return { ok: false, message: "Could not send the email. Please wait a minute and try again." };
-  return { ok: true, message: "We sent you a confirmation link. Open it on any device and your invitation opens right away." };
 }

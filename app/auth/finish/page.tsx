@@ -18,11 +18,11 @@ export default function AuthFinish() {
     const start = access_token && refresh_token
       ? createBrowserSupabase().auth.setSession({ access_token, refresh_token }).then(({ error }) => !error)
       : Promise.resolve(false);
-    void start.then(async (ok) => {
+    void start.then((ok) => {
       if (ok) { window.location.replace(next); return; } // full load so the server sees the new session cookie
-      const { data } = await createBrowserSupabase().auth.getUser();
-      if (data.user) window.location.replace(next); // already signed in on this device
-      else { setNextPath(next); setFailed(true); }
+      // no valid tokens: the link was already used (or has expired). It must NOT open the invitation, even if this device is still signed in.
+      setNextPath(next);
+      setFailed(true);
     });
   }, []);
 
@@ -31,8 +31,8 @@ export default function AuthFinish() {
       <main className="ui-auth">
         {failed ? (
           <>
-            <h1 className="ui-large-title" style={{ margin: "0 0 8px" }}>Welcome back</h1>
-            <p className="ui-lede">This link was already used. Sign in with the email you used the very first time.</p>
+            <h1 className="ui-accent" style={{ margin: "0 0 2px", fontSize: 64, lineHeight: 1.1, textAlign: "center", fontWeight: 400, color: "var(--ui-label)" }}>Welcome back</h1>
+            <p className="ui-lede" style={{ textAlign: "center" }}>This confirmation link works only once and has already been used. Enter the email you used the first time to continue.</p>
             <div className="ui-card"><LoginForm next={nextPath} /></div>
           </>
         ) : (
