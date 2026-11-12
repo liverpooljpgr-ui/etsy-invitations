@@ -1,5 +1,6 @@
 import { TimelineIcon } from "./TimelineIcons";
 import { InkHeart } from "./InkHeart";
+import { FitScreens } from "./FitScreens";
 import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
@@ -278,6 +279,7 @@ export function Invitation({
           </div>
         </section>
       )}
+      {template === "sage-forest" && <FitScreens />}
     </div>
   );
 }
