@@ -1,5 +1,6 @@
 "use client";
 
+import { TimelineIcon, TIMELINE_ICONS } from "@/components/invitation/TimelineIcons";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Invitation } from "@/components/invitation/Invitation";
@@ -29,7 +30,7 @@ const REGISTRIES = ["Amazon", "Target"] as const;
 /** Phone layout is a wizard: one screen of the invitation per step. */
 const STEPS = [
   { n: 1, label: "Cover" },
-  { n: 2, label: "Photo & date" },
+  { n: 2, label: "Photo & Date" },
   { n: 3, label: "Venue" },
   { n: 4, label: "Timeline" },
   { n: 5, label: "Details" },
@@ -478,6 +479,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <button onClick={onUnpublish} disabled={busy} className="ui-btn ui-btn-danger ui-btn-sm">Unpublish</button>
         </div>
       <p className="ui-help">Send this link to your guests.</p>
+      <p className="ui-help" style={{ marginTop: 4 }}>Changed something? Publish again — the same link then shows the new version.</p>
       <div className="ui-linkfield">
         <input readOnly value={publicUrl} aria-label="Guest link" onFocus={(e) => e.currentTarget.select()} />
         <button onClick={async () => { try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard blocked: the field above is selectable */ } }} className="ui-btn ui-btn-black">{copied ? "Copied" : "Copy"}</button>
@@ -486,8 +488,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         {/* chat apps show the names, greeting and photo in the preview card themselves, so only the link is sent (an email has no card, so it gets the greeting) */}
         <a href={`https://wa.me/?text=${encodeURIComponent(publicUrl)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">WhatsApp</a>
         <a href={`https://t.me/share/url?url=${encodeURIComponent(publicUrl)}`} target="_blank" rel="noopener noreferrer" className="ui-btn ui-btn-gray ui-btn-sm">Telegram</a>
-        <a href={`sms:?&body=${encodeURIComponent(publicUrl)}`} className="ui-btn ui-btn-gray ui-btn-sm">Message</a>
         <button type="button" className="ui-btn ui-btn-gray ui-btn-sm" aria-expanded={mailOpen} onClick={() => setMailOpen((o) => !o)}>Email</button>
+        <button type="button" onClick={onDownloadPdf} disabled={pdfBusy} className="ui-btn ui-btn-sm" style={{ background: "#fff", color: "var(--ui-text, #1c1c1e)", boxShadow: "inset 0 0 0 1px rgba(0,0,0,.12)", gap: 8 }}>
+          <svg width="18" height="20" viewBox="0 0 18 20" fill="none" aria-hidden="true" focusable="false">
+            <path d="M3 1h8l5 5v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z" fill="#fff" stroke="#e5322d" strokeWidth="1.4" strokeLinejoin="round" />
+            <path d="M11 1v4a1 1 0 0 0 1 1h4" stroke="#e5322d" strokeWidth="1.4" strokeLinejoin="round" />
+            <rect x="2" y="10.2" width="14" height="5.6" rx="1" fill="#e5322d" />
+            <text x="9" y="14.6" textAnchor="middle" fontSize="4.6" fontWeight="700" fontFamily="Arial, Helvetica, sans-serif" fill="#fff">PDF</text>
+          </svg>
+          {pdfBusy ? "Preparing your PDF…" : "Download as PDF"}
+        </button>
       </div>
       {mailOpen && (
         <div className="ui-actions" role="group" aria-label="Send by email with">
@@ -497,11 +507,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <button type="button" className="ui-btn ui-btn-soft ui-btn-sm" onClick={async () => { try { await navigator.clipboard.writeText(`${mail.subject}\n\n${mail.body}`); setMailCopied(true); setTimeout(() => setMailCopied(false), 2000); } catch { /* the choices above still work */ } }}>{mailCopied ? "Copied" : "Copy the message"}</button>
         </div>
       )}
-      <div className="ui-actions" style={{ marginTop: 10 }}>
-        <button type="button" onClick={onDownloadPdf} disabled={pdfBusy} className="ui-btn ui-btn-soft ui-btn-sm">{pdfBusy ? "Preparing your PDF…" : "Download as PDF (keepsake)"}</button>
-      </div>
-      <p className="ui-help">A copy of your invitation, one page per screen, to keep for your memories. It shows the published version.</p>
-      <p className="ui-help" style={{ marginTop: 12 }}>Changed something? Publish again — the same link then shows the new version.</p>
     </div>
     <RsvpReplies invitationId={id} />
     </>
@@ -613,7 +618,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           </Section>
 
-          <Section n={2} mobileHidden={step !== 1} title="Card 2 · Photo, date & save the date">
+          <Section n={2} mobileHidden={step !== 1} title="Card 2 · Photo & Date">
             <div className="ui-field">
               <span className="ui-label">Photo (shown in {{ oval: "an oval", rect: "a frame", arch: "an arch" }[PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]]})</span>
               <div className="ui-media">
@@ -630,6 +635,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               </div>
             </div>
             <Field label="Text above the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
+            {template === "sage-forest" && <Field label="Line under it"><input className={inputCls} maxLength={60} {...tp("saveSubtitle")} /></Field>}
             <div className="ui-two">
               <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
               <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
@@ -637,6 +643,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
 
           <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
+            {template === "sage-forest" && <Field label="Heading"><input className={inputCls} maxLength={40} {...tp("venueTitle")} /></Field>}
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
             <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={pickVenue} />
             <MapPicker query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} center={venuePos} onPick={pickVenue} />
@@ -665,6 +672,20 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                         <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="ui-x">✕</button>
                       </div>
                       <TimeInput value={t.time} onChange={(time) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time } : x)))} />
+                      {template === "sage-forest" && (
+                        <div role="group" aria-label="Icon" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {[{ key: "", label: "No icon" }, ...TIMELINE_ICONS].map((ic) => {
+                            const on = (t.icon ?? "") === ic.key;
+                            return (
+                              <button key={ic.key || "none"} type="button" title={ic.label} aria-label={ic.label} aria-pressed={on}
+                                onClick={() => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, icon: ic.key } : x)))}
+                                style={{ width: 38, height: 38, display: "grid", placeItems: "center", borderRadius: 10, cursor: "pointer", border: on ? "1.5px solid var(--ui-tint)" : ".5px solid var(--ui-hair)", background: on ? "var(--ui-fill)" : "transparent", color: "var(--ui-text, #222)", fontSize: 12 }}>
+                                {ic.key ? <TimelineIcon name={ic.key} size={24} /> : "–"}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   ))}
                   {draft.timeline.length < 10 && <div><button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add item</button></div>}
@@ -673,10 +694,18 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="ui-help">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details (accommodation, dress code, registry)">
+          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details">
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
-            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
+            <PlaceSearch label="Find the hotel for accommodation" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
             <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
+            {template === "sage-forest" && (
+              <>
+                <Field label="Heading of the accommodation block"><input className={inputCls} maxLength={30} {...tp("detailsAccommodation")} /></Field>
+                <Field label="Text under that heading, before the hotel name (optional)"><input className={inputCls} maxLength={120} {...tp("detailsAccommodationNote")} /></Field>
+                <Field label="Heading of the dress code block"><input className={inputCls} maxLength={30} {...tp("detailsDressCode")} /></Field>
+                <Field label="Heading of the registry block"><input className={inputCls} maxLength={30} {...tp("detailsRegistry")} /></Field>
+              </>
+            )}
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
@@ -706,6 +735,16 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <p className="ui-help">Leave a link empty to hide that QR code.</p>
               </div>
             ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
+                      {template === "sage-forest" && (
+              <div className="ui-field" style={{ gap: 10 }}>
+                <span className="ui-label">Your own block</span>
+                <Field label="Heading (for example: Gifts, Kids, Transport)"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>
+                <Field label="Text">
+                  <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtraText} onChange={(e) => set("texts", { ...draft.texts, detailsExtraText: e.target.value })} />
+                </Field>
+                <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
+              </div>
+            )}
           </Section>
 
           <Section n={6} mobileHidden={step !== 5} toggle={screenToggle(6)} title="Card 6 · RSVP">

@@ -1077,3 +1077,7 @@ body:has(.inv[data-template="lilac-script"]) .music-btn { color:#111; border-col
 
 /* ───────── 148. THE ARROW TO THE NEXT SCREEN WORKS ON EVERY SCREEN: the content blocks of the screens (position:relative; z-index:1) were drawn over the arrow button from the venue screen on, so a tap never reached it. The arrow is now above the content. ───────── */
 .inv[data-template="lilac-script"] .swipe-hint { z-index:5; }
+
+/* ───────── CENTRED: the content of the cover and of the Save the Date screen sits in the vertical middle of the screen (equal space above and below) ───────── */
+.inv[data-template="lilac-script"] .cover { justify-content:center !important; padding-top:calc(60px * var(--k,1)) !important; padding-bottom:calc(60px * var(--k,1)) !important; }
+.inv[data-template="lilac-script"] .card-sheet .sheet-in, .inv[data-template="lilac-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center !important; padding-top:7cqh !important; padding-bottom:7cqh !important; }

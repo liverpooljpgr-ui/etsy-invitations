@@ -886,3 +886,17 @@ body:has(.rsvp-bg) .music-btn { display:none; }
   .pdf-spark { animation:none; opacity:.8; }
 }
 .pdf-loader-card svg { display:block; margin:0 auto; }
+
+/* ───────── CENTRED: the Save the Date content sits in the vertical middle of the screen (equal space above and below, the top space keeps clear of the flowers) ───────── */
+.inv[data-template="sage-story"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; padding-top:17cqh; padding-bottom:17cqh; }
+.inv[data-template="white-roses"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center; padding-top:21cqh; padding-bottom:21cqh; }
+.inv[data-template="sage-story"] .cover, .inv[data-template="white-roses"] .cover { padding-top:calc(38px * var(--k,1)); padding-bottom:calc(38px * var(--k,1)); }   /* equal space above and below: the cover content is in the vertical middle */
+
+/* ───────── Editor previews are phone-shaped: 340 wide and 700 high (a modern phone is about 9 : 19), not 340 x 567 ───────── */
+aside .inv .card, aside .inv .cover, aside .inv .stage { aspect-ratio:340 / 700 !important; }
+.wiz-preview .inv .card, .wiz-preview .inv .stage { aspect-ratio:340 / 700 !important; }
+.wiz-preview-box { height:420px; }
+
+/* editor: the headings of the sections (Cover, Photo & Date, Venue …) are bolder and plum purple */
+.ui .ui-sec-head { font-weight:800; color:var(--ui-tint, #482552); }
+.ui .ui-sec-head { color:#381159; font-size:14.5px; }   /* editor section headings */

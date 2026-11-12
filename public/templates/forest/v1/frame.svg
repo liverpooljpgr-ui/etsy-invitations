@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <g stroke="#8c9d78" stroke-linejoin="miter">
+    <rect x="8" y="8" width="184" height="184" stroke-width="1.6"/>
+    <rect x="17" y="17" width="166" height="166" stroke-width="0.9"/>
+  </g>
+  <g fill="#8c9d78">
+    <path d="M8 2 L14 8 L8 14 L2 8 Z"/><path d="M192 2 L198 8 L192 14 L186 8 Z"/>
+    <path d="M8 186 L14 192 L8 198 L2 192 Z"/><path d="M192 186 L198 192 L192 198 L186 192 Z"/>
+  </g>
+</svg>

@@ -1,3 +1,5 @@
+import { TimelineIcon } from "./TimelineIcons";
+import { InkHeart } from "./InkHeart";
 import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
@@ -5,6 +7,8 @@ import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
 import { Qr } from "./Qr";
 
+/** The designs that share the script layout (one-block RSVP title, "or answer by e-mail" line). */
+const SCRIPT_FAMILY: TemplateSlug[] = ["mono-script", "cupid-script", "lilac-script", "sage-forest"];
 const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const DAYS = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
 
@@ -16,18 +20,25 @@ function parts(iso: string) {
 }
 
 /** Month / WEEKDAY | day | AT time / year — the format of the reference design. */
-function DateBlock({ d, time }: { d: NonNullable<ReturnType<typeof parts>>; time: string }) {
+function DateBlock({ d, time, pad }: { d: NonNullable<ReturnType<typeof parts>>; time: string; pad?: boolean }) {
   return (
     <div className="dt">
       <span className="dt-month">{d.month}</span>
       <span className="dt-row">
         <span>{d.weekday}</span>
-        <b>{d.day}</b>
+        <b>{pad ? d.day.padStart(2, "0") : d.day}</b>
         {time && <span>{time.toUpperCase()}</span>}
       </span>
       <span className="dt-year">{d.year}</span>
     </div>
   );
+}
+
+/** The sentence under "Save the Date" as the guest wrote it (a {time} inside it is replaced by the event time; the time itself is shown above the date line). */
+function subtitleWithTime(text: string, time: string) {
+  const t = time.toUpperCase();
+  if (/\{time\}/i.test(text)) return t ? text.replace(/\{time\}/gi, t) : text.replace(/\s*at\s*\{time\}/gi, "").replace(/\s*\{time\}/gi, "").trim();
+  return text.trim();
 }
 
 function longDate(iso: string) {
@@ -99,7 +110,8 @@ export function Invitation({
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
-  const hasInfo = c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
+  const hasExtra = template === "sage-forest" && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
+  const hasInfo = hasExtra || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || c.rsvp.online || ph;
   const off = (n: number) => c.hidden.includes(n); // screens the host switched off
   const shown: Record<number, boolean> = {
@@ -141,8 +153,9 @@ export function Invitation({
               <div className="arch arch-empty">Photo</div>
             ) : null}
             {(d || ph) && c.texts.saveTheDate && <p className="save">{titleCase(c.texts.saveTheDate)}</p>}
+            {template === "sage-forest" && (d || ph) && c.texts.saveSubtitle && <p className="save-sub">{subtitleWithTime(c.texts.saveSubtitle, c.event.time)}</p>}
             {d ? (
-              <DateBlock d={d} time={c.event.time} />
+              <DateBlock d={d} time={c.event.time} pad={template === "sage-forest"} />
             ) : ph ? (
               <div className="dt"><span className="dt-month">Date</span></div>
             ) : null}
@@ -156,6 +169,7 @@ export function Invitation({
       {!off(3) && (c.event.venue || ph) && (
         <section className="card card-venue" data-card="3">
           <div className="venue-in">
+            {template === "sage-forest" && c.texts.venueTitle && <p className="venue-title">{c.texts.venueTitle}</p>}
             {c.texts.venueIntro && <p className="venue-intro">{c.texts.venueIntro}</p>}
             <p className="venue-name">{c.event.venue || "Venue name"}</p>
             <span className="venue-rule" aria-hidden="true" />
@@ -175,7 +189,7 @@ export function Invitation({
             {c.timeline.length === 0 && <p className="hint">Add schedule items in the editor</p>}
             <ul className={c.timeline.length > 5 ? "tl tl-dense" : "tl"}>
               {c.timeline.map((it, i) => (
-                <li key={i} className={it.time ? undefined : "no-time"}><span>{it.label}</span>{it.time && <b>{it.time}</b>}</li>
+                <li key={i} className={it.time ? undefined : "no-time"}>{template === "sage-forest" && it.icon && <i className="tl-ic"><TimelineIcon name={it.icon} size="100%" /></i>}<span>{it.label}</span>{it.time && <b>{it.time}</b>}</li>
               ))}
             </ul>
           </div>
@@ -188,11 +202,12 @@ export function Invitation({
         <section className="card card-details" data-card="5">
           <div className="dtl-in">
             <h2 className="script tl-title">{titleCase(c.texts.detailsTitle || "Details")}</h2>
-            {(registry.length > 0 || hasDress || c.hotel.name || ph) && (
+            {(registry.length > 0 || hasDress || c.hotel.name || hasExtra || ph) && (
               <div className="dtl-row">
                 {(c.hotel.name || ph) && (
                   <div className="blk dtl-blk dtl-acc">
-                    <p className="caps tiny">Accommodation</p>
+                    <p className="caps tiny">{c.texts.detailsAccommodation || "Accommodation"}</p>
+                    {template === "sage-forest" && c.texts.detailsAccommodationNote && <p className="sub dtl-acc-note">{c.texts.detailsAccommodationNote}</p>}
                     <div className="dtl-pair">
                       <p className="val sm">{c.hotel.name || "Hotel name"}</p>
                       {c.hotel.address && <p className="sub dtl-text">{c.hotel.address}</p>}
@@ -201,7 +216,7 @@ export function Invitation({
                 )}
                 {hasDress && (
                   <div className="blk dtl-blk dtl-dresscode">
-                    <p className="caps tiny">Dress code</p>
+                    <p className="caps tiny">{c.texts.detailsDressCode || "Dress code"}</p>
                     <div className="dtl-dress">
                       <p className="dots">
                         {c.dressCode.colors.map((col, i) => <i key={i} style={{ background: col }} />)}
@@ -210,9 +225,15 @@ export function Invitation({
                     </div>
                   </div>
                 )}
+                {hasExtra && (
+                  <div className="blk dtl-blk dtl-custom">
+                    {c.texts.detailsExtraTitle && <p className="caps tiny">{c.texts.detailsExtraTitle}</p>}
+                    {c.texts.detailsExtraText && <p className="sub dtl-text dtl-custom-text">{c.texts.detailsExtraText}</p>}
+                  </div>
+                )}
                 {registry.length > 0 && (
                   <div className="blk dtl-blk dtl-reg">
-                    <p className="caps tiny">Registry</p>
+                    <p className="caps tiny">{c.texts.detailsRegistry || "Registry"}</p>
                     <div className="qrs">
                       {registry.map((r, i) => (
                         <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="qrbox">
@@ -234,9 +255,9 @@ export function Invitation({
       {!off(6) && hasRsvp && (
         <section className="card card-rsvp" data-card="6">
           <div className="rsvp-in">
-            <RsvpTitle text="Please RSVP" oneBlock={template === "mono-script" || template === "cupid-script" || template === "lilac-script"} />
+            <RsvpTitle text="Please RSVP" oneBlock={SCRIPT_FAMILY.includes(template)} />
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
-            {c.rsvp.email && ((template === "mono-script" || template === "cupid-script" || template === "lilac-script")
+            {c.rsvp.email && ((SCRIPT_FAMILY.includes(template))
               ? <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>
               : <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>)}
             {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
@@ -250,6 +271,7 @@ export function Invitation({
       {!off(7) && (
         <section className="card card-closing" data-card="7">
           <div className="closing-in">
+            {template === "sage-forest" && <InkHeart className="closing-heart" />}
             <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
             <p className="closing-text">{c.texts.closing || "Share this moment with us"}</p>
             {calendarHref && d && c.showCalendar && <a className="link venue-link closing-cal" href={calendarHref}>Add to calendar</a>}

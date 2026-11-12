@@ -920,3 +920,7 @@ body:has(.inv[data-template="mono-script"]) .music-btn { color:#111; border-colo
     linear-gradient(135deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,.07) 100%),
     linear-gradient(to bottom, rgba(0,0,0,.05), rgba(0,0,0,0) 8%, rgba(0,0,0,0) 92%, rgba(0,0,0,.06));
   box-shadow:inset 1px 1px 0 rgba(255,255,255,.45), inset -1px -1px 0 rgba(0,0,0,.10), inset 0 0 calc(14px * var(--k, 1)) rgba(0,0,0,.07); }
+
+/* ───────── CENTRED: the content of the cover and of the Save the Date screen sits in the vertical middle of the screen (equal space above and below) ───────── */
+.inv[data-template="mono-script"] .cover { justify-content:center !important; padding-top:calc(60px * var(--k,1)) !important; padding-bottom:calc(60px * var(--k,1)) !important; }
+.inv[data-template="mono-script"] .card-sheet .sheet-in, .inv[data-template="mono-script"] .card-sheet .sheet-in:not(.no-photo) { justify-content:center !important; padding-top:7cqh !important; padding-bottom:7cqh !important; }
