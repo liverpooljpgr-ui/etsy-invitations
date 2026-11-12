@@ -1427,3 +1427,6 @@ body:has(.inv[data-template="sage-forest"]) .music-btn { color:#111; border-colo
 .inv[data-template="sage-forest"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in:not(.no-photo) > .arch::after,
 .inv[data-template="sage-forest"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in:not(.no-photo) > .arch .arch-in { animation:sf-arch-round 1.1s cubic-bezier(.45,.05,.25,1) 4.8s both !important; }
 .inv[data-template="sage-forest"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in:not(.no-photo) > .arch::before { animation:sf-bouquet-in 1.4s cubic-bezier(.2,.6,.3,1) 5.1s both; }
+
+/* ───────── 354. SHORT SCREENS (a small phone, 640 px high or less): the arch photo is limited by the page height, so the date block no longer runs into the arrow ───────── */
+@media (max-height: 640px) { .inv[data-template="sage-forest"] .card-sheet .sheet-in:not(.no-photo) .arch { width:min(84%, 33cqh) !important; } }

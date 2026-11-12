@@ -24,7 +24,7 @@ const msScript = Mrs_Saint_Delafield({ variable: "--font-ms-script", subsets: ["
 // the handwritten words of the Cupid Script invitation (app/templates/cupid-script.css)
 // the handwritten words of the Lilac Script invitation (app/templates/lilac-script.css)
 const meaCulpa = Mea_Culpa({ variable: "--font-mea-culpa", subsets: ["latin"], weight: "400" });
-// "Sage Forest" invitation (app/templates/sage-forest.css): Playfair Display (lining figures) for the spaced capitals, the italic lines and the big day number
+// "Sage Garden" invitation (app/templates/sage-forest.css): Playfair Display (lining figures) for the spaced capitals, the italic lines and the big day number
 const sfSerif = Playfair_Display({ variable: "--font-sf-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "700"], style: ["normal", "italic"] });
 const alexBrush = Alex_Brush({ variable: "--font-alex-brush", subsets: ["latin", "latin-ext"], weight: "400" });
 
