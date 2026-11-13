@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { parseContent } from "@/lib/content/schema";
 import { buildIcs } from "@/lib/calendar";
+import { templateOf } from "@/lib/template-of";
 
 /** "Add to calendar" inside the private preview: built from the saved draft (the published link has its own at /<slug>/calendar.ics). */
 export async function GET(request: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -14,9 +15,10 @@ export async function GET(request: NextRequest, ctx: { params: Promise<{ id: str
   const { data: inv } = await supabase.from("invitations").select("slug").eq("id", id).maybeSingle(); // RLS: owner or admin only
   if (!inv) return new Response("Not found", { status: 404 });
   const { data: row } = await supabase.from("invitation_content").select("draft").eq("invitation_id", id).maybeSingle();
-  const ics = buildIcs(parseContent(row?.draft), `${inv.slug}@wedding-invitation`, `${origin}/${inv.slug}`);
+  const party = (await templateOf(id)) === "christmas-party";
+  const ics = buildIcs(parseContent(row?.draft), `${inv.slug}@${party ? "party" : "wedding"}-invitation`, `${origin}/${inv.slug}`, party);
   if (!ics) return new Response("Add the event date first.", { status: 404 });
   return new Response(ics, {
-    headers: { "Content-Type": "text/calendar; charset=utf-8", "Content-Disposition": 'inline; filename="wedding.ics"', "Cache-Control": "private, no-store" },
+    headers: { "Content-Type": "text/calendar; charset=utf-8", "Content-Disposition": `inline; filename="${party ? "christmas-party" : "wedding"}.ics"`, "Cache-Control": "private, no-store" },
   });
 }

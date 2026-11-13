@@ -556,3 +556,6 @@
 .inv[data-template="christmas-party"] .card-details .xm-sep3 { margin-top:calc(0px * var(--k,1) - 4cqh); }
 .inv[data-template="christmas-party"] .card-details .xm-sep3 { margin-top:calc(-2px * var(--k,1) - 4cqh); }   /* fine adjustment: the visible gaps now match (about 24px) */
 .inv[data-template="christmas-party"] .card .closing-text { line-height:.9; }   /* the red closing sentence: tighter lines */
+
+/* ───────── 94. SMALLER / SHORTER PHONES: the bow garland on the cover is as wide as 150% of the card but never bigger than the design size scaled by --k (otherwise on a wide, short phone it ran into the text) ───────── */
+.inv[data-template="christmas-party"] .xm-deco { left:50%; translate:-50% 0; width:min(150%, calc(510px * var(--k,1))); }

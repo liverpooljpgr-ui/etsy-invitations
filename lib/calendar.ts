@@ -16,12 +16,15 @@ const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /** A one-event iCalendar file (opens in Apple Calendar, Google Calendar, Outlook…). Times are "floating": local time at the guest's device. */
-export function buildIcs(c: Content, uid: string, url: string): string | null {
+/** `party` = the Christmas party design: the event is called after the party, not a wedding. */
+export function buildIcs(c: Content, uid: string, url: string, party = false): string | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(c.event.date);
   if (!m) return null;
   const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
   const names = [c.couple.first, c.couple.second].filter(Boolean).join(" & ");
   const time = parseTime(c.event.time);
+  // the name of a party event: the big word and the second line of the cover ("Christmas dinner party")
+  const eventName = [c.texts.coverTop, c.texts.headline].map((x) => x.trim()).filter(Boolean).join(" ") || "Party";
 
   let start: string;
   let end: string;
@@ -42,7 +45,7 @@ export function buildIcs(c: Content, uid: string, url: string): string | null {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Wedding invitation//EN",
+    `PRODID:-//${party ? "Party" : "Wedding"} invitation//EN`,
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -50,14 +53,14 @@ export function buildIcs(c: Content, uid: string, url: string): string | null {
     `DTSTAMP:${stamp}`,
     start,
     end,
-    `SUMMARY:${esc(names ? `Wedding of ${names}` : "Wedding")}`,
+    `SUMMARY:${esc(party ? eventName : names ? `Wedding of ${names}` : "Wedding")}`,
     ...(location ? [`LOCATION:${esc(location)}`] : []),
     `DESCRIPTION:${esc(`You are invited! ${url}`)}`,
     `URL:${url}`,
     "BEGIN:VALARM",
     "TRIGGER:-P1D",
     "ACTION:DISPLAY",
-    "DESCRIPTION:Wedding tomorrow",
+    `DESCRIPTION:${party ? `${eventName} tomorrow` : "Wedding tomorrow"}`,
     "END:VALARM",
     "END:VEVENT",
     "END:VCALENDAR",

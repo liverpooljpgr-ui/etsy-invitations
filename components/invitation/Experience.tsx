@@ -95,7 +95,9 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
       const phone = window.matchMedia("(max-width: 640px)").matches;
       const st = el.querySelector<HTMLElement>(".stage");
       if (st && st.offsetWidth && st.offsetHeight) el.style.setProperty("--card-wh", String(st.offsetWidth / st.offsetHeight)); // shape of a screen (the card that leaves the envelope has the same one)
-      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / 567, 1.9))) : "1");
+      // the Christmas party screens were designed for a taller card (722 px at 340 wide) than the other designs (567 px): shorter phones scale it down by height
+      const designH = template === "christmas-party" ? 722 : 567;
+      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / designH, 1.9))) : "1");
     };
     fit();
     window.addEventListener("resize", fit);
@@ -104,7 +106,7 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
       window.removeEventListener("resize", fit);
       window.removeEventListener("orientationchange", fit);
     };
-  }, []);
+  }, [template]);
 
   // Reveal later cards as they scroll into view.
   useEffect(() => {
