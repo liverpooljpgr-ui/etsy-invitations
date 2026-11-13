@@ -1,0 +1,558 @@
+/* CHRISTMAS PARTY (slug: christmas-party): cream paper, an olive ribbon frame with bows, a wreath on the cover, hanging ornaments and champagne glasses on the dinner page.
+   Pictures: public/templates/christmas/v1 (wreath, ornaments, champagne, frame.svg, bow.svg).
+   Pages: cover · dinner (date, time, place) · details (dress code, presents) · RSVP · closing. The venue and timeline screens of the shared layout are not used. */
+
+/* ───────── 0. Colours, fonts and the knobs ───────── */
+.inv[data-template="christmas-party"] {
+  --xm-paper:#fdfcf9;      /* white paper with a trace of cream */
+  --xm-olive:#6b7048;      /* ribbon frame, buttons */
+  --xm-brown:#4b3d33;      /* main text */
+  --xm-tan:#a8895e;        /* second line of the title, small capitals */
+  --xm-red:#b5434b;        /* the day number */
+  --xm-head:var(--font-xm-head),"Cormorant Garamond",Georgia,serif;
+  --xm-script:var(--font-ms-script),"Brush Script MT",cursive;
+  --paper:var(--xm-paper); --dark:var(--xm-paper); --dark-ink:var(--xm-brown); --ink:var(--xm-brown); --gold:var(--xm-tan);
+  font-family:var(--xm-head); font-weight:500; color:var(--xm-brown); text-align:center; letter-spacing:.04em; }
+
+/* every screen: the cream paper, the wavy ribbon frame, a bow at the top and at the bottom */
+.inv[data-template="christmas-party"] .card,
+.inv[data-template="christmas-party"] .cover,
+.inv[data-template="christmas-party"] .card-sheet, .inv[data-template="christmas-party"] .card-details, .inv[data-template="christmas-party"] .card-rsvp, .inv[data-template="christmas-party"] .card-closing {
+  background:radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.45) 0%, rgba(253,252,249,0) 62%, rgba(232,228,219,.16) 100%), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); border-radius:3px; box-shadow:0 8px 28px rgba(60,45,25,.16); align-items:center; text-align:center; }
+.inv[data-template="christmas-party"] :is(.sheet-in, .venue-in, .tl-in, .dtl-in, .rsvp-in, .closing-in) { position:relative; z-index:2; }
+
+/* ───────── 1. Cover: the wreath, "Join us for", the title ───────── */
+.inv[data-template="christmas-party"] .cover { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(6px * var(--k,1)); padding:calc(34px * var(--k,1)) calc(34px * var(--k,1)) calc(40px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-wreath { position:relative; z-index:2; display:block; width:84%; height:auto; margin:0 auto calc(4px * var(--k,1)); filter:drop-shadow(0 6px 8px rgba(70,50,30,.14)); }
+.inv[data-template="christmas-party"] .xm-join { position:relative; z-index:2; display:block; font-family:var(--xm-script); font-size:calc(34px * var(--k,1)); line-height:1; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-title { position:relative; z-index:2; display:block; max-width:92%; font-family:var(--xm-head); font-weight:700; font-size:calc(25px * var(--k,1)); line-height:1.16; letter-spacing:.05em; color:var(--xm-tan); text-wrap:balance; }
+.inv[data-template="christmas-party"] .xm-title::first-line { color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .env-hint { position:relative; z-index:2; margin-top:calc(14px * var(--k,1)); font-family:var(--xm-head); font-weight:700; font-size:calc(12px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; color:var(--xm-olive) !important; opacity:1; }
+
+/* ───────── 2. Dinner page: hanging ornaments, "Join us for dinner", date and time, host, place, champagne ───────── */
+.inv[data-template="christmas-party"] .card-sheet { container-type:size; padding:0; justify-content:flex-start; }
+.inv[data-template="christmas-party"] .xm-sheet { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1cqh; padding:0 12cqw; }
+.inv[data-template="christmas-party"] .xm-orn { position:absolute; top:7.5cqh; left:calc(50% - 22cqw); width:44cqw; height:auto; z-index:0; }
+.inv[data-template="christmas-party"] .xm-glass { position:absolute; bottom:6.5cqh; left:calc(50% - 15cqw); width:30cqw; height:auto; z-index:0; }
+.inv[data-template="christmas-party"] .xm-script { margin:19cqh 0 .6cqh; font-family:var(--xm-script); font-size:calc(31px * var(--k,1)); line-height:1.05; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-month { margin:0; font-family:var(--xm-head); font-weight:700; font-size:calc(14px * var(--k,1)); letter-spacing:.2em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-day { margin:0; display:flex; align-items:center; justify-content:center; gap:calc(10px * var(--k,1)); width:100%; }
+.inv[data-template="christmas-party"] .xm-rule { flex:1; height:0; border-top:calc(1px * var(--k,1)) solid var(--xm-tan); max-width:calc(36px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-daytext { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); white-space:nowrap; }
+.inv[data-template="christmas-party"] .xm-daytext b { font-weight:700; font-size:calc(30px * var(--k,1)); color:var(--xm-red); letter-spacing:0; line-height:.9; vertical-align:-.06em; padding:0 .08em; }
+.inv[data-template="christmas-party"] .xm-daytext sup { font-size:.36em; letter-spacing:.04em; vertical-align:1.25em; font-weight:700; }
+.inv[data-template="christmas-party"] .xm-hosted { margin:1.2cqh 0 0; font-family:var(--xm-head); font-weight:600; font-size:calc(11px * var(--k,1)); letter-spacing:.22em; text-transform:uppercase; color:var(--xm-tan); }
+.inv[data-template="christmas-party"] .xm-host { margin:0; font-family:var(--xm-script); font-size:calc(30px * var(--k,1)); line-height:1; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-place { margin:1.4cqh 0 0; font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--k,1)); line-height:1.2; letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); text-wrap:balance; }
+.inv[data-template="christmas-party"] .xm-addr { margin:0; font-family:var(--xm-head); font-weight:600; font-size:calc(13.5px * var(--k,1)); line-height:1.35; letter-spacing:.07em; text-transform:uppercase; color:var(--xm-tan); white-space:pre-line; }
+.inv[data-template="christmas-party"] .xm-dir { margin-top:.6cqh; font-family:var(--xm-head); font-weight:700; font-size:calc(11px * var(--k,1)); letter-spacing:.24em; text-transform:uppercase; color:var(--xm-olive); }
+
+/* ───────── 3. Details: dress code and presents ───────── */
+.inv[data-template="christmas-party"] .card-details { container-type:size; padding:0; }
+.inv[data-template="christmas-party"] .dtl-in { justify-content:center; gap:3cqh; padding:12cqh 12cqw; }
+.inv[data-template="christmas-party"] .tl-title, .inv[data-template="christmas-party"] .script.tl-title { font-family:var(--xm-script) !important; font-weight:400 !important; text-transform:none !important; letter-spacing:0 !important; font-size:calc(44px * var(--k,1)) !important; line-height:1 !important; color:var(--xm-brown) !important; margin:0 0 1cqh !important; }
+.inv[data-template="christmas-party"] .dtl-row { gap:4.2cqh; flex:none; justify-content:center; }
+.inv[data-template="christmas-party"] .dtl-blk { gap:calc(8px * var(--k,1)); align-items:center; text-align:center; }
+.inv[data-template="christmas-party"] .caps, .inv[data-template="christmas-party"] .tiny { font-family:var(--xm-head); font-weight:700; font-size:calc(11.5px * var(--k,1)); letter-spacing:.26em; text-transform:uppercase; color:var(--xm-tan); }
+.inv[data-template="christmas-party"] .val, .inv[data-template="christmas-party"] .val.sm { font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--k,1)); letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .dtl-text, .inv[data-template="christmas-party"] .sub { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); line-height:1.45; letter-spacing:.05em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .dtl-custom .dtl-text { max-width:100%; white-space:pre-line; }
+.inv[data-template="christmas-party"] .dots i { border-color:rgba(75,61,51,.25); }
+.inv[data-template="christmas-party"] .qrbox { color:var(--xm-brown); font-family:var(--xm-head); font-weight:600; }
+
+/* ───────── 4. RSVP ───────── */
+.inv[data-template="christmas-party"] .card-rsvp { container-type:size; padding:0; }
+.inv[data-template="christmas-party"] .rsvp-in { justify-content:center; padding:10cqh 12cqw; }
+.inv[data-template="christmas-party"] .rsvp-lead { font-family:var(--xm-script) !important; font-size:calc(40px * var(--k,1)) !important; color:var(--xm-brown) !important; text-transform:none !important; letter-spacing:0 !important; }
+.inv[data-template="christmas-party"] .rsvp-big { font-family:var(--xm-head) !important; font-weight:700 !important; font-size:calc(46px * var(--k,1)) !important; letter-spacing:.16em !important; color:var(--xm-tan) !important; }
+.inv[data-template="christmas-party"] .rsvp-by { font-family:var(--xm-head); font-weight:700; font-size:calc(16px * var(--k,1)); letter-spacing:.14em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-mail, .inv[data-template="christmas-party"] .rsvp-or { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); letter-spacing:.06em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-note { font-family:var(--xm-head); font-weight:600; font-size:calc(13.5px * var(--k,1)); letter-spacing:.05em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-open, .inv[data-template="christmas-party"] .rsvp-send { background:var(--xm-olive); color:#f3ecdb; border:1px solid var(--xm-olive); border-radius:999px; font-family:var(--xm-head); font-weight:700; letter-spacing:.24em; text-transform:uppercase; }
+
+/* ───────── 5. Closing: the wreath, the waiting-for-you line, add to calendar ───────── */
+.inv[data-template="christmas-party"] .card-closing { container-type:size; padding:0; }
+.inv[data-template="christmas-party"] .closing-in { justify-content:center; gap:2.4cqh; padding:12cqh 13cqw; }
+.inv[data-template="christmas-party"] .xm-closing-art { display:block; width:62%; height:auto; }
+.inv[data-template="christmas-party"] .closing-text { margin:0; font-family:var(--xm-script); font-size:calc(31px * var(--k,1)); line-height:1.18; letter-spacing:0; color:var(--xm-brown); text-wrap:balance; }
+.inv[data-template="christmas-party"] .closing-cal, .inv[data-template="christmas-party"] .venue-link { font-family:var(--xm-head); font-weight:700; font-size:calc(11px * var(--k,1)); letter-spacing:.24em; text-transform:uppercase; color:var(--xm-olive); }
+.inv[data-template="christmas-party"] .swipe-hint { color:var(--xm-olive); }
+.inv[data-template="christmas-party"] .music-btn { color:var(--xm-olive); }
+
+/* the hanging ornaments on the details page and the champagne glasses on the RSVP page (the same pictures as on the dinner page) */
+.inv[data-template="christmas-party"] .xm-dtl-art { position:absolute; top:7.5cqh; left:calc(50% - 20cqw); width:40cqw; height:auto; z-index:0; }
+.inv[data-template="christmas-party"] .card-details .dtl-in { padding-top:20cqh; }
+.inv[data-template="christmas-party"] .xm-rsvp-art { position:absolute; bottom:6.5cqh; left:calc(50% - 15cqw); width:30cqw; height:auto; z-index:0; }
+
+/* a double green border around every page: a thicker line outside and a thin line inside it (the cover too) */
+.inv[data-template="christmas-party"] :is(.card, .cover)::before { content:""; position:absolute; inset:calc(8px * var(--k,1)); border:calc(2.2px * var(--k,1)) solid var(--xm-olive); background:none; pointer-events:none; z-index:0; }
+.inv[data-template="christmas-party"] :is(.card, .cover)::after { content:""; position:absolute; inset:calc(15px * var(--k,1)); border:calc(1px * var(--k,1)) solid var(--xm-olive); background:none; pointer-events:none; z-index:0; }
+
+/* ───────── 20. COVER WITH ENVELOPE: wreath at the top, the title, then the envelope (red, with a snowflake wax seal). On tap the flap opens and a second card rises out of the envelope, grows and lands as the next page ───────── */
+.inv[data-template="christmas-party"] .cover { justify-content:flex-start; gap:calc(4px * var(--k,1)); padding:calc(26px * var(--k,1)) calc(30px * var(--k,1)) calc(34px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-wreath { width:56%; margin:0 auto 0; }
+.inv[data-template="christmas-party"] .xm-join { font-size:calc(30px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-title { font-size:calc(23px * var(--k,1)); }
+.inv[data-template="christmas-party"] .env-hint { display:none !important; }
+.inv[data-template="christmas-party"] .cover-env { position:relative; z-index:2; width:100%; aspect-ratio:1986/1342; margin:auto 0 calc(6px * var(--k,1)); box-shadow:0 7px 12px rgba(70,35,25,.28); border-radius:1.2% / 1.7%; }
+.inv[data-template="christmas-party"] .env-art { width:100%; aspect-ratio:1986/1342; }
+.inv[data-template="christmas-party"] .env-art, .inv[data-template="christmas-party"] .env-art img:not(.env-seal) { filter:none !important; box-shadow:none !important; }
+.inv[data-template="christmas-party"] .env-liner { inset:0; width:100%; height:100%; z-index:0; }
+.inv[data-template="christmas-party"] .env-body { z-index:2; }
+.inv[data-template="christmas-party"] .env-flap-closed { left:-.35%; top:0; width:100.7%; height:78.54%; transform-origin:50% 0; z-index:3; transition:transform .6s cubic-bezier(.45,0,.85,.6), visibility 0s linear .6s; }
+.inv[data-template="christmas-party"] .env-flap-open { left:.05%; top:-78.2%; width:99.9%; height:79.58%; transform-origin:50% 98.2%; z-index:-1; transition:transform 1.2s cubic-bezier(.2,.5,.3,1) .6s, visibility 0s linear .6s; }
+.inv[data-template="christmas-party"] .env-seal { position:absolute; left:50%; top:69.7%; width:22%; height:auto; aspect-ratio:520/329; translate:-50% -50%; z-index:4; pointer-events:none; transition:opacity .6s ease, transform .6s ease, filter .6s ease; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-seal { opacity:0; transform:scale(1.25); filter:blur(6px); }
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="christmas-party"][data-phase="closed"] .env-seal { animation:sf-seal-pulse 1.8s ease-in-out infinite; }
+}
+.inv[data-template="christmas-party"] :is(.xm-wreath, .xm-join, .xm-title) { transition:opacity .4s ease; }
+.inv[data-template="christmas-party"][data-phase="opening"] :is(.xm-wreath, .xm-join, .xm-title) { opacity:0; }
+
+/* the second card inside the envelope: a small copy of the dinner page (paper, double green border, ornaments, glasses) */
+.inv[data-template="christmas-party"] .env-card { --pe:calc(var(--k, 1) / var(--fly-s, 3)); position:absolute; left:50%; translate:-50% 0; top:3%; width:calc(63.5% * var(--card-wh, .6)); aspect-ratio:var(--card-wh, .6); z-index:1; display:block; container-type:size; border-radius:1px;
+  background:radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.45) 0%, rgba(253,252,249,0) 62%, rgba(232,228,219,.16) 100%), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper);
+  box-shadow:0 calc(5px * var(--pe)) calc(14px * var(--pe)) rgba(60,45,25,.2); }
+.inv[data-template="christmas-party"] .env-card::before { content:""; position:absolute; inset:2.35cqw; border:.65cqw solid var(--xm-olive); pointer-events:none; z-index:0; }
+.inv[data-template="christmas-party"] .env-card::after { content:""; position:absolute; inset:4.4cqw; border:.3cqw solid var(--xm-olive); pointer-events:none; z-index:0; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-card { animation:xm-card-fly 4.2s linear 0s both; }
+@keyframes xm-card-fly {
+  0%    { transform:none; z-index:1; }
+  42.8% { transform:none; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  60%   { transform:translateY(-102%); z-index:1; animation-timing-function:step-end; }
+  60.1% { transform:translateY(-102%); z-index:6; animation-timing-function:cubic-bezier(.12,.6,.3,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 3)); z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+/* the real page 2: ornaments and glasses are already on the landed card, its texts appear after the landing; the cover fades once the card has landed */
+.inv[data-template="christmas-party"] .sheet-in > :is(.xm-orn, .xm-glass) { animation:none !important; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.xm-orn, .xm-glass) { animation-delay:3.3s !important; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-btn { transform:none !important; transition:opacity .9s ease 2.9s !important; }
+
+/* ───────── 21. COVER WORDS: "Christmas" big, red capitals (Elsie Swash Caps); under it "dinner party" in black WindSong ───────── */
+.inv[data-template="christmas-party"] .xm-join { font-family:var(--font-xm-big),var(--xm-head),serif; font-weight:900; text-transform:uppercase; font-size:calc(40px * var(--k,1)); line-height:1.05; letter-spacing:.02em; color:var(--xm-red); margin-top:auto; }
+.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-xm-wind),var(--xm-script),cursive; font-weight:500; font-size:calc(44px * var(--k,1)); line-height:1; letter-spacing:0; color:#3a3a3a; margin-bottom:auto; }
+.inv[data-template="christmas-party"] .xm-title::first-line { color:#3a3a3a; }
+.inv[data-template="christmas-party"] .cover-env { margin-top:calc(8px * var(--k,1)); margin-bottom:calc(6px * var(--k,1)); }
+
+/* ───────── 22. ENVELOPE: smaller, the seal bigger, the envelope does not float / shake (like the other designs) ───────── */
+.inv[data-template="christmas-party"] .cover-env { width:80%; animation:none !important; }
+.inv[data-template="christmas-party"] .env-seal { width:32%; top:68%; }
+
+/* ───────── 23. NEW SEAL (wax with a snowflake and pine branches, from your SVG): the wax circle sits on the tip of the flap, the branches stick out to the right ───────── */
+.inv[data-template="christmas-party"] .env-seal { width:38%; aspect-ratio:900/708; top:68%; translate:-25.4% -66.9%; transform-origin:25.4% 66.9%; }
+
+/* ───────── 24. BORDER: one thin line, slightly green (was a double olive border) ───────── */
+.inv[data-template="christmas-party"] { --xm-line:#8e9b76; }
+.inv[data-template="christmas-party"] :is(.card, .cover)::before { inset:calc(12px * var(--k,1)); border:calc(1.3px * var(--k,1)) solid var(--xm-line); }
+.inv[data-template="christmas-party"] :is(.card, .cover)::after { display:none; }
+.inv[data-template="christmas-party"] .env-card::before { inset:3.5cqw; border:.4cqw solid var(--xm-line); }
+.inv[data-template="christmas-party"] .env-card::after { display:none; }
+/* the thin line of the card inside the envelope is drawn with gradients (a CSS border is never thinner than 1 px, which became 3 px when the card grows) */
+.inv[data-template="christmas-party"] .env-card::before { border:0; background:
+  linear-gradient(var(--xm-line), var(--xm-line)) top / 100% .38cqw no-repeat,
+  linear-gradient(var(--xm-line), var(--xm-line)) bottom / 100% .38cqw no-repeat,
+  linear-gradient(var(--xm-line), var(--xm-line)) left / .38cqw 100% no-repeat,
+  linear-gradient(var(--xm-line), var(--xm-line)) right / .38cqw 100% no-repeat; }
+.inv[data-template="christmas-party"] .env-card::before { inset:auto; left:3.5cqw; top:3.5cqw; width:calc((100cqw - 7cqw) * 5); height:calc((100cqh - 7cqw) * 5); background:none; border:calc(.38cqw * 5) solid var(--xm-line); transform:scale(.2); transform-origin:0 0; box-sizing:border-box; }
+
+/* ───────── 25. FONTS FROM THE REFERENCE: Playfair Display capitals (deep red) for the big word, Allison for all the scripts, Cormorant SC for the small spaced capitals ───────── */
+.inv[data-template="christmas-party"] { --xm-script:var(--font-allison),cursive; --xm-red:#9b1f2f; }
+.inv[data-template="christmas-party"] .xm-join { font-family:var(--font-sf-serif),Georgia,serif; font-weight:500; font-size:calc(38px * var(--k,1)); letter-spacing:.03em; line-height:1.05; color:var(--xm-red); }
+.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-allison),cursive; font-weight:400; font-size:calc(62px * var(--k,1)); line-height:.9; color:#3a3a3a; }
+.inv[data-template="christmas-party"] .xm-script { font-size:calc(42px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-host { font-size:calc(40px * var(--k,1)); }
+.inv[data-template="christmas-party"] :is(.tl-title, .script.tl-title) { font-size:calc(58px * var(--k,1)) !important; }
+.inv[data-template="christmas-party"] .rsvp-lead { font-size:calc(52px * var(--k,1)) !important; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(42px * var(--k,1)); line-height:1.08; }
+
+/* ───────── 26. COVER: small capitals line + Christmas separator above the big word; "dinner party" smaller ───────── */
+.inv[data-template="christmas-party"] .xm-intro { position:relative; z-index:2; display:block; margin-top:auto; font-family:var(--xm-head); font-weight:600; font-size:calc(13px * var(--k,1)); letter-spacing:.26em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-sep { position:relative; z-index:2; display:block; width:58%; height:auto; margin:calc(4px * var(--k,1)) auto calc(6px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-intro ~ .xm-join { margin-top:0; }
+.inv[data-template="christmas-party"] .xm-title { font-size:calc(46px * var(--k,1)); }
+.inv[data-template="christmas-party"] :is(.xm-intro, .xm-sep) { transition:opacity .4s ease; }
+.inv[data-template="christmas-party"][data-phase="opening"] :is(.xm-intro, .xm-sep) { opacity:0; }
+
+/* ───────── 27. COVER: no border ───────── */
+.inv[data-template="christmas-party"] .cover::before, .inv[data-template="christmas-party"] .cover::after { display:none; }
+
+/* ───────── 28. red #871624, bigger seal, lighter paper ───────── */
+.inv[data-template="christmas-party"] { --xm-red:#871624; --xm-paper:#fefefd; }
+.inv[data-template="christmas-party"] .env-seal { width:48%; }
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)), radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.45) 0%, rgba(253,252,249,0) 62%, rgba(232,228,219,.12) 100%), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); }
+
+/* ───────── 29. the closed flap was narrower than the envelope body (its picture has inset shoulders): enlarged 5.3 % so its corners reach the edges of the body; the seal moves down with its tip ───────── */
+.inv[data-template="christmas-party"] .env-flap-closed { left:-3.03%; width:106.05%; height:82.7%; }
+.inv[data-template="christmas-party"] .env-seal { top:71.5%; }
+.inv[data-template="christmas-party"] .env-seal { top:68.5%; }   /* seal a little higher (was 71.5%) */
+
+/* ───────── 30. PAPER: thin pale-green stripes (the tone of the green frame and branches) over the light paper, on every page and on the card in the envelope ───────── */
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:repeating-linear-gradient(90deg, rgba(120,140,98,.13) 0, rgba(120,140,98,.13) .6px, transparent .6px, transparent 7px),
+    linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); }
+/* stripes wider: 5 px bands every 14 px */
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:repeating-linear-gradient(90deg, rgba(120,140,98,.11) 0, rgba(120,140,98,.11) 5px, transparent 5px, transparent 14px),
+    linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); }
+
+/* ───────── 31. COVER: the striped paper again (no panel picture); a bow-and-branches decoration across the top, edge to edge (white of the picture blends into the paper) ───────── */
+.inv[data-template="christmas-party"] .cover { padding:calc(150px * var(--k,1)) calc(30px * var(--k,1)) calc(34px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-deco { position:absolute; left:0; top:calc(14px * var(--k,1)); width:100%; height:auto; mix-blend-mode:multiply; pointer-events:none; z-index:1; transition:opacity .4s ease; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-deco { opacity:0; }
+
+/* ───────── 32. no stripes: light textured paper again ───────── */
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)), radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.45) 0%, rgba(253,252,249,0) 62%, rgba(232,228,219,.12) 100%), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); }
+
+/* ───────── 33. no separator on the cover; the paper shows a little more of its texture (white veil .55 -> .30) ───────── */
+.inv[data-template="christmas-party"] .xm-sep { display:none; }
+.inv[data-template="christmas-party"] .xm-intro { margin-bottom:calc(8px * var(--k,1)); }
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:linear-gradient(rgba(255,255,255,.3), rgba(255,255,255,.3)), radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.35) 0%, rgba(253,252,249,0) 62%, rgba(232,228,219,.12) 100%), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); }
+
+/* ───────── 34. COVER: the texts and the envelope are one block, centred vertically in the space under the decoration ───────── */
+.inv[data-template="christmas-party"] .cover { justify-content:center; gap:0; padding-top:calc(140px * var(--k,1)); padding-bottom:calc(40px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-intro, .inv[data-template="christmas-party"] .xm-join { margin-top:0; }
+.inv[data-template="christmas-party"] .xm-title { margin-bottom:0; }
+.inv[data-template="christmas-party"] .xm-join { margin-top:calc(6px * var(--k,1)); }
+.inv[data-template="christmas-party"] .cover-env { margin-top:calc(34px * var(--k,1)); margin-bottom:0; }
+
+/* ───────── 35. 20px higher; golden glow on the seal; on tap golden glitter pours out of the envelope, fills the whole screen, then fades and the next screen is there (no card flies out any more) ───────── */
+.inv[data-template="christmas-party"] .cover { padding-bottom:calc(80px * var(--k,1)); }
+.inv[data-template="christmas-party"] .env-card { display:none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="christmas-party"][data-phase="closed"] .env-seal { animation:xm-seal-glow 1.9s ease-in-out infinite; }
+}
+@keyframes xm-seal-glow {
+  0%, 100% { scale:1; filter:drop-shadow(0 0 3px rgba(255,214,120,.35)) drop-shadow(0 0 0 rgba(255,190,70,0)); }
+  50% { scale:1.05; filter:drop-shadow(0 0 7px rgba(255,222,130,1)) drop-shadow(0 0 20px rgba(255,190,60,.85)); }
+}
+
+@property --xm-r { syntax:"<percentage>"; inherits:false; initial-value:-30%; }
+.inv[data-template="christmas-party"] .xm-glitter { position:absolute; inset:0; z-index:8; pointer-events:none; opacity:0;
+  background:radial-gradient(circle at 50% 70%, rgba(255,236,170,.96) 0%, rgba(242,204,115,.9) 42%, rgba(222,176,78,.82) 100%);
+  -webkit-mask-image:radial-gradient(circle farthest-corner at 50% 70%, #000 calc(var(--xm-r)), transparent calc(var(--xm-r) + 26%));
+  mask-image:radial-gradient(circle farthest-corner at 50% 70%, #000 calc(var(--xm-r)), transparent calc(var(--xm-r) + 26%)); }
+.inv[data-template="christmas-party"] .xm-glitter::before, .inv[data-template="christmas-party"] .xm-glitter::after { content:""; position:absolute; inset:0; }
+.inv[data-template="christmas-party"] .xm-glitter::before { background:url(/templates/christmas/v1/glitter-a.webp) 0 0 / 320px 320px; }
+.inv[data-template="christmas-party"] .xm-glitter::after { background:url(/templates/christmas/v1/glitter-b.webp) 90px 40px / 260px 260px; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-glitter { animation:xm-glit-grow 1.9s cubic-bezier(.35,.1,.3,1) 1s both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-glitter::before { animation:xm-twinkle .55s ease-in-out infinite alternate; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-glitter::after { animation:xm-twinkle .8s ease-in-out -.3s infinite alternate-reverse; }
+@keyframes xm-glit-grow { 0% { --xm-r:-30%; opacity:0; } 6% { opacity:1; } 100% { --xm-r:112%; opacity:1; } }
+@keyframes xm-twinkle { from { opacity:.25; transform:translateY(0); } to { opacity:1; transform:translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .inv[data-template="christmas-party"] .xm-glitter { display:none; } }
+
+/* ───────── 36. the closed flap was a little bigger than the body: 106.05% -> 104% wide (corners now exactly on the body edges), the seal follows its tip ───────── */
+.inv[data-template="christmas-party"] .env-flap-closed { left:-2%; width:104%; height:80.9%; top:-.25%; }
+.inv[data-template="christmas-party"] .env-seal { top:67.3%; }
+.inv[data-template="christmas-party"] .env-flap-closed { left:-2.5%; width:105%; height:81.7%; top:-.25%; }   /* between the two earlier sizes (106.05% was a little too big, 104% a little too small) */
+.inv[data-template="christmas-party"] .env-seal { top:67.9%; }
+
+/* ───────── 37. cover texts: CHRISTMAS regular weight (400); small line 2px smaller (13 -> 11px); "dinner party" in Mrs Saint Delafield, 5px below the big word ───────── */
+.inv[data-template="christmas-party"] .xm-join { font-weight:400; }
+.inv[data-template="christmas-party"] .xm-intro { font-size:calc(11px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-ms-script),cursive; font-weight:400; font-size:calc(52px * var(--k,1)); margin-top:calc(5px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-title { margin-top:calc(15px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-intro { margin-bottom:calc(5px * var(--k,1)); letter-spacing:.2em; }
+.inv[data-template="christmas-party"] .cover { padding-bottom:calc(140px * var(--k,1)); }   /* block 30px higher than the 80px version (50px up, then 20px down) */
+
+/* ───────── 38. NEW SEAL: cream wax seal with a wreath and a red bow (round, so it is centred on the flap tip) ───────── */
+.inv[data-template="christmas-party"] .env-seal { width:26%; aspect-ratio:700/681; top:67%; translate:-50% -50%; transform-origin:50% 50%; }
+.inv[data-template="christmas-party"] .xm-deco { left:-7.5%; width:115%; top:calc(34px * var(--k,1)); }   /* bow 20px lower and 15% bigger */
+.inv[data-template="christmas-party"] .xm-deco { max-width:none; }   /* (the general img rule capped it at 100%, so it never grew) */
+
+/* ───────── 39. block 20px lower; seal 5% smaller (26% -> 24.7%) with a slight shadow (kept in the golden glow too) ───────── */
+.inv[data-template="christmas-party"] .cover { padding-bottom:calc(100px * var(--k,1)); }
+.inv[data-template="christmas-party"] .env-seal { width:24.7%; filter:drop-shadow(0 2px 3px rgba(45,12,12,.45)); }
+@keyframes xm-seal-glow {
+  0%, 100% { scale:1; filter:drop-shadow(0 2px 3px rgba(45,12,12,.45)) drop-shadow(0 0 3px rgba(255,214,120,.35)); }
+  50% { scale:1.05; filter:drop-shadow(0 2px 3px rgba(45,12,12,.45)) drop-shadow(0 0 7px rgba(255,222,130,1)) drop-shadow(0 0 20px rgba(255,190,60,.85)); }
+}
+
+/* ───────── 40. SEAL: green wax with a gold Christmas tree (700 x 766 picture) ───────── */
+.inv[data-template="christmas-party"] .env-seal { aspect-ratio:700/766; }
+
+/* ───────── 41. SEAL: gold wax with an embossed snowflake (700 x 675 picture) ───────── */
+.inv[data-template="christmas-party"] .env-seal { aspect-ratio:700/675; }
+
+/* ───────── 42. golden separator with a snowflake between CHRISTMAS and "dinner party" ───────── */
+.inv[data-template="christmas-party"] .xm-sep2 { position:relative; z-index:2; display:block; width:52%; max-width:none; height:auto; margin:calc(8px * var(--k,1)) auto 0; transition:opacity .4s ease; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-sep2 { opacity:0; }
+.inv[data-template="christmas-party"] .xm-sep2 + .xm-title { margin-top:calc(4px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-sep2 { width:68%; }   /* longer, clearly visible thin lines on both sides of the snowflake */
+/* separator moved above CHRISTMAS, shorter lines */
+.inv[data-template="christmas-party"] .xm-sep2 { width:46%; margin:calc(6px * var(--k,1)) auto calc(2px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-sep2 + .xm-join { margin-top:0; }
+.inv[data-template="christmas-party"] .xm-join + .xm-title { margin-top:calc(15px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-title, .inv[data-template="christmas-party"] .xm-title::first-line { color:#555; }   /* "dinner party" */
+.inv[data-template="christmas-party"] .env-seal { top:calc(67% - 5px * var(--k,1)); }   /* seal 5px higher */
+
+/* ───────── 43. small golden stars "pressed" into the cover paper (foil look: a light edge up-left, a soft shadow down-right), scattered of different sizes in the margins and under the envelope ───────── */
+.inv[data-template="christmas-party"] .cover::after { content:""; display:block; position:absolute; inset:0; border:0; background:url(/templates/christmas/v1/cover-stars.svg) top center / 100% auto no-repeat; pointer-events:none; z-index:0; }
+
+/* ───────── 44. THE STARS FALL SLOWLY AND BLINK: three layers of stars (a, b, c) fall at different slow speeds (one picture tile = 900 design px, endless loop) and blink out of phase between 55 % and 100 % ───────── */
+.inv[data-template="christmas-party"] .cover::before, .inv[data-template="christmas-party"] .cover::after, .inv[data-template="christmas-party"] .xm-stars { content:""; display:block; position:absolute; inset:0; border:0; pointer-events:none; z-index:0;
+  background-repeat:repeat-y; background-position:center 0; background-size:calc(340px * var(--k,1)) calc(900px * var(--k,1)); }
+.inv[data-template="christmas-party"] .cover::after { background-image:url(/templates/christmas/v1/cover-stars-a.svg); }
+.inv[data-template="christmas-party"] .cover::before { background-image:url(/templates/christmas/v1/cover-stars-b.svg); }
+.inv[data-template="christmas-party"] .xm-stars { background-image:url(/templates/christmas/v1/cover-stars-c.svg); }
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template="christmas-party"] .cover::after { animation:xm-fall 70s linear infinite, xm-blink 3.1s ease-in-out infinite alternate; }
+  .inv[data-template="christmas-party"] .cover::before { animation:xm-fall 95s linear infinite, xm-blink 4.3s ease-in-out -1.4s infinite alternate; }
+  .inv[data-template="christmas-party"] .xm-stars { animation:xm-fall 120s linear infinite, xm-blink 3.7s ease-in-out -2.2s infinite alternate; }
+}
+@keyframes xm-fall { from { background-position:center 0; } to { background-position:center calc(900px * var(--k,1)); } }
+@keyframes xm-blink { from { opacity:1; } to { opacity:.55; } }
+
+/* ───────── 45. NEW TOP DECORATION (bow with pine, holly and ivy; it has its own transparent background) ───────── */
+.inv[data-template="christmas-party"] .xm-deco { left:0; width:100%; top:calc(22px * var(--k,1)); mix-blend-mode:normal; }
+.inv[data-template="christmas-party"] .cover { padding-top:calc(172px * var(--k,1)); }
+
+/* ───────── 46. slightly cream paper everywhere; the top decoration at the very top (top 0) and 1.5x bigger (the cover clips what goes past the edges) ───────── */
+.inv[data-template="christmas-party"] { --xm-paper:#fbf7ec; }
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:linear-gradient(rgba(250,243,223,.5), rgba(250,243,223,.5)), radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.35) 0%, rgba(253,252,249,0) 62%, rgba(232,224,205,.14) 100%), url(/templates/christmas/v1/paper.webp) center / cover no-repeat, var(--xm-paper); }
+.inv[data-template="christmas-party"] .cover { overflow:hidden; padding-top:calc(262px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-deco { left:-25%; width:150%; top:0; }
+.inv[data-template="christmas-party"] .xm-join + .xm-title { margin-top:calc(10px * var(--k,1)); }   /* "dinner party": 10px from CHRISTMAS */
+.inv[data-template="christmas-party"] .xm-intro { margin-bottom:0; }                                  /* "you are invited": no bottom margin */
+
+/* ───────── 47. paper = the texture picture exactly as it is (no cream tint, no white veil) ───────── */
+.inv[data-template="christmas-party"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:url(/templates/christmas/v1/paper.webp) center / cover no-repeat, #fdfcf9; }
+.inv[data-template="christmas-party"] .xm-deco { top:calc(-20px * var(--k,1)); }   /* ornament 20px higher (the top of the picture goes past the edge of the screen) */
+.inv[data-template="christmas-party"] .xm-deco { top:calc(-40px * var(--k,1)); }   /* ornament another 20px higher */
+.inv[data-template="christmas-party"] .xm-deco { top:calc(-50px * var(--k,1)); }   /* ornament another 10px higher */
+.inv[data-template="christmas-party"] .cover { padding-bottom:calc(140px * var(--k,1)); }   /* text + envelope block 20px higher (was 100px) */
+.inv[data-template="christmas-party"] .xm-intro { font-size:calc(12px * var(--k,1)); }
+.inv[data-template="christmas-party"] .cover { padding-bottom:calc(150px * var(--k,1)); }   /* block 5px higher (was 140px) */
+.inv[data-template="christmas-party"] .cover-env { width:88%; }   /* envelope 10% bigger (80% -> 88%); the flap and the seal scale with it */
+
+/* ───────── 49. DOUBLE BORDER on the other screens (not the cover): a stronger outer line and a thin inner line, slightly green ───────── */
+.inv[data-template="christmas-party"] .card:not(.cover)::before { inset:calc(10px * var(--k,1)); border:calc(1.6px * var(--k,1)) solid var(--xm-line); }
+.inv[data-template="christmas-party"] .card:not(.cover)::after { content:""; display:block; position:absolute; inset:calc(16px * var(--k,1)); border:calc(.9px * var(--k,1)) solid var(--xm-line); background:none; pointer-events:none; z-index:0; }
+
+/* ───────── 51. the bow with branches sits at the top, centred on the border, on the dinner, details and RSVP screens (not the closing screen); the hanging ornaments move down to make room ───────── */
+.inv[data-template="christmas-party"] .xm-bow { position:absolute; left:23%; top:calc(-8px * var(--k,1)); width:54%; max-width:none; height:auto; z-index:3; pointer-events:none; }
+.inv[data-template="christmas-party"] .xm-orn, .inv[data-template="christmas-party"] .xm-dtl-art { top:15.5cqh; }
+
+/* ───────── 52. the hanging baubles/bell ornament at the top of the dinner and details screens is removed (the bow with branches is there instead) ───────── */
+.inv[data-template="christmas-party"] .xm-orn, .inv[data-template="christmas-party"] .xm-dtl-art { display:none !important; }
+
+/* ───────── 53. the bow with branches on ALL screens but the cover (the closing screen too): 25px from the top, 75% wide, centred ───────── */
+.inv[data-template="christmas-party"] .xm-bow { left:12.5%; top:calc(25px * var(--k,1)); width:75%; }
+
+/* ───────── 54. the content of every screen but the cover is centred vertically in the card (the bow at the top and the glasses at the bottom are decoration; equal space above and below) ───────── */
+.inv[data-template="christmas-party"] .xm-script { margin:0 0 .6cqh; }
+.inv[data-template="christmas-party"] .card-details .dtl-in { padding-top:12cqh; padding-bottom:12cqh; }
+.inv[data-template="christmas-party"] .rsvp-in { padding-top:12cqh; padding-bottom:12cqh; }
+.inv[data-template="christmas-party"] .closing-in { padding-top:12cqh; padding-bottom:12cqh; }
+.inv[data-template="christmas-party"] :is(.dtl-in, .rsvp-in, .closing-in) { box-sizing:border-box; min-height:100%; justify-content:center; }
+.inv[data-template="christmas-party"] .xm-title { font-size:calc(49px * var(--k,1)); }   /* "dinner party" 49px */
+
+/* ───────── 55. SEPARATOR AT THE BOTTOM OF THE COVER: a golden poinsettia in the centre, a fir branch on each side and a thin line out to the ends ───────── */
+.inv[data-template="christmas-party"] .xm-foot { position:absolute; left:8%; bottom:calc(34px * var(--k,1)); width:84%; max-width:none; height:auto; z-index:1; pointer-events:none; transition:opacity .4s ease; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-foot { opacity:0; }
+
+/* ───────── 56. DINNER SCREEN: two glasses with cherries and a red bow, standing at the bottom centre; the picture has a soft shadow under the feet of the glasses (the RSVP screen keeps its own glasses) ───────── */
+.inv[data-template="christmas-party"] .xm-glass { bottom:3.5cqh; left:calc(50% - 15cqw); width:30cqw; height:auto; }
+.inv[data-template="christmas-party"] .xm-glass { bottom:4cqh; left:calc(50% - 19cqw); width:38cqw; }
+
+/* ───────── 57. the separator at the bottom of the cover is removed ───────── */
+.inv[data-template="christmas-party"] .xm-foot { display:none; }
+.inv[data-template="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 15cqw); width:30cqw; }   /* dinner glasses 30cqw wide, still centred */
+
+/* ───────── 58. Details: your own blocks have 20px left and right padding; the dress code is text and colours one under the other ───────── */
+.inv[data-template="christmas-party"] .dtl-custom { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }
+.inv[data-template="christmas-party"] .dtl-dress { display:flex; flex-direction:column; align-items:center; gap:calc(8px * var(--k,1)); }
+.inv[data-template="christmas-party"] .dtl-dress .val { order:1; }
+.inv[data-template="christmas-party"] .dtl-dress .dots { order:2; margin:0; justify-content:center; }
+
+/* ───────── 59. the e-mail address on the RSVP screen is underlined ───────── */
+.inv[data-template="christmas-party"] .rsvp-mail { text-decoration:underline; text-underline-offset:.22em; text-decoration-thickness:1px; }
+
+/* ───────── 60. the "Reply now" button (and the "Send" button in its sheet) is red, like the title ───────── */
+.inv[data-template="christmas-party"] .rsvp-open, .inv[data-template="christmas-party"] .rsvp-send { background:var(--xm-red); border-color:var(--xm-red); color:#fbf4ea; }
+.inv[data-template="christmas-party"] .rsvp-in .rsvp-or { margin-top:calc(14px * var(--k,1)); }   /* "or answer by e-mail" now sits under the Reply now button */
+
+/* ───────── 61. CLOSING: the first line stays script, the second line is regular text ───────── */
+.inv[data-template="christmas-party"] .closing-note { margin:0; max-width:92%; font-family:var(--xm-head); font-weight:600; font-size:calc(15px * var(--k,1)); line-height:1.5; letter-spacing:.06em; color:var(--xm-brown); text-wrap:balance; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(46px * var(--k,1)); }
+
+/* ───────── 62. the baubles ornament on the closing screen is removed; the script line is a little smaller so it fits on one line ───────── */
+.inv[data-template="christmas-party"] .xm-closing-art { display:none !important; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(40px * var(--k,1)); }
+
+/* ───────── 63. DINNER SCREEN in three sections with gaps between them: (1) "Join us for dinner" + the date, (2) hosted by, (3) the place and address ───────── */
+.inv[data-template="christmas-party"] .xm-sheet { gap:calc(30px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-sec { display:flex; flex-direction:column; align-items:center; gap:calc(6px * var(--k,1)); width:100%; }
+.inv[data-template="christmas-party"] .xm-sec > * { margin-top:0; margin-bottom:0; }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(4px * var(--k,1)); }
+
+/* ───────── 64. RSVP: "Please let us know how many of you are coming." and the Reply now button sit together, close under the RSVP title and the date ───────── */
+.inv[data-template="christmas-party"] .rsvp-by { margin:0 0 calc(18px * var(--k,1)); }
+.inv[data-template="christmas-party"] .rsvp-note { margin:0; max-width:80%; }
+.inv[data-template="christmas-party"] .rsvp-open { margin-top:calc(14px * var(--k,1)); }
+.inv[data-template="christmas-party"] .rsvp-in .rsvp-or { margin-top:calc(16px * var(--k,1)); }
+
+/* ───────── 65. "Join us for dinner": red capitals in the same font as CHRISTMAS on the cover, smaller ───────── */
+.inv[data-template="christmas-party"] .xm-script { font-family:var(--font-sf-serif),Georgia,serif; font-weight:400; font-size:calc(21px * var(--k,1)); line-height:1.15; letter-spacing:.05em; text-transform:uppercase; color:var(--xm-red); text-wrap:balance; }
+
+/* ───────── 66. the time in the date line is bigger ───────── */
+.inv[data-template="christmas-party"] .xm-time { font-size:calc(20px * var(--k,1)); font-weight:700; letter-spacing:.06em; vertical-align:-.05em; }
+
+/* ───────── 67. the street address: small regular text (not capitals); more space under "Join us for dinner" ───────── */
+.inv[data-template="christmas-party"] .xm-addr { font-family:var(--xm-head); font-weight:500; font-size:calc(13px * var(--k,1)); line-height:1.45; letter-spacing:.03em; text-transform:none; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(18px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-weight:600; }   /* "Join us for dinner" semi-bold (600) */
+
+/* ───────── 68. "Join us for dinner": elegant script (Allison) in black; the host's name: red capitals in the CHRISTMAS font, weight 400 ───────── */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-family:var(--font-allison),cursive; font-weight:400; font-size:calc(42px * var(--k,1)); line-height:1; letter-spacing:0; text-transform:none; color:#1c1c1c; }
+.inv[data-template="christmas-party"] .xm-host { font-family:var(--font-sf-serif),Georgia,serif; font-weight:400; font-size:calc(24px * var(--k,1)); line-height:1.15; letter-spacing:.05em; text-transform:uppercase; color:var(--xm-red); }
+
+/* ───────── 69. ONE SCRIPT FONT EVERYWHERE: the one on the cover ("dinner party": Mrs Saint Delafield) replaces Allison on the other screens; sizes tuned for it ───────── */
+.inv[data-template="christmas-party"] { --xm-script:var(--font-ms-script),"Brush Script MT",cursive; }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-family:var(--font-ms-script),cursive; font-size:calc(44px * var(--k,1)); }
+.inv[data-template="christmas-party"] :is(.tl-title, .script.tl-title) { font-size:calc(56px * var(--k,1)) !important; }
+.inv[data-template="christmas-party"] .rsvp-lead { font-size:calc(52px * var(--k,1)) !important; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(40px * var(--k,1)); }
+.inv[data-template="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 13.5cqw); width:27cqw; }   /* dinner glasses 27cqw wide, centred */
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(51px * var(--k,1)); color:var(--xm-red); }   /* "We are waiting for you:" 51px, red */
+
+/* ───────── 70. regular text: Cormorant SC (Quattrocento was tried and dropped) ───────── */
+.inv[data-template="christmas-party"] { --xm-head:var(--font-xm-head),"Cormorant Garamond",Georgia,serif; }
+
+/* ───────── 71. the host's name looks like the place name: same font, weight, size, spacing and colour ───────── */
+.inv[data-template="christmas-party"] .xm-host { font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--k,1)); line-height:1.2; letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); }
+
+/* ───────── 72. DINNER SCREEN laid out like the reference: the date row (WEEKDAY | big day number | MONTH, each word between two thin lines), "HOSTED BY NAME" on ONE line, then "At 6:00 PM", the place name and the address ───────── */
+.inv[data-template="christmas-party"] .xm-dayrow { margin:0; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; column-gap:calc(12px * var(--k,1)); width:100%; }
+.inv[data-template="christmas-party"] .xm-wd, .inv[data-template="christmas-party"] .xm-mo { display:block; padding:calc(7px * var(--k,1)) 0; border-top:calc(1px * var(--k,1)) solid var(--xm-tan); border-bottom:calc(1px * var(--k,1)) solid var(--xm-tan); text-align:center; font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); letter-spacing:.12em; text-transform:uppercase; color:var(--xm-brown); white-space:nowrap; }
+.inv[data-template="christmas-party"] .xm-num { font-family:var(--xm-head); font-weight:700; font-size:calc(50px * var(--k,1)); line-height:1; letter-spacing:0; color:var(--xm-red); padding:0 calc(2px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-hostline { margin:0; text-align:center; font-family:var(--xm-head); font-size:calc(17px * var(--k,1)); line-height:1.25; letter-spacing:.1em; text-transform:uppercase; }
+.inv[data-template="christmas-party"] .xm-hostline .xm-hosted { display:inline; margin:0; font-size:inherit; font-weight:600; letter-spacing:.1em; color:var(--xm-tan); }
+.inv[data-template="christmas-party"] .xm-hostline .xm-host { display:inline; margin:0; font-size:inherit; }
+.inv[data-template="christmas-party"] .xm-at { margin:0; font-family:var(--xm-head); font-weight:700; font-size:calc(20px * var(--k,1)); line-height:1.2; letter-spacing:.04em; color:var(--xm-brown); }
+
+/* ───────── 73. REGULAR TEXT: Cormorant Garamond in CAPITALS with LINING figures (digits as tall as the letters; Cormorant SC has small, uneven digits) ───────── */
+.inv[data-template="christmas-party"] { --xm-head:var(--font-xm-garamond),"Cormorant Garamond",Georgia,serif; font-feature-settings:"lnum" 1, "kern" 1; font-variant-numeric:lining-nums; }
+.inv[data-template="christmas-party"] :is(.xm-addr, .xm-at, .dtl-text, .sub, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note, .xm-dir, .closing-cal, .xm-hostline, .xm-month, .rsvp-by, .val) { text-transform:uppercase; }
+.inv[data-template="christmas-party"] :is(.xm-addr, .dtl-text, .sub, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-weight:600; letter-spacing:.07em; }
+.inv[data-template="christmas-party"] .xm-at { font-size:calc(17px * var(--k,1)); text-transform:uppercase; }   /* the time: 17px */
+.inv[data-template="christmas-party"] .xm-addr { text-transform:none; font-weight:600; font-size:calc(14.5px * var(--k,1)); letter-spacing:.03em; }   /* the street address: regular text, not capitals */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { color:#555; }   /* "Join us for dinner" in #555 */
+
+/* ───────── 74. the regular capitals text: weight 400 and a little less letter-spacing ───────── */
+.inv[data-template="christmas-party"] :is(.xm-wd, .xm-mo, .xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .xm-month, .xm-dir, .caps, .tiny, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note, .closing-cal, .xm-intro) { font-weight:400; }
+.inv[data-template="christmas-party"] :is(.xm-wd, .xm-mo) { letter-spacing:.09em; }
+.inv[data-template="christmas-party"] :is(.xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-place, .val, .val.sm) { letter-spacing:.075em; }
+.inv[data-template="christmas-party"] .xm-at { letter-spacing:.03em; }
+.inv[data-template="christmas-party"] :is(.caps, .tiny) { letter-spacing:.2em; }
+.inv[data-template="christmas-party"] .xm-intro { letter-spacing:.16em; }
+.inv[data-template="christmas-party"] .xm-dir { letter-spacing:.18em; }
+.inv[data-template="christmas-party"] .rsvp-by { letter-spacing:.11em; }
+.inv[data-template="christmas-party"] :is(.dtl-text, .sub, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { letter-spacing:.05em; }
+
+/* ───────── 75. the regular capitals text: weight back to 500, size 16px (the small labels — DRESS CODE, HOSTED…, weekday / month, GET DIRECTIONS — keep their small sizes) ───────── */
+.inv[data-template="christmas-party"] :is(.xm-wd, .xm-mo, .xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .xm-month, .xm-dir, .caps, .tiny, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note, .closing-cal, .xm-intro) { font-weight:500; }
+.inv[data-template="christmas-party"] :is(.xm-hostline, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-size:calc(16px * var(--k,1)); }
+
+/* ───────── 76. the regular capitals text (the 16px lines): weight 600, letter-spacing .055em ───────── */
+.inv[data-template="christmas-party"] :is(.xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-weight:600; letter-spacing:.055em; }
+.inv[data-template="christmas-party"] .xm-sec .xm-dir { margin-top:calc(12px * var(--k,1)); }   /* space above "Get directions" */
+.inv[data-template="christmas-party"] .dtl-custom-text { text-transform:none; font-size:calc(17px * var(--k,1)); letter-spacing:.03em; line-height:1.45; }   /* the text of your own blocks (Presents ...): normal case, not capitals */
+.inv[data-template="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 12cqw); width:24cqw; }   /* dinner glasses a bit smaller: 27cqw -> 24cqw */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-size:calc(49px * var(--k,1)); }   /* "Join us for party" 49px */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-size:calc(45px * var(--k,1)); margin-bottom:calc(10px * var(--k,1)); }   /* "Join us for party": 45px, 10px space under it */
+
+/* ───────── 77. DETAILS SCREEN: the laid dinner table with two chairs and bows stands at the bottom, with a soft shadow on the floor (the shadow is part of the picture) ───────── */
+.inv[data-template="christmas-party"] .xm-table { position:absolute; left:calc(50% - 38cqw); bottom:3cqh; width:76cqw; max-width:none; height:auto; z-index:0; pointer-events:none; }
+.inv[data-template="christmas-party"] .card-details .dtl-in { padding-bottom:26cqh; }
+
+/* ───────── 78. "Please let us know how many of you are coming.": the same font as the venue address (regular case, 600, 14.5px) ───────── */
+.inv[data-template="christmas-party"] .rsvp-note { font-family:var(--xm-head); font-weight:600; font-size:calc(14.5px * var(--k,1)); letter-spacing:.03em; text-transform:none; line-height:1.45; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .card-details :is(.caps, .tiny) { font-weight:700; }   /* the headings of the Details blocks (DRESS CODE, PRESENTS ...) heavier */
+.inv[data-template="christmas-party"] .xm-table { left:calc(50% - 31cqw); width:62cqw; }   /* table smaller: 76cqw -> 62cqw */
+.inv[data-template="christmas-party"] .card-details .dtl-in { padding-bottom:22cqh; }
+
+/* ───────── 79. the word "Please" has no space under it; the regular text has line-height 1.3 ───────── */
+.inv[data-template="christmas-party"] .rsvp-lead { margin-bottom:0 !important; }
+.inv[data-template="christmas-party"] :is(.xm-addr, .xm-at, .xm-place, .xm-hostline, .dtl-text, .sub, .dtl-custom-text, .rsvp-note, .rsvp-or, .rsvp-mail, .rsvp-by, .closing-note) { line-height:1.3; }
+.inv[data-template="christmas-party"] :is(.xm-addr, .dtl-custom-text, .rsvp-note) { letter-spacing:.01em; }   /* normal-case text: less letter-spacing */
+
+/* ───────── 80. button text: the CHRISTMAS font (Playfair Display), small ───────── */
+.inv[data-template="christmas-party"] :is(.rsvp-open, .rsvp-send) { font-family:var(--font-sf-serif),Georgia,serif; font-weight:500; font-size:calc(13px * var(--k,1)); letter-spacing:.14em; text-transform:uppercase; }
+.inv[data-template="christmas-party"] .xm-sec { gap:calc(2px * var(--k,1)); }   /* gap between the lines inside each dinner section: 2px */
+.inv[data-template="christmas-party"] .xm-addr { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }   /* address: 20px padding left and right */
+.inv[data-template="christmas-party"] :is(.rsvp-note, .dtl-custom-text) { line-height:1.3em; letter-spacing:.03em; }   /* "Please let us know how many of you are coming." and your own Details blocks */
+.inv[data-template="christmas-party"] .xm-addr { color:#a9822f; }   /* the street address in gold */
+
+/* ───────── 82. "or answer by e-mail …": gold, the same font as the venue address (normal case, 600, 14.5px) ───────── */
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-family:var(--xm-head); font-weight:600; font-size:calc(14.5px * var(--k,1)); letter-spacing:.01em; text-transform:none; line-height:1.3; color:#a9822f; }
+.inv[data-template="christmas-party"] .xm-addr { color:var(--xm-tan); }   /* venue address: the tan of the labels */
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { color:var(--xm-tan); }   /* the e-mail line matches it */
+.inv[data-template="christmas-party"] .dtl-custom-text { font-size:calc(13px * var(--k,1)); letter-spacing:.03em; }   /* texts of your own Details blocks: 13px */
+
+/* ───────── 83. overrides the .055em of section 76: letter-spacing .03em on the same lines (weight stays 600) ───────── */
+.inv[data-template="christmas-party"] :is(.xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { letter-spacing:.03em; }
+.inv[data-template="christmas-party"] .rsvp-big { margin-top:calc(-10px * var(--k,1)); }   /* RSVP: 10px closer to "Please" */
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-size:calc(14px * var(--k,1)); }   /* "or answer by e-mail …": 14px */
+.inv[data-template="christmas-party"] .rsvp-open { margin-top:calc(50px * var(--k,1)); }   /* Reply now: 50px below the sentence */
+
+/* ───────── 84. the golden snowflake divider from the cover, under the Details heading and under RSVP ───────── */
+.inv[data-template="christmas-party"] .xm-sep3 { display:block; width:46%; max-width:none; height:auto; margin:calc(4px * var(--k,1)) auto calc(8px * var(--k,1)); flex:none; }
+
+/* ───────── 85. the divider is exactly 10px from the heading above and from the text below (the neighbours' own margins and the flex gap are taken off) ───────── */
+.inv[data-template="christmas-party"] .card-details .xm-sep3 { margin:calc(10px * var(--k,1) - 4cqh) auto calc(10px * var(--k,1) - 3cqh); }
+.inv[data-template="christmas-party"] .card-rsvp .xm-sep3 { margin:calc(10px * var(--k,1) - 3.4cqh) auto calc(10px * var(--k,1)); }
+.inv[data-template="christmas-party"] .card-rsvp .rsvp-by { margin-top:0; }
+.inv[data-template="christmas-party"] .rsvp-title { margin-bottom:calc(25px * var(--k,1)); }   /* RSVP title: 25px below (the divider under it now sits 25px from it) */
+.inv[data-template="christmas-party"] .card-rsvp .xm-sep3 { margin-top:0; }
+.inv[data-template="christmas-party"] .rsvp-title { margin-bottom:calc(10px * var(--k,1)); }   /* RSVP title: 10px below; the divider follows right after */
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-size:calc(12px * var(--k,1)); }   /* "or answer by e-mail …": 12px */
+
+/* ───────── 86. FIX: several size rules above were being overridden by the longer selector lists of sections 75–76 (a longer list wins over a later short rule). The ".card" in front makes these win. ───────── */
+.inv[data-template="christmas-party"] .card .xm-at { font-size:calc(17px * var(--k,1)); }                                   /* the time: 17px */
+.inv[data-template="christmas-party"] .card .rsvp-note { font-size:calc(14.5px * var(--k,1)); text-transform:none; }          /* the sentence above Reply now: like the address */
+.inv[data-template="christmas-party"] .card :is(.rsvp-or, .rsvp-mail) { font-size:calc(12px * var(--k,1)); }                 /* "or answer by e-mail …": 12px */
+.inv[data-template="christmas-party"] .card .dtl-custom-text { font-size:calc(13px * var(--k,1)); }                          /* your own Details blocks: 13px */
+
+/* ───────── 87. RSVP texts: the e-mail line 14px; the sentence above Reply now 16px; "or answer by e-mail" in the regular brown (the address itself stays tan) ───────── */
+.inv[data-template="christmas-party"] .card :is(.rsvp-or, .rsvp-mail) { font-size:calc(14px * var(--k,1)); }
+.inv[data-template="christmas-party"] .card .rsvp-note { font-size:calc(16px * var(--k,1)); }
+.inv[data-template="christmas-party"] .card .rsvp-or { color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .card .rsvp-or .rsvp-mail { color:var(--xm-tan); }
+
+/* ───────── 88. the venue address: not tan, just a little greyer than the regular text; the e-mail address: the regular colour ───────── */
+.inv[data-template="christmas-party"] .card .xm-addr { color:#6d625b; }
+.inv[data-template="christmas-party"] .card .rsvp-or .rsvp-mail, .inv[data-template="christmas-party"] .card .rsvp-mail { color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .card .dtl-custom-text { font-size:calc(16px * var(--k,1)); }   /* the text of your own Details blocks: 16px */
+
+/* ───────── 89. CLOSING SCREEN: a decorated tree under strings of lights at the bottom, wider than the card (the card clips the ends of the strings) ───────── */
+.inv[data-template="christmas-party"] .card-closing { overflow:hidden; }
+.inv[data-template="christmas-party"] .xm-tree { position:absolute; left:-15%; bottom:2cqh; width:130%; max-width:none; height:auto; z-index:0; pointer-events:none; }
+.inv[data-template="christmas-party"] .card-closing .closing-in { padding-bottom:26cqh; }
+
+/* ───────── 90. THE REPLY FORM (the sheet that opens from "Reply now") is green, not golden: borders, selected answer, counter buttons and the Send button ───────── */
+.inv[data-template="christmas-party"] .rsvp-sheet { background:#fbfaf5; }
+.inv[data-template="christmas-party"] .rsvp-field input, .inv[data-template="christmas-party"] .rsvp-field textarea, .inv[data-template="christmas-party"] .rsvp-choice, .inv[data-template="christmas-party"] .rsvp-count button { border-color:rgba(107,112,72,.55); }
+.inv[data-template="christmas-party"] .rsvp-field input:focus, .inv[data-template="christmas-party"] .rsvp-field textarea:focus { outline-color:rgba(107,112,72,.5); }
+.inv[data-template="christmas-party"] .rsvp-choice[aria-checked="true"] { background:var(--xm-olive); border-color:var(--xm-olive); color:#fff; }
+.inv[data-template="christmas-party"] .rsvp-count button { color:var(--xm-olive); }
+.inv[data-template="christmas-party"] .rsvp-field > span, .inv[data-template="christmas-party"] .rsvp-fine, .inv[data-template="christmas-party"] .rsvp-x { color:#6f7655; }
+.inv[data-template="christmas-party"] .rsvp-sheet .rsvp-send { background:var(--xm-olive); border-color:var(--xm-olive); color:#f6f1e3; }
+.inv[data-template="christmas-party"] .xm-tree { left:-20%; bottom:4cqh; width:140%; }   /* tree: bottom 4cqh, 140% wide; its soft shadow on the floor is part of the picture */
+.inv[data-template="christmas-party"] .card-closing .closing-in { padding-bottom:30cqh; }
+
+/* ───────── 91. rounded corners on the page borders (outer line and inner line, concentric) ───────── */
+.inv[data-template="christmas-party"] .card:not(.cover)::before { border-radius:calc(16px * var(--k,1)); }
+.inv[data-template="christmas-party"] .card:not(.cover)::after { border-radius:calc(10px * var(--k,1)); }
+
+
+/* ───────── 93. Details → divider distance = "RSVP" → divider distance (measured on the pictures: the visible gap under "Details" was about 34px, under "RSVP" 24px, so the Details divider moves 10px closer) ───────── */
+.inv[data-template="christmas-party"] .card-details .xm-sep3 { margin-top:calc(0px * var(--k,1) - 4cqh); }
+.inv[data-template="christmas-party"] .card-details .xm-sep3 { margin-top:calc(-2px * var(--k,1) - 4cqh); }   /* fine adjustment: the visible gaps now match (about 24px) */
+.inv[data-template="christmas-party"] .card .closing-text { line-height:.9; }   /* the red closing sentence: tighter lines */

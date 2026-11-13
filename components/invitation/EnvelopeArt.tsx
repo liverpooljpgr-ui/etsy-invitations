@@ -33,7 +33,7 @@ export function EnvelopeArt({ monogram, template = DEFAULT_TEMPLATE, photo }: { 
         <img src={`${ART}/envelope-flap-closed.${ext}`} alt="" width={1200} height={605} decoding="async" draggable={false} />
         {monogram}
       </span>
-      {seal && <img className="env-seal" src={seal} alt="" width={240} height={228} decoding="async" draggable={false} />}
+      {seal && <img className="env-seal" src={seal} alt="" width={700} height={675} decoding="async" draggable={false} />}
       {/* eslint-enable @next/next/no-img-element */}
     </span>
   );

@@ -9,7 +9,7 @@ import { Invitation } from "./Invitation";
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
 // a design with a slower envelope (its own transitions in its stylesheet) says how long the opening takes
-const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 5600, "cupid-script": 5600, "lilac-script": 5600, "sage-forest": 5600 };
+const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 5600, "cupid-script": 5600, "lilac-script": 5600, "sage-forest": 5600, "christmas-party": 4400 };
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
@@ -45,7 +45,7 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
     const r = root.current;
     const fly = r?.querySelector<HTMLElement>(".env-photo");
     const card = r?.querySelector<HTMLElement>('.card[data-card="2"]');
-    const target = card?.querySelector<HTMLElement>(".arch");
+    const target = card?.querySelector<HTMLElement>(".arch") ?? (fly?.classList.contains("env-card") ? card : null);
     if (!fly || !card || !target) return;
     // the next screen waits slightly lower and smaller until the envelope opens: undo that (scale about its centre, then a shift)
     const m = new DOMMatrix(getComputedStyle(card).transform);
@@ -93,6 +93,8 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
       if (w !== lastW) { tallest = 0; lastW = w; }
       tallest = Math.max(tallest, window.innerHeight);
       const phone = window.matchMedia("(max-width: 640px)").matches;
+      const st = el.querySelector<HTMLElement>(".stage");
+      if (st && st.offsetWidth && st.offsetHeight) el.style.setProperty("--card-wh", String(st.offsetWidth / st.offsetHeight)); // shape of a screen (the card that leaves the envelope has the same one)
       el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / 567, 1.9))) : "1");
     };
     fit();

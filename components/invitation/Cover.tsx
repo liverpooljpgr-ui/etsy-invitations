@@ -1,5 +1,5 @@
 import type { Content } from "@/lib/content/schema";
-import { coverBottomText, FLYING_PHOTO, TEMPLATE_COVER, type TemplateSlug } from "@/lib/templates";
+import { coverBottomText, FLYING_PHOTO, PARTY_TEMPLATES, TEMPLATE_COVER, type TemplateSlug } from "@/lib/templates";
 import { EnvelopeArt } from "./EnvelopeArt";
 import { CoverNames } from "./CoverNames";
 
@@ -23,6 +23,30 @@ export function CoverInner({ content: c, mode, hint, template }: { content: Cont
         {i2 && <span>{i2}</span>}
       </span>
     ) : null;
+  // the Christmas party: the line above the title, the title, then the envelope with the second card inside
+  if (template && PARTY_TEMPLATES[template]) {
+    return (
+      <>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="xm-deco" src="/templates/christmas/v1/garland.webp" alt="" width={1300} height={678} decoding="async" draggable={false} />
+        {c.texts.coverIntro && <span className="xm-intro">{c.texts.coverIntro}</span>}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {c.texts.coverIntro && <img className="xm-sep" src="/templates/christmas/v1/divider.svg" alt="" width={240} height={28} draggable={false} />}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="xm-sep2" src="/templates/christmas/v1/divider-gold.svg" alt="" width={240} height={28} draggable={false} />
+        {c.texts.coverTop && <span className="xm-join">{c.texts.coverTop}</span>}
+        <span className="xm-title">{c.texts.headline || (ph ? "Your party title" : "")}</span>
+        <span className="cover-env">
+          <EnvelopeArt template={template} />
+        </span>
+        <span className="xm-stars" aria-hidden="true" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="xm-foot" src="/templates/christmas/v1/foot-gold.svg" alt="" width={320} height={44} draggable={false} />
+        <span className="xm-glitter" aria-hidden="true" />
+        {hint && <span className="env-hint">Tap to open</span>}
+      </>
+    );
+  }
   return (
     <>
       {c.texts.coverTop && !(template && TEMPLATE_COVER[template]?.hideTop) && <span className="cover-top">{c.texts.coverTop}</span>}

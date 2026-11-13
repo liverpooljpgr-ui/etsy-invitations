@@ -12,7 +12,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
-import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug } from "@/lib/templates";
+import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug , PARTY_TEMPLATES } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -105,7 +105,7 @@ function Section({ title, n, children, toggle, mobileHidden }: { title: string; 
     box.scrollTo({ top: box.scrollTop + (c.top - b.top) - (b.height - c.height) / 2, behavior: reduce ? "auto" : "smooth" });
   };
   const cut = title.indexOf(" · ");
-  const num = cut > 0 ? title.slice(0, cut).replace("Card ", "") : "";
+  const num = cut > 0 ? title.slice(0, cut).replace(/^(Card|Screen) /, "") : "";
   const name = cut > 0 ? title.slice(cut + 3) : title;
   return (
     <section onFocus={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
@@ -148,8 +148,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [step, setStep] = useState(() => Math.max(0, Math.min((initialStep ?? 1) - 1, initialStatus === "published" ? GUEST_IDX : GUEST_IDX - 1))); // phone wizard
   const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
   const [status, setStatus] = useState(initialStatus);
+  const party = !!PARTY_TEMPLATES[template ?? DEFAULT_TEMPLATE]; // the Christmas party: its own wording and pages
   const steps: readonly { n: number; label: string }[] = status === "published" ? [...STEPS, GUEST_STEP] : STEPS;
   const goStep = (i: number) => setStep(Math.max(0, Math.min(steps.length - 1, i)));
+  // the Christmas party has no separate venue and timeline screens (indexes 2 and 3): next / previous jump over them
+  const stepNear = (s0: number, dir: 1 | -1) => { let t = s0 + dir; while (party && (t === 2 || t === 3) && t > 0 && t < GUEST_IDX) t += dir; return t; };
   // phones: swipe the live preview left / right to go to the next / previous screen
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const [slide, setSlide] = useState<{ dir: "next" | "prev"; step: number } | null>(null);
@@ -159,7 +162,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (!s0 || !t) return;
     const dx = t.clientX - s0.x, dy = t.clientY - s0.y;
     if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return; // a clear sideways flick only, not a scroll
-    const to = Math.max(0, Math.min(GUEST_IDX - 1, step + (dx < 0 ? 1 : -1)));
+    const to = Math.max(0, Math.min(GUEST_IDX - 1, stepNear(step, dx < 0 ? 1 : -1)));
     if (to === step) return;
     setSlide({ dir: dx < 0 ? "next" : "prev", step: to });
     goStep(to);
@@ -342,6 +345,27 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     const a = draft.couple.first.trim(), b = draft.couple.second.trim();
     const names = a && b ? `${a} & ${b}` : "";
     const when = niceDate(draft.event.date), replyBy = niceDate(draft.rsvp.deadline);
+    if (party) {
+      // the Christmas party: a party, not a wedding; the host (if given) signs it
+      const host = a;
+      const body = [
+        "Dear friend,",
+        "",
+        `${host ? `${host} would` : "We would"} love to have you at our Christmas dinner party${when ? ` on ${when}` : ""}.`,
+        "",
+        "Everything you need to know is in a small invitation page made just for our guests: the date, the time and the place, the dress code and how to let us know that you are coming. There is nothing to download and nothing to sign up for. Just tap the link and open the envelope.",
+        "",
+        publicUrl,
+        "",
+        replyBy ? `Please let us know whether you can join us by ${replyBy}. You can reply right inside the invitation, or simply answer this email.` : "You can reply right inside the invitation, or simply answer this email.",
+        "",
+        "We are waiting for you to have fun!",
+        "",
+        "Merry Christmas,",
+        host || "Your friends",
+      ].join("\r\n");
+      return { subject: host ? `You are invited to ${host}'s Christmas party` : "You are invited to our Christmas party", body };
+    }
     const body = [
       "Dear friend,",
       "",
@@ -538,13 +562,13 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className={`wiz-head lg:hidden ${typing ? "hidden" : ""}`}>
           <div className="wiz-row">
             <div className="wiz-chips" role="tablist" aria-label="Screens">
-              {steps.map((t, i) => (
+              {steps.map((t, i) => (party && (t.n === 3 || t.n === 4) ? null :
                 <button
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
                   className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${t.n >= 3 && t.n <= 7 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
-                ><b>{t.n}</b>{t.label}</button>
+                ><b>{party && t.n >= 5 && t.n <= 7 ? t.n - 2 : t.n}</b>{party ? ({ 2: "Dinner", 5: "Details", 6: "RSVP", 7: "Closing" } as Record<number, string>)[t.n] ?? t.label : t.label}</button>
               ))}
             </div>
           </div>
@@ -593,16 +617,26 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         )}
         <div className="ui-sections">
 
-          <Section n={1} mobileHidden={step !== 0} title="Card 1 · Cover (the envelope screen)">
-            {!(template && TEMPLATE_COVER[template]?.hideTop) && <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>}
-            <div className="ui-two">
-              <Field label="Beloved 1"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
-              <Field label="Beloved 2"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
-            </div>
-            <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} value={coverBottomText(template, draft.texts.coverBottom)} /></Field>
+          <Section n={1} mobileHidden={step !== 0} title={party ? "Screen 1 · Cover (envelope)" : "Card 1 · Cover (the envelope screen)"}>
+            {party ? (
+              <>
+                <Field label="Small line at the top"><input className={inputCls} maxLength={40} {...tp("coverIntro")} /></Field>
+                <Field label="Big word"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>
+                <Field label="Second line (script)"><input className={inputCls} maxLength={60} autoComplete="off" {...tp("headline")} /></Field>
+              </>
+            ) : (
+              <>
+                {!(template && TEMPLATE_COVER[template]?.hideTop) && <Field label="Line above the names"><input className={inputCls} maxLength={40} {...tp("coverTop")} /></Field>}
+                <div className="ui-two">
+                  <Field label="Beloved 1"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
+                  <Field label="Beloved 2"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
+                </div>
+                <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...tp("coverBottom")} value={coverBottomText(template, draft.texts.coverBottom)} /></Field>
+              </>
+            )}
             <div className="ui-field">
               <span className="ui-label">Background music (optional)</span>
-              <SongPicker currentUrl={draft.music?.url ?? null} onPick={(song) => set("music", { url: song.url, name: song.name })} />
+              <SongPicker currentUrl={draft.music?.url ?? null} template={template} onPick={(song) => set("music", { url: song.url, name: song.name })} />
               <span className="ui-help">Or use your own song:</span>
               <div className="ui-media">
                 <FilePick accept="audio/mpeg,.mp3" label={draft.music ? "Change song" : "Choose an MP3"} onFile={(f) => void onMusic(f)} />
@@ -618,8 +652,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           </Section>
 
-          <Section n={2} mobileHidden={step !== 1} title="Card 2 · Photo & Date">
-            <div className="ui-field">
+          <Section n={2} mobileHidden={step !== 1} title={party ? "Screen 2 · Dinner (date, time, place)" : "Card 2 · Photo & Date"}>
+            {!party && <div className="ui-field">
               <span className="ui-label">Photo (shown in {{ oval: "an oval", rect: "a frame", arch: "an arch" }[PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]]})</span>
               <div className="ui-media">
                 {draft.photo && cropOpen && (
@@ -633,16 +667,33 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 {draft.photo && !cropOpen && <button type="button" onClick={() => setCropOpen(true)} className="ui-btn ui-btn-gray ui-btn-sm">Adjust</button>}
                 {draft.photo && <button type="button" onClick={() => { set("photo", null); setCropOpen(false); }} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
               </div>
-            </div>
-            <Field label="Text above the date"><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
-            {template === "sage-forest" && <Field label="Line under it"><input className={inputCls} maxLength={60} {...tp("saveSubtitle")} /></Field>}
+            </div>}
+            <Field label={party ? "Line above the date" : "Text above the date"}><input className={inputCls} maxLength={40} {...tp("saveTheDate")} /></Field>
+            {template === "sage-forest" && !party && <Field label="Line under it"><input className={inputCls} maxLength={60} {...tp("saveSubtitle")} /></Field>}
             <div className="ui-two">
               <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
               <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
             </div>
+            {party && <Field label="Hosted by"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>}
+            {party && (
+              <>
+                <PlaceSearch label="Find the place" placeholder="Name, address or a Google Maps link" onPick={pickVenue} />
+                <MapPicker query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} center={venuePos} onPick={pickVenue} />
+                <Field label="Place name (for example: The Martins' house)"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
+                <Field label="Address (Enter starts a new line)">
+                  <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
+                </Field>
+                <Field label="Map link for “Get directions” (https://…)">
+                  <input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })}
+                    onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
+                  {mapNote && <span className="ui-help">{mapNote}</span>}
+                </Field>
+              </>
+            )}
           </Section>
 
-          <Section n={3} mobileHidden={step !== 2} toggle={screenToggle(3)} title="Card 3 · Venue">
+          {!party && (<>
+          <Section n={3} mobileHidden={step !== 2} toggle={party ? undefined : screenToggle(3)} title={party ? "Card 3 · Place (shown on the dinner card)" : "Card 3 · Venue"}>
             {template === "sage-forest" && <Field label="Heading"><input className={inputCls} maxLength={40} {...tp("venueTitle")} /></Field>}
             <Field label="Line at the top"><input className={inputCls} maxLength={60} {...tp("venueIntro")} /></Field>
             <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={pickVenue} />
@@ -659,8 +710,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Line under the address"><input className={inputCls} maxLength={80} {...tp("receptionNote")} /></Field>
           </Section>
 
-          <Section n={4} mobileHidden={step !== 3} toggle={screenToggle(4)} title="Card 4 · Timeline">
-            {features.schedule ? (
+          <Section n={4} mobileHidden={step !== 3} toggle={party ? undefined : screenToggle(4)} title="Card 4 · Timeline">
+            {party ? <p className="ui-help">This design has no timeline screen: the date, time and place are on card 2.</p> : features.schedule ? (
               <>
                 <Field label="Title"><input className={inputCls} maxLength={30} {...tp("timelineTitle")} /></Field>
                 <div className="ui-field">
@@ -694,8 +745,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="ui-help">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title="Card 5 · Details">
+          </>)}
+
+          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} title={party ? "Screen 3 · Details (dress code, presents)" : "Card 5 · Details"}>
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
+            {!party && (
+              <>
             <PlaceSearch label="Find the hotel for accommodation" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
             <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
             {template === "sage-forest" && (
@@ -710,6 +765,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
             </Field>
+              </>
+            )}
             {features.dress_code ? (
               <div className="ui-field">
                 <Field label="Dress code"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
@@ -724,7 +781,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 </div>
               </div>
             ) : <p className="ui-help">Dress code is not included in your plan.</p>}
-            {features.registry ? (
+            {party ? null : features.registry ? (
               <div className="ui-field" style={{ gap: 14 }}>
                 <span className="ui-label">Registry QR codes</span>
                 {REGISTRIES.map((label) => (
@@ -735,9 +792,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <p className="ui-help">Leave a link empty to hide that QR code.</p>
               </div>
             ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
-                      {template === "sage-forest" && (
+                      {(template === "sage-forest" || party) && (
               <div className="ui-field" style={{ gap: 10 }}>
-                <span className="ui-label">Your own block</span>
+                <span className="ui-label">{party ? "Presents, or any block of your own" : "Your own block"}</span>
                 <Field label="Heading (for example: Gifts, Kids, Transport)"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>
                 <Field label="Text">
                   <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtraText} onChange={(e) => set("texts", { ...draft.texts, detailsExtraText: e.target.value })} />
@@ -745,9 +802,19 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
               </div>
             )}
+            {party && (
+              <div className="ui-field" style={{ gap: 10 }}>
+                <span className="ui-label">One more block of your own</span>
+                <Field label="Heading (for example: Gifts, Parking, Kids)"><input className={inputCls} maxLength={30} {...tp("detailsExtra2Title")} /></Field>
+                <Field label="Text">
+                  <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtra2Text} onChange={(e) => set("texts", { ...draft.texts, detailsExtra2Text: e.target.value })} />
+                </Field>
+                <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
+              </div>
+            )}
           </Section>
 
-          <Section n={6} mobileHidden={step !== 5} toggle={screenToggle(6)} title="Card 6 · RSVP">
+          <Section n={6} mobileHidden={step !== 5} toggle={screenToggle(6)} title={party ? "Screen 4 · RSVP" : "Card 6 · RSVP"}>
             <div className="ui-two">
               <Field label="Reply by"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
@@ -767,8 +834,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the invitation is published.</p>
           </Section>
 
-          <Section n={7} mobileHidden={step !== 6} toggle={screenToggle(7)} title="Card 7 · Closing">
-            <Field label="Closing sentence (shown under both names)"><input className={inputCls} maxLength={80} placeholder="Share this moment with us" {...tp("closing")} /></Field>
+          <Section n={7} mobileHidden={step !== 6} toggle={screenToggle(7)} title={party ? "Screen 5 · Closing" : "Card 7 · Closing"}>
+            <Field label={party ? "First line (script)" : "Closing sentence (shown under both names)"}><input className={inputCls} maxLength={80} placeholder={party ? "We are waiting for you:" : "Share this moment with us"} {...tp("closing")} /></Field>
+            {party && <Field label="Second line (regular text)"><input className={inputCls} maxLength={120} placeholder="come hungry, come merry and be ready to have fun!" {...tp("closingNote")} /></Field>}
             <div className="ui-switch-row">
               <span>Show “Add to calendar” <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
               <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show Add to calendar link" />
@@ -789,7 +857,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         )}
 
         {step < GUEST_IDX - 1 && (
-          <button type="button" onClick={() => goStep(step + 1)} className="ui-btn ui-btn-grad-dark lg:hidden" style={{ width: "100%" }}>
+          <button type="button" onClick={() => goStep(stepNear(step, 1))} className="ui-btn ui-btn-grad-dark lg:hidden" style={{ width: "100%" }}>
             Next <IconArrow />
           </button>
         )}

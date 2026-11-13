@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield, Alex_Brush, Mea_Culpa, Playfair_Display } from "next/font/google";
+import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Licorice, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield, Alex_Brush, Mea_Culpa, Playfair_Display, Cormorant_SC, Elsie_Swash_Caps, WindSong, Allison, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import "./templates/mono-script.css";
 import "./templates/cupid-script.css";
 import "./templates/lilac-script.css";
 import "./templates/sage-forest.css";
+import "./templates/christmas-party.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });
@@ -25,7 +26,13 @@ const msScript = Mrs_Saint_Delafield({ variable: "--font-ms-script", subsets: ["
 // the handwritten words of the Lilac Script invitation (app/templates/lilac-script.css)
 const meaCulpa = Mea_Culpa({ variable: "--font-mea-culpa", subsets: ["latin"], weight: "400" });
 // "Sage Garden" invitation (app/templates/sage-forest.css): Playfair Display (lining figures) for the spaced capitals, the italic lines and the big day number
-const sfSerif = Playfair_Display({ variable: "--font-sf-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "700"], style: ["normal", "italic"] });
+const sfSerif = Playfair_Display({ variable: "--font-sf-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"], style: ["normal", "italic"] });
+// "Christmas party" invitation (app/templates/christmas-party.css): Cormorant SC for the headings (small capitals), Mrs Saint Delafield for the handwritten lines
+const xmHead = Cormorant_SC({ variable: "--font-xm-head", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["500", "600", "700"] });
+const xmBig = Elsie_Swash_Caps({ variable: "--font-xm-big", subsets: ["latin", "latin-ext"], weight: "900" });
+const xmWind = WindSong({ variable: "--font-xm-wind", subsets: ["latin"], weight: "500" });
+const allison = Allison({ variable: "--font-allison", subsets: ["latin"], weight: "400" });
+const xmGaramond = Cormorant_Garamond({ variable: "--font-xm-garamond", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"] });
 const alexBrush = Alex_Brush({ variable: "--font-alex-brush", subsets: ["latin", "latin-ext"], weight: "400" });
 
 export const metadata: Metadata = {
@@ -36,7 +43,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${sfSerif.variable}`}>
+    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${xmWind.variable} ${sfSerif.variable}`}>
       <body>{children}</body>
     </html>
   );

@@ -1,7 +1,7 @@
 import { TimelineIcon } from "./TimelineIcons";
 import { InkHeart } from "./InkHeart";
 import { FitScreens } from "./FitScreens";
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
@@ -9,7 +9,7 @@ import { CoverInner } from "./Cover";
 import { Qr } from "./Qr";
 
 /** The designs that share the script layout (one-block RSVP title, "or answer by e-mail" line). */
-const SCRIPT_FAMILY: TemplateSlug[] = ["mono-script", "cupid-script", "lilac-script", "sage-forest"];
+const SCRIPT_FAMILY: TemplateSlug[] = ["mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party"];
 const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const DAYS = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
 
@@ -40,6 +40,13 @@ function subtitleWithTime(text: string, time: string) {
   const t = time.toUpperCase();
   if (/\{time\}/i.test(text)) return t ? text.replace(/\{time\}/gi, t) : text.replace(/\s*at\s*\{time\}/gi, "").replace(/\s*\{time\}/gi, "").trim();
   return text.trim();
+}
+
+/** 1 -> "st", 2 -> "nd", 21 -> "st" … (for "Saturday 21st"). */
+function ordinal(n: number) {
+  const t = n % 100;
+  if (t >= 11 && t <= 13) return "th";
+  return ({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[n % 10] ?? "th";
 }
 
 function longDate(iso: string) {
@@ -111,10 +118,13 @@ export function Invitation({
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
-  const hasExtra = template === "sage-forest" && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
+  const party = !!PARTY_TEMPLATES[template]; // the Christmas party: cover, dinner (date, time, place), details, RSVP, closing
+  const hasExtra1 = (template === "sage-forest" || party) && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
+  const hasExtra2 = party && !!(c.texts.detailsExtra2Title || c.texts.detailsExtra2Text); // a second block of your own (the Christmas party)
+  const hasExtra = hasExtra1 || hasExtra2;
   const hasInfo = hasExtra || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
   const hasRsvp = c.rsvp.deadline || c.rsvp.email || c.rsvp.note || c.rsvp.online || ph;
-  const off = (n: number) => c.hidden.includes(n); // screens the host switched off
+  const off = (n: number) => c.hidden.includes(n) || (party && (n === 3 || n === 4)); // screens the host switched off (a party has no separate venue and timeline screens: the place is on the dinner screen)
   const shown: Record<number, boolean> = {
     3: !off(3) && !!(c.event.venue || ph),
     4: !off(4) && (c.timeline.length > 0 || ph),
@@ -131,7 +141,7 @@ export function Invitation({
     ) : null;
 
   return (
-    <div className="inv" data-theme={c.theme} data-template={template ?? DEFAULT_TEMPLATE} data-phase={phase} data-fly={template && FLYING_PHOTO[template] && c.photo ? "1" : undefined}>
+    <div className="inv" data-theme={c.theme} data-template={template ?? DEFAULT_TEMPLATE} data-phase={phase} data-fly={template && ((FLYING_PHOTO[template] && c.photo) || PARTY_TEMPLATES[template]) ? "1" : undefined}>
       {/* 1 — cover (static view; the animated experience puts the same cover, tappable, over card 2) */}
       {!phase && (
         <section className="card cover cover-static" data-card="1" aria-label="Cover">
@@ -142,6 +152,40 @@ export function Invitation({
       {/* 2 — invited (the envelope overlay sits on top of this card until opened) */}
       <div className="stage">
         <section className="card card-sheet" data-card="2" tabIndex={-1}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {party ? (
+            <div className="sheet-in xm-sheet">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="xm-orn" src="/templates/christmas/v1/ornaments.webp" alt="" width={1000} height={710} decoding="async" draggable={false} />
+              {/* the dinner screen in three sections: 1 "Join us for dinner" and the date row (weekday | day | month), 2 hosted by, 3 time, place and address */}
+              <div className="xm-sec">
+                {c.texts.saveTheDate && <p className="xm-script">{c.texts.saveTheDate}</p>}
+                {d ? (
+                  <p className="xm-dayrow">
+                    <span className="xm-wd">{d.weekday}</span>
+                    <span className="xm-num">{d.day}</span>
+                    <span className="xm-mo">{d.month}</span>
+                  </p>
+                ) : ph ? <p className="xm-month">Date</p> : null}
+              </div>
+              {first && (
+                <div className="xm-sec">
+                  <p className="xm-hostline"><span className="xm-hosted">Hosted by</span> <span className="xm-host">{first}</span></p>
+                </div>
+              )}
+              {(c.event.time || c.event.venue || c.event.address || c.event.mapUrl || ph) && (
+                <div className="xm-sec">
+                  {c.event.time && <p className="xm-at">At {c.event.time}</p>}
+                  {(c.event.venue || ph) && <p className="xm-place">{c.event.venue || "Venue name"}</p>}
+                  {(c.event.address || ph) && <p className="xm-addr">{c.event.address || "Street address, city"}</p>}
+                  {c.event.mapUrl && <a className="link xm-dir" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>}
+                </div>
+              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="xm-glass" src="/templates/christmas/v1/glasses-cherry.webp" alt="" width={900} height={1114} decoding="async" draggable={false} />
+            </div>
+          ) : (
           <div className={c.photo || ph ? "sheet-in" : "sheet-in no-photo"}>
             {c.photo ? (
               <div className="arch" role="img" aria-label={c.photo.alt || `${first} and ${second}`}>
@@ -161,6 +205,7 @@ export function Invitation({
               <div className="dt"><span className="dt-month">Date</span></div>
             ) : null}
           </div>
+          )}
           {hint(2)}
         </section>
         {envelope}
@@ -201,11 +246,18 @@ export function Invitation({
       {/* 5 — details: accommodation, dress code, registry (the save-the-date sheet, flipped: flowers hang from the top) */}
       {!off(5) && hasInfo && (
         <section className="card card-details" data-card="5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
           <div className="dtl-in">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {party && <img className="xm-table" src="/templates/christmas/v1/table.webp" alt="" width={1100} height={653} decoding="async" draggable={false} />}
+            {party && <img className="xm-dtl-art" src="/templates/christmas/v1/ornaments.webp" alt="" width={1000} height={710} decoding="async" draggable={false} />}
             <h2 className="script tl-title">{titleCase(c.texts.detailsTitle || "Details")}</h2>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {party && <img className="xm-sep3" src="/templates/christmas/v1/divider-gold.svg" alt="" width={240} height={28} draggable={false} />}
             {(registry.length > 0 || hasDress || c.hotel.name || hasExtra || ph) && (
               <div className="dtl-row">
-                {(c.hotel.name || ph) && (
+                {(c.hotel.name || (ph && !party)) && (
                   <div className="blk dtl-blk dtl-acc">
                     <p className="caps tiny">{c.texts.detailsAccommodation || "Accommodation"}</p>
                     {template === "sage-forest" && c.texts.detailsAccommodationNote && <p className="sub dtl-acc-note">{c.texts.detailsAccommodationNote}</p>}
@@ -226,10 +278,16 @@ export function Invitation({
                     </div>
                   </div>
                 )}
-                {hasExtra && (
+                {hasExtra1 && (
                   <div className="blk dtl-blk dtl-custom">
                     {c.texts.detailsExtraTitle && <p className="caps tiny">{c.texts.detailsExtraTitle}</p>}
                     {c.texts.detailsExtraText && <p className="sub dtl-text dtl-custom-text">{c.texts.detailsExtraText}</p>}
+                  </div>
+                )}
+                {hasExtra2 && (
+                  <div className="blk dtl-blk dtl-custom dtl-custom2">
+                    {c.texts.detailsExtra2Title && <p className="caps tiny">{c.texts.detailsExtra2Title}</p>}
+                    {c.texts.detailsExtra2Text && <p className="sub dtl-text dtl-custom-text">{c.texts.detailsExtra2Text}</p>}
                   </div>
                 )}
                 {registry.length > 0 && (
@@ -255,14 +313,22 @@ export function Invitation({
       {/* 6 — RSVP: script lead + big letter-spaced caps, flowers along the bottom */}
       {!off(6) && hasRsvp && (
         <section className="card card-rsvp" data-card="6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
           <div className="rsvp-in">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {party && <img className="xm-rsvp-art" src="/templates/christmas/v1/champagne.webp" alt="" width={900} height={893} decoding="async" draggable={false} />}
             <RsvpTitle text="Please RSVP" oneBlock={SCRIPT_FAMILY.includes(template)} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {party && <img className="xm-sep3" src="/templates/christmas/v1/divider-gold.svg" alt="" width={240} height={28} draggable={false} />}
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
-            {c.rsvp.email && ((SCRIPT_FAMILY.includes(template))
+            {!party && c.rsvp.email && ((SCRIPT_FAMILY.includes(template))
               ? <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>
               : <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>)}
             {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
             {c.rsvp.online && <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} />}
+            {/* the Christmas party: "or answer by e-mail …" comes AFTER the Reply now button */}
+            {party && c.rsvp.email && <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
           </div>
           {hint(6)}
         </section>
@@ -271,15 +337,25 @@ export function Invitation({
       {/* 7 — closing */}
       {!off(7) && (
         <section className="card card-closing" data-card="7">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
           <div className="closing-in">
             {template === "sage-forest" && <InkHeart className="closing-heart" />}
-            <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
+            {party ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="xm-closing-art" src="/templates/christmas/v1/wreath.webp" alt="" width={1100} height={1132} decoding="async" draggable={false} />
+            ) : (
+              <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
+            )}
             <p className="closing-text">{c.texts.closing || "Share this moment with us"}</p>
+            {party && (c.texts.closingNote || ph) && <p className="closing-note">{c.texts.closingNote || "Second line, in regular text"}</p>}
             {calendarHref && d && c.showCalendar && <a className="link venue-link closing-cal" href={calendarHref}>Add to calendar</a>}
           </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {party && <img className="xm-tree" src="/templates/christmas/v1/tree-lights.webp" alt="" width={1400} height={579} decoding="async" draggable={false} />}
         </section>
       )}
-      {template === "sage-forest" && <FitScreens />}
+      {(template === "sage-forest" || party) && <FitScreens />}
     </div>
   );
 }

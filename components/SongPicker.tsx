@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MUSIC_LIBRARY, type LibrarySong } from "@/lib/music-library";
+import { songsFor, type LibrarySong } from "@/lib/music-library";
 
 const Play = () => (
   <svg width="14" height="16" viewBox="0 0 13 14" fill="currentColor" aria-hidden="true"><path d="M1.5 1.3v11.4a.8.8 0 0 0 1.2.7l9.2-5.7a.8.8 0 0 0 0-1.4L2.7.6a.8.8 0 0 0-1.2.7z" /></svg>
@@ -11,7 +11,7 @@ const Pause = () => (
 );
 
 /** A few ready songs: listen with the play button, tap "Use" to put one on the invitation. */
-export function SongPicker({ currentUrl, onPick }: { currentUrl: string | null; onPick: (song: LibrarySong) => void }) {
+export function SongPicker({ currentUrl, onPick, template }: { currentUrl: string | null; onPick: (song: LibrarySong) => void; template?: string }) {
   const audio = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
 
@@ -32,7 +32,7 @@ export function SongPicker({ currentUrl, onPick }: { currentUrl: string | null; 
 
   return (
     <ul className="ui-group" style={{ listStyle: "none", margin: 0, padding: 0 }} aria-label="Songs to choose from">
-      {MUSIC_LIBRARY.map((s, i) => {
+      {songsFor(template).map((s, i) => {
         const chosen = currentUrl === s.url;
         return (
           <li key={s.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 12px", borderTop: i ? ".5px solid var(--ui-hair)" : 0 }}>

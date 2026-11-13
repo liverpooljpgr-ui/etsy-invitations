@@ -73,7 +73,11 @@ export async function publishInvitation(id: string): Promise<PublishResult> {
   ]);
   const parsed = contentSchema.safeParse(row?.draft);
   if (!parsed.success || !plan) return { ok: false, error: "Some fields are invalid. Fix them and try again." };
-  const missing = publishMissing(parsed.data);
+  // which design this invitation uses decides which fields are required (the Christmas party has no beloved names)
+  const adminDb = createAdminClient();
+  const { data: tRow } = await adminDb.from("invitations").select("template_id").eq("id", id).maybeSingle();
+  const { data: tpl } = tRow?.template_id ? await adminDb.from("templates").select("slug").eq("id", tRow.template_id).maybeSingle() : { data: null };
+  const missing = publishMissing(parsed.data, tpl?.slug ?? null);
   if (missing.length) return { ok: false, error: "Please complete the required fields first.", missing };
 
   const snapshot = applyPlan(parsed.data, plan.features);

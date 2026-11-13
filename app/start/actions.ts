@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { defaultContent } from "@/lib/content/schema";
+import { defaultContentFor } from "@/lib/content/schema";
 import { findReturningCustomer, sendConfirmationLink, signInWithoutLink } from "@/lib/email-login";
 import { startKeyOk } from "@/lib/start-key";
 
@@ -100,7 +100,7 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
 
   const db = createAdminClient();
   const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const { data: tpl } = await db.from("templates").select("id, current_version, name").eq("slug", template).eq("is_active", true).maybeSingle();
+  const { data: tpl } = await db.from("templates").select("id, current_version, name, slug").eq("slug", template).eq("is_active", true).maybeSingle();
   if (!tpl) return { ok: false, message: "Choose a design." };
   if (!ref) return comeBackWithEmail(tpl.id, template, email, origin);
 
@@ -147,7 +147,7 @@ export async function redeemOrder(_prev: StartState, fd: FormData): Promise<Star
   }
   const rollback = async () => { if (inv) await db.from("invitations").delete().eq("id", inv.id); await db.from("orders").delete().eq("id", order.id); };
   if (!inv) { await rollback(); return { ok: false, message: "Could not start your invitation. Please try again." }; }
-  const c1 = await db.from("invitation_content").insert({ invitation_id: inv.id, draft: defaultContent });
+  const c1 = await db.from("invitation_content").insert({ invitation_id: inv.id, draft: defaultContentFor(tpl.slug) });
   const c2 = await db.from("hosting_entitlements").insert({ invitation_id: inv.id, order_id: order.id, state: "pending" });
   if (c1.error || c2.error) { await rollback(); return { ok: false, message: "Could not start your invitation. Please try again." }; }
   await db.from("audit_log").insert({ actor_id: null, action: "order.self_start", entity_type: "invitation", entity_id: inv.id, metadata: { template: tpl.name, etsy: ref, email } });
