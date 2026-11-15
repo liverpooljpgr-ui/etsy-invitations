@@ -115,7 +115,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                   <div className="ui-card">
                     <ul className="ui-help" style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
                       <li>Each purchase is hosted for <b>6 months</b>, counted from the day the customer first publishes.</li>
-                      <li>After that there is a 14-day grace period, then the page is archived.</li>
+                      <li>After that there is a 30-day grace period, then the page is archived.</li>
                       <li>Music uploads are limited to 4 MB per invitation.</li>
                     </ul>
                   </div>
