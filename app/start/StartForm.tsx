@@ -53,7 +53,7 @@ export function StartForm({ template, templateName, keyValue, showOrder = false 
           </label>
           {asked && (
             <>
-              <p className="ui-note" style={{ margin: 0, textAlign: "center" }}>{state?.needsOrder ? "First time here? Enter your Etsy order number to start your invitation." : "New here? Enter your Etsy order number to start your invitation. Coming back? Leave it empty."}</p>
+              {state?.needsOrder && <p className="ui-note" style={{ margin: 0, textAlign: "center" }}>First time here? Enter your Etsy order number to start your invitation.</p>}
               <label className="ui-field">
                 <span className="ui-label">Etsy order number {state?.needsOrder && <Star />}</span>
                 <input name="order" required={!!state?.needsOrder} aria-required={!!state?.needsOrder} autoFocus={!!state?.needsOrder} inputMode="numeric" autoComplete="off" placeholder="3912345678" className="ui-input" />
