@@ -7,13 +7,14 @@ const Star = () => <span aria-hidden="true" style={{ color: "#b3407a" }}>*</span
 
 /**
  * One form for everyone, on any phone or computer:
- *  1. the email only → a customer who already has an invitation of this design goes straight in;
- *  2. a first-time buyer is then asked for the Etsy order number (required) and starts the invitation.
+ *  - a first visit on this device shows the email AND the Etsy order number right away (a new buyer needs both);
+ *  - a device that already started this design shows only the email: a returning customer goes straight in;
+ *  - a returning customer on a new device may leave the order number empty and is let in with the email alone.
  */
-export function StartForm({ template, templateName, keyValue }: { template: string; templateName: string; keyValue: string }) {
+export function StartForm({ template, templateName, keyValue, showOrder = false }: { template: string; templateName: string; keyValue: string; showOrder?: boolean }) {
   const [state, action, pending] = useActionState(redeemOrder, null);
   const [email, setEmail] = useState("");
-  const [asked, setAsked] = useState(false); // the order number field stays once it has appeared
+  const [asked, setAsked] = useState(showOrder); // the order number field is there from the start for a first visit on this device, and stays once it has appeared
   if (state?.needsOrder && !asked) setAsked(true);
 
   // remember on this device that this design was started: the NEXT visit then asks only for the email
@@ -52,10 +53,10 @@ export function StartForm({ template, templateName, keyValue }: { template: stri
           </label>
           {asked && (
             <>
-              <p className="ui-note" style={{ margin: 0, textAlign: "center" }}>First time here? Enter your Etsy order number to start your invitation.</p>
+              <p className="ui-note" style={{ margin: 0, textAlign: "center" }}>{state?.needsOrder ? "First time here? Enter your Etsy order number to start your invitation." : "New here? Enter your Etsy order number to start your invitation. Coming back? Leave it empty."}</p>
               <label className="ui-field">
-                <span className="ui-label">Etsy order number <Star /></span>
-                <input name="order" required aria-required="true" autoFocus inputMode="numeric" autoComplete="off" placeholder="3912345678" className="ui-input" />
+                <span className="ui-label">Etsy order number {state?.needsOrder && <Star />}</span>
+                <input name="order" required={!!state?.needsOrder} aria-required={!!state?.needsOrder} autoFocus={!!state?.needsOrder} inputMode="numeric" autoComplete="off" placeholder="3912345678" className="ui-input" />
               </label>
             </>
           )}

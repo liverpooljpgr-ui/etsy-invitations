@@ -559,3 +559,91 @@
 
 /* ───────── 94. SMALLER / SHORTER PHONES: the bow garland on the cover is as wide as 150% of the card but never bigger than the design size scaled by --k (otherwise on a wide, short phone it ran into the text) ───────── */
 .inv[data-template="christmas-party"] .xm-deco { left:50%; translate:-50% 0; width:min(150%, calc(510px * var(--k,1))); }
+.inv[data-template="christmas-party"] .card-sheet .xm-glass { bottom:7cqh; }   /* the dinner glasses sit above the little arrow at the bottom (they touched it) */
+
+/* ───────── 95. OPENING CHOREOGRAPHY
+   cover: on tap the words fly UP, behind the bow garland (which stays), and out of the top of the screen
+   dinner screen: first its bow fades in (3.0 s), then the text and the glasses float in TOGETHER (3.9 s) ───────── */
+.inv[data-template="christmas-party"] :is(.xm-intro, .xm-sep2, .xm-join, .xm-title) { z-index:1; }
+.inv[data-template="christmas-party"] .xm-deco { z-index:4; }
+.inv[data-template="christmas-party"][data-phase="opening"] :is(.xm-intro, .xm-sep2, .xm-join, .xm-title) { opacity:1 !important; animation:xm-fly-up 1.5s cubic-bezier(.55,0,.7,.4) both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-intro { animation-delay:.10s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-sep2 { animation-delay:.18s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-join { animation-delay:.26s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-title { animation-delay:.34s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-deco { opacity:1 !important; }
+@keyframes xm-fly-up { from { transform:translateY(0); } to { transform:translateY(calc(-640px * var(--k, 1))); } }
+
+@keyframes xm-bow-in { from { opacity:0; } to { opacity:1; } }
+@keyframes xm-float-in { from { opacity:0; transform:translateY(calc(46px * var(--k, 1))); } to { opacity:1; transform:none; } }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-bow { animation:xm-bow-in .8s ease 3.4s both; }
+
+/* ───────── 96. once the glitter has spread, the envelope is gone: the gold is fully opaque (the envelope no longer shows through it) and the envelope fades out as the glitter reaches it ───────── */
+.inv[data-template="christmas-party"] .xm-glitter { background:radial-gradient(circle at 50% 70%, #ffeeb0 0%, #f4d078 42%, #e4b856 100%); }
+@keyframes xm-env-gone { from { opacity:1; } to { opacity:0; } }
+.inv[data-template="christmas-party"][data-phase="opening"] .cover-env { animation:xm-env-gone .5s ease 2.3s both !important; }
+
+/* ───────── 97. THE DINNER SCREEN APPEARS ELEGANTLY, every part in its own way (after the bow, 3.0 s):
+   the script line comes out of a soft blur · the weekday glides in from the left and the month from the right while the day number opens like a bloom
+   · "Hosted by" fades in softly · time, place and address follow line by line · the glasses come last, on their own ───────── */
+@keyframes xm-soft { from { opacity:0; filter:blur(8px); transform:translateY(calc(14px * var(--k, 1))); } to { opacity:1; filter:blur(0); transform:none; } }
+@keyframes xm-from-l { from { opacity:0; transform:translateX(calc(-40px * var(--k, 1))); } to { opacity:1; transform:none; } }
+@keyframes xm-from-r { from { opacity:0; transform:translateX(calc(40px * var(--k, 1))); } to { opacity:1; transform:none; } }
+@keyframes xm-bloom { from { opacity:0; transform:scale(.55); filter:blur(4px); } to { opacity:1; transform:none; filter:blur(0); } }
+@keyframes xm-fade-up { from { opacity:0; transform:translateY(calc(12px * var(--k, 1))); } to { opacity:1; transform:none; } }
+@keyframes xm-glass-in { from { opacity:0; transform:translateY(calc(34px * var(--k, 1))) scale(.93); } to { opacity:1; transform:none; } }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .xm-sec { animation:none !important; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet {
+  --e1:cubic-bezier(.22,.7,.2,1); --e2:cubic-bezier(.34,1.45,.5,1); }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-script { animation:xm-soft 1.5s var(--e1) 4.1s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-wd { animation:xm-from-l 1.1s var(--e1) 4.7s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-mo { animation:xm-from-r 1.1s var(--e1) 4.7s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-num { animation:xm-bloom 1.2s var(--e2) 4.95s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-hostline { animation:xm-soft 1.3s var(--e1) 5.4s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-at { animation:xm-fade-up .9s var(--e1) 5.85s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-place { animation:xm-fade-up .9s var(--e1) 6.02s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-addr { animation:xm-fade-up .9s var(--e1) 6.19s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-dir { animation:xm-fade-up .9s var(--e1) 6.36s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .xm-glass { animation:xm-glass-in 1.5s var(--e1) 6.9s both !important; }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(24px * var(--k,1)); }   /* more space under "Join us for party" (was 10px) */
+
+/* ───────── 98. SMOOTH FLAP TURN: the closed flap and the open flap are now the two halves of ONE continuous turn (the same sampled ease as the Sage Garden envelope, 1.8 s), so the flap does not shrink to nothing and wait before the open flap starts — there is no empty moment ───────── */
+.inv[data-template="christmas-party"][data-phase="opening"] .env-flap-closed { transition:none !important; animation:sf-flap-closed 1.8s linear both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-flap-open { transition:none !important; animation:sf-flap-open 1.8s linear both; }
+
+/* "Join us for party" a little higher (the other lines stay where they are) */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { position:relative; top:calc(-18px * var(--k,1)); }
+
+/* ───────── 99. TIMING, so nothing is covered by the opening flap: the words leave FIRST (0 – 1 s, fast at the start), the flap starts turning only after that (0.45 s), the glitter starts when the flap is half open, and the cover fades out later ───────── */
+.inv[data-template="christmas-party"][data-phase="opening"] :is(.xm-intro, .xm-sep2, .xm-join, .xm-title) { animation:xm-fly-up .95s cubic-bezier(.3,.05,.45,1) both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-intro { animation-delay:0s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-sep2 { animation-delay:.06s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-join { animation-delay:.12s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-title { animation-delay:.18s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-flap-closed, .inv[data-template="christmas-party"][data-phase="opening"] .env-flap-open { animation-delay:.45s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-glitter { animation:xm-glit-grow 1.9s cubic-bezier(.45,.05,.55,1) 1.4s both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .cover-env { animation:xm-env-gone .5s ease 2.7s both !important; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-btn { transition:opacity .9s ease 3.2s !important; }
+
+/* ───────── 100. SLOWER AND SOFTER: the words leave gently (1.6 s each, one after another), the flap turns more slowly (2.8 s, starting at 0.9 s so the words are gone first), the glitter and the cover fade follow, and the dinner screen comes in later ───────── */
+.inv[data-template="christmas-party"][data-phase="opening"] :is(.xm-intro, .xm-sep2, .xm-join, .xm-title) { animation:xm-fly-up 1.7s cubic-bezier(.4,.05,.35,1) both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-intro { animation-delay:0s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-sep2 { animation-delay:.12s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-join { animation-delay:.24s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-title { animation-delay:.36s; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-flap-closed { animation:sf-flap-closed 2.8s linear .9s both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-flap-open { animation:sf-flap-open 2.8s linear .9s both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .xm-glitter { animation:xm-glit-grow 2.2s cubic-bezier(.45,.05,.55,1) 2.4s both; }
+.inv[data-template="christmas-party"][data-phase="opening"] .cover-env { animation:xm-env-gone .5s ease 3.9s both !important; }
+.inv[data-template="christmas-party"][data-phase="opening"] .env-btn { transition:opacity .9s ease 4.4s !important; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-bow { animation:xm-bow-in .8s ease 4.7s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-script { animation:xm-soft 1.5s var(--e1) 5.4s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-wd { animation:xm-from-l 1.1s var(--e1) 6.0s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-mo { animation:xm-from-r 1.1s var(--e1) 6.0s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-num { animation:xm-bloom 1.2s var(--e2) 6.25s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-hostline { animation:xm-soft 1.3s var(--e1) 6.7s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-at { animation:xm-fade-up .9s var(--e1) 7.15s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-place { animation:xm-fade-up .9s var(--e1) 7.32s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-addr { animation:xm-fade-up .9s var(--e1) 7.49s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-dir { animation:xm-fade-up .9s var(--e1) 7.66s both; }
+.inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .xm-glass { animation:xm-glass-in 1.5s var(--e1) 8.2s both !important; }

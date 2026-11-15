@@ -73,9 +73,9 @@ export async function renderInvitationPdf(publicUrl: string, title: string): Pro
 
     const pdf = await PDFDocument.create();
     pdf.setTitle(title);
-    pdf.setAuthor("PixelInvite");
+    pdf.setAuthor("PIXELINVITE");
     pdf.setSubject("Keepsake copy of the invitation");
-    pdf.setCreator("PixelInvite");
+    pdf.setCreator("PIXELINVITE");
     for (const jpg of shots) {
       const img = await pdf.embedJpg(jpg);
       const p = pdf.addPage([W, H]);

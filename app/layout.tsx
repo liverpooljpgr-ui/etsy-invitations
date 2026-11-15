@@ -36,7 +36,7 @@ const xmGaramond = Cormorant_Garamond({ variable: "--font-xm-garamond", subsets:
 const alexBrush = Alex_Brush({ variable: "--font-alex-brush", subsets: ["latin", "latin-ext"], weight: "400" });
 
 export const metadata: Metadata = {
-  title: "PixelBridge Invitations",
+  title: "PIXELINVITE",
   description: "Interactive digital invitations",
   robots: { index: false, follow: false },
 };

@@ -28,7 +28,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
         {tpl ? (
           <>
             {returning && <p className="ui-lede" style={{ textAlign: "center" }}>Enter the email you used the first time and your invitation opens.</p>}
-            <StartForm template={tpl.slug} templateName={tpl.name} keyValue={key} />
+            <StartForm template={tpl.slug} templateName={tpl.name} keyValue={key} showOrder={!returning} />
           </>
         ) : (
           <p className="ui-lede" style={{ textAlign: "center" }}>This link is not valid. Please open the link in the PDF you downloaded from Etsy, or contact Tamara from PIXELINVITE on Etsy.</p>

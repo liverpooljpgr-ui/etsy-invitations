@@ -5,7 +5,7 @@ export function AuthLogo() {
   return (
     <Image
       src="/brand/pixelinvite-bud.png"
-      alt="PixelInvite"
+      alt="PIXELINVITE"
       width={37}
       height={80}
       priority
