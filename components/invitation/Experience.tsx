@@ -9,7 +9,7 @@ import { Invitation } from "./Invitation";
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
 // a design with a slower envelope (its own transitions in its stylesheet) says how long the opening takes
-const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 5600, "cupid-script": 5600, "lilac-script": 5600, "sage-forest": 5600, "christmas-party": 5600 };
+const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "mono-script": 5600, "cupid-script": 5600, "lilac-script": 5600, "sage-forest": 5600, "christmas-party": 5600, "christmas-velvet": 5600 };
 
 /**
  * Animated guest experience: tap the envelope, its two halves slide apart,
@@ -96,7 +96,7 @@ export function Experience({ content, mode = "public", calendarHref, rsvpSlug, t
       const st = el.querySelector<HTMLElement>(".stage");
       if (st && st.offsetWidth && st.offsetHeight) el.style.setProperty("--card-wh", String(st.offsetWidth / st.offsetHeight)); // shape of a screen (the card that leaves the envelope has the same one)
       // the Christmas party screens were designed for a taller card (722 px at 340 wide) than the other designs (567 px): shorter phones scale it down by height
-      const designH = template === "christmas-party" ? 722 : 567;
+      const designH = template === "christmas-party" || template === "christmas-velvet" ? 722 : 567;
       el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / designH, 1.9))) : "1");
     };
     fit();

@@ -1,0 +1,222 @@
+/* VELVET CHRISTMAS (slug: christmas-velvet). It is painted with the Christmas Party layout (data-template="christmas-party", see
+   lib/templates.ts layoutTemplate) and only changes what is drawn on top: neutral premium paper, plum and gold ornament corners at the
+   top, a candle garland at the bottom, a purple envelope with a floral lining and a gold bell seal, and its own type:
+   Pinyon Script in gold for the titles, Cormorant Garamond (roman, italic and spaced capitals) for the rest.
+   Pictures: public/templates/christmas-velvet/v1. */
+
+.inv[data-template][data-design="christmas-velvet"] {
+  --xm-paper:#f6f2eb;
+  --xm-brown:#3e3238;                 /* ink */
+  --xm-tan:#9c7a3c;                   /* gold-brown for small capitals */
+  --xm-red:#5c1d4d;                   /* plum accents (the day number) */
+  --xm-olive:#5c1d4d;                 /* buttons */
+  --xm-line:#c3a465;                  /* gold frame lines */
+  --xm-head:var(--font-xm-garamond),"Cormorant Garamond",Georgia,serif;
+  --xm-script:var(--font-script),"Pinyon Script",cursive;
+  --xv-gold:linear-gradient(100deg,#8a6526 0%,#c9a24e 28%,#e8cf8a 46%,#b88d3e 64%,#8c6a2c 100%);
+}
+
+/* paper: warm ivory cotton paper, no tint */
+.inv[data-template][data-design="christmas-velvet"] :is(.card, .cover, .card-sheet, .card-details, .card-rsvp, .card-closing, .env-card) {
+  background:linear-gradient(rgba(250,236,210,.22), rgba(250,236,210,.22)), url(/templates/christmas-velvet/v1/paper.webp) center / cover no-repeat, #f8f4ec;
+}
+
+/* gold script */
+.inv[data-template][data-design="christmas-velvet"] :is(.xm-join, .xm-title, .xm-script, .rsvp-title, .closing-text) {
+  font-family:var(--xm-script) !important; font-weight:400 !important; text-transform:none !important; letter-spacing:0 !important;
+  background:var(--xv-gold); -webkit-background-clip:text; background-clip:text; color:transparent !important;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.6));
+}
+
+/* ───── cover ───── */
+.inv[data-template][data-design="christmas-velvet"] .cover { padding-top:calc(150px * var(--k,1)); }
+.inv[data-template][data-design="christmas-velvet"] .xv-tl,
+.inv[data-template][data-design="christmas-velvet"] .xv-tr { position:absolute; top:0; width:44%; max-width:none; height:auto; z-index:3; pointer-events:none; filter:drop-shadow(0 3px 4px rgba(60,30,50,.18)); }
+.inv[data-template][data-design="christmas-velvet"] .xv-tl { left:0; }
+.inv[data-template][data-design="christmas-velvet"] .xv-tr { right:0; }
+.inv[data-template][data-design="christmas-velvet"] .xm-intro { font-family:var(--xm-head) !important; font-style:italic; font-weight:500; text-transform:none !important; letter-spacing:.02em !important; color:var(--xm-brown) !important; font-size:calc(19px * var(--k,1)) !important; }
+.inv[data-template][data-design="christmas-velvet"] .xm-sep2 { display:none; }
+.inv[data-template][data-design="christmas-velvet"] .xm-join { font-size:calc(64px * var(--k,1)) !important; line-height:1.05 !important; margin-top:calc(6px * var(--k,1)); }
+.inv[data-template][data-design="christmas-velvet"] .xm-title { font-size:calc(50px * var(--k,1)) !important; line-height:1.1 !important; margin-top:calc(-4px * var(--k,1)) !important; }
+.inv[data-template][data-design="christmas-velvet"] .xv-candles { position:absolute; left:6%; bottom:calc(18px * var(--k,1)); width:88%; max-width:none; height:auto; z-index:2; pointer-events:none; filter:drop-shadow(0 4px 5px rgba(60,40,30,.16)); }
+.inv[data-template][data-design="christmas-velvet"][data-phase="opening"] .cover .xv-candles { transition:opacity .6s ease 3.6s; opacity:0; }
+.inv[data-template][data-design="christmas-velvet"] .env-seal { filter:drop-shadow(0 2px 3px rgba(60,40,10,.45)); }
+
+/* ───── inner screens: corners at the top instead of the red bow; the red-and-green pictures are not used ───── */
+.inv[data-template][data-design="christmas-velvet"] .card:not(.cover) :is(.xv-tl, .xv-tr) { width:36%; z-index:3; }
+.inv[data-template][data-design="christmas-velvet"] :is(.xm-bow, .xm-glass, .xm-orn, .xm-table, .xm-dtl-art, .xm-rsvp-art, .xm-tree, .xm-closing-art) { display:none !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-closing .xv-candles { left:4%; width:92%; bottom:5cqh; z-index:1; }
+
+/* type on the inner screens: Garamond, gold-brown spaced capitals, plum day number */
+.inv[data-template][data-design="christmas-velvet"] .card :is(.xm-wd, .xm-mo, .xm-month, .xm-at, .xm-hosted, .rsvp-by) { color:var(--xm-tan) !important; letter-spacing:.18em !important; }
+.inv[data-template][data-design="christmas-velvet"] .card .xm-num { color:var(--xm-red) !important; }
+.inv[data-template][data-design="christmas-velvet"] .card :is(.rsvp-note, .closing-note, .sub, .xm-addr) { font-family:var(--xm-head) !important; font-style:italic; }
+
+/* ───── 2. every script title in gold (the party layout colours "dinner party" through ::first-line), closing line in italic, not capitals ───── */
+.inv[data-template][data-design="christmas-velvet"] :is(.tl-title, .script.tl-title, .rsvp-lead) {
+  background:var(--xv-gold); -webkit-background-clip:text; background-clip:text; color:transparent !important; filter:drop-shadow(0 1px 0 rgba(255,255,255,.6));
+}
+.inv[data-template][data-design="christmas-velvet"] :is(.xm-title, .xm-join, .xm-script, .tl-title, .rsvp-lead, .closing-text)::first-line { color:transparent !important; }
+.inv[data-template][data-design="christmas-velvet"] .card .closing-note { text-transform:none !important; letter-spacing:.01em !important; font-size:calc(19px * var(--k,1)) !important; line-height:1.35 !important; }
+
+/* ───── 3. letterpress: the text looks pressed into the paper (a thin dark edge above, a light edge below) ───── */
+.inv[data-template][data-design="christmas-velvet"] :is(.card, .cover) { text-shadow:0 calc(1px * var(--k,1)) 0 rgba(255,255,255,.9), 0 calc(-.7px * var(--k,1)) 0 rgba(70,45,30,.28); }
+.inv[data-template][data-design="christmas-velvet"] :is(.xm-join, .xm-title, .xm-script, .rsvp-title, .closing-text, .tl-title, .script.tl-title, .rsvp-lead) {
+  text-shadow:none !important;
+  filter:drop-shadow(0 calc(1px * var(--k,1)) 0 rgba(255,255,255,.85)) drop-shadow(0 calc(-.7px * var(--k,1)) 0 rgba(80,52,15,.38)) !important;
+}
+.inv[data-template][data-design="christmas-velvet"] :is(button, .btn, input, textarea, select) { text-shadow:none; }
+
+/* ───── 4. calmer gold: a narrow range of warm gold instead of the bright highlight ───── */
+.inv[data-template][data-design="christmas-velvet"] { --xv-gold:linear-gradient(100deg,#a07a35 0%,#b48c45 40%,#c19a52 55%,#a98240 100%); }
+
+/* ───── 5. cover: one garland with ornaments and a velvet bow across the top (the corners stay on the inner screens) ───── */
+.inv[data-template][data-design="christmas-velvet"] .xv-top { position:absolute; left:2%; top:calc(4px * var(--k,1)); width:96%; max-width:none; height:auto; z-index:3; pointer-events:none; filter:drop-shadow(0 4px 5px rgba(60,30,50,.18)); }
+.inv[data-template][data-design="christmas-velvet"] .cover { padding-top:calc(165px * var(--k,1)); }
+
+/* ───── 6. candles flicker: the garland is a box (picture + a glow on each flame) ───── */
+.inv[data-template][data-design="christmas-velvet"] .xv-candles { display:block; }
+.inv[data-template][data-design="christmas-velvet"] .xv-candles img { display:block; width:100%; height:auto; max-width:none; }
+.inv[data-template][data-design="christmas-velvet"] .xv-flame { position:absolute; width:9%; aspect-ratio:1; translate:-50% -50%; border-radius:50%; pointer-events:none; mix-blend-mode:screen;
+  background:radial-gradient(circle, rgba(255,226,150,.95) 0%, rgba(255,196,95,.55) 26%, rgba(255,170,60,.18) 52%, rgba(255,160,50,0) 72%);
+  animation:xv-flicker 1.8s ease-in-out infinite alternate; }
+@keyframes xv-flicker {
+  0%   { opacity:.55; transform:scale(.88); }
+  18%  { opacity:.95; transform:scale(1.06); }
+  33%  { opacity:.7;  transform:scale(.94); }
+  52%  { opacity:1;   transform:scale(1.1); }
+  70%  { opacity:.62; transform:scale(.9); }
+  86%  { opacity:.9;  transform:scale(1.03); }
+  100% { opacity:.6;  transform:scale(.92); }
+}
+@media (prefers-reduced-motion: reduce) { .inv[data-template][data-design="christmas-velvet"] .xv-flame { animation:none; opacity:.8; } }
+
+/* ───── 7. random-looking flicker: three irregular patterns with sudden dips, each flame on its own length and offset (VelvetCandles) ───── */
+.inv[data-template][data-design="christmas-velvet"] .xv-flame { animation-timing-function:linear; animation-iteration-count:infinite; animation-direction:normal; }
+.inv[data-template][data-design="christmas-velvet"] .xv-f0 { animation-name:xv-flick-a; }
+.inv[data-template][data-design="christmas-velvet"] .xv-f1 { animation-name:xv-flick-b; }
+.inv[data-template][data-design="christmas-velvet"] .xv-f2 { animation-name:xv-flick-c; }
+@keyframes xv-flick-a { 0%{opacity:.8;transform:scale(1)} 7%{opacity:.95;transform:scale(1.07)} 11%{opacity:.35;transform:scale(.84)} 14%{opacity:.9;transform:scale(1.04)} 31%{opacity:.75;transform:scale(.97)} 46%{opacity:1;transform:scale(1.1)} 49%{opacity:.5;transform:scale(.88)} 53%{opacity:.92;transform:scale(1.02)} 72%{opacity:.7;transform:scale(.95)} 88%{opacity:.98;transform:scale(1.08)} 100%{opacity:.8;transform:scale(1)} }
+@keyframes xv-flick-b { 0%{opacity:.7;transform:scale(.96)} 18%{opacity:1;transform:scale(1.09)} 24%{opacity:.82;transform:scale(1)} 37%{opacity:.4;transform:scale(.86)} 40%{opacity:.88;transform:scale(1.03)} 61%{opacity:.66;transform:scale(.93)} 64%{opacity:1;transform:scale(1.11)} 79%{opacity:.78;transform:scale(.98)} 83%{opacity:.45;transform:scale(.87)} 86%{opacity:.9;transform:scale(1.04)} 100%{opacity:.7;transform:scale(.96)} }
+@keyframes xv-flick-c { 0%{opacity:.9;transform:scale(1.03)} 12%{opacity:.62;transform:scale(.92)} 27%{opacity:1;transform:scale(1.1)} 30%{opacity:.38;transform:scale(.85)} 34%{opacity:.85;transform:scale(1.01)} 55%{opacity:.96;transform:scale(1.06)} 69%{opacity:.58;transform:scale(.9)} 74%{opacity:.93;transform:scale(1.05)} 91%{opacity:.72;transform:scale(.95)} 100%{opacity:.9;transform:scale(1.03)} }
+
+/* ───── 8. top garland: 110% wide, from -4%, 3% above the top edge ───── */
+.inv[data-template][data-design="christmas-velvet"] .xv-top { top:-3%; left:-4%; width:110%; }
+
+/* ───── 9. bell seal 5% smaller (24.7% -> 23.5%), square picture ───── */
+.inv[data-template][data-design="christmas-velvet"] .env-seal { width:23.5%; aspect-ratio:1; }
+
+/* ───── 10. "dinner party" 35px; gold script never clipped: the gold is painted only inside each line's box, so the box gets room
+   for the swashes and descenders (padding) while margins pull the layout back to where it was ───── */
+.inv[data-template][data-design="christmas-velvet"] .xm-title { font-size:calc(35px * var(--k,1)) !important; }
+.inv[data-template][data-design="christmas-velvet"] :is(.xm-join, .xm-title, .xm-script, .rsvp-title, .closing-text, .tl-title, .script.tl-title, .rsvp-lead) {
+  padding:.18em .35em .32em !important; margin-left:-.35em !important; margin-right:-.35em !important; overflow:visible !important;
+}
+.inv[data-template][data-design="christmas-velvet"] .xm-join { margin-top:calc(6px * var(--k,1) - .18em) !important; margin-bottom:-.32em !important; }
+.inv[data-template][data-design="christmas-velvet"] .xm-title { margin-top:calc(-4px * var(--k,1) - .18em) !important; margin-bottom:-.32em !important; }
+
+/* ───── 11. top sentence on the cover: 14px capitals; "dinner party" without top padding ───── */
+.inv[data-template][data-design="christmas-velvet"] .xm-intro { font-size:calc(14px * var(--k,1)) !important; text-transform:uppercase !important; letter-spacing:.14em !important; }
+.inv[data-template][data-design="christmas-velvet"] .xm-title { padding-top:0 !important; margin-top:calc(-4px * var(--k,1)) !important; }
+
+/* ───── 12. gold separator with a bell under the first sentence of the cover; it leaves with the words when the envelope opens ───── */
+.inv[data-template][data-design="christmas-velvet"] .xv-sep { position:relative; z-index:1; display:block; width:calc(170px * var(--k,1)); max-width:none; height:auto; margin:calc(6px * var(--k,1)) auto calc(2px * var(--k,1)); filter:drop-shadow(0 1px 0 rgba(255,255,255,.85)); }
+.inv[data-template][data-design="christmas-velvet"][data-phase="opening"] .xv-sep { animation:xm-fly-up 1.7s cubic-bezier(.4,.05,.35,1) .08s both; }
+
+/* ───── 13. "dinner party" closer to "Christmas" ───── */
+.inv[data-template][data-design="christmas-velvet"] .xm-title { margin-top:calc(-16px * var(--k,1)) !important; }
+
+/* ───── 14. cover bottom: a bigger gold separator with three candles in the middle (the candle garland stays on the closing screen) ───── */
+.inv[data-template][data-design="christmas-velvet"] .xv-csep { position:absolute; left:50%; translate:-50% 0; bottom:calc(34px * var(--k,1)); width:min(86%, calc(300px * var(--k,1))); height:auto; overflow:visible; z-index:2; pointer-events:none; filter:drop-shadow(0 1px 0 rgba(255,255,255,.85)); }
+.inv[data-template][data-design="christmas-velvet"][data-phase="opening"] .xv-csep { transition:opacity .6s ease 3.6s; opacity:0; }
+.inv[data-template][data-design="christmas-velvet"] .xv-sflame { transform-box:fill-box; transform-origin:50% 100%; animation:xv-sflick-a 2.7s linear infinite; }
+.inv[data-template][data-design="christmas-velvet"] .xv-sglow { transform-box:fill-box; transform-origin:50% 50%; animation:xv-sglow-a 2.7s linear infinite; }
+.inv[data-template][data-design="christmas-velvet"] .xv-g1 { animation-duration:3.5s; animation-delay:-1.3s; animation-name:xv-sflick-b; }
+.inv[data-template][data-design="christmas-velvet"] .xv-sglow.xv-g1 { animation-name:xv-sglow-b; }
+.inv[data-template][data-design="christmas-velvet"] .xv-g2 { animation-duration:2.3s; animation-delay:-.6s; }
+@keyframes xv-sflick-a { 0%{transform:scale(1,1) skewX(0)} 9%{transform:scale(.92,1.08) skewX(-4deg)} 13%{transform:scale(1.04,.86) skewX(2deg)} 30%{transform:scale(.97,1.04) skewX(3deg)} 47%{transform:scale(1.05,1.1) skewX(-2deg)} 51%{transform:scale(.95,.84) skewX(0)} 70%{transform:scale(1,1.05) skewX(4deg)} 86%{transform:scale(.96,.94) skewX(-3deg)} 100%{transform:scale(1,1) skewX(0)} }
+@keyframes xv-sflick-b { 0%{transform:scale(1,1) skewX(0)} 17%{transform:scale(1.04,1.1) skewX(3deg)} 36%{transform:scale(.93,.86) skewX(-2deg)} 40%{transform:scale(1.02,1.04) skewX(1deg)} 63%{transform:scale(.96,1.08) skewX(-4deg)} 81%{transform:scale(1.04,.88) skewX(2deg)} 85%{transform:scale(.98,1.02) skewX(0)} 100%{transform:scale(1,1) skewX(0)} }
+@keyframes xv-sglow-a { 0%{opacity:.8;transform:scale(1)} 11%{opacity:.4;transform:scale(.85)} 14%{opacity:.9;transform:scale(1.05)} 47%{opacity:1;transform:scale(1.12)} 51%{opacity:.5;transform:scale(.9)} 72%{opacity:.85;transform:scale(1.02)} 100%{opacity:.8;transform:scale(1)} }
+@keyframes xv-sglow-b { 0%{opacity:.7;transform:scale(.95)} 18%{opacity:1;transform:scale(1.12)} 37%{opacity:.42;transform:scale(.86)} 41%{opacity:.88;transform:scale(1.03)} 82%{opacity:.5;transform:scale(.88)} 86%{opacity:.9;transform:scale(1.05)} 100%{opacity:.7;transform:scale(.95)} }
+@media (prefers-reduced-motion: reduce) { .inv[data-template][data-design="christmas-velvet"] :is(.xv-sflame, .xv-sglow) { animation:none; } }
+
+/* ───── 15. date row: the day number exactly in the middle, weekday and month boxes equally wide; weekday and month in ink, not gold ───── */
+.inv[data-template][data-design="christmas-velvet"] .card .xm-dayrow { grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) !important; }
+.inv[data-template][data-design="christmas-velvet"] .card .xm-dayrow > :is(.xm-wd, .xm-mo) { width:100%; min-width:0; box-sizing:border-box; text-align:center; justify-self:stretch; color:var(--xm-brown) !important; }
+
+/* ───── 16. a little more room under "You are invited to a" ───── */
+.inv[data-template][data-design="christmas-velvet"] .xm-intro { margin-bottom:calc(6px * var(--k,1)) !important; }
+
+/* ───── 17. dinner screen: the snowy house at the bottom, standing on a soft shadow; it appears after the text (like the glasses of the party design) ───── */
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house { position:absolute; left:50%; bottom:6cqh; width:52cqw; translate:-50% 0; z-index:1; pointer-events:none; }
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house img { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:none; filter:drop-shadow(0 3px 4px rgba(60,40,50,.16)); }
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house::after { content:""; position:absolute; left:2%; right:2%; bottom:-3%; height:9%; border-radius:50%; background:radial-gradient(closest-side, rgba(70,50,60,.32), rgba(70,50,60,.12) 60%, rgba(70,50,60,0)); filter:blur(3px); z-index:0; }
+.inv[data-template][data-design="christmas-velvet"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .xv-house { animation:xm-glass-in 1.5s var(--e1) 8.2s both; }
+
+/* ───── 18. no pressed text shadow on the regular text: only the gold script keeps its pressed look ───── */
+.inv[data-template][data-design="christmas-velvet"] :is(.card, .cover) { text-shadow:none !important; }
+
+/* ───── 19. the house sits in the flow under the text (no overlap; the screen fits it in) ───── */
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house { position:relative; left:auto; bottom:auto; translate:none; display:block; width:40cqw; margin:calc(18px * var(--k,1)) auto 0; flex:none; }
+
+/* ───── 20. details screen: the gold hand bell lying at the bottom, with its shadow on the paper ───── */
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell { position:absolute; left:50%; bottom:7cqh; width:42cqw; translate:-50% 0; z-index:1; pointer-events:none; }
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell img { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:none; filter:drop-shadow(2px 4px 4px rgba(60,40,30,.22)); }
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell::after { content:""; position:absolute; left:8%; right:4%; bottom:2%; height:16%; border-radius:50%; background:radial-gradient(closest-side, rgba(70,50,40,.34), rgba(70,50,40,.12) 60%, rgba(70,50,40,0)); filter:blur(4px); z-index:0; }
+
+/* ───── 21. weekday and month: smaller and bolder so long words (WEDNESDAY, SEPTEMBER) fit their boxes ───── */
+.inv[data-template][data-design="christmas-velvet"] .card .xm-dayrow > :is(.xm-wd, .xm-mo) { font-size:calc(12px * var(--k,1)) !important; font-weight:600 !important; letter-spacing:.12em !important; }
+
+/* ───── 22. the bell stands upright, no shadow, 15% smaller (its length: 42cqw -> 35.7cqw) ───── */
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell { width:21cqw; }
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell img { filter:none; }
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell::after { display:none; }
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell { bottom:9.5cqh; }   /* clear of the arrow */
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell { width:16.8cqw; }   /* bell 20% smaller again */
+
+/* ───── 23. dinner screen: a crystal chandelier with a velvet bow instead of the house (it hangs, so no shadow on the floor) ───── */
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house { width:30cqw; }
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house::after { display:none; }
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house img { filter:drop-shadow(0 3px 4px rgba(60,40,50,.14)); }
+.inv[data-template][data-design="christmas-velvet"] .card-closing .xv-candles { width:75%; left:12.5%; }   /* closing garland 75% wide */
+.inv[data-template][data-design="christmas-velvet"] .card:not(.cover) :is(.xv-tl, .xv-tr) { width:39.6%; }   /* corner ornaments 10% bigger (36% -> 39.6%) */
+
+/* ───── 24. "Join us for party" 35px with no space under it; the pictures at the bottom of the screens (chandelier, bell, candles)
+   stand on the bottom of the screen, out of the flow, so the text is always centred on the screen ───── */
+.inv[data-template][data-design="christmas-velvet"] .card .xm-sec .xm-script { font-size:calc(35px * var(--k,1)) !important; margin-bottom:-.32em !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .xv-house { position:absolute; left:50%; translate:-50% 0; bottom:8cqh; margin:0; }
+.inv[data-template][data-design="christmas-velvet"] .card-details .xv-bell { bottom:8cqh; }
+.inv[data-template][data-design="christmas-velvet"] .card-closing .xv-candles { bottom:8cqh; }
+
+/* ───── 25. the text is centred in the free space between the corner ornaments (top) and the picture at the bottom of each screen ───── */
+.inv[data-template][data-design="christmas-velvet"] .card:not(.cover) :is(.sheet-in, .dtl-in, .rsvp-in, .closing-in) {
+  box-sizing:border-box; min-height:100%; display:flex; flex-direction:column; justify-content:center; padding-top:36cqw !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-sheet .sheet-in { padding-bottom:calc(10cqh + 45.4cqw) !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-details .dtl-in { padding-bottom:calc(10cqh + 28.6cqw) !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-closing .closing-in { padding-bottom:calc(10cqh + 37cqw) !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-rsvp .rsvp-in { padding-bottom:10cqh !important; }
+
+/* ───── 26. "Details", "Please" and the closing line in the gold script at 35px, like "Join us for party" ───── */
+.inv[data-template][data-design="christmas-velvet"] .card :is(.tl-title, .script.tl-title, .rsvp-lead, .closing-text) { font-size:calc(35px * var(--k,1)) !important; line-height:1.15 !important; }
+.inv[data-template][data-design="christmas-velvet"] .xm-intro { font-weight:700 !important; }   /* "You are invited to a" bold */
+.inv[data-template][data-design="christmas-velvet"] .xm-intro { font-style:normal !important; }   /* upright, not italic */
+.inv[data-template][data-design="christmas-velvet"] .card-details .dtl-in { padding-top:4cqh !important; }   /* details: centred between the top of the screen and the bell */
+.inv[data-template][data-design="christmas-velvet"] .card-closing :is(.closing-text, .closing-text *) { font-size:calc(35px * var(--k,1)) !important; line-height:1.15 !important; }   /* same size as "dinner party" */
+.inv[data-template][data-design="christmas-velvet"] .card.card-details:not(.cover) .dtl-in.dtl-in { padding-top:4cqh !important; }   /* (stronger selector: wins over section 25) */
+
+/* ───── 27. RSVP text 30px higher ───── */
+.inv[data-template][data-design="christmas-velvet"] .card.card-rsvp:not(.cover) .rsvp-in.rsvp-in { padding-bottom:calc(10cqh + 60px * var(--k,1)) !important; }
+
+/* ───── 28. the bell (details) and the candle garland (closing) rise in softly after the text of their screen has appeared
+   (the screen gets .in when it scrolls into view; the dinner chandelier already comes after its text in the opening) ───── */
+@media (prefers-reduced-motion: no-preference) {
+  .inv[data-template][data-design="christmas-velvet"][data-phase] .card:not(.in) :is(.xv-bell, .xv-candles) { opacity:0; }
+  .inv[data-template][data-design="christmas-velvet"][data-phase] .card.in :is(.xv-bell, .xv-candles) { animation:xm-glass-in 1.6s cubic-bezier(.2,.8,.2,1) 1.9s both; }
+}
+
+/* ───── 29. gold capitals (HOSTED BY, AT 6:00 PM, DRESS CODE, PRESENTS, BY DECEMBER …) with the same letter spacing as the dark capitals (.03em) ───── */
+.inv[data-template][data-design="christmas-velvet"] .card :is(.xm-hosted, .xm-hostline .xm-hosted, .xm-at, .rsvp-by, .caps, .caps.tiny, .tiny) { letter-spacing:.03em !important; }
+
+/* ───── 30. links (Get directions, Add to calendar, the e-mail) in dark grey, not plum ───── */
+.inv[data-template][data-design="christmas-velvet"] .card :is(.link, .xm-dir, .closing-cal, .venue-link, .rsvp-mail) { color:#4a4a4a !important; text-decoration-color:#4a4a4a !important; border-color:#4a4a4a !important; }
+.inv[data-template][data-design="christmas-velvet"] .card-closing .xv-sep-closing { margin-top:calc(-2.2cqh - 4px * var(--k,1)) !important; margin-bottom:calc(-1.8cqh) !important; }   /* closing: separator closer to the text above and below */

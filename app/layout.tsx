@@ -6,6 +6,7 @@ import "./templates/cupid-script.css";
 import "./templates/lilac-script.css";
 import "./templates/sage-forest.css";
 import "./templates/christmas-party.css";
+import "./templates/christmas-velvet.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });
@@ -32,7 +33,7 @@ const xmHead = Cormorant_SC({ variable: "--font-xm-head", subsets: ["latin", "la
 const xmBig = Elsie_Swash_Caps({ variable: "--font-xm-big", subsets: ["latin", "latin-ext"], weight: "900" });
 const xmWind = WindSong({ variable: "--font-xm-wind", subsets: ["latin"], weight: "500" });
 const allison = Allison({ variable: "--font-allison", subsets: ["latin"], weight: "400" });
-const xmGaramond = Cormorant_Garamond({ variable: "--font-xm-garamond", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"] });
+const xmGaramond = Cormorant_Garamond({ variable: "--font-xm-garamond", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"], style: ["normal", "italic"] });
 const alexBrush = Alex_Brush({ variable: "--font-alex-brush", subsets: ["latin", "latin-ext"], weight: "400" });
 
 export const metadata: Metadata = {
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${xmWind.variable} ${sfSerif.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${xmWind.variable} ${sfSerif.variable}`}>
       <body>{children}</body>
     </html>
   );

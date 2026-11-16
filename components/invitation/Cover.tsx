@@ -1,4 +1,5 @@
 import type { Content } from "@/lib/content/schema";
+import { VelvetCandleSep } from "./VelvetCorners";
 import { coverBottomText, FLYING_PHOTO, PARTY_TEMPLATES, TEMPLATE_COVER, type TemplateSlug } from "@/lib/templates";
 import { EnvelopeArt } from "./EnvelopeArt";
 import { CoverNames } from "./CoverNames";
@@ -28,8 +29,10 @@ export function CoverInner({ content: c, mode, hint, template }: { content: Cont
     return (
       <>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="xm-deco" src="/templates/christmas/v1/garland.webp" alt="" width={1300} height={678} decoding="async" draggable={false} />
+        {template === "christmas-velvet" ? <img className="xv-top" src="/templates/christmas-velvet/v1/garland-top.webp" alt="" width={1400} height={628} decoding="async" draggable={false} /> : <img className="xm-deco" src="/templates/christmas/v1/garland.webp" alt="" width={1300} height={678} decoding="async" draggable={false} />}
         {c.texts.coverIntro && <span className="xm-intro">{c.texts.coverIntro}</span>}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {template === "christmas-velvet" && <img className="xv-sep" src="/templates/christmas-velvet/v1/divider-bell.svg" alt="" width={260} height={30} draggable={false} />}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {c.texts.coverIntro && <img className="xm-sep" src="/templates/christmas/v1/divider.svg" alt="" width={240} height={28} draggable={false} />}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -42,6 +45,8 @@ export function CoverInner({ content: c, mode, hint, template }: { content: Cont
         <span className="xm-stars" aria-hidden="true" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="xm-foot" src="/templates/christmas/v1/foot-gold.svg" alt="" width={320} height={44} draggable={false} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {template === "christmas-velvet" && <VelvetCandleSep />}
         <span className="xm-glitter" aria-hidden="true" />
         {hint && <span className="env-hint">Tap to open</span>}
       </>

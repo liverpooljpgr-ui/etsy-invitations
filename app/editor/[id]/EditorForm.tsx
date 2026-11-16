@@ -674,7 +674,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
               <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
             </div>
-            {party && <Field label="Hosted by"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>}
+            {party && <Field label="Host name"><input className={inputCls} maxLength={40} autoComplete="off" placeholder="e.g. The Martins" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>}
             {party && (
               <>
                 <PlaceSearch label="Find the place" placeholder="Name, address or a Google Maps link" onPick={pickVenue} />

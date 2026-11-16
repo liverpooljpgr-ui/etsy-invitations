@@ -2,6 +2,7 @@ import { parseContent } from "@/lib/content/schema";
 import { buildIcs } from "@/lib/calendar";
 import { loadPublicInvitation } from "@/lib/public-invitation";
 import { templateOfSlug } from "@/lib/template-of";
+import { isPartyTemplate } from "@/lib/templates";
 
 /** "Add to calendar": the published invitation's event as an .ics file. */
 export async function GET(request: Request, ctx: { params: Promise<{ slug: string }> }) {
@@ -11,7 +12,7 @@ export async function GET(request: Request, ctx: { params: Promise<{ slug: strin
   const origin = new URL(request.url).origin;
   const content = parseContent(inv.content);
   if (!content.showCalendar) return new Response("Not found", { status: 404 }); // the host switched the link off
-  const party = (await templateOfSlug(slug)) === "christmas-party";
+  const party = isPartyTemplate(await templateOfSlug(slug));
   const ics = buildIcs(content, `${slug}@${party ? "party" : "wedding"}-invitation`, `${origin}/${slug}`, party);
   if (!ics) return new Response("This invitation has no date yet.", { status: 404 });
   return new Response(ics, {

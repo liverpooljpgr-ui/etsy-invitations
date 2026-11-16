@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isPartyTemplate } from "@/lib/templates";
 
 const text = (max: number) => z.string().trim().max(max);
 const httpsUrl = z
@@ -149,12 +150,12 @@ export function parseContent(raw: unknown): Content {
 export function publishMissing(c: Content, template?: string | null): string[] {
   const m: string[] = [];
   // the Christmas party has no beloved names: the host is optional and only the date and the place are required
-  if (template !== "christmas-party") {
+  if (!isPartyTemplate(template)) {
     if (!c.couple.first) m.push("First beloved's name");
     if (!c.couple.second) m.push("Second beloved's name");
   }
   if (!c.event.date) m.push("Event date");
-  if (!c.event.venue) m.push(template === "christmas-party" ? "Place name" : "Venue name");
+  if (!c.event.venue) m.push(isPartyTemplate(template) ? "Place name" : "Venue name");
   return m;
 }
 
@@ -175,7 +176,7 @@ export function applyPlan(c: Content, f: PlanFeatures): Content {
  * not of a wedding: the host in the first name field, the title of the party in `headline`, the dinner page in `saveTheDate`.
  */
 export function defaultContentFor(slug: string | null | undefined): Content {
-  if (slug !== "christmas-party") return defaultContent;
+  if (!isPartyTemplate(slug)) return defaultContent;
   return {
     ...defaultContent,
     couple: { first: "", second: "" },

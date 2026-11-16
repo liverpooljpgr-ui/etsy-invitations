@@ -1,4 +1,5 @@
 import { templateOfSlug } from "@/lib/template-of";
+import { isPartyTemplate } from "@/lib/templates";
 import { createHash } from "node:crypto";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -14,14 +15,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const c = live ? parseContent(inv.content) : null;
   const first = c?.couple.first.trim(), second = c?.couple.second.trim();
   const named = !!(first && second);
-  const isParty = live && (await templateOfSlug(slug)) === "christmas-party";
+  const tpl = live ? await templateOfSlug(slug) : null;
+  const isParty = live && isPartyTemplate(tpl);
   const title = isParty ? "You are invited to a Christmas party" : named ? `${first} & ${second}` : live ? "You are invited" : "Invitation";
   const description = isParty ? "Tap to open your invitation." : named ? `Hi, it's ${first} and ${second}. We are kindly inviting you to our event.` : "Tap to open your invitation.";
   // the couple's photo in the arch; a version number in the address makes chat apps fetch it again after the photo changes
   const ph = c?.photo;
   const v = ph ? createHash("sha1").update(`${ph.url}|${ph.cx}|${ph.cy}|${ph.zoom}`).digest("hex").slice(0, 8) : "";
   // the Christmas party has its own preview card (no beloved names, no wedding picture)
-  const images = [{ url: isParty ? "/share-card-christmas.jpg" : ph ? `/${slug}/og?v=${v}` : "/share-card.jpg", width: 1200, height: 630, alt: isParty ? "Christmas party invitation" : title }];
+  const images = [{ url: isParty ? (tpl === "christmas-velvet" ? "/share-card-velvet.jpg" : "/share-card-christmas.jpg") : ph ? `/${slug}/og?v=${v}` : "/share-card.jpg", width: 1200, height: 630, alt: isParty ? "Christmas party invitation" : title }];
   return {
     title,
     description,

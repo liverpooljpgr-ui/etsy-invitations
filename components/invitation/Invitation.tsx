@@ -1,15 +1,16 @@
 import { TimelineIcon } from "./TimelineIcons";
 import { InkHeart } from "./InkHeart";
 import { FitScreens } from "./FitScreens";
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES, layoutTemplate } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
+import { VelvetCorners, VelvetCandles } from "./VelvetCorners";
 import { Qr } from "./Qr";
 
 /** The designs that share the script layout (one-block RSVP title, "or answer by e-mail" line). */
-const SCRIPT_FAMILY: TemplateSlug[] = ["mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party"];
+const SCRIPT_FAMILY: TemplateSlug[] = ["mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party", "christmas-velvet"];
 const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 const DAYS = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
 
@@ -113,11 +114,13 @@ export function Invitation({
 }) {
   const template = templateSlug(templateProp); // unknown / missing design names fall back to the default design
   const ph = mode === "preview";
-  const first = c.couple.first || (ph ? "Beloved" : "");
+  // empty name fields show a placeholder in the editor preview: the party designs have a host, not two beloveds
+  const first = c.couple.first || (ph ? (PARTY_TEMPLATES[template] ? "Host name" : "Beloved") : "");
   const second = c.couple.second || (ph ? "Beloved" : "");
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
+  const vel = template === "christmas-velvet"; // Velvet Christmas: the Christmas Party layout with plum and gold pictures (corners at the top, candles at the bottom)
   const party = !!PARTY_TEMPLATES[template]; // the Christmas party: cover, dinner (date, time, place), details, RSVP, closing
   const hasExtra1 = (template === "sage-forest" || party) && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
   const hasExtra2 = party && !!(c.texts.detailsExtra2Title || c.texts.detailsExtra2Text); // a second block of your own (the Christmas party)
@@ -141,7 +144,7 @@ export function Invitation({
     ) : null;
 
   return (
-    <div className="inv" data-theme={c.theme} data-template={template ?? DEFAULT_TEMPLATE} data-phase={phase} data-fly={template && ((FLYING_PHOTO[template] && c.photo) || PARTY_TEMPLATES[template]) ? "1" : undefined}>
+    <div className="inv" data-theme={c.theme} data-template={layoutTemplate(template ?? DEFAULT_TEMPLATE)} data-design={template ?? DEFAULT_TEMPLATE} data-phase={phase} data-fly={template && ((FLYING_PHOTO[template] && c.photo) || PARTY_TEMPLATES[template]) ? "1" : undefined}>
       {/* 1 — cover (static view; the animated experience puts the same cover, tappable, over card 2) */}
       {!phase && (
         <section className="card cover cover-static" data-card="1" aria-label="Cover">
@@ -153,7 +156,8 @@ export function Invitation({
       <div className="stage">
         <section className="card card-sheet" data-card="2" tabIndex={-1}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {party && !vel && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {vel && <VelvetCorners />}
           {party ? (
             <div className="sheet-in xm-sheet">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -164,7 +168,7 @@ export function Invitation({
                 {d ? (
                   <p className="xm-dayrow">
                     <span className="xm-wd">{d.weekday}</span>
-                    <span className="xm-num">{d.day}</span>
+                    <span className="xm-num">{vel ? String(d.day).padStart(2, "0") : d.day}</span>
                     <span className="xm-mo">{d.month}</span>
                   </p>
                 ) : ph ? <p className="xm-month">Date</p> : null}
@@ -184,6 +188,8 @@ export function Invitation({
               )}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img className="xm-glass" src="/templates/christmas/v1/glasses-cherry.webp" alt="" width={900} height={1114} decoding="async" draggable={false} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {vel && <span className="xv-house" aria-hidden="true"><img src="/templates/christmas-velvet/v1/chandelier.webp" alt="" width={727} height={1100} decoding="async" draggable={false} /></span>}
             </div>
           ) : (
           <div className={c.photo || ph ? "sheet-in" : "sheet-in no-photo"}>
@@ -247,14 +253,17 @@ export function Invitation({
       {!off(5) && hasInfo && (
         <section className="card card-details" data-card="5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {party && !vel && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {vel && <VelvetCorners />}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {vel && <span className="xv-bell" aria-hidden="true"><img src="/templates/christmas-velvet/v1/bell.webp" alt="" width={647} height={1100} decoding="async" draggable={false} /></span>}
           <div className="dtl-in">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {party && <img className="xm-table" src="/templates/christmas/v1/table.webp" alt="" width={1100} height={653} decoding="async" draggable={false} />}
             {party && <img className="xm-dtl-art" src="/templates/christmas/v1/ornaments.webp" alt="" width={1000} height={710} decoding="async" draggable={false} />}
             <h2 className="script tl-title">{titleCase(c.texts.detailsTitle || "Details")}</h2>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {party && <img className="xm-sep3" src="/templates/christmas/v1/divider-gold.svg" alt="" width={240} height={28} draggable={false} />}
+            {party && <img className="xm-sep3" src={vel ? "/templates/christmas-velvet/v1/divider-bell.svg" : "/templates/christmas/v1/divider-gold.svg"} alt="" width={vel ? 260 : 240} height={vel ? 30 : 28} draggable={false} />}
             {(registry.length > 0 || hasDress || c.hotel.name || hasExtra || ph) && (
               <div className="dtl-row">
                 {(c.hotel.name || (ph && !party)) && (
@@ -314,13 +323,14 @@ export function Invitation({
       {!off(6) && hasRsvp && (
         <section className="card card-rsvp" data-card="6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {party && !vel && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {vel && <VelvetCorners />}
           <div className="rsvp-in">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {party && <img className="xm-rsvp-art" src="/templates/christmas/v1/champagne.webp" alt="" width={900} height={893} decoding="async" draggable={false} />}
             <RsvpTitle text="Please RSVP" oneBlock={SCRIPT_FAMILY.includes(template)} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {party && <img className="xm-sep3" src="/templates/christmas/v1/divider-gold.svg" alt="" width={240} height={28} draggable={false} />}
+            {party && <img className="xm-sep3" src={vel ? "/templates/christmas-velvet/v1/divider-bell.svg" : "/templates/christmas/v1/divider-gold.svg"} alt="" width={vel ? 260 : 240} height={vel ? 30 : 28} draggable={false} />}
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
             {!party && c.rsvp.email && ((SCRIPT_FAMILY.includes(template))
               ? <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>
@@ -338,7 +348,8 @@ export function Invitation({
       {!off(7) && (
         <section className="card card-closing" data-card="7">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {party && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {party && !vel && <img className="xm-bow" src="/templates/christmas/v1/bow-top.webp" alt="" width={1300} height={539} decoding="async" draggable={false} />}
+          {vel && <VelvetCorners />}
           <div className="closing-in">
             {template === "sage-forest" && <InkHeart className="closing-heart" />}
             {party ? (
@@ -348,11 +359,15 @@ export function Invitation({
               <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
             )}
             <p className="closing-text">{c.texts.closing || "Share this moment with us"}</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {vel && <img className="xm-sep3 xv-sep-closing" src="/templates/christmas-velvet/v1/divider-bell.svg" alt="" width={260} height={30} draggable={false} />}
             {party && (c.texts.closingNote || ph) && <p className="closing-note">{c.texts.closingNote || "Second line, in regular text"}</p>}
             {calendarHref && d && c.showCalendar && <a className="link venue-link closing-cal" href={calendarHref}>Add to calendar</a>}
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {party && <img className="xm-tree" src="/templates/christmas/v1/tree-lights.webp" alt="" width={1400} height={579} decoding="async" draggable={false} />}
+          {party && !vel && <img className="xm-tree" src="/templates/christmas/v1/tree-lights.webp" alt="" width={1400} height={579} decoding="async" draggable={false} />}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {vel && <VelvetCandles />}
         </section>
       )}
       {(template === "sage-forest" || party) && <FitScreens />}

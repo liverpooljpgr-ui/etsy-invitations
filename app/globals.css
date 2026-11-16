@@ -758,7 +758,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 /* The envelope on the cover is the same width in every design as in Mono Script (the script designs: 93% of a narrower content box = 76% of the screen; here 94% -> 87% of the content box = the same 76%). */
 .inv[data-template="sage-story"] .cover-env, .inv[data-template="white-roses"] .cover-env { width:87%; }
 
-/* ───────── 146. ONE CONTINUOUS FLAP TURN for Floral Aquarelle and White Roses (like the script designs): the closed flap (0 to 90 degrees) and the open flap (-90 to 0) follow ONE ease-in-out curve over 1.25 s, so there is no change of speed or empty moment when the flap goes edge-on ───────── */
+/* ───────── 146. ONE CONTINUOUS FLAP TURN for Wild Flowers and White Roses (like the script designs): the closed flap (0 to 90 degrees) and the open flap (-90 to 0) follow ONE ease-in-out curve over 1.25 s, so there is no change of speed or empty moment when the flap goes edge-on ───────── */
 @keyframes sg-flap-closed {
   0% { transform:rotateX(0deg); visibility:visible; }
   0% { transform:rotateX(0deg); visibility:visible; }
