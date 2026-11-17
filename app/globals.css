@@ -648,7 +648,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
    capitals. No flower pictures are used: the backgrounds are separate files (see public/templates/jasmin/v1/README.txt);
    a screen without its picture is plain white. */
 .inv[data-template="white-roses"] {
-  --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#8c8566;
+  --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#a8915a;
   --wr-script:var(--font-wr-script),"Brush Script MT",cursive; --wr-head:var(--font-wr-head),Georgia,serif; --wr-body:var(--font-wr-body),system-ui,sans-serif;
   font-family:var(--wr-body); }
 .inv[data-template="white-roses"] .card,
