@@ -647,6 +647,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
    White paper, gold-olive lettering, a thin handwritten script, a flared serif for headings and a light sans for small
    capitals. No flower pictures are used: the backgrounds are separate files (see public/templates/jasmin/v1/README.txt);
    a screen without its picture is plain white. */
+/* Pure Jasmin (slug white-roses): --gold is the champagne gold #a8915a of all the golden text and lines */
 .inv[data-template="white-roses"] {
   --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#a8915a;
   --wr-script:var(--font-wr-script),"Brush Script MT",cursive; --wr-head:var(--font-wr-head),Georgia,serif; --wr-body:var(--font-wr-body),system-ui,sans-serif;
