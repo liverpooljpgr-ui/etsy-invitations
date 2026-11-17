@@ -751,16 +751,14 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             {!party && (
               <>
-            <PlaceSearch label="Find the hotel for accommodation" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
-            <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
             {template === "sage-forest" && (
               <>
                 <Field label="Heading of the accommodation block"><input className={inputCls} maxLength={30} {...tp("detailsAccommodation")} /></Field>
                 <Field label="Text under that heading, before the hotel name (optional)"><input className={inputCls} maxLength={120} {...tp("detailsAccommodationNote")} /></Field>
-                <Field label="Heading of the dress code block"><input className={inputCls} maxLength={30} {...tp("detailsDressCode")} /></Field>
-                <Field label="Heading of the registry block"><input className={inputCls} maxLength={30} {...tp("detailsRegistry")} /></Field>
               </>
             )}
+            <PlaceSearch label="Find the hotel for accommodation" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
+            <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
             <Field label="Accommodation — hotel name"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
             <Field label="Accommodation — address (Enter starts a new line)">
               <textarea className={inputCls} rows={2} maxLength={60} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
@@ -769,6 +767,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             )}
             {features.dress_code ? (
               <div className="ui-field">
+                {template === "sage-forest" && (<Field label="Heading of the dress code block"><input className={inputCls} maxLength={30} {...tp("detailsDressCode")} /></Field>)}
                 <Field label="Dress code"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
                 <div className="ui-colors">
                   {draft.dressCode.colors.map((c, i) => (
@@ -784,6 +783,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             {party ? null : features.registry ? (
               <div className="ui-field" style={{ gap: 14 }}>
                 <span className="ui-label">Registry QR codes</span>
+                {template === "sage-forest" && (<Field label="Heading of the registry block"><input className={inputCls} maxLength={30} {...tp("detailsRegistry")} /></Field>)}
                 {REGISTRIES.map((label) => (
                   <Field key={label} label={`${label} registry link (https://…)`}>
                     <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />

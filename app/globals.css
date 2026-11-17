@@ -900,3 +900,6 @@ aside .inv .card, aside .inv .cover, aside .inv .stage { aspect-ratio:340 / 700 
 /* editor: the headings of the sections (Cover, Photo & Date, Venue …) are bolder and plum purple */
 .ui .ui-sec-head { font-weight:800; color:var(--ui-tint, #482552); }
 .ui .ui-sec-head { color:#381159; font-size:14.5px; }   /* editor section headings */
+
+/* the block of your own in the Details screen (Sage Garden, Christmas party): 20 px of space on the left and on the right of its text */
+.inv .dtl-custom { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }
