@@ -751,10 +751,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Title"><input className={inputCls} maxLength={30} {...tp("detailsTitle")} /></Field>
             {!party && (
               <>
-            {template === "sage-forest" && (
+            {(template === "sage-forest" || template === "white-roses") && (
               <>
                 <Field label="Heading of the accommodation block"><input className={inputCls} maxLength={30} {...tp("detailsAccommodation")} /></Field>
-                <Field label="Text under that heading, before the hotel name (optional)"><input className={inputCls} maxLength={120} {...tp("detailsAccommodationNote")} /></Field>
+                {template === "sage-forest" && (<Field label="Text under that heading, before the hotel name (optional)"><input className={inputCls} maxLength={120} {...tp("detailsAccommodationNote")} /></Field>)}
               </>
             )}
             <PlaceSearch label="Find the hotel for accommodation" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
@@ -767,7 +767,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             )}
             {features.dress_code ? (
               <div className="ui-field">
-                {template === "sage-forest" && (<Field label="Heading of the dress code block"><input className={inputCls} maxLength={30} {...tp("detailsDressCode")} /></Field>)}
+                {(template === "sage-forest" || template === "white-roses") && (<Field label="Heading of the dress code block"><input className={inputCls} maxLength={30} {...tp("detailsDressCode")} /></Field>)}
                 <Field label="Dress code"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
                 <div className="ui-colors">
                   {draft.dressCode.colors.map((c, i) => (
@@ -783,7 +783,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             {party ? null : features.registry ? (
               <div className="ui-field" style={{ gap: 14 }}>
                 <span className="ui-label">Registry QR codes</span>
-                {template === "sage-forest" && (<Field label="Heading of the registry block"><input className={inputCls} maxLength={30} {...tp("detailsRegistry")} /></Field>)}
+                {(template === "sage-forest" || template === "white-roses") && (<Field label="Heading of the registry block"><input className={inputCls} maxLength={30} {...tp("detailsRegistry")} /></Field>)}
                 {REGISTRIES.map((label) => (
                   <Field key={label} label={`${label} registry link (https://…)`}>
                     <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
@@ -792,7 +792,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <p className="ui-help">Leave a link empty to hide that QR code.</p>
               </div>
             ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
-                      {(template === "sage-forest" || party) && (
+                      {(template === "sage-forest" || template === "white-roses" || party) && (
               <div className="ui-field" style={{ gap: 10 }}>
                 <span className="ui-label">{party ? "Presents, or any block of your own" : "Your own block"}</span>
                 <Field label="Heading (for example: Gifts, Kids, Transport)"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>

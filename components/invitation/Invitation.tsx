@@ -120,9 +120,9 @@ export function Invitation({
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
-  const vel = template === "christmas-velvet"; // Velvet Christmas: the Christmas Party layout with plum and gold pictures (corners at the top, candles at the bottom)
+  const vel = template === "christmas-velvet"; // Purple Vintage Christmas: the Christmas Party layout with plum and gold pictures (corners at the top, candles at the bottom)
   const party = !!PARTY_TEMPLATES[template]; // the Christmas party: cover, dinner (date, time, place), details, RSVP, closing
-  const hasExtra1 = (template === "sage-forest" || party) && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
+  const hasExtra1 = (template === "sage-forest" || template === "white-roses" || party) && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
   const hasExtra2 = party && !!(c.texts.detailsExtra2Title || c.texts.detailsExtra2Text); // a second block of your own (the Christmas party)
   const hasExtra = hasExtra1 || hasExtra2;
   const hasInfo = hasExtra || c.hotel.name || c.dressCode.label || c.dressCode.colors.length > 0 || registry.length > 0 || ph;
@@ -328,7 +328,7 @@ export function Invitation({
           <div className="rsvp-in">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {party && <img className="xm-rsvp-art" src="/templates/christmas/v1/champagne.webp" alt="" width={900} height={893} decoding="async" draggable={false} />}
-            <RsvpTitle text="Please RSVP" oneBlock={SCRIPT_FAMILY.includes(template)} />
+            <RsvpTitle text="Please RSVP" oneBlock={SCRIPT_FAMILY.includes(template) || template === "white-roses"} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {party && <img className="xm-sep3" src={vel ? "/templates/christmas-velvet/v1/divider-bell.svg" : "/templates/christmas/v1/divider-gold.svg"} alt="" width={vel ? 260 : 240} height={vel ? 30 : 28} draggable={false} />}
             {(c.rsvp.deadline || ph) && <p className="rsvp-by">By {longDate(c.rsvp.deadline) || "date"}</p>}
@@ -358,6 +358,7 @@ export function Invitation({
             ) : (
               <p className="closing-names">{first}<span className="amp">&amp;</span>{second}</p>
             )}
+            {template === "white-roses" && <span className="cover-heart closing-heart" aria-hidden="true" />}
             <p className="closing-text">{c.texts.closing || "Share this moment with us"}</p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             {vel && <img className="xm-sep3 xv-sep-closing" src="/templates/christmas-velvet/v1/divider-bell.svg" alt="" width={260} height={30} draggable={false} />}

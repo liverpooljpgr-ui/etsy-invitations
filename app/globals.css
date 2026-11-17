@@ -648,7 +648,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
    capitals. No flower pictures are used: the backgrounds are separate files (see public/templates/jasmin/v1/README.txt);
    a screen without its picture is plain white. */
 .inv[data-template="white-roses"] {
-  --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#8a7424;
+  --paper:#ffffff; --dark:#ffffff; --dark-ink:#5d5a46; --ink:#5d5a46; --gold:#8c8566;
   --wr-script:var(--font-wr-script),"Brush Script MT",cursive; --wr-head:var(--font-wr-head),Georgia,serif; --wr-body:var(--font-wr-body),system-ui,sans-serif;
   font-family:var(--wr-body); }
 .inv[data-template="white-roses"] .card,
@@ -666,19 +666,19 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .title i, .inv[data-template="white-roses"] .save, .inv[data-template="white-roses"] .venue-recep,
 .inv[data-template="white-roses"] .rsvp-lead, .inv[data-template="white-roses"] .closing-names, .inv[data-template="white-roses"] .cover-names,
 .inv[data-template="white-roses"] .monogram, .inv[data-template="white-roses"] .seal { font-family:var(--wr-script); font-weight:400; color:var(--gold); }
-.inv[data-template="white-roses"] .cover-names { font-size:calc(52px * var(--k,1)); line-height:1.05; }
+.inv[data-template="white-roses"] .cover-names { font-size:calc(44px * var(--k,1)); line-height:1.05; }
 .inv[data-template="white-roses"] .cover-names .amp, .inv[data-template="white-roses"] .closing-names .amp { font-size:.8em; color:var(--gold); }
-.inv[data-template="white-roses"] .closing-names { font-size:calc(62px * var(--k,1)); color:var(--gold); }
+.inv[data-template="white-roses"] .closing-names { font-size:calc(54px * var(--k,1)); color:var(--gold); }
 .inv[data-template="white-roses"] .save { font-size:calc(40px * var(--k,1)); }
 .inv[data-template="white-roses"] .venue-recep { font-size:calc(32px * var(--k,1)); }
 .inv[data-template="white-roses"] .rsvp-lead { font-size:calc(40px * var(--k,1)); text-transform:none; }
 .inv[data-template="white-roses"] .monogram { background:none; -webkit-text-fill-color:var(--gold); color:var(--gold); }
 
 /* headings in capitals ("WEDDING DETAILS") */
-.inv[data-template="white-roses"] .script.tl-title { font-family:var(--wr-head); text-transform:uppercase; letter-spacing:.08em; font-size:calc(30px * var(--k,1)); line-height:1.15; color:var(--gold); }
+.inv[data-template="white-roses"] .script.tl-title { font-family:var(--wr-head); text-transform:uppercase; letter-spacing:.08em; font-size:calc(25px * var(--k,1)); line-height:1.15; color:var(--gold); }
 .inv[data-template="white-roses"] .rsvp-title { flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:baseline; column-gap:0; margin-bottom:3cqh; }
 .inv[data-template="white-roses"] .rsvp-lead { flex-basis:100%; text-align:center; margin-bottom:0; }
-.inv[data-template="white-roses"] .rsvp-big { font-family:var(--wr-head); font-size:calc(48px * var(--k,1)); letter-spacing:.12em; margin-right:0; color:var(--gold); }
+.inv[data-template="white-roses"] .rsvp-big { font-family:var(--wr-head); font-size:calc(48px * var(--k,1)); letter-spacing:.12em; margin-right:-.12em; text-align:center; color:var(--gold); }
 .inv[data-template="white-roses"] .rsvp-by, .inv[data-template="white-roses"] .rsvp-mail, .inv[data-template="white-roses"] .closing-text { font-family:var(--wr-head); color:var(--ink); }
 .inv[data-template="white-roses"] .rsvp-note { font-family:var(--wr-body); font-weight:300; letter-spacing:.06em; }
 .inv[data-template="white-roses"] .closing-text { letter-spacing:.06em; }
@@ -698,9 +698,9 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .tl li + li::before { height:calc(12px * var(--k,1)); -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='12' viewBox='0 0 92 12'%3E%3Cpath d='M0 6H37M55 6H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 10.4C40.6 6.8 41.4 2.2 44.4 2.2c1 0 1.6.7 1.6 1.5 0-.8.6-1.5 1.6-1.5 3 0 3.8 4.6-1.6 8.2z' fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='12' viewBox='0 0 92 12'%3E%3Cpath d='M0 6H37M55 6H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 10.4C40.6 6.8 41.4 2.2 44.4 2.2c1 0 1.6.7 1.6 1.5 0-.8.6-1.5 1.6-1.5 3 0 3.8 4.6-1.6 8.2z' fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 
 /* the narrow sans looks smaller than the wide one, so the small lines get a little more size */
-.inv[data-template="white-roses"] .venue-addr { font-size:calc(18px * var(--k,1)); }
+.inv[data-template="white-roses"] .venue-addr { font-size:calc(15px * var(--k,1)); }
 .inv[data-template="white-roses"] .dtl-text { font-size:calc(12px * var(--k,1)); } /* the hotel address */
-.inv[data-template="white-roses"] .rsvp-note { font-size:calc(16px * var(--k,1)); }
+.inv[data-template="white-roses"] .rsvp-note { font-size:calc(15px * var(--k,1)); }
 .inv[data-template="white-roses"] .tl li span { font-size:calc(12.5px * var(--k,1)); }
 .inv[data-template="white-roses"] .tl li.no-time span { font-size:calc(15.5px * var(--k,1)); letter-spacing:.2em; color:var(--gold); font-family:var(--wr-head); font-weight:400; }
 .inv[data-template="white-roses"] .dt-row { font-size:3.8cqw; }
@@ -708,7 +708,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .tiny, .inv[data-template="white-roses"] .qrbox { font-size:calc(11.5px * var(--k,1)); }
 .inv[data-template="white-roses"] .venue-intro { font-size:calc(13.5px * var(--k,1)); }
 .inv[data-template="white-roses"] .venue-link { font-size:calc(14.5px * var(--k,1)); }
-.inv[data-template="white-roses"] .cover-top { font-size:calc(15.5px * var(--k,1)); }
+.inv[data-template="white-roses"] .cover-top { font-size:calc(18.5px * var(--k,1)); }
 
 /* the date: month, then "weekday | day | time" between two thin lines, then the year */
 .inv[data-template="white-roses"] .dt { color:var(--ink); }
@@ -733,7 +733,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 /* screen 2 has the jasmine garland (bg-photo.webp) across its top fifth, so everything starts below it */
 .inv[data-template="white-roses"] .sheet-in { padding-top:21cqh; }
 .inv[data-template="white-roses"] .sheet-in.no-photo { padding-top:24cqh; }
-.inv[data-template="white-roses"] .card-sheet .arch { height:36cqh; width:calc(36cqh * 3 / 4); }
+.inv[data-template="white-roses"] .card-sheet .arch { height:42cqh; width:calc(42cqh * 3 / 4); }
 .inv[data-template="white-roses"] .venue-in { padding:10cqh 9cqw 8cqh; }
 .inv[data-template="white-roses"] .tl-in { padding:14cqh 9cqw 10cqh; }
 /* screen 5 has flowers in two corners (top left, bottom right) in bg-details.webp: the text block is centred between them */
@@ -743,6 +743,7 @@ body:has(.rsvp-bg) .music-btn { display:none; }
 .inv[data-template="white-roses"] .dtl-reg { order:1; }
 .inv[data-template="white-roses"] .dtl-dresscode { order:2; }
 .inv[data-template="white-roses"] .dtl-acc { order:3; }
+.inv[data-template="white-roses"] .dtl-custom { order:4; }
 .inv[data-template="white-roses"] .dtl-row .qr { width:calc(72px * var(--k,1)); height:calc(72px * var(--k,1)); }
 /* screen 6 (bg-rsvp.webp) has flowers along its bottom third: the reply block stays above them */
 .inv[data-template="white-roses"] .rsvp-in { padding:14cqh 9cqw 8cqh; }
@@ -903,3 +904,60 @@ aside .inv .card, aside .inv .cover, aside .inv .stage { aspect-ratio:340 / 700 
 
 /* the block of your own in the Details screen (Sage Garden, Christmas party): 20 px of space on the left and on the right of its text */
 .inv .dtl-custom { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }
+
+/* Jasmin (White Roses): the envelope sits close under the names on the cover */
+.inv[data-template="white-roses"] .cover-env { margin-top:calc(18px * var(--k,1)); margin-bottom:calc(8px * var(--k,1)); }
+
+/* Jasmin (White Roses): the heart separator of the timeline, on the cover between the envelope and the line below it */
+.inv .cover-heart { display:none; }
+.inv[data-template="white-roses"] .cover-heart { display:block; flex:none; width:calc(92px * var(--k,1)); height:calc(12px * var(--k,1)); margin-bottom:calc(2px * var(--k,1)); background:var(--gold); pointer-events:none; transition:opacity .3s ease;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='12' viewBox='0 0 92 12'%3E%3Cpath d='M0 6H37M55 6H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 10.4C40.6 6.8 41.4 2.2 44.4 2.2c1 0 1.6.7 1.6 1.5 0-.8.6-1.5 1.6-1.5 3 0 3.8 4.6-1.6 8.2z' fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='12' viewBox='0 0 92 12'%3E%3Cpath d='M0 6H37M55 6H92' stroke='black' stroke-width='1'/%3E%3Cpath d='M46 10.4C40.6 6.8 41.4 2.2 44.4 2.2c1 0 1.6.7 1.6 1.5 0-.8.6-1.5 1.6-1.5 3 0 3.8 4.6-1.6 8.2z' fill='none' stroke='black' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.inv[data-template="white-roses"][data-phase="opening"] .cover-heart { opacity:0; }
+
+/* Jasmin (White Roses): the e-mail address on the RSVP screen is underlined */
+.inv[data-template="white-roses"] .rsvp-mail { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:calc(4px * var(--k,1)); }
+
+/* Jasmin (White Roses): the hotel address in the accommodation block has 20 px of space on the left and on the right */
+.inv[data-template="white-roses"] .dtl-acc .dtl-text { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }
+
+/* Jasmin (White Roses): the month on Save the Date is in the same font as the RSVP date ("By September 25, 2027") */
+.inv[data-template="white-roses"] .dt-month { font-family:var(--wr-head); font-weight:400; }
+
+/* Jasmin (White Roses): the venue address has 20 px of space on the left and on the right */
+.inv[data-template="white-roses"] .venue-addr { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }
+
+/* Jasmin (White Roses): the descriptions on the Details screen (hotel address, your own block) look like the RSVP note ("Please include all guests name you are taking with you") */
+.inv[data-template="white-roses"] .dtl-text { font-size:calc(15px * var(--k,1)); font-weight:300; line-height:1.55; letter-spacing:.06em; color:#4f463d; }
+
+/* Jasmin (White Roses): more space above "Get directions" on the venue screen */
+.inv[data-template="white-roses"] .venue-link { margin-top:calc(20px * var(--k,1)); }
+
+/* Jasmin (White Roses): the heart separator above "Share this moment with us" on the closing screen */
+.inv[data-template="white-roses"] .closing-heart { margin:calc(10px * var(--k,1)) auto calc(16px * var(--k,1)); }
+
+/* ───────── Jasmin (White Roses): THE PHOTO CARD COMES OUT OF THE ENVELOPE. After the flap has opened (1.25 s) the photo card (a rectangle with a white edge and a thin gold line) slides out of the envelope, flies to its place on the Save the Date screen (the script in Experience.tsx measures where: --fly-x / --fly-y / --fly-s) and lands at 3.8 s; there its corners smoothly round into the oval (3.8 - 4.9 s). The edge and the line are divided by the growth (--fly-s), so after growing they are exactly the size of the real ones. ───────── */
+.inv[data-template="white-roses"] .env-photo { position:absolute; left:30%; top:3%; width:40%; aspect-ratio:3 / 4; box-sizing:border-box; z-index:1; display:block; background:#fff; border:calc(1px * var(--k,1) / var(--fly-s,1.6)) solid var(--gold); padding:calc(6px * var(--k,1) / var(--fly-s,1.6)); box-shadow:0 4px 14px rgba(0,0,0,.18); }
+.inv[data-template="white-roses"] .env-photo .arch-in { border-radius:0; }   /* the photo card hides completely inside the closed envelope: it is a little smaller and higher than the pocket */
+.inv[data-template="white-roses"] .env-flap-open { z-index:-1 !important; }
+.inv[data-template="white-roses"] .env-body-back { inset:0; width:100%; height:100%; z-index:0; }   /* the back sheet of the envelope; the photo card slides out between it and the front pocket (the front pocket is envelope-body.webp, the back sheet is envelope-body-back.webp) */
+.inv[data-template="white-roses"] .env-body { z-index:2; }
+.inv[data-template="white-roses"] .env-flap-closed { z-index:3; }
+.inv[data-template="white-roses"][data-phase="opening"] .env-photo { animation:wr-photo-fly 3.8s linear 0s both; }
+@keyframes wr-photo-fly {
+  0%    { transform:none; z-index:1; }
+  33%   { transform:none; z-index:1; animation-timing-function:cubic-bezier(.45,0,.9,.85); }
+  49%   { transform:translateY(-120%); z-index:1; animation-timing-function:step-end; }
+  49.1% { transform:translateY(-120%); z-index:6; animation-timing-function:cubic-bezier(.12,.6,.3,1); }
+  100%  { transform:translate(var(--fly-x, 0px), var(--fly-y, -100px)) scale(var(--fly-s, 1.6)); z-index:6; box-shadow:0 0 0 rgba(0,0,0,0); }
+}
+/* the photo of screen 2 waits under the envelope; the texts come in after it has landed; then the cover fades away */
+.inv[data-template="white-roses"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .arch { animation:none !important; }
+.inv[data-template="white-roses"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > :not(.arch) { animation-delay:3.9s !important; }
+.inv[data-template="white-roses"][data-fly][data-phase="opening"] .env-btn { transform:none; transition:opacity .8s ease 3.6s; }
+@keyframes wr-arch-round { from { border-radius:0; } to { border-radius:50%; } }
+.inv[data-template="white-roses"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in:not(.no-photo) > .arch,
+.inv[data-template="white-roses"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in:not(.no-photo) > .arch::after,
+.inv[data-template="white-roses"][data-fly][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in:not(.no-photo) > .arch .arch-in { animation:wr-arch-round 1.1s cubic-bezier(.45,.05,.25,1) 3.8s both !important; }
+/* no ghost of the open flap over the photo that has landed */
+@keyframes wr-env-gone { to { opacity:0; visibility:hidden; } }
+.inv[data-template="white-roses"][data-fly][data-phase="opening"] .env-flap-open { animation:wr-flap-open 1.25s linear both, wr-env-gone .15s linear 3.7s forwards; }

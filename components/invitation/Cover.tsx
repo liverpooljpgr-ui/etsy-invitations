@@ -59,6 +59,7 @@ export function CoverInner({ content: c, mode, hint, template }: { content: Cont
       <span className="cover-env">
         <EnvelopeArt monogram={monogram} template={template} photo={template && FLYING_PHOTO[template] ? c.photo ?? undefined : undefined} />
       </span>
+      {template === "white-roses" && c.texts.coverBottom && <span className="cover-heart" aria-hidden="true" />}
       {c.texts.coverBottom && <span className="cover-bottom">{coverBottomText(template, c.texts.coverBottom)}</span>}
       {hint && <span className="env-hint">Tap to open</span>}
     </>

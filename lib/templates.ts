@@ -30,7 +30,9 @@ export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, 
 export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp", "cupid-script": "/templates/cupid/v1/seal.webp", "lilac-script": "/templates/lilac/v1/seal.webp", "sage-forest": "/templates/forest/v1/seal.webp", "christmas-party": "/templates/christmas/v1/seal.webp", "christmas-velvet": "/templates/christmas-velvet/v1/seal.webp" };
 
 /** Designs where the couple's photo slides out of the opening envelope and lands on the second screen. */
-export const FLYING_PHOTO: Partial<Record<TemplateSlug, true>> = { "mono-script": true, "cupid-script": true, "lilac-script": true, "sage-forest": true, "christmas-party": true, "christmas-velvet": true };
+/** Designs whose envelope is made of two layers (the back sheet, then the front pocket) with the photo card sliding out between them: the back sheet is envelope-body-back. */
+export const ENVELOPE_BODY_BACK: Partial<Record<TemplateSlug, true>> = { "white-roses": true };
+export const FLYING_PHOTO: Partial<Record<TemplateSlug, true>> = { "white-roses": true, "mono-script": true, "cupid-script": true, "lilac-script": true, "sage-forest": true, "christmas-party": true, "christmas-velvet": true };
 
 /** Designs whose envelope has a separate lining picture (envelope-liner) seen in the V of the pocket: the photo slides out between it and the pocket front. */
 export const ENVELOPE_LINER: Partial<Record<TemplateSlug, true>> = { "mono-script": true, "cupid-script": true, "lilac-script": true, "sage-forest": true, "christmas-party": true, "christmas-velvet": true };
@@ -51,7 +53,7 @@ export function coverBottomText(template: TemplateSlug | undefined, value: strin
 
 /** The Christmas party design is not a wedding: its host is one name ("The Martins"), its pages are cover, dinner (date, time, place), details, RSVP and closing. */
 export const PARTY_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "christmas-party": true, "christmas-velvet": true };
-/** True for the party designs (Christmas Party, Velvet Christmas): same screens, editor and wording. */
+/** True for the party designs (Christmas Party, Purple Vintage Christmas): same screens, editor and wording. */
 export const isPartyTemplate = (slug: string | null | undefined): boolean => !!slug && !!PARTY_TEMPLATES[slug as TemplateSlug];
-/** The layout a design is painted with: Velvet Christmas uses the Christmas Party layout (its own pictures, colours and fonts on top, see christmas-velvet.css). */
+/** The layout a design is painted with: Purple Vintage Christmas uses the Christmas Party layout (its own pictures, colours and fonts on top, see christmas-velvet.css). */
 export const layoutTemplate = (slug: TemplateSlug): TemplateSlug => (slug === "christmas-velvet" ? "christmas-party" : slug);
