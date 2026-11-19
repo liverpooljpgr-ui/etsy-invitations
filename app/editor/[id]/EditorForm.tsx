@@ -1,5 +1,6 @@
 "use client";
 
+import { PW_DEFAULTS, pwStored, type PwKey } from "@/lib/website-texts";
 import { TimelineIcon, TIMELINE_ICONS } from "@/components/invitation/TimelineIcons";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
@@ -12,7 +13,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
-import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug , PARTY_TEMPLATES } from "@/lib/templates";
+import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug , PARTY_TEMPLATES, isWebsiteTemplate } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -37,13 +38,23 @@ const STEPS = [
   { n: 6, label: "RSVP" },
   { n: 7, label: "Closing" },
 ] as const;
+// a website-type design (Peach Website) has its own order, the order of the website itself: the envelope, the cards of the page, then the details page
+const WEBSITE_STEPS = [
+  { n: 1, label: "Cover" },
+  { n: 2, label: "Names & photos" },
+  { n: 3, label: "Date & place" },
+  { n: 6, label: "RSVP card" },
+  { n: 4, label: "Welcome & timeline" },
+  { n: 5, label: "Hotel & dress code" },
+  { n: 7, label: "Countdown" },
+] as const;
 const GUEST_STEP = { n: 8, label: "Guest link" } as const; // appears only after the invitation is published
 const GUEST_IDX = 7; // its index
 
 const inputCls = "ui-input";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <label className="ui-field"><span className="ui-label">{label}</span>{children}</label>;
+function Field({ label, children, pv }: { label: string; children: React.ReactNode; pv?: string }) {
+  return <label className="ui-field" data-pv={pv}><span className="ui-label">{label}</span>{children}</label>;
 }
 
 /**
@@ -92,23 +103,29 @@ function FilePick({ accept, label, onFile }: { accept: string; label: string; on
 }
 
 /** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
-function Section({ title, n, children, toggle, mobileHidden }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void }; mobileHidden?: boolean }) {
-  const jump = () => {
-    if (!n || !window.matchMedia("(min-width: 1024px)").matches) return;
+function Section({ title, n, children, toggle, mobileHidden, pv }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void }; mobileHidden?: boolean; pv?: string }) {
+  const jump = (e: React.SyntheticEvent<HTMLElement>) => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // scroll only the preview panel to the card: scrollIntoView would also move the whole page under the cursor
-    const card = document.querySelector<HTMLElement>(`aside [data-card="${n}"]`);
-    let box = card?.parentElement ?? null;
+    // the preview shows the area of the field that has the focus (a website-type design names its areas with data-pv; the other designs scroll to their card);
+    // only the preview panel scrolls: scrollIntoView would also move the whole page under the cursor
+    const key = (e.target as HTMLElement).closest("[data-pv]")?.getAttribute("data-pv") ?? pv;
+    let card: HTMLElement | null = null;
+    if (key) card = Array.from(document.querySelectorAll<HTMLElement>(`aside [data-pv="${key}"]`)).find((x) => x.getClientRects().length > 0) ?? null;
+    else if (n) card = document.querySelector<HTMLElement>(`aside [data-card="${n}"]`);
+    if (!card) return;
+    let box = card.parentElement;
     while (box && !/(auto|scroll)/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
-    if (!card || !box) return;
+    if (!box) return;
     const c = card.getBoundingClientRect(), b = box.getBoundingClientRect();
     box.scrollTo({ top: box.scrollTop + (c.top - b.top) - (b.height - c.height) / 2, behavior: reduce ? "auto" : "smooth" });
+    if (key) { card.classList.remove("pv-flash"); void card.offsetWidth; card.classList.add("pv-flash"); setTimeout(() => card?.classList.remove("pv-flash"), 1700); }
   };
   const cut = title.indexOf(" · ");
   const num = cut > 0 ? title.slice(0, cut).replace(/^(Card|Screen) /, "") : "";
   const name = cut > 0 ? title.slice(cut + 3) : title;
   return (
-    <section onFocus={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
+    <section onFocus={jump} onClickCapture={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
       <div className="ui-sec-row">
         <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
         {toggle && (
@@ -149,7 +166,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
   const [status, setStatus] = useState(initialStatus);
   const party = !!PARTY_TEMPLATES[template ?? DEFAULT_TEMPLATE]; // the Christmas party: its own wording and pages
-  const steps: readonly { n: number; label: string }[] = status === "published" ? [...STEPS, GUEST_STEP] : STEPS;
+  const website = isWebsiteTemplate(template); // a website-type design: its own order of screens and its own fields
+  const baseSteps: readonly { n: number; label: string }[] = website ? WEBSITE_STEPS : STEPS;
+  const steps: readonly { n: number; label: string }[] = status === "published" ? [...baseSteps, GUEST_STEP] : baseSteps;
   const goStep = (i: number) => setStep(Math.max(0, Math.min(steps.length - 1, i)));
   // the Christmas party has no separate venue and timeline screens (indexes 2 and 3): next / previous jump over them
   const stepNear = (s0: number, dir: 1 | -1) => { let t = s0 + dir; while (party && (t === 2 || t === 3) && t > 0 && t < GUEST_IDX) t += dir; return t; };
@@ -410,7 +429,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (r.ok) { setStatus("draft"); setStep((s) => Math.min(s, GUEST_IDX - 1)); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
     else setNotice({ ok: false, text: r.error ?? "Could not unpublish." });
   }
-  async function onPhoto(file: File | undefined) {
+  async function onPhoto(file: File | undefined, key: "photo" | "secretPhoto" = "photo") {
     if (!file) return;
     if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return setNotice({ ok: false, text: "Please choose a JPG, PNG or WebP image." });
     if (file.size > 15 * 1024 * 1024) return setNotice({ ok: false, text: "Image is too large (max 15 MB)." });
@@ -423,9 +442,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       const { error } = await supabase.storage.from("invitation-media").upload(path, blob, { contentType: "image/webp", cacheControl: "31536000" });
       if (error) throw error;
       const { data } = supabase.storage.from("invitation-media").getPublicUrl(path);
-      update((d) => ({ ...d, photo: { url: data.publicUrl, alt: d.photo?.alt ?? "" } }));
+      update((d) => ({ ...d, [key]: { url: data.publicUrl, alt: d[key]?.alt ?? "" } }));
       setPhotoWait("save");
-      setCropOpen(true); // a new photo opens the crop / zoom tool
+      if (key === "photo") setCropOpen(true); else setCropOpen2(true); // a new photo opens the crop / zoom tool
     } catch {
       setPhotoWait(null);
       setNotice({ ok: false, text: "Photo upload failed. Please try again." });
@@ -467,6 +486,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   };
   // a Google Maps link pasted into "Map link" fills in the venue name and address
   const [mapNote, setMapNote] = useState("");
+  const [cropOpen2, setCropOpen2] = useState(false); // the same for the secret photo of the mirror
   const [cropOpen, setCropOpen] = useState(false); // the crop / zoom tool is open only while a photo is being adjusted
   const [lookedUp, setLookedUp] = useState("");
   const fillVenueFromLink = async (link: string) => {
@@ -488,6 +508,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       ...d,
       registry: REGISTRIES.map((l) => ({ label: l, url: l === label ? url : d.registry.find((r) => r.label === l)?.url ?? "" })),
     }));
+  // the words of a website-type design: an empty field shows the design's own wording as a hint
+  const pw = (k: PwKey) => ({
+    value: pwStored(draft.texts, k),
+    placeholder: PW_DEFAULTS[k],
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => set("texts", { ...draft.texts, [k]: e.target.value }),
+  });
   const tp = (k: keyof Content["texts"]) => ({
     value: draft.texts[k],
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => set("texts", { ...draft.texts, [k]: e.target.value }),
@@ -568,7 +594,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
                   className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${t.n >= 3 && t.n <= 7 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
-                ><b>{party && t.n >= 5 && t.n <= 7 ? t.n - 2 : t.n}</b>{party ? ({ 2: "Dinner", 5: "Details", 6: "RSVP", 7: "Closing" } as Record<number, string>)[t.n] ?? t.label : t.label}</button>
+                ><b>{website ? i + 1 : party && t.n >= 5 && t.n <= 7 ? t.n - 2 : t.n}</b>{party ? ({ 2: "Dinner", 5: "Details", 6: "RSVP", 7: "Closing" } as Record<number, string>)[t.n] ?? t.label : t.label}</button>
               ))}
             </div>
           </div>
@@ -600,10 +626,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         <div className={`wiz-preview-wrap lg:hidden ${step === GUEST_IDX ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
           <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {GUEST_IDX} · live preview · swipe to change screen</p>
           <div key={step} className={`wiz-preview-box ${slide?.step === step ? `wiz-slide-${slide.dir}` : ""}`}>
-            {STEPS[Math.min(step, GUEST_IDX - 1)].n >= 3 && draft.hidden.includes(STEPS[Math.min(step, GUEST_IDX - 1)].n) ? (
+            {baseSteps[Math.min(step, GUEST_IDX - 1)].n >= 3 && draft.hidden.includes(baseSteps[Math.min(step, GUEST_IDX - 1)].n) ? (
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
-              <div className="wiz-preview" data-step={STEPS[Math.min(step, GUEST_IDX - 1)].n}>
+              <div className="wiz-preview" data-step={baseSteps[Math.min(step, GUEST_IDX - 1)].n}>
                 <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} template={template} />
               </div>
             )}
@@ -617,6 +643,201 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         )}
         <div className="ui-sections">
 
+          {website ? (
+          <>
+          {/* A website-type design: the sections follow the website itself, in its order: the envelope, the cards of the page, then the details page. Every word of it can be changed; an empty field shows the design's own wording. */}
+          <Section n={1} mobileHidden={step !== 0} title="1 · Cover · the envelope" pv="cover">
+            <Field label="Line above the names"><input className={inputCls} maxLength={40} {...pw("coverTop")} /></Field>
+            <div className="ui-two">
+              <Field label="Beloved 1"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
+              <Field label="Beloved 2"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
+            </div>
+            <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...pw("coverBottom")} /></Field>
+            <div className="ui-field">
+              <span className="ui-label">Background music (optional)</span>
+              <SongPicker currentUrl={draft.music?.url ?? null} template={template} onPick={(song) => set("music", { url: song.url, name: song.name })} />
+              <span className="ui-help">Or use your own song:</span>
+              <div className="ui-media">
+                <FilePick accept="audio/mpeg,.mp3" label={draft.music ? "Change song" : "Choose an MP3"} onFile={(f) => void onMusic(f)} />
+                {draft.music && <button type="button" onClick={() => set("music", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+              </div>
+              {draft.music && (
+                <>
+                  <p className="ui-help" style={{ color: "var(--ui-label)" }}>{draft.music.name || "Your song"}</p>
+                  <audio controls preload="none" src={draft.music.url} className="ui-audio" />
+                </>
+              )}
+              <p className="ui-help">Plays when your guest taps the envelope. Your own MP3 can be up to 4 MB; please use music you have the right to share.</p>
+            </div>
+          </Section>
+
+          <Section n={2} mobileHidden={step !== 1} title="2 · Page · the names card and the photos" pv="names">
+            <Field label="Names card · line above the names"><input className={inputCls} maxLength={60} {...pw("cardTop")} /></Field>
+            <Field label="Names card · line under the names"><input className={inputCls} maxLength={60} {...pw("cardNote")} /></Field>
+            <div className="ui-field" data-pv="photo">
+              <span className="ui-label">Photo · the print on the page (shown in a frame, with a white border)</span>
+              <div className="ui-media">
+                {draft.photo && cropOpen && (
+                  <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
+                    <PhotoCrop shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} frameRatio={PHOTO_FRAME[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} onChange={(patch) => update((d) => (d.photo ? { ...d, photo: { ...d.photo, ...patch } } : d))} />
+                    <button type="button" onClick={() => setCropOpen(false)} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>Save photo</button>
+                  </div>
+                )}
+                {draft.photo && !cropOpen && <PhotoArchThumb shape={PHOTO_SHAPE[template ?? DEFAULT_TEMPLATE]} frameRatio={PHOTO_FRAME[template ?? DEFAULT_TEMPLATE]} photo={draft.photo} />}
+                <FilePick accept="image/jpeg,image/png,image/webp" label={draft.photo ? "Change photo" : "Choose a photo"} onFile={(f) => void onPhoto(f)} />
+                {draft.photo && !cropOpen && <button type="button" onClick={() => setCropOpen(true)} className="ui-btn ui-btn-gray ui-btn-sm">Adjust</button>}
+                {draft.photo && <button type="button" onClick={() => { set("photo", null); setCropOpen(false); }} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+              </div>
+            </div>
+                                      <div className="ui-field" data-pv="mirror">
+                <span className="ui-label">Secret photo · for the mirror</span>
+                <p className="ui-help" style={{ marginTop: 0 }}>Your guests wipe the misted mirror on the page (with a finger or the mouse) and this photo appears. The photo above is the print on the page. If you leave this one empty, the mirror shows the main photo.</p>
+                <div className="ui-media">
+                  {draft.secretPhoto && cropOpen2 && (
+                    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
+                      <PhotoCrop shape="rect" frameRatio={0.69} photo={draft.secretPhoto} onChange={(patch) => update((d) => (d.secretPhoto ? { ...d, secretPhoto: { ...d.secretPhoto, ...patch } } : d))} />
+                      <button type="button" onClick={() => setCropOpen2(false)} className="ui-btn ui-btn-grad" style={{ width: "100%" }}>Save photo</button>
+                    </div>
+                  )}
+                  {draft.secretPhoto && !cropOpen2 && <PhotoArchThumb shape="rect" frameRatio={0.69} photo={draft.secretPhoto} />}
+                  <FilePick accept="image/jpeg,image/png,image/webp" label={draft.secretPhoto ? "Change secret photo" : "Choose the secret photo"} onFile={(f) => void onPhoto(f, "secretPhoto")} />
+                  {draft.secretPhoto && !cropOpen2 && <button type="button" onClick={() => setCropOpen2(true)} className="ui-btn ui-btn-gray ui-btn-sm">Adjust</button>}
+                  {draft.secretPhoto && <button type="button" onClick={() => { set("secretPhoto", null); setCropOpen2(false); }} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+                </div>
+              </div>
+            
+          </Section>
+
+          <Section n={3} mobileHidden={step !== 2} title="3 · Page · the date and place card (the green card)" pv="date">
+            <div className="ui-two">
+              <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
+              <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
+            </div>
+            <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={pickVenue} />
+            <MapPicker query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} center={venuePos} onPick={pickVenue} />
+            <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
+            <Field label="Full address (Enter starts a new line)">
+              <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
+            </Field>
+            <Field label="Map link (https://…)">
+              <input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })}
+                onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
+              {mapNote && <span className="ui-help">{mapNote}</span>}
+            </Field>
+            <Field label="Text of the map link"><input className={inputCls} maxLength={30} {...pw("dirText")} /></Field>
+          </Section>
+
+          <Section n={6} mobileHidden={step !== 3} toggle={screenToggle(6)} title="4 · Page · the RSVP card and the reply form" pv="rsvp">
+            <div className="ui-two">
+              <Field label="Reply by (shown on the RSVP card)" pv="rsvp"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
+              <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
+            </div>
+            <div className="ui-switch-row">
+              <span>Let guests reply on the website</span>
+              <Switch on={draft.rsvp.online} onChange={(online) => set("rsvp", { ...draft.rsvp, online })} label="Let guests reply on the website" />
+            </div>
+            {draft.rsvp.online && (
+              <Field label="Most guests in one reply">
+                <select className={inputCls} value={draft.rsvp.maxParty} onChange={(e) => set("rsvp", { ...draft.rsvp, maxParty: Number(e.target.value) })}>
+                  {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
+                </select>
+              </Field>
+            )}
+            <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
+          </Section>
+
+          <Section n={4} mobileHidden={step !== 4} toggle={screenToggle(4)} title="5 · Details page · the welcome and the timeline" pv="d-top">
+            <Field label="Word on the peach (opens the details page)" pv="peach"><input className={inputCls} maxLength={16} {...pw("detailsButton")} /></Field>
+            <Field label="Title of the details page" pv="d-top"><input className={inputCls} maxLength={30} {...pw("detailsTitle")} /></Field>
+            <Field label="Welcome text" pv="d-top">
+              <textarea className={inputCls} rows={5} maxLength={600} placeholder="Leave empty and the website writes a warm welcome from your names, the date, the time and the place." value={pwStored(draft.texts, "detailsIntro")} onChange={(e) => set("texts", { ...draft.texts, detailsIntro: e.target.value })} />
+            </Field>
+            {features.schedule ? (
+              <>
+                <Field label="Heading of the timeline" pv="d-timeline"><input className={inputCls} maxLength={30} {...pw("timelineTitle")} /></Field>
+                <div className="ui-field">
+                  <span className="ui-label">Schedule</span>
+                  {draft.timeline.map((t, i) => (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: 8, padding: "10px 0", borderTop: i ? ".5px solid var(--ui-hair)" : 0 }}>
+                      <div className="ui-row-line">
+                        <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                        <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="ui-x">✕</button>
+                      </div>
+                      <TimeInput value={t.time} onChange={(time) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time } : x)))} />
+                    </div>
+                  ))}
+                  {draft.timeline.length < 10 && <div><button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add item</button></div>}
+                </div>
+              </>
+            ) : <p className="ui-help">The timeline is not included in your plan.</p>}
+          </Section>
+
+          <Section n={5} mobileHidden={step !== 5} toggle={screenToggle(5)} title="6 · Details page · hotel, dress code, registry and your own block" pv="d-hotel">
+            <Field label="Heading of the accommodation" pv="d-hotel"><input className={inputCls} maxLength={30} {...pw("detailsAccommodation")} /></Field>
+            <Field label="Text under that heading" pv="d-hotel">
+              <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsAccommodationNote} value={pwStored(draft.texts, "detailsAccommodationNote")} onChange={(e) => set("texts", { ...draft.texts, detailsAccommodationNote: e.target.value })} />
+            </Field>
+            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
+            <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
+            <Field label="Hotel name" pv="d-hotel"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
+            <Field label="Hotel address and room code (Enter starts a new line)" pv="d-hotel">
+              <textarea className={inputCls} rows={2} maxLength={120} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
+            </Field>
+            {features.dress_code ? (
+              <div className="ui-field">
+                <Field label="Heading of the dress code" pv="d-dress"><input className={inputCls} maxLength={30} {...pw("detailsDressCode")} /></Field>
+                <Field label="Text under that heading" pv="d-dress">
+                  <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsDressNote} value={pwStored(draft.texts, "detailsDressNote")} onChange={(e) => set("texts", { ...draft.texts, detailsDressNote: e.target.value })} />
+                </Field>
+                <Field label="Dress code" pv="d-dress"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
+                <div className="ui-colors">
+                  {draft.dressCode.colors.map((c, i) => (
+                    <span key={i} className="ui-row-line" style={{ gap: 0 }}>
+                      <input type="color" className="ui-swatch" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
+                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="ui-x" style={{ width: 32, height: 32, marginLeft: -6 }}>✕</button>
+                    </span>
+                  ))}
+                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, nextDressColor(draft.dressCode.colors)] })} className="ui-btn ui-btn-soft ui-btn-sm">+ Colour</button>}
+                </div>
+              </div>
+            ) : <p className="ui-help">Dress code is not included in your plan.</p>}
+            {features.registry ? (
+              <div className="ui-field" style={{ gap: 14 }}>
+                <Field label="Heading of the registry" pv="d-registry"><input className={inputCls} maxLength={30} {...pw("detailsRegistry")} /></Field>
+                <Field label="Text under that heading" pv="d-registry">
+                  <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsRegistryNote} value={pwStored(draft.texts, "detailsRegistryNote")} onChange={(e) => set("texts", { ...draft.texts, detailsRegistryNote: e.target.value })} />
+                </Field>
+                <span className="ui-label">Registry QR codes</span>
+                {REGISTRIES.map((label) => (
+                  <Field key={label} label={`${label} registry link (https://…)`} pv="d-registry">
+                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
+                  </Field>
+                ))}
+                <p className="ui-help">Leave a link empty to hide that QR code.</p>
+              </div>
+            ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
+            <div className="ui-field" style={{ gap: 10 }}>
+              <span className="ui-label">Your own block</span>
+              <Field label="Heading (for example: Gifts, Kids, Transport)" pv="d-own"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>
+              <Field label="Text" pv="d-own">
+                <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtraText} onChange={(e) => set("texts", { ...draft.texts, detailsExtraText: e.target.value })} />
+              </Field>
+              <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
+            </div>
+          </Section>
+
+          <Section n={7} mobileHidden={step !== 6} title="7 · Countdown and the end of the page" pv="banner">
+            <Field label="Title above the countdown" pv="banner"><input className={inputCls} maxLength={40} {...pw("bannerTitle")} /></Field>
+            <Field label="Link under the countdown (back to the envelope)" pv="banner"><input className={inputCls} maxLength={60} {...pw("bannerLink")} /></Field>
+            <Field label="Back link of the details page" pv="d-top"><input className={inputCls} maxLength={20} {...pw("goBackText")} /></Field>
+            <Field label="Text of the calendar button" pv="d-cal"><input className={inputCls} maxLength={30} {...pw("calendarText")} /></Field>
+            <div className="ui-switch-row">
+              <span>Show the calendar button <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
+              <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show the calendar button" />
+            </div>
+          </Section>
+          </>
+          ) : (<>
           <Section n={1} mobileHidden={step !== 0} title={party ? "Screen 1 · Cover (envelope)" : "Card 1 · Cover (the envelope screen)"}>
             {party ? (
               <>
@@ -842,6 +1063,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show Add to calendar link" />
             </div>
           </Section>
+          </>)}
         </div>
 
         {status === "published" && (

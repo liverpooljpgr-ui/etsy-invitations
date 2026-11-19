@@ -18,7 +18,7 @@ const isClosed = (deadline: string) => !!deadline && Date.now() > Date.parse(`${
  * "Reply now" for the RSVP card: a bottom sheet with the guest's name, yes / no / maybe, how many are coming and an optional
  * note. In the editor's preview it looks the same but sends nothing. After the reply-by day it says replies are closed.
  */
-export function RsvpForm({ slug, deadline, maxParty }: { slug?: string; deadline: string; maxParty: number }) {
+export function RsvpForm({ slug, deadline, maxParty, hostSelector = ".inv", triggerClassName = "rsvp-open", trigger }: { slug?: string; deadline: string; maxParty: number; hostSelector?: string; triggerClassName?: string; trigger?: React.ReactNode }) {
   const btn = useRef<HTMLButtonElement>(null);
   const [host, setHost] = useState<Element | null>(null);
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ export function RsvpForm({ slug, deadline, maxParty }: { slug?: string; deadline
   const closed = isClosed(deadline);
 
   // the sheet is drawn inside the invitation itself (it carries the fonts and colours)
-  useEffect(() => { setHost(btn.current?.closest(".inv") ?? null); }, []);
+  useEffect(() => { setHost(btn.current?.closest(hostSelector) ?? null); }, []);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
@@ -108,7 +108,7 @@ export function RsvpForm({ slug, deadline, maxParty }: { slug?: string; deadline
 
   return (
     <>
-      <button ref={btn} type="button" className="rsvp-open" onClick={() => setOpen(true)}>{closed ? "Replies closed" : "Reply now"}</button>
+      <button ref={btn} type="button" className={triggerClassName} onClick={() => setOpen(true)}>{trigger ?? (closed ? "Replies closed" : "Reply now")}</button>
       {sheet}
     </>
   );

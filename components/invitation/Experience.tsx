@@ -2,9 +2,10 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Content } from "@/lib/content/schema";
-import type { TemplateSlug } from "@/lib/templates";
+import { isWebsiteTemplate, type TemplateSlug } from "@/lib/templates";
 import { CoverInner } from "./Cover";
 import { Invitation } from "./Invitation";
+import { WebsiteExperience } from "@/components/website/WebsiteExperience";
 
 type Phase = "closed" | "opening" | "open";
 const OPEN_MS = 2500; // keep in sync with the transitions in globals.css
@@ -16,7 +17,12 @@ const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "white-rose
  * the next card rises into place, and the remaining cards reveal as you scroll.
  * Without JS (see <noscript>) or with reduced motion, everything is shown immediately.
  */
-export function Experience({ content, mode = "public", calendarHref, rsvpSlug, template }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; template?: TemplateSlug }) {
+/** The wedding website design (Peach Website) has its own page; every other design is the animated invitation. */
+export function Experience(props: Parameters<typeof InvitationExperience>[0]) {
+  return isWebsiteTemplate(props.template) ? <WebsiteExperience content={props.content} mode={props.mode} calendarHref={props.calendarHref} rsvpSlug={props.rsvpSlug} backHref={props.backHref} fill /> : <InvitationExperience {...props} />;
+}
+
+function InvitationExperience({ content, mode = "public", calendarHref, rsvpSlug, template }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; template?: TemplateSlug; backHref?: string }) {
   const [phase, setPhase] = useState<Phase>("closed");
   const root = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement | null>(null);

@@ -1,8 +1,9 @@
 import { TimelineIcon } from "./TimelineIcons";
 import { InkHeart } from "./InkHeart";
 import { FitScreens } from "./FitScreens";
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES, layoutTemplate } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES, layoutTemplate, isWebsiteTemplate } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
+import { WebsiteExperience } from "@/components/website/WebsiteExperience";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
 import { CoverInner } from "./Cover";
@@ -113,6 +114,17 @@ export function Invitation({
   template?: TemplateSlug;
 }) {
   const template = templateSlug(templateProp); // unknown / missing design names fall back to the default design
+  // the wedding website (Peach Website) is a page of its own (in the editor it shows the page itself, in the size of the preview)
+  if (isWebsiteTemplate(template)) {
+    // the editor shows the two pages of the website one under the other: the cover with the envelope (it has fields to edit) and the page itself
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <WebsiteExperience content={c} mode={mode} startAt="envelope" coverOnly />
+        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="home" autoHeight />
+        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="details" autoHeight />
+      </div>
+    );
+  }
   const ph = mode === "preview";
   // empty name fields show a placeholder in the editor preview: the party designs have a host, not two beloveds
   const first = c.couple.first || (ph ? (PARTY_TEMPLATES[template] ? "Host name" : "Beloved") : "");
