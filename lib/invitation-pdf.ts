@@ -37,8 +37,8 @@ async function launch(): Promise<Browser> {
 /**
  * Opens the PUBLISHED invitation (the public page, exactly what guests see) in a headless phone-sized browser and takes one picture per
  * screen. Reduced motion is switched on, so the envelope opens at once and every screen is already in its final state.
- * A website-type design (`website`) gives ONE page: the page with its main objects (the cards, the photos, the mirror and the flowers), without the
- * envelope cover, the countdown banner and the details pages.
+ * A website-type design (`website`) gives ONE page: the page with its main objects (the cards, the photos, the mirror with the secret photo
+ * shown and the flowers) and the banner at the bottom (names and date, no countdown), without the envelope cover and the details pages.
  */
 export async function renderInvitationPdf(publicUrl: string, title: string, website = false): Promise<Uint8Array> {
   const browser = await launch();
@@ -56,8 +56,10 @@ export async function renderInvitationPdf(publicUrl: string, title: string, webs
       await page.click(".pw-envbtn"); // reduced motion: the envelope opens at once and the page appears
       await page.waitForSelector(".pw-home:not([hidden]) .pw-stage", { timeout: 15000 });
       await new Promise((r) => setTimeout(r, 1200));
-      // the page is as tall as its collage: the viewport grows to hold it, then the part from the top to the end of the collage is photographed
-      const bottom = await page.evaluate(() => Math.ceil((document.querySelector(".pw-stage") as HTMLElement).getBoundingClientRect().bottom));
+      // on paper nothing can be wiped: the secret photo is shown, and the banner keeps its words but not the running countdown or the link back
+      await page.addStyleTag({ content: ".pw-mist,.pw-count,.pw-banner .pw-link{display:none!important}" });
+      // the page is as tall as its collage and banner: the viewport grows to hold it, then the part from the top to the end of the banner is photographed
+      const bottom = await page.evaluate(() => Math.ceil(((document.querySelector(".pw-banner") ?? document.querySelector(".pw-stage")) as HTMLElement).getBoundingClientRect().bottom));
       await page.setViewport({ width: W, height: Math.max(H, bottom), deviceScaleFactor: SCALE, isMobile: true, hasTouch: true });
       await new Promise((r) => setTimeout(r, 800));
       const jpg = await pack(await page.screenshot({ type: "png", clip: { x: 0, y: 0, width: W, height: bottom } }));

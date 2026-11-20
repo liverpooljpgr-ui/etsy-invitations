@@ -448,5 +448,5 @@ body:has(.pw-fill) { overflow:hidden; }
 }
 
 /* details page headings: 50px and 40px at phone width (390px), scaled with the page like the rest */
-.pw-details-head h2 { font-size:min(92px, calc(var(--u) * 91px)); } .pw-card h3 { font-size:min(54px, calc(var(--u) * 72.7px)); }
+.pw-details-head h2 { font-size:min(92px, calc(var(--u) * 94.2px)); } .pw-card h3 { font-size:min(54px, calc(var(--u) * 75.4px)); }
 
