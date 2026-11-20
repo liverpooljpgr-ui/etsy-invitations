@@ -1,5 +1,5 @@
 import { templateOfSlug } from "@/lib/template-of";
-import { isPartyTemplate } from "@/lib/templates";
+import { isPartyTemplate, isWebsiteTemplate } from "@/lib/templates";
 import { createHash } from "node:crypto";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ph = c?.photo;
   const v = ph ? createHash("sha1").update(`${ph.url}|${ph.cx}|${ph.cy}|${ph.zoom}`).digest("hex").slice(0, 8) : "";
   // the Christmas party has its own preview card (no beloved names, no wedding picture)
-  const images = [{ url: isParty ? (tpl === "christmas-velvet" ? "/share-card-velvet.jpg" : "/share-card-christmas.jpg") : ph ? `/${slug}/og?v=${v}` : "/share-card.jpg", width: 1200, height: 630, alt: isParty ? "Christmas party invitation" : title }];
+  const images = [{ url: isParty ? (tpl === "christmas-velvet" ? "/share-card-velvet.jpg" : "/share-card-christmas.jpg") : ph || isWebsiteTemplate(tpl) ? `/${slug}/og?v=${v || "w"}${isWebsiteTemplate(tpl) ? "-" + createHash("sha1").update(`${first}|${second}|${c?.texts?.coverTop ?? ""}`).digest("hex").slice(0, 6) : ""}` : "/share-card.jpg", width: 1200, height: 630, alt: isParty ? "Christmas party invitation" : title }];
   return {
     title,
     description,

@@ -2,7 +2,8 @@ import sharp, { type OverlayOptions } from "sharp";
 import { parseContent } from "@/lib/content/schema";
 import { loadPublicInvitation } from "@/lib/public-invitation";
 import { templateOfSlug } from "@/lib/template-of";
-import { PHOTO_FRAME, PHOTO_SHAPE, type TemplateSlug } from "@/lib/templates";
+import { PHOTO_FRAME, PHOTO_SHAPE, isWebsiteTemplate, type TemplateSlug } from "@/lib/templates";
+import { peachShareCard } from "@/lib/peach-share-card";
 import { clampCrop, imageSize } from "@/lib/photo-crop";
 
 export const runtime = "nodejs";
@@ -43,10 +44,17 @@ export async function GET(request: Request, ctx: { params: Promise<{ slug: strin
     const r = await fetch(new URL("/share-card.jpg", request.url));
     return new Response(r.body, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=300, s-maxage=300" } });
   };
+  // a wedding website: its closed envelope and the names of the couple (not the photo, which the guests find inside)
+  const template = await templateOfSlug(slug);
+  if (isWebsiteTemplate(template)) {
+    try {
+      const jpg = await peachShareCard(new URL(request.url).origin, c);
+      return new Response(new Uint8Array(jpg), { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" } });
+    } catch { return generic(); }
+  }
   if (!c.photo) return generic();
 
   try {
-    const template = await templateOfSlug(slug);
     const res = await fetch(c.photo.url, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return generic();
     const src = sharp(Buffer.from(await res.arrayBuffer())).rotate();

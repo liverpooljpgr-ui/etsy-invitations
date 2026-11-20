@@ -358,6 +358,8 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
   introLines.push("Come as you are, bring your smiles, and let us celebrate love together. We cannot wait to be with you.");
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
   const off = (n: number) => c.hidden.includes(n);
+  // the host's own blocks of the details page (an older invitation kept its one block in the texts)
+  const ownBlocks = [...(t.detailsExtraTitle || t.detailsExtraText ? [{ title: t.detailsExtraTitle, text: t.detailsExtraText }] : []), ...c.extraBlocks].filter((b) => b.title || b.text);
   const gh = !!ghosts; // the editor preview only: empty cards of the details page are shown as faint placeholders
   const nameSize = (s: string) => Math.min(22, Math.floor(104 / Math.max(s.length, 1))); // a name takes the whole width of the card's text area: the longer the name, the smaller the letters (the card's text is also scaled to fit)
 
@@ -433,7 +435,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               </div>
             )}
 
-            {!off(5) && (
+            {(
               <button type="button" className="pw-el pw-peach" data-pv="peach" style={box("peach")} onClick={() => setView("details")} aria-label={W("detailsButton")}>
                 <img src={`${IMG}/peach.webp`} alt="" draggable={false} />
                 <span className="pw-peach-hit" aria-hidden="true" />
@@ -482,7 +484,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
                 <ul className="pw-tl">{(c.timeline.length > 0 ? c.timeline : [{ time: "00:00", label: "Your schedule appears here" }]).map((x, i) => <li key={i}><b>{x.time}</b><span>{x.label}</span></li>)}</ul>
               </article>
             )}
-            {(c.hotel.name || gh) && (
+            {!off(12) && (c.hotel.name || gh) && (
               <article className={`pw-card${c.hotel.name ? "" : " pw-ghost"}`} data-pv="d-hotel">
                 <h3>{W("detailsAccommodation")}</h3>
                 <p className="pw-lead-in">{W("detailsAccommodationNote")}</p>
@@ -490,7 +492,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
                 {(c.hotel.name ? c.hotel.address : "Hotel address").split("\n").map((l, i) => <p key={i} className="pw-hotel-addr">{l}</p>)}
               </article>
             )}
-            {(hasDress || gh) && (
+            {!off(11) && (hasDress || gh) && (
               <article className={`pw-card${hasDress ? "" : " pw-ghost"}`} data-pv="d-dress">
                 <h3>{W("detailsDressCode")}</h3>
                 <p className="pw-lead-in">{pwStored(t, "detailsDressNote") || (c.dressCode.colors.length > 0 ? W("detailsDressNote") : "To make the day as beautiful as it feels, we kindly invite you to dress in the style below, so we can all blend into one lovely picture.")}</p>
@@ -498,17 +500,23 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
                 {c.dressCode.label && <p className="pw-dress-word">{c.dressCode.label}</p>}
               </article>
             )}
-            {(registry.length > 0 || gh) && (
+            {!off(13) && (registry.length > 0 || gh) && (
               <article className={`pw-card${registry.length > 0 ? "" : " pw-ghost"}`} data-pv="d-registry">
                 <h3>{W("detailsRegistry")}</h3>
                 <p className="pw-lead-in">{W("detailsRegistryNote")}</p>
                 {registry.length > 0 ? <div className="pw-qrs">{registry.map((r, i) => <figure key={i}><Qr value={r.url} label={`${r.label} registry`} /><figcaption>{r.label}</figcaption></figure>)}</div> : <p className="pw-lead-in">Your registry QR codes appear here.</p>}
               </article>
             )}
-            {(t.detailsExtraTitle || t.detailsExtraText || gh) && (
-              <article className={`pw-card${t.detailsExtraTitle || t.detailsExtraText ? "" : " pw-ghost"}`} data-pv="d-own">
-                {(t.detailsExtraTitle || gh) && <h3>{t.detailsExtraTitle || "Your own block"}</h3>}
-                {(t.detailsExtraText || gh) && <p className="pw-pre">{t.detailsExtraText || "Your own text appears here."}</p>}
+            {!off(15) && ownBlocks.map((b, i) => (
+              <article key={i} className="pw-card" data-pv={i ? `d-own${i}` : "d-own"}>
+                {b.title && <h3>{b.title}</h3>}
+                {b.text && <p className="pw-pre">{b.text}</p>}
+              </article>
+            ))}
+            {!off(15) && gh && ownBlocks.length === 0 && (
+              <article className="pw-card pw-ghost" data-pv="d-own">
+                <h3>Your own block</h3>
+                <p className="pw-pre">Your own text appears here.</p>
               </article>
             )}
           </div>

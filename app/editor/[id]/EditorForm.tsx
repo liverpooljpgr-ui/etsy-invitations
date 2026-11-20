@@ -51,6 +51,7 @@ const WEBSITE_STEPS: readonly Step[] = [
   { n: 11, label: "Dress code", pv: "d-dress", page: "details" },
   { n: 12, label: "Accommodation", pv: "d-hotel", page: "details" },
   { n: 13, label: "Registry", pv: "d-registry", page: "details" },
+  { n: 15, label: "Own blocks", pv: "d-own", page: "details" },
   { n: 14, label: "Photos & publish", pv: "photo", page: "home" },
 ];
 const GUEST_STEP = { n: 8, label: "Guest link" } as const; // appears only after the invitation is published (its index is the number of the other steps)
@@ -169,7 +170,12 @@ const DRESS_STARTERS = ["#8a9a78", "#d8c3a5", "#c08f86", "#44505f"];
 const nextDressColor = (used: string[]) => DRESS_STARTERS.find((c) => !used.includes(c)) ?? DRESS_STARTERS[used.length % DRESS_STARTERS.length];
 
 export function EditorForm({ id, title, slug, status: initialStatus, features, initialDraft, initialVersion, initialStep, dateOrder, template }: Props) {
-  const [draft, setDraft] = useState<Content>(initialDraft);
+  const [draft, setDraft] = useState<Content>(() => {
+    // a website design keeps its own blocks in one list: the single block an older draft kept in the texts becomes the first of the list
+    const d = initialDraft;
+    if (!isWebsiteTemplate(template) || !(d.texts.detailsExtraTitle || d.texts.detailsExtraText)) return d;
+    return { ...d, texts: { ...d.texts, detailsExtraTitle: "", detailsExtraText: "" }, extraBlocks: [{ title: d.texts.detailsExtraTitle, text: d.texts.detailsExtraText }, ...d.extraBlocks].slice(0, 12) };
+  });
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
@@ -649,7 +655,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
-                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${t.n >= 3 && t.n <= 7 && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
+                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${(t.n >= 3 && t.n <= 7 && t.n !== 5 || t.n >= 11 && t.n <= 15) && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
                 ><b>{website ? i + 1 : party && t.n >= 5 && t.n <= 7 ? t.n - 2 : t.n}</b>{party ? ({ 2: "Dinner", 5: "Details", 6: "RSVP", 7: "Closing" } as Record<number, string>)[t.n] ?? t.label : t.label}</button>
               ))}
             </div>
@@ -702,7 +708,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           {website && (
             <div className={`wiz-pv-sticky lg:hidden ${step === guestIdx ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
               <div ref={pvWin} className="wiz-pv-window" data-page={pvPage} data-typing={typing || undefined} role="img" aria-label="Live preview of the page">
-                {stepDef.n >= 3 && stepDef.n <= 7 && draft.hidden.includes(stepDef.n) && pvKey === null ? (
+                {(stepDef.n >= 3 && stepDef.n <= 7 && stepDef.n !== 5 || stepDef.n >= 11 && stepDef.n <= 15) && draft.hidden.includes(stepDef.n) && pvKey === null ? (
                   <div className="wiz-off">This part is switched off.<br />Guests won’t see it.</div>
                 ) : (
                   <div key={pvPage} className="wiz-pv-page">
@@ -778,7 +784,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <p className="ui-help">Guests reply on the website until the “Reply by” date. After that day the reply form closes and guests see your e-mail address (the one in “Reply to”), so they can still reach you. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
           </Section>
 
-          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} toggleLabel="Show details page" title="5 · Welcome" pv="d-intro">
+          <Section n={5} mobileHidden={step !== 4} title="5 · Welcome" pv="d-intro">
             <Field label="Word on the peach (opens the details page)" pv="peach"><input className={inputCls} maxLength={16} {...pw("detailsButton")} /></Field>
             <Field label="Title of the details page" pv="d-top"><input className={inputCls} maxLength={30} {...pw("detailsTitle")} /></Field>
             <Field label="Welcome text" pv="d-top">
@@ -786,7 +792,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </Field>
           </Section>
 
-          <Section n={4} mobileHidden={step !== 5} toggle={screenToggle(4)} toggleLabel="Show the timeline" title="6 · Timeline" pv="d-timeline">
+          <Section n={4} mobileHidden={step !== 5} toggle={screenToggle(4)} toggleLabel="Show on the details page" title="6 · Timeline" pv="d-timeline">
             {features.schedule ? (
               <>
                 <Field label="Heading of the timeline" pv="d-timeline"><input className={inputCls} maxLength={30} {...pw("timelineTitle")} /></Field>
@@ -807,7 +813,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             ) : <p className="ui-help">The timeline is not included in your plan.</p>}
           </Section>
 
-          <Section n={11} mobileHidden={step !== 6} title="7 · Dress code" pv="d-dress">
+          <Section n={11} mobileHidden={step !== 6} toggle={screenToggle(11)} toggleLabel="Show on the details page" title="7 · Dress code" pv="d-dress">
             {features.dress_code ? (
               <div className="ui-field">
                 <Field label="Heading of the dress code" pv="d-dress"><input className={inputCls} maxLength={30} {...pw("detailsDressCode")} /></Field>
@@ -829,7 +835,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             
           </Section>
 
-          <Section n={12} mobileHidden={step !== 7} title="8 · Accommodation" pv="d-hotel">
+          <Section n={12} mobileHidden={step !== 7} toggle={screenToggle(12)} toggleLabel="Show on the details page" title="8 · Accommodation" pv="d-hotel">
             <Field label="Heading of the accommodation" pv="d-hotel"><input className={inputCls} maxLength={30} {...pw("detailsAccommodation")} /></Field>
             <Field label="Text under that heading" pv="d-hotel">
               <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsAccommodationNote} value={pwStored(draft.texts, "detailsAccommodationNote")} onChange={(e) => set("texts", { ...draft.texts, detailsAccommodationNote: e.target.value })} />
@@ -843,7 +849,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             
           </Section>
 
-          <Section n={13} mobileHidden={step !== 8} title="9 · Registry and your own block" pv="d-registry">
+          <Section n={13} mobileHidden={step !== 8} toggle={screenToggle(13)} toggleLabel="Show on the details page" title="9 · Registry" pv="d-registry">
             {features.registry ? (
               <div className="ui-field" style={{ gap: 14 }}>
                 <Field label="Heading of the registry" pv="d-registry"><input className={inputCls} maxLength={30} {...pw("detailsRegistry")} /></Field>
@@ -859,21 +865,34 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 <p className="ui-help">Leave a link empty to hide that QR code.</p>
               </div>
             ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
-            <div className="ui-field" style={{ gap: 10 }}>
-              <span className="ui-label">Your own block</span>
-              <Field label="Heading (for example: Gifts, Kids, Transport)" pv="d-own"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>
-              <Field label="Text" pv="d-own">
-                <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtraText} onChange={(e) => set("texts", { ...draft.texts, detailsExtraText: e.target.value })} />
-              </Field>
-              <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
-            </div>
+          </Section>
+
+          <Section n={15} mobileHidden={step !== 9} toggle={screenToggle(15)} toggleLabel="Show on the details page" title="10 · Own blocks" pv="d-own">
+            {draft.extraBlocks.map((b, i) => {
+              const key = i ? `d-own${i}` : "d-own";
+              const setB = (patch: Partial<{ title: string; text: string }>) => set("extraBlocks", draft.extraBlocks.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+              return (
+                <div key={i} className="ui-field" style={{ gap: 10, padding: "10px 0", borderTop: i ? ".5px solid var(--ui-hair)" : 0 }}>
+                  <div className="ui-row-line">
+                    <span className="ui-label flex-1">Block {i + 1}</span>
+                    <button type="button" aria-label={`Remove block ${i + 1}`} onClick={() => set("extraBlocks", draft.extraBlocks.filter((_, j) => j !== i))} className="ui-x">✕</button>
+                  </div>
+                  <Field label="Heading (for example: Gifts, Kids, Transport)" pv={key}><input className={inputCls} maxLength={30} value={b.title} onChange={(e) => setB({ title: e.target.value })} /></Field>
+                  <Field label="Text" pv={key}>
+                    <textarea className={inputCls} rows={4} maxLength={300} value={b.text} onChange={(e) => setB({ text: e.target.value })} />
+                  </Field>
+                </div>
+              );
+            })}
+            {draft.extraBlocks.length < 12 && <div><button type="button" onClick={() => set("extraBlocks", [...draft.extraBlocks, { title: "", text: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add a block</button></div>}
+            <p className="ui-help">Add as many blocks as you need for your guests: gifts, kids, transport… Each one shows as its own card on the details page. Enter starts a new line.</p>
             <div className="ui-switch-row">
               <span>Show the calendar button <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
               <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show the calendar button" />
             </div>
           </Section>
 
-          <Section n={14} mobileHidden={step !== 9} title="10 · Photos and publish" pv="photo">
+          <Section n={14} mobileHidden={step !== 10} title="11 · Photos and publish" pv="photo">
 <div className="ui-field" data-pv="photo">
               <span className="ui-label">Photo · the print on the page (shown in a frame, with a white border)</span>
               <div className="ui-media">

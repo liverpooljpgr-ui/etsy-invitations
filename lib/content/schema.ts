@@ -94,7 +94,7 @@ export const contentSchema = z.object({
   /** Peach Website: the photo that shows when the guest wipes the misted mirror (the mirror shows the main photo while this one is empty) */
   secretPhoto: z.object({ url: photoUrl, alt: text(200), ar: z.number().min(0.1).max(10).optional(), cx: z.number().min(0).max(1).optional(), cy: z.number().min(0).max(1).optional(), zoom: z.number().min(1).max(4).optional() }).nullable().default(null),
   /** screens (3–7) the host switched off: not shown to guests */
-  hidden: z.array(z.number().int().min(3).max(7)).max(5).default([]),
+  hidden: z.array(z.number().int().min(3).max(15)).max(12).default([]), // switched-off screens (3-7); on a website design also its details blocks (11 dress code, 12 accommodation, 13 registry, 15 own block)
   /** show the "Add to calendar" link on the closing screen */
   showCalendar: z.boolean().default(true),
   music: z.object({ url: musicUrl, name: text(80) }).nullable().default(null),
@@ -103,6 +103,8 @@ export const contentSchema = z.object({
   dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
   hotel: z.object({ name: text(100), address: text(200) }),
   parking: text(100).default(""),
+  /** blocks of the host's own on the details page of a website design (as many as they like: gifts, kids, transport…) */
+  extraBlocks: z.array(z.object({ title: text(30), text: text(300) })).max(12).default([]),
   rsvp: z.object({ deadline: optDate, email: optEmail, note: text(160), online: z.boolean().default(true), maxParty: z.number().int().min(1).max(20).default(6) }),
   theme: z.enum(THEMES),
 });
@@ -169,6 +171,7 @@ export const defaultContent: Content = {
   dressCode: { label: "", colors: [] },
   hotel: { name: "", address: "" },
   parking: "",
+  extraBlocks: [],
   rsvp: { deadline: "", email: "", note: "Please include all guests name you are taking with you", online: true, maxParty: 6 },
   theme: "sage",
 };
