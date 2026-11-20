@@ -120,8 +120,8 @@ export function Invitation({
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <WebsiteExperience content={c} mode={mode} startAt="envelope" coverOnly />
-        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="home" autoHeight />
-        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="details" autoHeight />
+        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="home" autoHeight ghosts />
+        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="details" autoHeight ghosts />
       </div>
     );
   }

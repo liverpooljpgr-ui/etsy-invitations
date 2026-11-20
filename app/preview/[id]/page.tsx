@@ -12,7 +12,7 @@ import { FrameControls } from "./FrameControls";
 export default async function PreviewPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ from?: string; frame?: string; embedded?: string }> }) {
   const { id } = await params;
   const { from, frame, embedded } = await searchParams;
-  const back = `/editor/${id}${/^[1-8]$/.test(from ?? "") ? `?step=${from}` : ""}`;
+  const back = `/editor/${id}${/^([1-9]|1[0-2])$/.test(from ?? "") ? `?step=${from}` : ""}`;
   const { supabase } = await requireUser(`/preview/${id}`);
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const { data: inv } = await supabase.from("invitations").select("plan_code").eq("id", id).maybeSingle();

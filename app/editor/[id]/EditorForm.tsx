@@ -3,8 +3,9 @@
 import { PW_DEFAULTS, pwStored, type PwKey } from "@/lib/website-texts";
 import { TimelineIcon, TIMELINE_ICONS } from "@/components/invitation/TimelineIcons";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Invitation } from "@/components/invitation/Invitation";
+import { WebsiteExperience } from "@/components/website/WebsiteExperience";
 import { applyPlan, parseContent, type Content, type PlanFeatures } from "@/lib/content/schema";
 import { DateInput, type DateOrder } from "@/components/DateInput";
 import { TimeInput } from "@/components/TimeInput";
@@ -28,8 +29,9 @@ type SaveState = "saved" | "dirty" | "saving" | "error";
 
 const REGISTRIES = ["Amazon", "Target"] as const;
 
-/** Phone layout is a wizard: one screen of the invitation per step. */
-const STEPS = [
+/** Phone layout is a wizard: one screen of the invitation per step. `pv` and `page` (website-type designs): the area of the page the preview shows for the step. */
+type Step = { n: number; label: string; pv?: string; page?: "cover" | "home" | "details" };
+const STEPS: readonly Step[] = [
   { n: 1, label: "Cover" },
   { n: 2, label: "Photo & Date" },
   { n: 3, label: "Venue" },
@@ -37,19 +39,25 @@ const STEPS = [
   { n: 5, label: "Details" },
   { n: 6, label: "RSVP" },
   { n: 7, label: "Closing" },
-] as const;
-// a website-type design (Peach Website) has its own order, the order of the website itself: the envelope, the cards of the page, then the details page
-const WEBSITE_STEPS = [
-  { n: 1, label: "Cover" },
-  { n: 2, label: "Names & photos" },
-  { n: 3, label: "Date & place" },
-  { n: 6, label: "RSVP card" },
-  { n: 4, label: "Welcome & timeline" },
-  { n: 5, label: "Hotel & dress code" },
-  { n: 7, label: "Countdown" },
-] as const;
-const GUEST_STEP = { n: 8, label: "Guest link" } as const; // appears only after the invitation is published
-const GUEST_IDX = 7; // its index
+];
+// a website-type design (Peach Website): the order of the website itself, one small step per card or block (n: 1-7 are also the numbers of the screens that can be switched off)
+const WEBSITE_STEPS: readonly Step[] = [
+  { n: 1, label: "Envelope", pv: "cover", page: "cover" },
+  { n: 2, label: "Names card", pv: "names", page: "home" },
+  { n: 3, label: "Date & place", pv: "date", page: "home" },
+  { n: 6, label: "RSVP card", pv: "rsvp", page: "home" },
+  { n: 5, label: "Welcome", pv: "d-intro", page: "details" },
+  { n: 4, label: "Timeline", pv: "d-timeline", page: "details" },
+  { n: 11, label: "Dress code", pv: "d-dress", page: "details" },
+  { n: 12, label: "Accommodation", pv: "d-hotel", page: "details" },
+  { n: 13, label: "Registry", pv: "d-registry", page: "details" },
+  { n: 14, label: "Photos & publish", pv: "photo", page: "home" },
+];
+const GUEST_STEP = { n: 8, label: "Guest link" } as const; // appears only after the invitation is published (its index is the number of the other steps)
+/** The part of the website a preview area (data-pv name) lives on. */
+const pvPageOf = (k: string): "cover" | "home" | "details" => (k === "cover" ? "cover" : k.startsWith("d-") ? "details" : "home");
+/** The field in focus tells the preview (a phone) which area to show. */
+const PvFocus = createContext<(k: string | null) => void>(() => {});
 
 const inputCls = "ui-input";
 
@@ -64,7 +72,8 @@ function Field({ label, children, pv }: { label: string; children: React.ReactNo
 function ensureVisible(el: HTMLElement) {
   const vv = window.visualViewport;
   const headerBottom = document.querySelector(".ui-top")?.getBoundingClientRect().bottom ?? 0;
-  const top = (vv?.offsetTop ?? 0) + headerBottom + 12;
+  const pvBottom = document.querySelector(".wiz-pv-sticky")?.getBoundingClientRect().bottom ?? 0; // the pinned preview of a website-type design
+  const top = (vv?.offsetTop ?? 0) + Math.max(headerBottom, pvBottom) + 12;
   const bottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 64; // iOS also floats an autofill bar above the keyboard
   const r = el.getBoundingClientRect();
   if (r.top >= top && r.bottom <= bottom) return; // already visible: leave the screen alone
@@ -103,13 +112,15 @@ function FilePick({ accept, label, onFile }: { accept: string; label: string; on
 }
 
 /** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
-function Section({ title, n, children, toggle, mobileHidden, pv }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void }; mobileHidden?: boolean; pv?: string }) {
+function Section({ title, n, children, toggle, mobileHidden, pv, toggleLabel }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void }; mobileHidden?: boolean; pv?: string; toggleLabel?: string }) {
+  const focusKey = useContext(PvFocus);
   const jump = (e: React.SyntheticEvent<HTMLElement>) => {
-    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    const key = (e.target as HTMLElement).closest("[data-pv]")?.getAttribute("data-pv") ?? pv;
+    // a phone: the small preview window follows the field (see pvKey in EditorForm)
+    if (!window.matchMedia("(min-width: 1024px)").matches) { focusKey(key ?? null); return; }
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // the preview shows the area of the field that has the focus (a website-type design names its areas with data-pv; the other designs scroll to their card);
     // only the preview panel scrolls: scrollIntoView would also move the whole page under the cursor
-    const key = (e.target as HTMLElement).closest("[data-pv]")?.getAttribute("data-pv") ?? pv;
     let card: HTMLElement | null = null;
     if (key) card = Array.from(document.querySelectorAll<HTMLElement>(`aside [data-pv="${key}"]`)).find((x) => x.getClientRects().length > 0) ?? null;
     else if (n) card = document.querySelector<HTMLElement>(`aside [data-card="${n}"]`);
@@ -130,8 +141,8 @@ function Section({ title, n, children, toggle, mobileHidden, pv }: { title: stri
         <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
         {toggle && (
           <span className="ui-sec-toggle">
-            <span>Show page to guests</span>
-            <Switch small on={toggle.on} onChange={toggle.set} label={`Show page to guests: ${name}`} />
+            <span>{toggleLabel ?? "Show page to guests"}</span>
+            <Switch small on={toggle.on} onChange={toggle.set} label={`${toggleLabel ?? "Show page to guests"}: ${name}`} />
           </span>
         )}
       </div>
@@ -162,16 +173,17 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
-  const [step, setStep] = useState(() => Math.max(0, Math.min((initialStep ?? 1) - 1, initialStatus === "published" ? GUEST_IDX : GUEST_IDX - 1))); // phone wizard
+  const website = isWebsiteTemplate(template); // a website-type design: its own order of screens and its own fields
+  const baseSteps: readonly Step[] = website ? WEBSITE_STEPS : STEPS;
+  const guestIdx = baseSteps.length; // the index of the Guest link tab (it appears after publishing)
+  const [step, setStep] = useState(() => Math.max(0, Math.min((initialStep ?? 1) - 1, initialStatus === "published" ? guestIdx : guestIdx - 1))); // phone wizard
   const [typing, setTyping] = useState(false); // phone keyboard is up: fold the header away so the field stays visible
   const [status, setStatus] = useState(initialStatus);
   const party = !!PARTY_TEMPLATES[template ?? DEFAULT_TEMPLATE]; // the Christmas party: its own wording and pages
-  const website = isWebsiteTemplate(template); // a website-type design: its own order of screens and its own fields
-  const baseSteps: readonly { n: number; label: string }[] = website ? WEBSITE_STEPS : STEPS;
   const steps: readonly { n: number; label: string }[] = status === "published" ? [...baseSteps, GUEST_STEP] : baseSteps;
   const goStep = (i: number) => setStep(Math.max(0, Math.min(steps.length - 1, i)));
   // the Christmas party has no separate venue and timeline screens (indexes 2 and 3): next / previous jump over them
-  const stepNear = (s0: number, dir: 1 | -1) => { let t = s0 + dir; while (party && (t === 2 || t === 3) && t > 0 && t < GUEST_IDX) t += dir; return t; };
+  const stepNear = (s0: number, dir: 1 | -1) => { let t = s0 + dir; while (party && (t === 2 || t === 3) && t > 0 && t < guestIdx) t += dir; return t; };
   // phones: swipe the live preview left / right to go to the next / previous screen
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const [slide, setSlide] = useState<{ dir: "next" | "prev"; step: number } | null>(null);
@@ -181,7 +193,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     if (!s0 || !t) return;
     const dx = t.clientX - s0.x, dy = t.clientY - s0.y;
     if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return; // a clear sideways flick only, not a scroll
-    const to = Math.max(0, Math.min(GUEST_IDX - 1, stepNear(step, dx < 0 ? 1 : -1)));
+    const to = Math.max(0, Math.min(guestIdx - 1, stepNear(step, dx < 0 ? 1 : -1)));
     if (to === step) return;
     setSlide({ dir: dx < 0 ? "next" : "prev", step: to });
     goStep(to);
@@ -331,6 +343,49 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   }, [saveState]);
 
   const preview = useMemo(() => applyPlan(draft, features), [draft, features]);
+
+  // a website-type design on a phone: the preview is a small window onto the page, pinned under the header. It shows the area of the step (or of the
+  // field being edited) and scrolls to it; the page it belongs to (envelope, page or details) is shown.
+  const stepDef = baseSteps[Math.min(step, guestIdx - 1)];
+  const [pvFocus, setPvFocus] = useState<{ key: string; step: number } | null>(null);
+  const pvKey = pvFocus && pvFocus.step === step ? pvFocus.key : null; // the area of the field in focus belongs to the step it was tapped in
+  const setPvKey = useCallback((k: string | null) => setPvFocus(k ? { key: k, step } : null), [step]);
+  const activeKey = pvKey ?? stepDef.pv ?? "cover";
+  const pvPage = pvPageOf(activeKey);
+  const pvWin = useRef<HTMLDivElement>(null);
+  const centerPv = useCallback((smooth: boolean, flash: boolean) => {
+    const win = pvWin.current;
+    if (!win) return;
+    const el = Array.from(win.querySelectorAll<HTMLElement>(`[data-pv="${activeKey}"]`)).find((x) => x.getClientRects().length > 0);
+    if (!el) return;
+    const w = win.getBoundingClientRect(), e = el.getBoundingClientRect();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const tall = e.height > w.height - 24; // taller than the window: show its top
+    win.scrollTo({ top: Math.max(0, win.scrollTop + (e.top - w.top) - (tall ? 12 : (w.height - e.height) / 2)), behavior: smooth && !reduce ? "smooth" : "auto" });
+    if (flash) { el.classList.remove("pv-flash"); void el.offsetWidth; el.classList.add("pv-flash"); setTimeout(() => el.classList.remove("pv-flash"), 1700); }
+  }, [activeKey]);
+  useEffect(() => {
+    if (!website) return;
+    const t1 = setTimeout(() => centerPv(false, false), 80); // the page has been laid out
+    const t2 = setTimeout(() => centerPv(true, true), 450); // fonts and sizes have settled
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [website, activeKey, pvPage, typing, centerPv]);
+  // while typing the card grows or shrinks: keep it in the middle of the window
+  useEffect(() => {
+    if (!website) return;
+    const t = setTimeout(() => centerPv(false, false), 350);
+    return () => clearTimeout(t);
+  }, [website, preview, centerPv]);
+  // the pinned preview sits right under the header: tell the stylesheet how tall the header is
+  useEffect(() => {
+    const el = document.querySelector<HTMLElement>(".ui-top");
+    if (!el) return;
+    const put = () => document.documentElement.style.setProperty("--ui-top-h", `${el.getBoundingClientRect().height}px`);
+    put();
+    const ro = new ResizeObserver(put);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const publishTone = "ui-btn-grad"; // Publish keeps the same look whatever the state
   // the full link needs the site address, which only the browser knows; the server render must not bake in a bare "/slug"
   const origin = useSyncExternalStore(() => () => {}, () => window.location.origin, () => "");
@@ -416,7 +471,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       const wasLive = status === "published";
       setStatus("published");
       setLiveSlug(r.slug);
-      setStep(GUEST_IDX); // the Guest link tab appears now and opens
+      setStep(guestIdx); // the Guest link tab appears now and opens
       setNotice({ ok: true, text: wasLive ? "Updated. Guests now see the latest version." : "Published! Your guest link is ready." });
     }
     else setNotice({ ok: false, text: r.error + ("missing" in r && r.missing ? ` Missing: ${r.missing.join(", ")}.` : "") });
@@ -426,7 +481,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     setBusy(true);
     const r = await unpublishInvitation(id);
     setBusy(false);
-    if (r.ok) { setStatus("draft"); setStep((s) => Math.min(s, GUEST_IDX - 1)); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
+    if (r.ok) { setStatus("draft"); setStep((s) => Math.min(s, guestIdx - 1)); setNotice({ ok: true, text: "Unpublished. Your draft is kept." }); }
     else setNotice({ ok: false, text: r.error ?? "Could not unpublish." });
   }
   async function onPhoto(file: File | undefined, key: "photo" | "secretPhoto" = "photo") {
@@ -563,6 +618,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   );
 
   return (
+    <PvFocus.Provider value={setPvKey}>
     <div className="ui">
       {pdfBusy && <PdfLoader />}
       <header className="ui-top">
@@ -623,18 +679,18 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       )}
 
       <div className={`ui-wrap grid gap-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px] ${typing ? "max-lg:pb-[50vh]" : ""}`}>
-        <div className={`wiz-preview-wrap lg:hidden ${step === GUEST_IDX ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
-          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {GUEST_IDX} · live preview · swipe to change screen</p>
+        {!website && <div className={`wiz-preview-wrap lg:hidden ${step === guestIdx ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
+          <p className="ui-caption" style={{ margin: 0 }}>Screen {step + 1} of {guestIdx} · live preview · swipe to change screen</p>
           <div key={step} className={`wiz-preview-box ${slide?.step === step ? `wiz-slide-${slide.dir}` : ""}`}>
-            {baseSteps[Math.min(step, GUEST_IDX - 1)].n >= 3 && draft.hidden.includes(baseSteps[Math.min(step, GUEST_IDX - 1)].n) ? (
+            {baseSteps[Math.min(step, guestIdx - 1)].n >= 3 && draft.hidden.includes(baseSteps[Math.min(step, guestIdx - 1)].n) ? (
               <div className="wiz-off">This screen is switched off.<br />Guests won’t see it.</div>
             ) : (
-              <div className="wiz-preview" data-step={baseSteps[Math.min(step, GUEST_IDX - 1)].n}>
+              <div className="wiz-preview" data-step={baseSteps[Math.min(step, guestIdx - 1)].n}>
                 <Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} template={template} />
               </div>
             )}
           </div>
-        </div>
+        </div>}
 
         {photoWait && (
           <div className="photo-lock" role="alert" aria-live="assertive">
@@ -643,10 +699,24 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         )}
         <div className="ui-sections">
 
+          {website && (
+            <div className={`wiz-pv-sticky lg:hidden ${step === guestIdx ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
+              <div ref={pvWin} className="wiz-pv-window" data-page={pvPage} data-typing={typing || undefined} role="img" aria-label="Live preview of the page">
+                {stepDef.n >= 3 && stepDef.n <= 7 && draft.hidden.includes(stepDef.n) && pvKey === null ? (
+                  <div className="wiz-off">This part is switched off.<br />Guests won’t see it.</div>
+                ) : (
+                  <div key={pvPage} className="wiz-pv-page">
+                    <WebsiteExperience content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} startAt={pvPage === "cover" ? "envelope" : pvPage} coverOnly={pvPage === "cover"} autoHeight={pvPage !== "cover"} ghosts stillVideo />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {website ? (
           <>
-          {/* A website-type design: the sections follow the website itself, in its order: the envelope, the cards of the page, then the details page. Every word of it can be changed; an empty field shows the design's own wording. */}
-          <Section n={1} mobileHidden={step !== 0} title="1 · Cover · the envelope" pv="cover">
+          {/* A website-type design: one small step per card or block of the website, in its order: the envelope, the cards of the page, then the details page, then the photos. Every word of it can be changed (an empty field shows the design's own wording); the countdown banner always stays as it is. */}
+          <Section n={1} mobileHidden={step !== 0} title="1 · Envelope" pv="cover">
             <Field label="Line above the names"><input className={inputCls} maxLength={40} {...pw("coverTop")} /></Field>
             <div className="ui-two">
               <Field label="Beloved 1"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
@@ -671,10 +741,150 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </div>
           </Section>
 
-          <Section n={2} mobileHidden={step !== 1} title="2 · Page · the names card and the photos" pv="names">
+          <Section n={2} mobileHidden={step !== 1} title="2 · Names card" pv="names">
             <Field label="Names card · line above the names"><input className={inputCls} maxLength={60} {...pw("cardTop")} /></Field>
             <Field label="Names card · line under the names"><input className={inputCls} maxLength={60} {...pw("cardNote")} /></Field>
-            <div className="ui-field" data-pv="photo">
+            
+            <p className="ui-help">The names on the card are the ones you wrote on the envelope (step 1).</p>
+          </Section>
+
+          <Section n={3} mobileHidden={step !== 2} title="3 · Date and place card" pv="date">
+            <div className="ui-two">
+              <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
+              <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
+            </div>
+            <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={pickVenue} />
+            <MapPicker query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} center={venuePos} onPick={pickVenue} />
+            <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
+            <Field label="Full address (Enter starts a new line)">
+              <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
+            </Field>
+            <Field label="Map link (https://…)">
+              <input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })}
+                onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
+              {mapNote && <span className="ui-help">{mapNote}</span>}
+            </Field>
+            <Field label="Text of the map link"><input className={inputCls} maxLength={30} {...pw("dirText")} /></Field>
+          </Section>
+
+          <Section n={6} mobileHidden={step !== 3} toggle={screenToggle(6)} toggleLabel="Show the card" title="4 · RSVP card" pv="rsvp">
+            <div className="ui-two">
+              <Field label="Reply by (shown on the RSVP card)" pv="rsvp"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
+              <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
+            </div>
+            <div className="ui-switch-row">
+              <span>Let guests reply on the website</span>
+              <Switch on={draft.rsvp.online} onChange={(online) => set("rsvp", { ...draft.rsvp, online })} label="Let guests reply on the website" />
+            </div>
+            {draft.rsvp.online && (
+              <Field label="Most guests in one reply">
+                <select className={inputCls} value={draft.rsvp.maxParty} onChange={(e) => set("rsvp", { ...draft.rsvp, maxParty: Number(e.target.value) })}>
+                  {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
+                </select>
+              </Field>
+            )}
+            <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
+          </Section>
+
+          <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} toggleLabel="Show details page" title="5 · Welcome" pv="d-intro">
+            <Field label="Word on the peach (opens the details page)" pv="peach"><input className={inputCls} maxLength={16} {...pw("detailsButton")} /></Field>
+            <Field label="Title of the details page" pv="d-top"><input className={inputCls} maxLength={30} {...pw("detailsTitle")} /></Field>
+            <Field label="Welcome text" pv="d-top">
+              <textarea className={inputCls} rows={5} maxLength={600} placeholder="Leave empty and the website writes a warm welcome from your names, the date, the time and the place." value={pwStored(draft.texts, "detailsIntro")} onChange={(e) => set("texts", { ...draft.texts, detailsIntro: e.target.value })} />
+            </Field>
+            <Field label="Back link of the details page" pv="d-top"><input className={inputCls} maxLength={20} {...pw("goBackText")} /></Field>
+          </Section>
+
+          <Section n={4} mobileHidden={step !== 5} toggle={screenToggle(4)} toggleLabel="Show the timeline" title="6 · Timeline" pv="d-timeline">
+            {features.schedule ? (
+              <>
+                <Field label="Heading of the timeline" pv="d-timeline"><input className={inputCls} maxLength={30} {...pw("timelineTitle")} /></Field>
+                <div className="ui-field">
+                  <span className="ui-label">Schedule</span>
+                  {draft.timeline.map((t, i) => (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: 8, padding: "10px 0", borderTop: i ? ".5px solid var(--ui-hair)" : 0 }}>
+                      <div className="ui-row-line">
+                        <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                        <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="ui-x">✕</button>
+                      </div>
+                      <TimeInput value={t.time} onChange={(time) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time } : x)))} />
+                    </div>
+                  ))}
+                  {draft.timeline.length < 10 && <div><button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add item</button></div>}
+                </div>
+              </>
+            ) : <p className="ui-help">The timeline is not included in your plan.</p>}
+          </Section>
+
+          <Section n={11} mobileHidden={step !== 6} title="7 · Dress code" pv="d-dress">
+            {features.dress_code ? (
+              <div className="ui-field">
+                <Field label="Heading of the dress code" pv="d-dress"><input className={inputCls} maxLength={30} {...pw("detailsDressCode")} /></Field>
+                <Field label="Text under that heading" pv="d-dress">
+                  <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsDressNote} value={pwStored(draft.texts, "detailsDressNote")} onChange={(e) => set("texts", { ...draft.texts, detailsDressNote: e.target.value })} />
+                </Field>
+                <Field label="Dress code" pv="d-dress"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
+                <div className="ui-colors">
+                  {draft.dressCode.colors.map((c, i) => (
+                    <span key={i} className="ui-row-line" style={{ gap: 0 }}>
+                      <input type="color" className="ui-swatch" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
+                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="ui-x" style={{ width: 32, height: 32, marginLeft: -6 }}>✕</button>
+                    </span>
+                  ))}
+                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, nextDressColor(draft.dressCode.colors)] })} className="ui-btn ui-btn-soft ui-btn-sm">+ Colour</button>}
+                </div>
+              </div>
+            ) : <p className="ui-help">Dress code is not included in your plan.</p>}
+            
+          </Section>
+
+          <Section n={12} mobileHidden={step !== 7} title="8 · Accommodation" pv="d-hotel">
+            <Field label="Heading of the accommodation" pv="d-hotel"><input className={inputCls} maxLength={30} {...pw("detailsAccommodation")} /></Field>
+            <Field label="Text under that heading" pv="d-hotel">
+              <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsAccommodationNote} value={pwStored(draft.texts, "detailsAccommodationNote")} onChange={(e) => set("texts", { ...draft.texts, detailsAccommodationNote: e.target.value })} />
+            </Field>
+            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
+            <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
+            <Field label="Hotel name" pv="d-hotel"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
+            <Field label="Hotel address and room code (Enter starts a new line)" pv="d-hotel">
+              <textarea className={inputCls} rows={2} maxLength={120} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
+            </Field>
+            
+          </Section>
+
+          <Section n={13} mobileHidden={step !== 8} title="9 · Registry and your own block" pv="d-registry">
+            {features.registry ? (
+              <div className="ui-field" style={{ gap: 14 }}>
+                <Field label="Heading of the registry" pv="d-registry"><input className={inputCls} maxLength={30} {...pw("detailsRegistry")} /></Field>
+                <Field label="Text under that heading" pv="d-registry">
+                  <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsRegistryNote} value={pwStored(draft.texts, "detailsRegistryNote")} onChange={(e) => set("texts", { ...draft.texts, detailsRegistryNote: e.target.value })} />
+                </Field>
+                <span className="ui-label">Registry QR codes</span>
+                {REGISTRIES.map((label) => (
+                  <Field key={label} label={`${label} registry link (https://…)`} pv="d-registry">
+                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
+                  </Field>
+                ))}
+                <p className="ui-help">Leave a link empty to hide that QR code.</p>
+              </div>
+            ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
+            <div className="ui-field" style={{ gap: 10 }}>
+              <span className="ui-label">Your own block</span>
+              <Field label="Heading (for example: Gifts, Kids, Transport)" pv="d-own"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>
+              <Field label="Text" pv="d-own">
+                <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtraText} onChange={(e) => set("texts", { ...draft.texts, detailsExtraText: e.target.value })} />
+              </Field>
+              <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
+            </div>
+            <Field label="Text of the calendar button" pv="d-cal"><input className={inputCls} maxLength={30} {...pw("calendarText")} /></Field>
+            <div className="ui-switch-row">
+              <span>Show the calendar button <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
+              <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show the calendar button" />
+            </div>
+          </Section>
+
+          <Section n={14} mobileHidden={step !== 9} title="10 · Photos and publish" pv="photo">
+<div className="ui-field" data-pv="photo">
               <span className="ui-label">Photo · the print on the page (shown in a frame, with a white border)</span>
               <div className="ui-media">
                 {draft.photo && cropOpen && (
@@ -706,135 +916,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 </div>
               </div>
             
-          </Section>
-
-          <Section n={3} mobileHidden={step !== 2} title="3 · Page · the date and place card (the green card)" pv="date">
-            <div className="ui-two">
-              <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
-              <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
-            </div>
-            <PlaceSearch label="Find the venue" placeholder="Venue name, address or a Google Maps link" onPick={pickVenue} />
-            <MapPicker query={[draft.event.venue, draft.event.address].filter(Boolean).join(", ")} center={venuePos} onPick={pickVenue} />
-            <Field label="Venue name"><input className={inputCls} maxLength={120} value={draft.event.venue} onChange={(e) => set("event", { ...draft.event, venue: e.target.value })} /></Field>
-            <Field label="Full address (Enter starts a new line)">
-              <textarea className={inputCls} rows={3} maxLength={300} value={draft.event.address} onChange={(e) => set("event", { ...draft.event, address: e.target.value })} />
-            </Field>
-            <Field label="Map link (https://…)">
-              <input className={inputCls} inputMode="url" maxLength={500} value={draft.event.mapUrl} onChange={(e) => set("event", { ...draft.event, mapUrl: e.target.value })}
-                onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
-              {mapNote && <span className="ui-help">{mapNote}</span>}
-            </Field>
-            <Field label="Text of the map link"><input className={inputCls} maxLength={30} {...pw("dirText")} /></Field>
-          </Section>
-
-          <Section n={6} mobileHidden={step !== 3} toggle={screenToggle(6)} title="4 · Page · the RSVP card and the reply form" pv="rsvp">
-            <div className="ui-two">
-              <Field label="Reply by (shown on the RSVP card)" pv="rsvp"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
-              <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
-            </div>
-            <div className="ui-switch-row">
-              <span>Let guests reply on the website</span>
-              <Switch on={draft.rsvp.online} onChange={(online) => set("rsvp", { ...draft.rsvp, online })} label="Let guests reply on the website" />
-            </div>
-            {draft.rsvp.online && (
-              <Field label="Most guests in one reply">
-                <select className={inputCls} value={draft.rsvp.maxParty} onChange={(e) => set("rsvp", { ...draft.rsvp, maxParty: Number(e.target.value) })}>
-                  {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
-                </select>
-              </Field>
-            )}
-            <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
-          </Section>
-
-          <Section n={4} mobileHidden={step !== 4} toggle={screenToggle(4)} title="5 · Details page · the welcome and the timeline" pv="d-top">
-            <Field label="Word on the peach (opens the details page)" pv="peach"><input className={inputCls} maxLength={16} {...pw("detailsButton")} /></Field>
-            <Field label="Title of the details page" pv="d-top"><input className={inputCls} maxLength={30} {...pw("detailsTitle")} /></Field>
-            <Field label="Welcome text" pv="d-top">
-              <textarea className={inputCls} rows={5} maxLength={600} placeholder="Leave empty and the website writes a warm welcome from your names, the date, the time and the place." value={pwStored(draft.texts, "detailsIntro")} onChange={(e) => set("texts", { ...draft.texts, detailsIntro: e.target.value })} />
-            </Field>
-            {features.schedule ? (
-              <>
-                <Field label="Heading of the timeline" pv="d-timeline"><input className={inputCls} maxLength={30} {...pw("timelineTitle")} /></Field>
-                <div className="ui-field">
-                  <span className="ui-label">Schedule</span>
-                  {draft.timeline.map((t, i) => (
-                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: 8, padding: "10px 0", borderTop: i ? ".5px solid var(--ui-hair)" : 0 }}>
-                      <div className="ui-row-line">
-                        <input aria-label="Activity" placeholder="Ceremony" className={`${inputCls} flex-1`} maxLength={60} value={t.label} onChange={(e) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
-                        <button type="button" aria-label="Remove" onClick={() => set("timeline", draft.timeline.filter((_, j) => j !== i))} className="ui-x">✕</button>
-                      </div>
-                      <TimeInput value={t.time} onChange={(time) => set("timeline", draft.timeline.map((x, j) => (j === i ? { ...x, time } : x)))} />
-                    </div>
-                  ))}
-                  {draft.timeline.length < 10 && <div><button type="button" onClick={() => set("timeline", [...draft.timeline, { time: "", label: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add item</button></div>}
-                </div>
-              </>
-            ) : <p className="ui-help">The timeline is not included in your plan.</p>}
-          </Section>
-
-          <Section n={5} mobileHidden={step !== 5} toggle={screenToggle(5)} title="6 · Details page · hotel, dress code, registry and your own block" pv="d-hotel">
-            <Field label="Heading of the accommodation" pv="d-hotel"><input className={inputCls} maxLength={30} {...pw("detailsAccommodation")} /></Field>
-            <Field label="Text under that heading" pv="d-hotel">
-              <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsAccommodationNote} value={pwStored(draft.texts, "detailsAccommodationNote")} onChange={(e) => set("texts", { ...draft.texts, detailsAccommodationNote: e.target.value })} />
-            </Field>
-            <PlaceSearch label="Find the hotel" placeholder="Hotel name, address or a Google Maps link" onPick={pickHotel} />
-            <MapPicker query={[draft.hotel.name, draft.hotel.address].filter(Boolean).join(", ")} center={hotelPos} onPick={pickHotel} hint="Tap the hotel on the map to choose it." />
-            <Field label="Hotel name" pv="d-hotel"><input className={inputCls} maxLength={30} value={draft.hotel.name} onChange={(e) => set("hotel", { ...draft.hotel, name: e.target.value })} /></Field>
-            <Field label="Hotel address and room code (Enter starts a new line)" pv="d-hotel">
-              <textarea className={inputCls} rows={2} maxLength={120} value={draft.hotel.address} onChange={(e) => set("hotel", { ...draft.hotel, address: e.target.value })} />
-            </Field>
-            {features.dress_code ? (
-              <div className="ui-field">
-                <Field label="Heading of the dress code" pv="d-dress"><input className={inputCls} maxLength={30} {...pw("detailsDressCode")} /></Field>
-                <Field label="Text under that heading" pv="d-dress">
-                  <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsDressNote} value={pwStored(draft.texts, "detailsDressNote")} onChange={(e) => set("texts", { ...draft.texts, detailsDressNote: e.target.value })} />
-                </Field>
-                <Field label="Dress code" pv="d-dress"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
-                <div className="ui-colors">
-                  {draft.dressCode.colors.map((c, i) => (
-                    <span key={i} className="ui-row-line" style={{ gap: 0 }}>
-                      <input type="color" className="ui-swatch" aria-label={`Dress code colour ${i + 1}`} value={c} onChange={(e) => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.map((x, j) => (j === i ? e.target.value : x)) })} />
-                      <button type="button" aria-label="Remove colour" onClick={() => set("dressCode", { ...draft.dressCode, colors: draft.dressCode.colors.filter((_, j) => j !== i) })} className="ui-x" style={{ width: 32, height: 32, marginLeft: -6 }}>✕</button>
-                    </span>
-                  ))}
-                  {draft.dressCode.colors.length < 4 && <button type="button" onClick={() => set("dressCode", { ...draft.dressCode, colors: [...draft.dressCode.colors, nextDressColor(draft.dressCode.colors)] })} className="ui-btn ui-btn-soft ui-btn-sm">+ Colour</button>}
-                </div>
-              </div>
-            ) : <p className="ui-help">Dress code is not included in your plan.</p>}
-            {features.registry ? (
-              <div className="ui-field" style={{ gap: 14 }}>
-                <Field label="Heading of the registry" pv="d-registry"><input className={inputCls} maxLength={30} {...pw("detailsRegistry")} /></Field>
-                <Field label="Text under that heading" pv="d-registry">
-                  <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsRegistryNote} value={pwStored(draft.texts, "detailsRegistryNote")} onChange={(e) => set("texts", { ...draft.texts, detailsRegistryNote: e.target.value })} />
-                </Field>
-                <span className="ui-label">Registry QR codes</span>
-                {REGISTRIES.map((label) => (
-                  <Field key={label} label={`${label} registry link (https://…)`} pv="d-registry">
-                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
-                  </Field>
-                ))}
-                <p className="ui-help">Leave a link empty to hide that QR code.</p>
-              </div>
-            ) : <p className="ui-help">Registry QR codes are not included in your plan.</p>}
-            <div className="ui-field" style={{ gap: 10 }}>
-              <span className="ui-label">Your own block</span>
-              <Field label="Heading (for example: Gifts, Kids, Transport)" pv="d-own"><input className={inputCls} maxLength={30} {...tp("detailsExtraTitle")} /></Field>
-              <Field label="Text" pv="d-own">
-                <textarea className={inputCls} rows={4} maxLength={300} value={draft.texts.detailsExtraText} onChange={(e) => set("texts", { ...draft.texts, detailsExtraText: e.target.value })} />
-              </Field>
-              <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
-            </div>
-          </Section>
-
-          <Section n={7} mobileHidden={step !== 6} title="7 · Countdown and the end of the page" pv="banner">
-            <Field label="Title above the countdown" pv="banner"><input className={inputCls} maxLength={40} {...pw("bannerTitle")} /></Field>
-            <Field label="Link under the countdown (back to the envelope)" pv="banner"><input className={inputCls} maxLength={60} {...pw("bannerLink")} /></Field>
-            <Field label="Back link of the details page" pv="d-top"><input className={inputCls} maxLength={20} {...pw("goBackText")} /></Field>
-            <Field label="Text of the calendar button" pv="d-cal"><input className={inputCls} maxLength={30} {...pw("calendarText")} /></Field>
-            <div className="ui-switch-row">
-              <span>Show the calendar button <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
-              <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show the calendar button" />
-            </div>
           </Section>
           </>
           ) : (<>
@@ -1067,10 +1148,10 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </div>
 
         {status === "published" && (
-          <div className={`ui-auth-stack lg:hidden ${step === GUEST_IDX ? "wiz-in" : "hidden"}`}>
+          <div className={`ui-auth-stack lg:hidden ${step === guestIdx ? "wiz-in" : "hidden"}`}>
             {liveCard}
             <div className="wiz-actions">
-              <a href={`/preview/${id}?from=8`} className="ui-btn ui-btn-grad-dark"><IconPlay /> Preview</a>
+              <a href={`/preview/${id}?from=${guestIdx + 1}`} className="ui-btn ui-btn-grad-dark"><IconPlay /> Preview</a>
               <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
                 <IconPublish /> Republish
               </button>
@@ -1078,14 +1159,14 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </div>
         )}
 
-        {step < GUEST_IDX - 1 && (
+        {step < guestIdx - 1 && (
           <button type="button" onClick={() => goStep(stepNear(step, 1))} className="ui-btn ui-btn-grad-dark lg:hidden" style={{ width: "100%" }}>
             Next <IconArrow />
           </button>
         )}
-        {step === GUEST_IDX - 1 && (
+        {step === guestIdx - 1 && (
           <div className="wiz-actions lg:hidden">
-            <a href={`/preview/${id}?from=7`} className="ui-btn ui-btn-grad-dark"><IconPlay /> Preview</a>
+            <a href={`/preview/${id}?from=${guestIdx}`} className="ui-btn ui-btn-grad-dark"><IconPlay /> Preview</a>
             <button onClick={onPublish} disabled={busy || !editable} className={`ui-btn ${publishTone}`}>
               <IconPublish /> Publish
             </button>
@@ -1100,5 +1181,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </aside>
       </div>
     </div>
+    </PvFocus.Provider>
   );
 }

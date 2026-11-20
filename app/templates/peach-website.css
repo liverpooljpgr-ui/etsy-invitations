@@ -177,7 +177,8 @@ body:has(.pw-fill) { overflow:hidden; }
 .pw-mirror-frame { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; user-select:none; }
 .pw-glass { position:absolute; inset:0; clip-path:polygon(22.9% 21.5%,35% 19%,50% 17.6%,65% 19%,78.2% 21.5%,78.2% 84.5%,22.9% 84.5%); background:#e8d9d2; }
 .pw-glass > img { user-select:none; pointer-events:none; }
-.pw-mist { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:crosshair; }
+.pw-mist { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:crosshair; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
+.pw-glass { touch-action:none; }   /* a finger on the mirror glass wipes it, the page stays still */
 .pw-glass-photo { position:absolute; left:22.9%; top:17.6%; width:55.3%; height:66.9%; overflow:hidden; }
 .pw-deco.pw-d-back { z-index:2; }
 
@@ -398,3 +399,47 @@ body:has(.pw-fill) { overflow:hidden; }
 /* in the editor, the area that belongs to the field you are typing in is marked for a moment */
 @keyframes pv-flash { 0%,100% { outline-color:transparent; } 15%,70% { outline-color:#e27b63; } }
 .pv-flash { outline:3px dashed transparent; outline-offset:8px; animation:pv-flash 1.6s ease; }
+
+/* in the editor an empty card of the details page is shown as a faint placeholder (guests never see it) */
+.pw-ghost { opacity:.5; outline:2px dashed rgba(122,55,40,.35); outline-offset:6px; border-radius:6px; }
+
+/* RSVP card: the date under the word RSVP is set in Cormorant Garamond, 13px, semi-bold */
+.pw-rsvp-btn em { font-family:var(--font-xm-garamond),"Cormorant Garamond",Georgia,serif; font-size:15px; font-weight:600; letter-spacing:0; }
+
+/* green date card: a darker shadow behind the cream text, so it can be read on the green paper */
+.pw-green-in .pw-fit, .pw-green-in .pw-fit p, .pw-green-in .pw-dir { text-shadow:0 1px 2px rgba(34,42,6,.82), 0 2px 7px rgba(34,42,6,.5); }
+
+/* names card: no space above the "&", and the second name sits 7px closer to it */
+.pw-amp { margin:0 0 -1.2cqw !important; }
+.pw-amp + .pw-name { margin-top:-7px !important; }
+
+/* "Add event to the calendar": 2px smaller */
+.pw-cal .pw-a { font-size:12px; }
+
+/* green date card: the white date text keeps only a soft shadow; the venue, the address and "Get directions" are plum, like the names (no shadow needed) */
+.pw-green-in .pw-fit, .pw-green-in .pw-fit p, .pw-green-in .pw-dir { text-shadow:0 1px 2px rgba(34,42,6,.4), 0 1px 5px rgba(34,42,6,.2); }
+.pw-green-in .pw-fit p.pw-at, .pw-green-in .pw-fit p.pw-venue, .pw-green-in .pw-fit p.pw-addr, .pw-green-in .pw-fit a.pw-dir { color:var(--pw-plum); text-shadow:none; }   /* (the time "At 5:40 PM" too) */
+.pw-green-in .pw-fit a.pw-dir { text-decoration-color:var(--pw-plum); }
+.pw-green-in .pw-fit a.pw-dir:hover, .pw-green-in .pw-fit a.pw-dir:focus-visible { color:var(--pw-plum); }
+
+/* the month ("September") sits 20px closer to the day; the time ("At 5:40 PM") has 15px below it */
+/* (both scale with the page: -20px and 15px when the page is 800px wide, smaller in the same proportion on a phone) */
+.pw-month { margin-top:calc(var(--u) * -17.7px) !important; }
+.pw-green-in .pw-fit p.pw-at { margin-bottom:calc(var(--u) * 13.3px); }
+
+/* names card: "Please join us for the wedding of" is 4cqw (4% of the card's width; it scales with the card) */
+.pw-lead { font-size:4cqw; }
+
+/* the page is shown only once it has measured its own size (see WebsiteExperience): it fades in at the right size instead of jumping */
+.pw { transition:opacity .3s ease; }
+.pw.pw-wait { opacity:0; }
+
+/* the wax seal tells the guest that the envelope can be opened: it swells and shrinks softly (with a faint glow) while the envelope waits; it does not change under the mouse */
+.pw-pe-seal { transition:opacity .5s ease, scale .6s ease, transform .3s ease; }
+@keyframes pw-seal-beckon {
+  0%, 100% { scale:1; filter:drop-shadow(0 5px 5px rgba(60,40,20,.35)) drop-shadow(0 0 0 rgba(255,236,190,0)); }
+  50% { scale:1.1; filter:drop-shadow(0 7px 8px rgba(60,40,20,.38)) drop-shadow(0 0 12px rgba(255,236,190,.85)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pw-envbtn:not(:disabled):not(.is-opening) .pw-penv:not(.is-open) .pw-pe-seal { animation:pw-seal-beckon 2.4s ease-in-out infinite; }
+}

@@ -962,3 +962,17 @@ aside .inv .card, aside .inv .cover, aside .inv .stage { aspect-ratio:340 / 700 
 /* no ghost of the open flap over the photo that has landed */
 @keyframes wr-env-gone { to { opacity:0; visibility:hidden; } }
 .inv[data-template="white-roses"][data-fly][data-phase="opening"] .env-flap-open { animation:wr-flap-open 1.25s linear both, wr-env-gone .15s linear 3.7s forwards; }
+
+/* ───────── phone editor of a website-type design: the preview is a small window onto the page, pinned under the header; it shows the area you are editing ───────── */
+.wiz-pv-sticky { position:sticky; top:calc(var(--ui-top-h, 96px) - 8px); z-index:25; margin:-8px -4px 0; padding:8px 4px 12px; background:linear-gradient(to bottom, var(--ui-bg) 0%, var(--ui-bg) 80%, rgba(242,242,247,0) 100%); touch-action:pan-y; }
+.wiz-pv-window { position:relative; width:100%; max-width:430px; height:min(250px, 34vh); min-height:170px; margin:0 auto; overflow:hidden; border-radius:16px; background:#fff; box-shadow:0 0 0 .5px var(--ui-hair), 0 8px 22px rgba(0,0,0,.14); pointer-events:none; transition:height .25s ease; }
+.wiz-pv-window * { pointer-events:none !important; }
+.wiz-pv-window[data-typing] { height:150px; min-height:150px; }
+.wiz-pv-page { width:100%; }
+.wiz-pv-window .pw-box { border-radius:0; box-shadow:none; }
+.wiz-pv-window .wiz-off { border-radius:0; }
+.wiz-pv-window[data-page="cover"] .wiz-pv-page { height:100%; }
+.wiz-pv-window[data-page="cover"] { height:min(340px, 42vh); }
+.wiz-pv-window[data-page="cover"] .pw-box.pw-cover-only { height:100%; min-height:0; }   /* the envelope page is shown whole, scaled to fit the window */
+/* (the window of the phone editor of a website-type design: see above) */
+.wiz-pv-window[data-page="cover"][data-typing] { height:150px; }

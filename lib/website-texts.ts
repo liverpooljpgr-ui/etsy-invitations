@@ -21,12 +21,12 @@ export const PW_DEFAULTS = {
   detailsDressNote: "To make the day as beautiful as it feels, we kindly invite you to dress in the style below and to choose outfits in the colours shown, so we can all blend into one lovely picture.",
   detailsRegistry: "Registry",
   detailsRegistryNote: "Your presence is the loveliest gift we could wish for. If you would still like to give us something to remember the day by, we have gathered our wishes in the registries below. Simply scan a code with your phone. Thank you with all our hearts.",
-  calendarText: "Add to calendar",
+  calendarText: "Add event to the calendar",
   goBackText: "Go back",
 } as const;
 export type PwKey = keyof typeof PW_DEFAULTS;
 
-const LEGACY: Partial<Record<PwKey, string>> = { coverTop: "the wedding of", coverBottom: "you are invited", detailsTitle: "Details", timelineTitle: "Timeline", detailsAccommodation: "Accommodation", detailsDressCode: "Dress code", detailsRegistry: "Registry" };
+const LEGACY: Partial<Record<PwKey, string>> = { coverTop: "the wedding of", coverBottom: "you are invited", detailsTitle: "Details", timelineTitle: "Timeline", detailsAccommodation: "Accommodation", detailsDressCode: "Dress code", detailsRegistry: "Registry", calendarText: "Add to calendar" };
 
 /** What the editor shows in the field: empty when the design's own wording is used. */
 export function pwStored(texts: Record<string, string | undefined>, key: PwKey): string {

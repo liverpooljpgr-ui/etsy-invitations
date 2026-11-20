@@ -98,11 +98,11 @@ function Fit({ className, children }: { className: string; children: React.React
 }
 
 /** The fountain video as a background: it keeps playing in a loop (it is started again whenever the page is shown and when the browser stops it, and it jumps back a moment before the end so the loop has no stop). */
-function LoopVideo({ className, src, poster, active }: { className: string; src: string; poster: string; active: boolean }) {
+function LoopVideo({ className, src, poster, active, still }: { className: string; src: string; poster: string; active: boolean; still?: boolean }) {
   const v = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const el = v.current;
-    if (!el) return;
+    if (!el || still) return;
     el.muted = true;
     const play = () => { if (active) void el.play().catch(() => {}); };
     const wrap = () => { if (el.duration && el.currentTime > el.duration - 0.12) { el.currentTime = 0.01; play(); } };
@@ -113,7 +113,10 @@ function LoopVideo({ className, src, poster, active }: { className: string; src:
     el.addEventListener("canplay", play);
     if (active) play(); else el.pause();
     return () => { el.removeEventListener("timeupdate", wrap); el.removeEventListener("ended", play); el.removeEventListener("pause", onPause); el.removeEventListener("canplay", play); };
-  }, [active, src]);
+  }, [active, src, still]);
+  // the small preview on a phone shows the first picture of the video: the video itself is 6 MB
+  // eslint-disable-next-line @next/next/no-img-element
+  if (still) return <img className={className} src={poster} alt="" aria-hidden="true" draggable={false} />;
   return <video ref={v} className={className} src={src} poster={poster} autoPlay muted loop playsInline preload="auto" aria-hidden="true" />;
 }
 
@@ -186,7 +189,16 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
     ro.observe(c);
     return () => ro.disconnect();
   }, []);
+  useEffect(() => {
+    const c = cv.current;
+    if (!c) return;
+    const hold = (e: TouchEvent) => { if (e.cancelable) e.preventDefault(); }; // the touch belongs to the glass: the page must not scroll under the finger
+    c.addEventListener("touchstart", hold, { passive: false });
+    c.addEventListener("touchmove", hold, { passive: false });
+    return () => { c.removeEventListener("touchstart", hold); c.removeEventListener("touchmove", hold); };
+  }, []);
   function wipe(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (e.type === "pointerdown") { try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* the wiping still works without it */ } } // keep wiping when the finger slips off the glass
     if (e.pointerType !== "mouse" && e.buttons === 0 && e.type !== "pointerdown") return;
     const c = cv.current, g = c?.getContext("2d");
     if (!c || !g) return;
@@ -222,20 +234,22 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
   /* eslint-enable @next/next/no-img-element */
 }
 
-export function WebsiteExperience({ content: c, mode = "public", calendarHref, rsvpSlug, fill, startAt = "envelope", frameSize, backHref, coverOnly, autoHeight }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; fill?: boolean; startAt?: View; frameSize?: { w: number; h: number }; backHref?: string; coverOnly?: boolean; autoHeight?: boolean }) {
+export function WebsiteExperience({ content: c, mode = "public", calendarHref, rsvpSlug, fill, startAt = "envelope", frameSize, backHref, coverOnly, autoHeight, ghosts, stillVideo }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; fill?: boolean; startAt?: View; frameSize?: { w: number; h: number }; backHref?: string; coverOnly?: boolean; autoHeight?: boolean; ghosts?: boolean; stillVideo?: boolean }) {
   const ph = mode === "preview";
   const root = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
   const [view, setView] = useState<View>(startAt);
   const [opening, setOpening] = useState(false);
   const [music, setMusic] = useState<"none" | "on" | "off">("none");
-  const [dim, setDim] = useState({ w: 390, h: 760 });
+  // empty until the page has been measured: nothing is shown before that (class pw-wait), so the page never appears at a guessed size and then jumps to the real one
+  const [dim, setDim] = useState<{ w: number; h: number } | null>(null);
+  const size = dim ?? { w: 390, h: 760 };
 
   // the width and height of the page decide the layout and the scale
   useLayoutEffect(() => {
     const el = root.current;
     if (!el) return;
-    const read = () => setDim({ w: el.clientWidth || 390, h: el.clientHeight || 760 });
+    const read = () => { if (el.clientWidth) setDim({ w: el.clientWidth, h: el.clientHeight || 760 }); };
     read();
     const ro = new ResizeObserver(read);
     ro.observe(el);
@@ -276,14 +290,14 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
     items.forEach((n) => { n.style.transition = ""; });
     const raf = requestAnimationFrame(() => requestAnimationFrame(() => items.forEach((n) => io.observe(n))));
     return () => { cancelAnimationFrame(raf); io.disconnect(); };
-  }, [view, dim.w]);
+  }, [view, size.w]);
 
   // always one vertical column: a phone fills its screen, a computer shows the same column in the middle (MAXW pixels wide) and the page scrolls
-  const col = Math.min(dim.w, MAXW);
-  const air = dim.w < 600 ? 0.88 : 1; // on a phone the collage leaves some space at the sides of the screen
+  const col = Math.min(size.w, MAXW);
+  const air = size.w < 600 ? 0.88 : 1; // on a phone the collage leaves some space at the sides of the screen
   const u = (col * air) / STAGE.cw;
-  const ue = Math.min(col / 390, dim.h / 660); // the envelope page has to fit the width and the height of the screen
-  const dx = (dim.w - col * air) / 2 - STAGE.x0 * u;
+  const ue = Math.min(col / 390, size.h / 660); // the envelope page has to fit the width and the height of the screen
+  const dx = (size.w - col * air) / 2 - STAGE.x0 * u;
   const box = (k: string): CSSProperties => {
     const b = POS[k];
     return { left: b.x * u, top: b.y * u, width: b.w * u, height: b.h * u, transform: b.r ? `rotate(${b.r}deg)` : undefined };
@@ -344,6 +358,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
   introLines.push("Come as you are, bring your smiles, and let us celebrate love together. We cannot wait to be with you.");
   const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
   const off = (n: number) => c.hidden.includes(n);
+  const gh = !!ghosts; // the editor preview only: empty cards of the details page are shown as faint placeholders
   const nameSize = (s: string) => Math.min(22, Math.floor(104 / Math.max(s.length, 1))); // a name takes the whole width of the card's text area: the longer the name, the smaller the letters (the card's text is also scaled to fit)
 
   /* eslint-disable @next/next/no-img-element */
@@ -351,12 +366,12 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
 
   const countdownBanner = (
     <div className="pw-banner" data-pv="banner">
-      <LoopVideo className="pw-banner-bg" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "home"} />
+      <LoopVideo className="pw-banner-bg" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "home"} still={stillVideo} />
       <div className="pw-banner-in">
-        <p className="pw-banner-script">{W("bannerTitle")}</p>
+        <p className="pw-banner-script">{PW_DEFAULTS.bannerTitle}</p>
         <Countdown to={when} />
         <p className="pw-banner-names">{[first, second].filter(Boolean).join(" & ")}{short && <span className="pw-banner-date"> · {short}</span>}</p>
-        <button type="button" className="pw-link" onClick={backToEnvelope}>{W("bannerLink")}</button>
+        <button type="button" className="pw-link" onClick={backToEnvelope}>{PW_DEFAULTS.bannerLink}</button>
       </div>
     </div>
   );
@@ -364,7 +379,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
   return (
     <div
       ref={root}
-      className={`pw ${mode === "public" || fill ? "pw-fill" : "pw-box"}${coverOnly ? " pw-cover-only" : ""}${autoHeight && view === "home" ? " pw-tall" : ""}${autoHeight && view === "details" ? " pw-tall-d" : ""} pw-v-${view} pw-narrow`}
+      className={`pw ${mode === "public" || fill ? "pw-fill" : "pw-box"}${coverOnly ? " pw-cover-only" : ""}${autoHeight && view === "home" ? " pw-tall" : ""}${autoHeight && view === "details" ? " pw-tall-d" : ""} pw-v-${view} pw-narrow${dim ? "" : " pw-wait"}`}
       data-template="peach-website"
       style={{ "--u": u, "--ue": ue, ...(autoHeight && view === "home" ? { height: STAGE.h * u + 400 } : {}), ...(frameSize ? { width: frameSize.w, height: frameSize.h, borderRadius: 0, boxShadow: "none" } : {}) } as CSSProperties}
     >
@@ -403,9 +418,9 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               <img className="pw-ornate-bg" src={`${IMG}/ornate.webp`} alt="" draggable={false} />
               <Fit className="pw-ornate-in">
                 <p className="pw-lead">{W("cardTop")}</p>
-                <p className="pw-name" style={{ fontSize: `${nameSize(first)}cqw` }}>{first}</p>
+                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first)}cqw + 3px)` }}>{first}</p>
                 <p className="pw-amp">&amp;</p>
-                <p className="pw-name" style={{ fontSize: `${nameSize(second)}cqw` }}>{second}</p>
+                <p className="pw-name" style={{ fontSize: `calc(${nameSize(second)}cqw + 3px)` }}>{second}</p>
                 <p className="pw-more">{W("cardNote")}</p>
               </Fit>
             </div>
@@ -459,45 +474,45 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
       <section className="pw-page pw-details" aria-hidden={view !== "details"} hidden={view !== "details"}>
         <div className="pw-details-scroll">
           <header className="pw-details-head" data-pv="d-top">
-            <LoopVideo className="pw-details-video" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "details"} />
+            <LoopVideo className="pw-details-video" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "details"} still={stillVideo} />
             <button type="button" className="pw-back" onClick={() => setView("home")}><span aria-hidden="true">←</span> {W("goBackText")}</button>
             <h2>{W("detailsTitle")}</h2>
           </header>
           <div className="pw-details-grid">
-            <p className="pw-intro" data-pv="d-top">{pwStored(t, "detailsIntro") || introLines.join(" ")}</p>
-            {!off(4) && c.timeline.length > 0 && (
-              <article className="pw-card" data-pv="d-timeline">
+            <p className="pw-intro" data-pv="d-intro">{pwStored(t, "detailsIntro") || introLines.join(" ")}</p>
+            {!off(4) && (c.timeline.length > 0 || gh) && (
+              <article className={`pw-card${c.timeline.length === 0 ? " pw-ghost" : ""}`} data-pv="d-timeline">
                 <h3>{W("timelineTitle")}</h3>
-                <ul className="pw-tl">{c.timeline.map((x, i) => <li key={i}><b>{x.time}</b><span>{x.label}</span></li>)}</ul>
+                <ul className="pw-tl">{(c.timeline.length > 0 ? c.timeline : [{ time: "00:00", label: "Your schedule appears here" }]).map((x, i) => <li key={i}><b>{x.time}</b><span>{x.label}</span></li>)}</ul>
               </article>
             )}
-            {c.hotel.name && (
-              <article className="pw-card" data-pv="d-hotel">
+            {(c.hotel.name || gh) && (
+              <article className={`pw-card${c.hotel.name ? "" : " pw-ghost"}`} data-pv="d-hotel">
                 <h3>{W("detailsAccommodation")}</h3>
                 <p className="pw-lead-in">{W("detailsAccommodationNote")}</p>
-                <p className="pw-strong pw-caps">{c.hotel.name}</p>
-                {c.hotel.address.split("\n").map((l, i) => <p key={i} className="pw-hotel-addr">{l}</p>)}
+                <p className="pw-strong pw-caps">{c.hotel.name || "Hotel name"}</p>
+                {(c.hotel.name ? c.hotel.address : "Hotel address").split("\n").map((l, i) => <p key={i} className="pw-hotel-addr">{l}</p>)}
               </article>
             )}
-            {hasDress && (
-              <article className="pw-card" data-pv="d-dress">
+            {(hasDress || gh) && (
+              <article className={`pw-card${hasDress ? "" : " pw-ghost"}`} data-pv="d-dress">
                 <h3>{W("detailsDressCode")}</h3>
                 <p className="pw-lead-in">{pwStored(t, "detailsDressNote") || (c.dressCode.colors.length > 0 ? W("detailsDressNote") : "To make the day as beautiful as it feels, we kindly invite you to dress in the style below, so we can all blend into one lovely picture.")}</p>
                 {c.dressCode.colors.length > 0 && <p className="pw-dots">{c.dressCode.colors.map((col, i) => <i key={i} style={{ background: col }} />)}</p>}
                 {c.dressCode.label && <p className="pw-dress-word">{c.dressCode.label}</p>}
               </article>
             )}
-            {registry.length > 0 && (
-              <article className="pw-card" data-pv="d-registry">
+            {(registry.length > 0 || gh) && (
+              <article className={`pw-card${registry.length > 0 ? "" : " pw-ghost"}`} data-pv="d-registry">
                 <h3>{W("detailsRegistry")}</h3>
                 <p className="pw-lead-in">{W("detailsRegistryNote")}</p>
-                <div className="pw-qrs">{registry.map((r, i) => <figure key={i}><Qr value={r.url} label={`${r.label} registry`} /><figcaption>{r.label}</figcaption></figure>)}</div>
+                {registry.length > 0 ? <div className="pw-qrs">{registry.map((r, i) => <figure key={i}><Qr value={r.url} label={`${r.label} registry`} /><figcaption>{r.label}</figcaption></figure>)}</div> : <p className="pw-lead-in">Your registry QR codes appear here.</p>}
               </article>
             )}
-            {(t.detailsExtraTitle || t.detailsExtraText) && (
-              <article className="pw-card" data-pv="d-own">
-                {t.detailsExtraTitle && <h3>{t.detailsExtraTitle}</h3>}
-                {t.detailsExtraText && <p className="pw-pre">{t.detailsExtraText}</p>}
+            {(t.detailsExtraTitle || t.detailsExtraText || gh) && (
+              <article className={`pw-card${t.detailsExtraTitle || t.detailsExtraText ? "" : " pw-ghost"}`} data-pv="d-own">
+                {(t.detailsExtraTitle || gh) && <h3>{t.detailsExtraTitle || "Your own block"}</h3>}
+                {(t.detailsExtraText || gh) && <p className="pw-pre">{t.detailsExtraText || "Your own text appears here."}</p>}
               </article>
             )}
           </div>

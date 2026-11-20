@@ -220,3 +220,6 @@
 /* ───── 30. links (Get directions, Add to calendar, the e-mail) in dark grey, not plum ───── */
 .inv[data-template][data-design="christmas-velvet"] .card :is(.link, .xm-dir, .closing-cal, .venue-link, .rsvp-mail) { color:#4a4a4a !important; text-decoration-color:#4a4a4a !important; border-color:#4a4a4a !important; }
 .inv[data-template][data-design="christmas-velvet"] .card-closing .xv-sep-closing { margin-top:calc(-2.2cqh - 4px * var(--k,1)) !important; margin-bottom:calc(-1.8cqh) !important; }   /* closing: separator closer to the text above and below */
+
+/* ───── 31. the chandelier comes after the dinner text (a party rule forced every element of that screen to a 3.3 s delay) ───── */
+.inv[data-template][data-design="christmas-velvet"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .xv-house { animation:xm-glass-in 1.6s cubic-bezier(.2,.8,.2,1) 8.4s both !important; }
