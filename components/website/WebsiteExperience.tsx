@@ -427,7 +427,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               </Fit>
             </div>
 
-            {!off(6) && (
+            {(
               <div className="pw-el pw-rsvp" data-pv="rsvp" style={box("rsvp")}>
                 {(
                   <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} contactEmail={c.rsvp.email} hostSelector=".pw" triggerClassName="pw-rsvp-btn" trigger={<><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "Here"}</em></>} />

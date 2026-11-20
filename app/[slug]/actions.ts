@@ -51,7 +51,7 @@ export async function submitRsvp(raw: unknown): Promise<RsvpResult> {
   const c = parseContent(row.published);
   // a website always takes replies; the other designs have a switch for it
   const website = isWebsiteTemplate(await templateOf(inv.id));
-  if ((!c.rsvp.online && !website) || c.hidden.includes(6)) return { ok: false, message: "Replies are not collected here. Please use the contact details on the invitation." };
+  if (!website && (!c.rsvp.online || c.hidden.includes(6))) return { ok: false, message: "Replies are not collected here. Please use the contact details on the invitation." };
   if (c.rsvp.deadline && Date.now() > closesAt(c.rsvp.deadline)) return { ok: false, message: "The reply date has passed, so replies are closed." };
 
   const count = v.attendance === "declined" ? 0 : Math.max(1, v.count);

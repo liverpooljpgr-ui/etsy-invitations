@@ -655,7 +655,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   key={t.n} type="button" role="tab" aria-selected={step === i}
                   ref={(el) => { if (el && step === i) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }}
                   onClick={() => goStep(i)}
-                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${(t.n >= 3 && t.n <= 7 && t.n !== 5 || t.n >= 11 && t.n <= 15) && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
+                  className={`wiz-chip ${step === i ? "wiz-chip-on" : ""} ${t.n === 8 ? "wiz-chip-guest" : ""} ${(t.n >= 3 && t.n <= 7 && t.n !== 5 && t.n !== 6 || t.n >= 11 && t.n <= 15) && draft.hidden.includes(t.n) ? "wiz-chip-off" : ""}`}
                 ><b>{website ? i + 1 : party && t.n >= 5 && t.n <= 7 ? t.n - 2 : t.n}</b>{party ? ({ 2: "Dinner", 5: "Details", 6: "RSVP", 7: "Closing" } as Record<number, string>)[t.n] ?? t.label : t.label}</button>
               ))}
             </div>
@@ -708,7 +708,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           {website && (
             <div className={`wiz-pv-sticky lg:hidden ${step === guestIdx ? "hidden" : ""}`} onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }} onTouchEnd={onSwipeEnd} onTouchCancel={() => { swipe.current = null; }}>
               <div ref={pvWin} className="wiz-pv-window" data-page={pvPage} data-typing={typing || undefined} role="img" aria-label="Live preview of the page">
-                {(stepDef.n >= 3 && stepDef.n <= 7 && stepDef.n !== 5 || stepDef.n >= 11 && stepDef.n <= 15) && draft.hidden.includes(stepDef.n) && pvKey === null ? (
+                {(stepDef.n >= 3 && stepDef.n <= 7 && stepDef.n !== 5 && stepDef.n !== 6 || stepDef.n >= 11 && stepDef.n <= 15) && draft.hidden.includes(stepDef.n) && pvKey === null ? (
                   <div className="wiz-off">This part is switched off.<br />Guests won’t see it.</div>
                 ) : (
                   <div key={pvPage} className="wiz-pv-page">
@@ -771,7 +771,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </Field>
           </Section>
 
-          <Section n={6} mobileHidden={step !== 3} toggle={screenToggle(6)} toggleLabel="Show the card" title="4 · RSVP card" pv="rsvp">
+          <Section n={6} mobileHidden={step !== 3} title="4 · RSVP card" pv="rsvp">
             <div className="ui-two">
               <Field label="Reply by (shown on the RSVP card)" pv="rsvp"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
@@ -781,7 +781,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
               </select>
             </Field>
-            <p className="ui-help">Guests reply on the website until the “Reply by” date. After that day the reply form closes and guests see your e-mail address (the one in “Reply to”), so they can still reach you. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
+            <p className="ui-help">Guests reply on the website until the “Reply by” date. After that day the reply form closes and guests see your e-mail address (the one in “Reply to”), so they can still reach you. You will see every reply in the Guest link tab once the website is published.</p>
           </Section>
 
           <Section n={5} mobileHidden={step !== 4} title="5 · Welcome" pv="d-intro">
@@ -886,10 +886,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             })}
             {draft.extraBlocks.length < 12 && <div><button type="button" onClick={() => set("extraBlocks", [...draft.extraBlocks, { title: "", text: "" }])} className="ui-btn ui-btn-soft ui-btn-sm">+ Add a block</button></div>}
             <p className="ui-help">Add as many blocks as you need for your guests: gifts, kids, transport… Each one shows as its own card on the details page. Enter starts a new line.</p>
-            <div className="ui-switch-row">
-              <span>Show the calendar button <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
-              <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show the calendar button" />
-            </div>
           </Section>
 
           <Section n={14} mobileHidden={step !== 10} title="11 · Photos and publish" pv="photo">
