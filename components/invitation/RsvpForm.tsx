@@ -18,7 +18,7 @@ const isClosed = (deadline: string) => !!deadline && Date.now() > Date.parse(`${
  * "Reply now" for the RSVP card: a bottom sheet with the guest's name, yes / no / maybe, how many are coming and an optional
  * note. In the editor's preview it looks the same but sends nothing. After the reply-by day it says replies are closed.
  */
-export function RsvpForm({ slug, deadline, maxParty, hostSelector = ".inv", triggerClassName = "rsvp-open", trigger }: { slug?: string; deadline: string; maxParty: number; hostSelector?: string; triggerClassName?: string; trigger?: React.ReactNode }) {
+export function RsvpForm({ slug, deadline, maxParty, contactEmail, hostSelector = ".inv", triggerClassName = "rsvp-open", trigger }: { slug?: string; deadline: string; maxParty: number; contactEmail?: string; hostSelector?: string; triggerClassName?: string; trigger?: React.ReactNode }) {
   const btn = useRef<HTMLButtonElement>(null);
   const [host, setHost] = useState<Element | null>(null);
   const [open, setOpen] = useState(false);
@@ -67,7 +67,7 @@ export function RsvpForm({ slug, deadline, maxParty, hostSelector = ".inv", trig
         ) : closed ? (
           <div className="rsvp-done">
             <p className="rsvp-sheet-title">Replies are closed</p>
-            <p>The reply date has passed. Please contact the couple directly.</p>
+            <p>The reply date has passed. Please contact the couple directly{contactEmail ? <>: <a className="rsvp-mail" href={`mailto:${contactEmail}`}>{contactEmail}</a></> : ""}.</p>
           </div>
         ) : (
           <form onSubmit={send}>

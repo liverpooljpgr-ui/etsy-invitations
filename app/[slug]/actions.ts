@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseContent } from "@/lib/content/schema";
+import { isWebsiteTemplate } from "@/lib/templates";
+import { templateOf } from "@/lib/template-of";
 
 export type RsvpResult = { ok: boolean; message: string };
 
@@ -47,7 +49,9 @@ export async function submitRsvp(raw: unknown): Promise<RsvpResult> {
   if (!host || !row?.published) return { ok: false, message: "This invitation is not available." };
 
   const c = parseContent(row.published);
-  if (!c.rsvp.online || c.hidden.includes(6)) return { ok: false, message: "Replies are not collected here. Please use the contact details on the invitation." };
+  // a website always takes replies; the other designs have a switch for it
+  const website = isWebsiteTemplate(await templateOf(inv.id));
+  if ((!c.rsvp.online && !website) || c.hidden.includes(6)) return { ok: false, message: "Replies are not collected here. Please use the contact details on the invitation." };
   if (c.rsvp.deadline && Date.now() > closesAt(c.rsvp.deadline)) return { ok: false, message: "The reply date has passed, so replies are closed." };
 
   const count = v.attendance === "declined" ? 0 : Math.max(1, v.count);

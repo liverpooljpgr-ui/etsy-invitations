@@ -117,7 +117,7 @@
 .pw-banner::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(40,20,35,.5),rgba(40,20,35,.55)); }
 .pw-banner-in { position:relative; z-index:2; padding:0 4%; text-shadow:0 2px 8px rgba(30,12,25,.5); }
 .pw-banner p { margin:0; }
-.pw-banner-script { font-family:var(--pw-script); font-size:calc(var(--bu) * 52px); line-height:1; color:#f6c8b8; }
+.pw-banner-script { font-family:var(--pw-script); font-size:calc(var(--bu) * 52px + 8px); line-height:1; color:#f6c8b8; }
 .pw-count { display:flex; justify-content:center; align-items:flex-start; gap:calc(var(--bu) * 22px); margin:calc(var(--bu) * 10px) 0 calc(var(--bu) * 14px); }
 .pw-count-cell { position:relative; display:flex; flex-direction:column; align-items:center; min-width:calc(var(--bu) * 100px); }
 .pw-count-cell b { font-family:var(--pw-serif); font-weight:400; font-size:calc(var(--bu) * 76px); line-height:1; font-variant-numeric:lining-nums tabular-nums; }
@@ -404,7 +404,10 @@ body:has(.pw-fill) { overflow:hidden; }
 .pw-ghost { opacity:.5; outline:2px dashed rgba(122,55,40,.35); outline-offset:6px; border-radius:6px; }
 
 /* RSVP card: the date under the word RSVP is set in Cormorant Garamond, 13px, semi-bold */
-.pw-rsvp-btn em { font-family:var(--font-xm-garamond),"Cormorant Garamond",Georgia,serif; font-size:15px; font-weight:600; letter-spacing:0; }
+.pw-rsvp-btn em { font-family:var(--font-xm-garamond),"Cormorant Garamond",Georgia,serif; font-size:max(9.5px, calc(var(--u) * 13.3px)); font-weight:600; letter-spacing:0; }   /* 15px when the page is 800px wide, smaller in proportion on a phone (never below 9.5px) */
+
+/* the title of the details page ("Wedding Details"): 90px on a computer, smaller in proportion on a phone */
+.pw-details-head h2 { font-size:clamp(30px, calc(var(--u) * 80px), 92px); }
 
 /* green date card: a darker shadow behind the cream text, so it can be read on the green paper */
 .pw-green-in .pw-fit, .pw-green-in .pw-fit p, .pw-green-in .pw-dir { text-shadow:0 1px 2px rgba(34,42,6,.82), 0 2px 7px rgba(34,42,6,.5); }
@@ -443,3 +446,7 @@ body:has(.pw-fill) { overflow:hidden; }
 @media (prefers-reduced-motion: no-preference) {
   .pw-envbtn:not(:disabled):not(.is-opening) .pw-penv:not(.is-open) .pw-pe-seal { animation:pw-seal-beckon 2.4s ease-in-out infinite; }
 }
+
+/* details page headings: 50px and 40px at phone width (390px), scaled with the page like the rest */
+.pw-details-head h2 { font-size:min(92px, calc(var(--u) * 91px)); } .pw-card h3 { font-size:min(54px, calc(var(--u) * 72.7px)); }
+

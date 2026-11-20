@@ -37,8 +37,10 @@ async function launch(): Promise<Browser> {
 /**
  * Opens the PUBLISHED invitation (the public page, exactly what guests see) in a headless phone-sized browser and takes one picture per
  * screen. Reduced motion is switched on, so the envelope opens at once and every screen is already in its final state.
+ * A website-type design (`website`) gives ONE page: the page with its main objects (the cards, the photos, the mirror and the flowers), without the
+ * envelope cover, the countdown banner and the details pages.
  */
-export async function renderInvitationPdf(publicUrl: string, title: string): Promise<Uint8Array> {
+export async function renderInvitationPdf(publicUrl: string, title: string, website = false): Promise<Uint8Array> {
   const browser = await launch();
   try {
     const page = await browser.newPage();
@@ -49,6 +51,25 @@ export async function renderInvitationPdf(publicUrl: string, title: string): Pro
     await page.addStyleTag({ content: "nextjs-portal,.music-btn,.swipe-hint{display:none!important}" });
     await page.evaluate(() => document.fonts.ready);
     await new Promise((r) => setTimeout(r, 700));
+
+    if (website) {
+      await page.click(".pw-envbtn"); // reduced motion: the envelope opens at once and the page appears
+      await page.waitForSelector(".pw-home:not([hidden]) .pw-stage", { timeout: 15000 });
+      await new Promise((r) => setTimeout(r, 1200));
+      // the page is as tall as its collage: the viewport grows to hold it, then the part from the top to the end of the collage is photographed
+      const bottom = await page.evaluate(() => Math.ceil((document.querySelector(".pw-stage") as HTMLElement).getBoundingClientRect().bottom));
+      await page.setViewport({ width: W, height: Math.max(H, bottom), deviceScaleFactor: SCALE, isMobile: true, hasTouch: true });
+      await new Promise((r) => setTimeout(r, 800));
+      const jpg = await pack(await page.screenshot({ type: "png", clip: { x: 0, y: 0, width: W, height: bottom } }));
+      const doc = await PDFDocument.create();
+      doc.setTitle(title);
+      doc.setAuthor("PIXELINVITE");
+      doc.setSubject("Keepsake copy of the website");
+      doc.setCreator("PIXELINVITE");
+      const img = await doc.embedJpg(jpg);
+      doc.addPage([W, bottom]).drawImage(img, { x: 0, y: 0, width: W, height: bottom });
+      return await doc.save();
+    }
 
     const shots: Buffer[] = [];
     // 1. the cover with the closed envelope

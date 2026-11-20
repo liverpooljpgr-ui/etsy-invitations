@@ -722,7 +722,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Beloved 1"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
               <Field label="Beloved 2"><input className={inputCls} maxLength={40} autoComplete="off" value={draft.couple.second} onChange={(e) => set("couple", { ...draft.couple, second: e.target.value })} /></Field>
             </div>
-            <Field label="Line under the envelope"><input className={inputCls} maxLength={40} {...pw("coverBottom")} /></Field>
             <div className="ui-field">
               <span className="ui-label">Background music (optional)</span>
               <SongPicker currentUrl={draft.music?.url ?? null} template={template} onPick={(song) => set("music", { url: song.url, name: song.name })} />
@@ -764,7 +763,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 onPaste={(e) => { const t = e.clipboardData.getData("text"); if (isMapsLink(t)) void fillVenueFromLink(t); }} onBlur={(e) => void fillVenueFromLink(e.target.value)} />
               {mapNote && <span className="ui-help">{mapNote}</span>}
             </Field>
-            <Field label="Text of the map link"><input className={inputCls} maxLength={30} {...pw("dirText")} /></Field>
           </Section>
 
           <Section n={6} mobileHidden={step !== 3} toggle={screenToggle(6)} toggleLabel="Show the card" title="4 · RSVP card" pv="rsvp">
@@ -772,18 +770,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <Field label="Reply by (shown on the RSVP card)" pv="rsvp"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
               <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             </div>
-            <div className="ui-switch-row">
-              <span>Let guests reply on the website</span>
-              <Switch on={draft.rsvp.online} onChange={(online) => set("rsvp", { ...draft.rsvp, online })} label="Let guests reply on the website" />
-            </div>
-            {draft.rsvp.online && (
-              <Field label="Most guests in one reply">
-                <select className={inputCls} value={draft.rsvp.maxParty} onChange={(e) => set("rsvp", { ...draft.rsvp, maxParty: Number(e.target.value) })}>
-                  {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
-                </select>
-              </Field>
-            )}
-            <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
+            <Field label="Most guests in one reply">
+              <select className={inputCls} value={draft.rsvp.maxParty} onChange={(e) => set("rsvp", { ...draft.rsvp, maxParty: Number(e.target.value) })}>
+                {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </Field>
+            <p className="ui-help">Guests reply on the website until the “Reply by” date. After that day the reply form closes and guests see your e-mail address (the one in “Reply to”), so they can still reach you. You will see every reply in the Guest link tab once the website is published. The switch at the top of this section hides the RSVP card from guests.</p>
           </Section>
 
           <Section n={5} mobileHidden={step !== 4} toggle={screenToggle(5)} toggleLabel="Show details page" title="5 · Welcome" pv="d-intro">
@@ -792,7 +784,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Welcome text" pv="d-top">
               <textarea className={inputCls} rows={5} maxLength={600} placeholder="Leave empty and the website writes a warm welcome from your names, the date, the time and the place." value={pwStored(draft.texts, "detailsIntro")} onChange={(e) => set("texts", { ...draft.texts, detailsIntro: e.target.value })} />
             </Field>
-            <Field label="Back link of the details page" pv="d-top"><input className={inputCls} maxLength={20} {...pw("goBackText")} /></Field>
           </Section>
 
           <Section n={4} mobileHidden={step !== 5} toggle={screenToggle(4)} toggleLabel="Show the timeline" title="6 · Timeline" pv="d-timeline">
@@ -876,7 +867,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               </Field>
               <p className="ui-help">Leave both empty to hide this block. Enter starts a new line.</p>
             </div>
-            <Field label="Text of the calendar button" pv="d-cal"><input className={inputCls} maxLength={30} {...pw("calendarText")} /></Field>
             <div className="ui-switch-row">
               <span>Show the calendar button <span className="ui-help" style={{ display: "block" }}>Needs the event date</span></span>
               <Switch on={draft.showCalendar} onChange={(v) => set("showCalendar", v)} label="Show the calendar button" />

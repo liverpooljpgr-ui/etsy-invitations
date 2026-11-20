@@ -410,7 +410,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
                 <p className="pw-at">{c.event.time ? `At ${c.event.time}` : ""}</p>
                 <p className="pw-venue">{c.event.venue}</p>
                 {addr[0] && <p className="pw-addr">{addr.join(", ")}</p>}
-                {c.event.mapUrl && <a className="pw-dir" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">{W("dirText")}</a>}
+                {c.event.mapUrl && <a className="pw-dir" href={c.event.mapUrl} target="_blank" rel="noopener noreferrer">{PW_DEFAULTS.dirText}</a>}
               </Fit>
             </div>
 
@@ -418,21 +418,17 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               <img className="pw-ornate-bg" src={`${IMG}/ornate.webp`} alt="" draggable={false} />
               <Fit className="pw-ornate-in">
                 <p className="pw-lead">{W("cardTop")}</p>
-                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first)}cqw + 3px)` }}>{first}</p>
+                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{first}</p>
                 <p className="pw-amp">&amp;</p>
-                <p className="pw-name" style={{ fontSize: `calc(${nameSize(second)}cqw + 3px)` }}>{second}</p>
+                <p className="pw-name" style={{ fontSize: `calc(${nameSize(second)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{second}</p>
                 <p className="pw-more">{W("cardNote")}</p>
               </Fit>
             </div>
 
             {!off(6) && (
               <div className="pw-el pw-rsvp" data-pv="rsvp" style={box("rsvp")}>
-                {c.rsvp.online ? (
-                  <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} hostSelector=".pw" triggerClassName="pw-rsvp-btn" trigger={<><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "Here"}</em></>} />
-                ) : c.rsvp.email ? (
-                  <a className="pw-rsvp-btn" href={`mailto:${c.rsvp.email}`}><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "by e-mail"}</em></a>
-                ) : (
-                  <div className="pw-rsvp-btn"><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "soon"}</em></div>
+                {(
+                  <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} contactEmail={c.rsvp.email} hostSelector=".pw" triggerClassName="pw-rsvp-btn" trigger={<><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "Here"}</em></>} />
                 )}
               </div>
             )}
@@ -475,7 +471,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
         <div className="pw-details-scroll">
           <header className="pw-details-head" data-pv="d-top">
             <LoopVideo className="pw-details-video" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "details"} still={stillVideo} />
-            <button type="button" className="pw-back" onClick={() => setView("home")}><span aria-hidden="true">←</span> {W("goBackText")}</button>
+            <button type="button" className="pw-back" onClick={() => setView("home")}><span aria-hidden="true">←</span> {PW_DEFAULTS.goBackText}</button>
             <h2>{W("detailsTitle")}</h2>
           </header>
           <div className="pw-details-grid">
@@ -516,7 +512,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               </article>
             )}
           </div>
-          {calendarHref && dm && <p className="pw-cal" data-pv="d-cal"><a className="pw-a" href={calendarHref}>{W("calendarText")}</a></p>}
+          {calendarHref && dm && <p className="pw-cal" data-pv="d-cal"><a className="pw-a" href={calendarHref}>{PW_DEFAULTS.calendarText}</a></p>}
         </div>
       </section>
 

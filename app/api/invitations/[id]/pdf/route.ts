@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { renderInvitationPdf } from "@/lib/invitation-pdf";
+import { templateOf } from "@/lib/template-of";
+import { isWebsiteTemplate } from "@/lib/templates";
 
 export const runtime = "nodejs";
 export const maxDuration = 120; // starting the browser and taking the pictures takes a few seconds
@@ -9,7 +11,7 @@ export const maxDuration = 120; // starting the browser and taking the pictures 
 const UUID = /^[0-9a-f-]{36}$/i;
 const fail = (status: number, error: string) => NextResponse.json({ error }, { status });
 
-/** A keepsake copy of the PUBLISHED invitation as a PDF (one page per screen). Only its owner (or an admin) can ask for it. */
+/** A keepsake copy of the PUBLISHED invitation as a PDF (one page per screen; a website-type design: one page with its main objects). Only its owner (or an admin) can ask for it. */
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
   if (!UUID.test(id)) return fail(400, "Invalid invitation.");
@@ -28,7 +30,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
     const { data: c } = await createAdminClient().from("invitation_content").select("published").eq("invitation_id", id).maybeSingle();
     const couple = (c?.published as { couple?: { first?: string; second?: string } } | null)?.couple;
     const names = [couple?.first, couple?.second].map((s) => (s ?? "").trim()).filter(Boolean).join(" & ");
-    const pdf = await renderInvitationPdf(`${req.nextUrl.origin}/${inv.slug}`, names ? `${names} - invitation` : "Invitation");
+    const website = isWebsiteTemplate(await templateOf(id)); // a website-type design: one page with the main objects only
+    const pdf = await renderInvitationPdf(`${req.nextUrl.origin}/${inv.slug}`, names ? `${names} - ${website ? "website" : "invitation"}` : website ? "Website" : "Invitation", website);
     return new NextResponse(Buffer.from(pdf), {
       headers: {
         "Content-Type": "application/pdf",
