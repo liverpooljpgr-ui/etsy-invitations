@@ -166,6 +166,18 @@ function PeachEnvelope({ open, still }: { open: boolean; still?: boolean }) {
 function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeholder: boolean; style: CSSProperties }) {
   const cv = useRef<HTMLCanvasElement>(null);
   const last = useRef<{ x: number; y: number } | null>(null);
+  const wiped = useRef<{ x: number; y: number }[]>([]); // everything that was wiped (as parts of the glass width): painted again whenever the glass is redrawn, so a revealed photo stays revealed
+  const [touched, setTouched] = useState(false); // until the glass is touched, soft waves pulse on it to show that it can be wiped
+  const clear = (g: CanvasRenderingContext2D, px: number, py: number, rad: number) => {
+    g.globalCompositeOperation = "destination-out";
+    const gr = g.createRadialGradient(px, py, rad * 0.25, px, py, rad);
+    gr.addColorStop(0, "rgba(0,0,0,1)");
+    gr.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = gr;
+    g.beginPath();
+    g.arc(px, py, rad, 0, Math.PI * 2);
+    g.fill();
+  };
   useEffect(() => {
     const c = cv.current;
     if (!c) return;
@@ -182,6 +194,7 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
       g.drawImage(img, 0, 0, c.width, c.height);
       g.fillStyle = "rgba(255,255,255,.32)"; // the mist
       g.fillRect(0, 0, c.width, c.height);
+      for (const p of wiped.current) clear(g, p.x * c.width, p.y * c.width, c.width * 0.085);
     };
     img.onload = paint;
     paint();
@@ -200,6 +213,7 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
   function wipe(e: React.PointerEvent<HTMLCanvasElement>) {
     if (e.type === "pointerdown") { try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* the wiping still works without it */ } } // keep wiping when the finger slips off the glass
     if (e.pointerType !== "mouse" && e.buttons === 0 && e.type !== "pointerdown") return;
+    setTouched(true);
     const c = cv.current, g = c?.getContext("2d");
     if (!c || !g) return;
     const r = c.getBoundingClientRect(), k = c.width / r.width;
@@ -209,13 +223,8 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
     const n = Math.max(1, Math.ceil(Math.hypot(x - from.x, y - from.y) / (rad * 0.4)));
     for (let i = 1; i <= n; i++) {
       const px = from.x + ((x - from.x) * i) / n, py = from.y + ((y - from.y) * i) / n;
-      const gr = g.createRadialGradient(px, py, rad * 0.25, px, py, rad);
-      gr.addColorStop(0, "rgba(0,0,0,1)");
-      gr.addColorStop(1, "rgba(0,0,0,0)");
-      g.fillStyle = gr;
-      g.beginPath();
-      g.arc(px, py, rad, 0, Math.PI * 2);
-      g.fill();
+      clear(g, px, py, rad);
+      if (wiped.current.length < 6000) wiped.current.push({ x: px / c.width, y: py / c.width });
     }
     last.current = { x, y };
   }
@@ -228,6 +237,7 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
         </div>
         <canvas ref={cv} className="pw-mist" aria-label="Wipe the mirror to see the photo" onPointerDown={wipe} onPointerMove={wipe} onPointerUp={() => { last.current = null; }} onPointerLeave={() => { last.current = null; }} onPointerCancel={() => { last.current = null; }} />
       </div>
+      {!touched && <span className="pw-ripples" aria-hidden="true"><i /><i /><i /></span>}
       <img className="pw-mirror-frame" src={`${IMG}/mirror-frame.webp`} alt="" draggable={false} />
     </div>
   );
@@ -361,7 +371,33 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
   // the host's own blocks of the details page (an older invitation kept its one block in the texts)
   const ownBlocks = [...(t.detailsExtraTitle || t.detailsExtraText ? [{ title: t.detailsExtraTitle, text: t.detailsExtraText }] : []), ...c.extraBlocks].filter((b) => b.title || b.text);
   const gh = !!ghosts; // the editor preview only: empty cards of the details page are shown as faint placeholders
-  const nameSize = (s: string) => Math.min(22, Math.floor(104 / Math.max(s.length, 1))); // a name takes the whole width of the card's text area: the longer the name, the smaller the letters (the card's text is also scaled to fit)
+  // the two names get the same size, as big as the card allows: the longer name takes the whole width of the text area (measured, so it also fits the real font)
+  const ornate = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const card = ornate.current;
+    if (!card) return;
+    const run = () => {
+      const inner = card.querySelector<HTMLElement>(".pw-fit");
+      const names = Array.from(card.querySelectorAll<HTMLElement>(".pw-name"));
+      if (!inner || !names.length || !card.clientWidth) return;
+      const z = inner.style.zoom; inner.style.zoom = "1";
+      let widest = 0;
+      for (const p of names) {
+        p.style.whiteSpace = "nowrap"; p.style.fontSize = "100px";
+        const r = document.createRange(); r.selectNodeContents(p);
+        widest = Math.max(widest, r.getBoundingClientRect().width);
+      }
+      const px = widest ? Math.min((inner.clientWidth / widest) * 100 * 0.97, card.clientWidth * 0.24) : 20;
+      for (const p of names) { p.style.whiteSpace = ""; p.style.fontSize = `${px}px`; }
+      inner.style.zoom = z;
+    };
+    run();
+    document.fonts?.ready.then(run);
+    document.fonts?.addEventListener?.("loadingdone", run);
+    const ro = new ResizeObserver(run);
+    ro.observe(card);
+    return () => { document.fonts?.removeEventListener?.("loadingdone", run); ro.disconnect(); };
+  }, [first, second, view, size.w]);
 
   /* eslint-disable @next/next/no-img-element */
   const deco = (k: string, file: string, cls = "") => <img className={`pw-el pw-deco ${cls}`} style={box(k)} src={`${IMG}/${file}.webp`} alt="" draggable={false} />;
@@ -416,13 +452,13 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               </Fit>
             </div>
 
-            <div className="pw-el pw-ornate" data-pv="names" style={box("ornate")}>
+            <div ref={ornate} className="pw-el pw-ornate" data-pv="names" style={box("ornate")}>
               <img className="pw-ornate-bg" src={`${IMG}/ornate.webp`} alt="" draggable={false} />
               <Fit className="pw-ornate-in">
                 <p className="pw-lead">{W("cardTop")}</p>
-                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first.length > second.length ? first : second)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{first}</p>
+                <p className="pw-name">{first}</p>
                 <p className="pw-amp">&amp;</p>
-                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first.length > second.length ? first : second)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{second}</p>
+                <p className="pw-name">{second}</p>
                 <p className="pw-more">{W("cardNote")}</p>
               </Fit>
             </div>
