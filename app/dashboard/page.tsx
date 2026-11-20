@@ -4,6 +4,8 @@ import { requireUser } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import { parseContent } from "@/lib/content/schema";
 import { CoverInner } from "@/components/invitation/Cover";
+import { WebsiteExperience } from "@/components/website/WebsiteExperience";
+import { isWebsiteTemplate } from "@/lib/templates";
 import { templatesOf } from "@/lib/template-of";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CreateOwnForm } from "@/app/admin/CreateForm";
@@ -64,7 +66,10 @@ export default async function Dashboard() {
               <li key={i.id}>
                 <Link href={`/editor/${i.id}`} className="dash-card">
                   <span className="dash-thumb" aria-hidden="true">
-                    {c && (
+                    {c && isWebsiteTemplate(tplOf.get(i.id)) && (
+                      <span className="dash-thumb-inner dash-thumb-web"><WebsiteExperience content={c} mode="preview" startAt="envelope" coverOnly stillVideo /></span>
+                    )}
+                    {c && !isWebsiteTemplate(tplOf.get(i.id)) && (
                       <span className="inv dash-thumb-inner" data-template={tplOf.get(i.id) === "christmas-velvet" ? "christmas-party" : tplOf.get(i.id)} data-design={tplOf.get(i.id)}>
                         <span className="card cover cover-static"><CoverInner content={c} mode="preview" template={tplOf.get(i.id)} /></span>
                       </span>

@@ -59,6 +59,8 @@ const GUEST_STEP = { n: 8, label: "Guest link" } as const; // appears only after
 const pvPageOf = (k: string): "cover" | "home" | "details" => (k === "cover" ? "cover" : k.startsWith("d-") ? "details" : "home");
 /** The field in focus tells the preview (a phone) which area to show. */
 const PvFocus = createContext<(k: string | null) => void>(() => {});
+/** The area of the preview that belongs to the field being edited keeps its red dashed border for as long as the field has the focus. */
+const PvEdit = createContext<(k: string | null) => void>(() => {});
 
 const inputCls = "ui-input";
 
@@ -115,6 +117,7 @@ function FilePick({ accept, label, onFile }: { accept: string; label: string; on
 /** Focusing any field scrolls the live preview to the matching card (desktop side-by-side only). */
 function Section({ title, n, children, toggle, mobileHidden, pv, toggleLabel }: { title: string; n?: number; children: React.ReactNode; toggle?: { on: boolean; set: (v: boolean) => void }; mobileHidden?: boolean; pv?: string; toggleLabel?: string }) {
   const focusKey = useContext(PvFocus);
+  const editKey = useContext(PvEdit);
   const jump = (e: React.SyntheticEvent<HTMLElement>) => {
     const key = (e.target as HTMLElement).closest("[data-pv]")?.getAttribute("data-pv") ?? pv;
     // a phone: the small preview window follows the field (see pvKey in EditorForm)
@@ -137,7 +140,10 @@ function Section({ title, n, children, toggle, mobileHidden, pv, toggleLabel }: 
   const num = cut > 0 ? title.slice(0, cut).replace(/^(Card|Screen) /, "") : "";
   const name = cut > 0 ? title.slice(cut + 3) : title;
   return (
-    <section onFocus={jump} onClickCapture={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
+    <section
+      onFocus={(e) => { jump(e); editKey((e.target as HTMLElement).closest("[data-pv]")?.getAttribute("data-pv") ?? pv ?? null); }}
+      onBlur={(e) => { const to = e.relatedTarget as HTMLElement | null; if (!to || !to.closest(".ui-section")) editKey(null); }}
+      onClickCapture={jump} className={`ui-section ${mobileHidden ? "max-lg:hidden" : "wiz-in"}`}>
       <div className="ui-sec-row">
         <h2 className="ui-sec-head">{num && <span className="ui-badge">{num}</span>}{name}</h2>
         {toggle && (
@@ -359,6 +365,15 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const activeKey = pvKey ?? stepDef.pv ?? "cover";
   const pvPage = pvPageOf(activeKey);
   const pvWin = useRef<HTMLDivElement>(null);
+  // the preview area of the field being edited stays marked (class pv-on) while the field has the focus
+  const [editKey, setEditKey] = useState<string | null>(null);
+  useEffect(() => {
+    const clear = () => document.querySelectorAll(".pv-on").forEach((n) => n.classList.remove("pv-on"));
+    clear();
+    if (!website || !editKey) return;
+    Array.from(document.querySelectorAll<HTMLElement>(`.wiz-pv-window [data-pv="${editKey}"], aside [data-pv="${editKey}"]`)).filter((x) => x.getClientRects().length > 0).forEach((x) => x.classList.add("pv-on"));
+    return clear;
+  }, [website, editKey, preview, pvPage, step]);
   const centerPv = useCallback((smooth: boolean, flash: boolean) => {
     const win = pvWin.current;
     if (!win) return;
@@ -624,7 +639,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   );
 
   return (
-    <PvFocus.Provider value={setPvKey}>
+    <PvFocus.Provider value={setPvKey}><PvEdit.Provider value={setEditKey}>
     <div className="ui">
       {pdfBusy && <PdfLoader />}
       <header className="ui-top">
@@ -1186,6 +1201,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
         </aside>
       </div>
     </div>
-    </PvFocus.Provider>
+    </PvEdit.Provider></PvFocus.Provider>
   );
 }

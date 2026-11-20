@@ -420,9 +420,9 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               <img className="pw-ornate-bg" src={`${IMG}/ornate.webp`} alt="" draggable={false} />
               <Fit className="pw-ornate-in">
                 <p className="pw-lead">{W("cardTop")}</p>
-                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{first}</p>
+                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first.length > second.length ? first : second)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{first}</p>
                 <p className="pw-amp">&amp;</p>
-                <p className="pw-name" style={{ fontSize: `calc(${nameSize(second)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{second}</p>
+                <p className="pw-name" style={{ fontSize: `calc(${nameSize(first.length > second.length ? first : second)}cqw + clamp(-2px, calc(var(--u) * 11px - 8px), 3px))` }}>{second}</p>
                 <p className="pw-more">{W("cardNote")}</p>
               </Fit>
             </div>

@@ -399,6 +399,8 @@ body:has(.pw-fill) { overflow:hidden; }
 /* in the editor, the area that belongs to the field you are typing in is marked for a moment */
 @keyframes pv-flash { 0%,100% { outline-color:transparent; } 15%,70% { outline-color:#e27b63; } }
 .pv-flash { outline:3px dashed transparent; outline-offset:8px; animation:pv-flash 1.6s ease; }
+/* and it stays marked for as long as the field has the focus */
+.pv-on, .pv-on.pv-flash { outline:3px dashed #e27b63 !important; outline-offset:8px; animation:none; }
 
 /* in the editor an empty card of the details page is shown as a faint placeholder (guests never see it) */
 .pw-ghost { opacity:.5; outline:2px dashed rgba(122,55,40,.35); outline-offset:6px; border-radius:6px; }
@@ -450,3 +452,7 @@ body:has(.pw-fill) { overflow:hidden; }
 /* details page headings: 50px and 40px at phone width (390px), scaled with the page like the rest */
 .pw-details-head h2 { font-size:min(92px, calc(var(--u) * 94.2px)); } .pw-card h3 { font-size:min(54px, calc(var(--u) * 75.4px)); }
 
+
+/* colours: all the text on the green card is purple, all the text on the RSVP card is white */
+.pw-green-in .pw-fit, .pw-green-in .pw-fit p, .pw-green-in .pw-fit p.pw-month, .pw-green-in .pw-fit a.pw-dir { color:var(--pw-plum); text-shadow:none; }
+.pw-rsvp-btn span, .pw-rsvp-btn em, .pw-rsvp-btn strong { color:#fff; text-shadow:0 1px 3px rgba(120,45,30,.28); }
