@@ -1,5 +1,5 @@
 /** The invitation designs we sell (and the Peach Website, a one-page wedding website). The slug is what the `templates` table stores; the page paints itself from it. */
-export const TEMPLATES = ["sage-story", "white-roses", "mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party", "christmas-velvet", "peach-website"] as const;
+export const TEMPLATES = ["sage-story", "white-roses", "mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party", "christmas-velvet", "peach-website", "burgundy-olive-website"] as const;
 export type TemplateSlug = (typeof TEMPLATES)[number];
 export const DEFAULT_TEMPLATE: TemplateSlug = "sage-story";
 
@@ -17,15 +17,16 @@ export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "s
   "sage-forest": { base: "/templates/forest/v1", ext: "webp" },
   "christmas-party": { base: "/templates/christmas/v1", ext: "webp" }, //
   "christmas-velvet": { base: "/templates/christmas-velvet/v1", ext: "webp" },
-  "peach-website": { base: "/templates/forest/v1", ext: "webp" }, // the wedding website uses the Sage Garden pictures
+  "peach-website": { base: "/templates/forest/v1", ext: "webp" },
+  "burgundy-olive-website": { base: "/templates/forest/v1", ext: "webp" }, // the wedding website uses the Sage Garden pictures
 };
 
 /** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval. */
 export type PhotoShape = "arch" | "oval" | "rect";
-export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-script": "rect", "cupid-script": "rect", "lilac-script": "rect", "sage-forest": "arch", "christmas-party": "rect", "christmas-velvet": "rect", "peach-website": "rect" };
+export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-script": "rect", "cupid-script": "rect", "lilac-script": "rect", "sage-forest": "arch", "christmas-party": "rect", "christmas-velvet": "rect", "peach-website": "rect", "burgundy-olive-website": "rect" };
 
 /** Width / height of the photo frame (the crop tool and the invitation use the same one). 3 / 4 unless a design says otherwise. */
-export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-script": 12 / 13, "cupid-script": 12 / 13, "lilac-script": 12 / 13, "sage-forest": 13 / 16, "christmas-party": 3 / 4, "christmas-velvet": 3 / 4, "peach-website": 3 / 4 };
+export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-script": 12 / 13, "cupid-script": 12 / 13, "lilac-script": 12 / 13, "sage-forest": 13 / 16, "christmas-party": 3 / 4, "christmas-velvet": 3 / 4, "peach-website": 3 / 4, "burgundy-olive-website": 0.81 };
 
 /** A wax seal picture lying on the closed envelope (it dissolves when the envelope is tapped). Only the designs listed here have one. */
 export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp", "cupid-script": "/templates/cupid/v1/seal.webp", "lilac-script": "/templates/lilac/v1/seal.webp", "sage-forest": "/templates/forest/v1/seal.webp", "christmas-party": "/templates/christmas/v1/seal.webp", "christmas-velvet": "/templates/christmas-velvet/v1/seal.webp" };
@@ -54,7 +55,7 @@ export function coverBottomText(template: TemplateSlug | undefined, value: strin
 
 /** The Christmas party design is not a wedding: its host is one name ("The Martins"), its pages are cover, dinner (date, time, place), details, RSVP and closing. */
 /** Website-type designs: not an invitation but a one-page wedding website (the envelope, a page of cards, a details page). They have their own editor, with the sections in the order of the website, and their own page (components/website). */
-export const WEBSITE_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "peach-website": true };
+export const WEBSITE_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "peach-website": true, "burgundy-olive-website": true };
 export const isWebsiteTemplate = (t: TemplateSlug | string | null | undefined): boolean => !!t && !!(WEBSITE_TEMPLATES as Record<string, true | undefined>)[t];
 
 export const PARTY_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "christmas-party": true, "christmas-velvet": true };

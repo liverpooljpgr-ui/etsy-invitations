@@ -19,7 +19,7 @@ const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "white-rose
  */
 /** The wedding website design (Peach Website) has its own page; every other design is the animated invitation. */
 export function Experience(props: Parameters<typeof InvitationExperience>[0]) {
-  return isWebsiteTemplate(props.template) ? <WebsiteExperience content={props.content} mode={props.mode} calendarHref={props.calendarHref} rsvpSlug={props.rsvpSlug} backHref={props.backHref} fill /> : <InvitationExperience {...props} />;
+  return isWebsiteTemplate(props.template) ? <WebsiteExperience slug={props.template} content={props.content} mode={props.mode} calendarHref={props.calendarHref} rsvpSlug={props.rsvpSlug} backHref={props.backHref} fill /> : <InvitationExperience {...props} />;
 }
 
 function InvitationExperience({ content, mode = "public", calendarHref, rsvpSlug, template }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; template?: TemplateSlug; backHref?: string }) {

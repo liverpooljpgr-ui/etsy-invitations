@@ -119,9 +119,9 @@ export function Invitation({
     // the editor shows the two pages of the website one under the other: the cover with the envelope (it has fields to edit) and the page itself
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <WebsiteExperience content={c} mode={mode} startAt="envelope" coverOnly />
-        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="home" autoHeight ghosts />
-        <WebsiteExperience content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="details" autoHeight ghosts />
+        <WebsiteExperience slug={template} content={c} mode={mode} startAt="envelope" coverOnly />
+        <WebsiteExperience slug={template} content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="home" autoHeight ghosts />
+        <WebsiteExperience slug={template} content={c} mode={mode} calendarHref={calendarHref} rsvpSlug={rsvpSlug} startAt="details" autoHeight ghosts />
       </div>
     );
   }

@@ -27,7 +27,7 @@ type Props = {
 };
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
-const REGISTRIES = ["Amazon", "Target"] as const;
+const REGISTRIES = ["Gift list 1", "Gift list 2"] as const;
 
 /** Phone layout is a wizard: one screen of the invitation per step. `pv` and `page` (website-type designs): the area of the page the preview shows for the step. */
 type Step = { n: number; label: string; pv?: string; page?: "cover" | "home" | "details" };
@@ -577,12 +577,12 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
       setMapNote("Venue name and address filled in from the link. You can edit them.");
     } catch { setMapNote("Could not read that link. Fill in the name and address by hand."); }
   };
-  // Two fixed registry options (Amazon, Target), stored as registry[] items with those labels.
-  const regUrl = (label: string) => draft.registry.find((r) => r.label === label)?.url ?? "";
-  const setRegUrl = (label: string, url: string) =>
+  // Two fixed registry options (Gift list 1, Gift list 2), stored as registry[] items by position (older invitations may carry other labels; the position decides).
+  const regUrl = (i: number) => draft.registry[i]?.url ?? "";
+  const setRegUrl = (i: number, url: string) =>
     update((d) => ({
       ...d,
-      registry: REGISTRIES.map((l) => ({ label: l, url: l === label ? url : d.registry.find((r) => r.label === l)?.url ?? "" })),
+      registry: REGISTRIES.map((l, k) => ({ label: l, url: k === i ? url : d.registry[k]?.url ?? "" })),
     }));
   // the words of a website-type design: an empty field shows the design's own wording as a hint
   const pw = (k: PwKey) => ({
@@ -800,7 +800,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
 
           <Section n={5} mobileHidden={step !== 4} title="5 · Welcome" pv="d-intro">
-            <Field label="Word on the peach (opens the details page)" pv="peach"><input className={inputCls} maxLength={16} {...pw("detailsButton")} /></Field>
             <Field label="Title of the details page" pv="d-top"><input className={inputCls} maxLength={30} {...pw("detailsTitle")} /></Field>
             <Field label="Welcome text" pv="d-top">
               <textarea className={inputCls} rows={5} maxLength={600} placeholder="Leave empty and the website writes a warm welcome from your names, the date, the time and the place." value={pwStored(draft.texts, "detailsIntro")} onChange={(e) => set("texts", { ...draft.texts, detailsIntro: e.target.value })} />
@@ -872,9 +871,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   <textarea className={inputCls} rows={3} maxLength={300} placeholder={PW_DEFAULTS.detailsRegistryNote} value={pwStored(draft.texts, "detailsRegistryNote")} onChange={(e) => set("texts", { ...draft.texts, detailsRegistryNote: e.target.value })} />
                 </Field>
                 <span className="ui-label">Registry QR codes</span>
-                {REGISTRIES.map((label) => (
-                  <Field key={label} label={`${label} registry link (https://…)`} pv="d-registry">
-                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
+                {REGISTRIES.map((label, i) => (
+                  <Field key={label} label={`${label} link (https://…)`} pv="d-registry">
+                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(i)} onChange={(e) => setRegUrl(i, e.target.value)} />
                   </Field>
                 ))}
                 <p className="ui-help">Leave a link empty to hide that QR code.</p>
@@ -1106,9 +1105,9 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <div className="ui-field" style={{ gap: 14 }}>
                 <span className="ui-label">Registry QR codes</span>
                 {(template === "sage-forest" || template === "white-roses") && (<Field label="Heading of the registry block"><input className={inputCls} maxLength={30} {...tp("detailsRegistry")} /></Field>)}
-                {REGISTRIES.map((label) => (
-                  <Field key={label} label={`${label} registry link (https://…)`}>
-                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(label)} onChange={(e) => setRegUrl(label, e.target.value)} />
+                {REGISTRIES.map((label, i) => (
+                  <Field key={label} label={`${label} link (https://…)`}>
+                    <input className={inputCls} inputMode="url" maxLength={500} value={regUrl(i)} onChange={(e) => setRegUrl(i, e.target.value)} />
                   </Field>
                 ))}
                 <p className="ui-help">Leave a link empty to hide that QR code.</p>

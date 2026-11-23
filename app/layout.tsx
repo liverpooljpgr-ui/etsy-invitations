@@ -8,6 +8,7 @@ import "./templates/sage-forest.css";
 import "./templates/christmas-party.css";
 import "./templates/christmas-velvet.css";
 import "./templates/peach-website.css";
+import "./templates/burgundy-olive-website.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });

@@ -7,6 +7,8 @@ import { RsvpForm } from "@/components/invitation/RsvpForm";
 import { Qr } from "@/components/invitation/Qr";
 import { photoImgStyle } from "@/lib/photo-crop";
 import { PW_DEFAULTS, pwStored, pwText } from "@/lib/website-texts";
+import { websiteTheme } from "@/lib/website-themes";
+import type { Box } from "@/lib/website-themes";
 
 /**
  * "Peach Website": a one-page wedding website.
@@ -20,33 +22,11 @@ import { PW_DEFAULTS, pwStored, pwText } from "@/lib/website-texts";
  */
 
 type View = "envelope" | "home" | "details";
-type Box = { x: number; y: number; w: number; h: number; r?: number };
 
-const PHOTO_RATIO = 3 / 4; // the frame of the photo (the crop tool of the editor uses the same one)
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const IMG = "/templates/peach-website/v1";
-
-/** Where each piece lies in the vertical column. The units are those of the reference picture (800 wide) and are scaled to the real width of the screen
- *  (at most MAXW pixels, centred on a computer). */
+/** Where each piece lies in the vertical column is in the theme of the design (lib/website-themes.ts). The column is at most MAXW pixels wide and centred on a computer. */
 const MAXW = 800;
-const POS: Record<string, Box> = {
-  env: { x: 197, y: 280, w: 350, h: 266 },
-  green: { x: 96, y: 486, w: 281, h: 356 },
-  ornate: { x: 380, y: 394, w: 322, h: 413 },
-  rsvp: { x: 397, y: 767, w: 292, h: 223 },
-  peach: { x: 60, y: 796, w: 332, h: 305, r: -8 },
-  photo: { x: 123, y: 1086, w: 256, h: 335, r: -3 },
-  bq: { x: 62, y: 330, w: 215, h: 202 },
-  lavender: { x: 520, y: 243, w: 128, h: 205 },
-  small: { x: 296, y: 458, w: 98, h: 59 },
-  rose: { x: 360, y: 722, w: 92, h: 125, r: 5 },
-  key: { x: 604, y: 672, w: 108, h: 140, r: -10 },
-  lilac: { x: 648, y: 766, w: 72, h: 53 },
-  spray: { x: 322, y: 1206, w: 190, h: 248 },
-  mirror: { x: 360, y: 950, w: 366, h: 438 }, dragon: { x: 80, y: 880, w: 128, h: 142 },
-};
-const STAGE = { w: 800, h: 1550, x0: 34, cw: 708 }; // x0 and cw: the part of the 800-wide picture that holds the pieces; it is stretched over the whole width of the screen // the page is always one vertical column, also on a laptop
 
 /** "2:00 PM" / "14:30" / "" -> hours and minutes */
 function clock(time: string): { h: number; m: number } {
@@ -68,28 +48,35 @@ const two = (n: number) => String(n).padStart(2, "0");
 
 /** Keeps the text of a card inside the empty space of the card: when it does not fit, the whole text is scaled down (never up). */
 function Fit({ className, children }: { className: string; children: React.ReactNode }) {
+  const done = useRef("");
   const outer = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const o = outer.current, i = inner.current;
     if (!o || !i) return;
-    const run = () => {
+    const run = (force?: boolean) => {
       if (!o.clientHeight || !o.clientWidth) return; // hidden for now
+      const sig = `${o.clientWidth}x${o.clientHeight}|${i.textContent}`; // nothing changed since the last measuring: nothing to do
+      if (!force && sig === done.current) return;
+      done.current = sig;
       const cs = getComputedStyle(o);
       const ah = o.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-      // the text may need the full size or less: look for the biggest zoom (at most 1) at which it fits (the text re-wraps as the zoom changes)
-      const fits = (z: number) => { i.style.zoom = String(z); return i.offsetHeight * z <= ah + 0.5 && i.scrollWidth <= i.clientWidth + 1; }; // the width of the text block follows the card (it is 100%), so only a word that is too wide counts as too wide
-      if (fits(1)) return;
-      let lo = 0.3, hi = 1;
-      for (let n = 0; n < 9; n++) { const mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; }
-      i.style.zoom = String(lo);
+      // the text may need the full size or less. Measure at full size first (one layout); only a text that is too big is scaled, in two or three quick steps (the text re-wraps as the zoom changes)
+      const over = (z: number) => { i.style.zoom = String(z); return Math.max((i.offsetHeight * z) / ah, i.scrollWidth > i.clientWidth + 1 ? (i.scrollWidth * z) / (i.clientWidth * z) : 0); };
+      let z = 1;
+      for (let n = 0; n < 4; n++) {
+        const k = over(z);
+        if (k <= 1.003) break;
+        z = Math.max(0.3, (z / k) * 0.985);
+      }
+      i.style.zoom = String(z);
     };
     run();
     let alive = true;
-    document.fonts?.ready.then(() => { if (alive) run(); }); // measure again when the real fonts are in
-    const again = () => { if (alive) run(); };
+    document.fonts?.ready.then(() => { if (alive) run(true); }); // measure again when the real fonts are in
+    const again = () => { if (alive) run(true); };
     document.fonts?.addEventListener?.("loadingdone", again); // the script fonts load late: measure again when they arrive
-    const ro = new ResizeObserver(run);
+    const ro = new ResizeObserver(() => run(true));
     ro.observe(o);
     ro.observe(i);
     return () => { alive = false; ro.disconnect(); document.fonts?.removeEventListener?.("loadingdone", again); };
@@ -149,7 +136,7 @@ function Countdown({ to }: { to: Date | null }) {
 }
 
 /** The peach envelope: the body, the closed flap (hinged at its top edge) and the open flap with the painted lining (standing on the body). */
-function PeachEnvelope({ open, still }: { open: boolean; still?: boolean }) {
+function PeachEnvelope({ open, still, img: IMG }: { open: boolean; still?: boolean; img: string }) {
   /* eslint-disable @next/next/no-img-element */
   return (
     <span className={`pw-penv${open ? " is-open" : ""}${still ? " is-still" : ""}`} aria-hidden="true">
@@ -163,7 +150,7 @@ function PeachEnvelope({ open, still }: { open: boolean; still?: boolean }) {
 }
 
 /** The mirror: its glass is misted (the picture of the glass is drawn on a canvas); wiping it with a finger, or moving the mouse over it, clears the mist and shows the couple's photo behind. */
-function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeholder: boolean; style: CSSProperties }) {
+function Mirror({ photo, placeholder, style, img: IMG, ratio }: { photo: Content["photo"]; placeholder: boolean; style: CSSProperties; img: string; ratio: number }) {
   const cv = useRef<HTMLCanvasElement>(null);
   const last = useRef<{ x: number; y: number } | null>(null);
   const wiped = useRef<{ x: number; y: number }[]>([]); // everything that was wiped (as parts of the glass width): painted again whenever the glass is redrawn, so a revealed photo stays revealed
@@ -233,23 +220,38 @@ function Mirror({ photo, placeholder, style }: { photo: Content["photo"]; placeh
     <div className="pw-el pw-mirror" data-pv="mirror" style={style}>
       <div className="pw-glass">
         <div className="pw-glass-photo">
-          {photo ? <img src={photo.url} alt={photo.alt || ""} draggable={false} style={photoImgStyle(photo, 0.69)} /> : placeholder ? <span className="pw-ph">Your photo</span> : null}
+          {photo ? <img src={photo.url} alt={photo.alt || ""} draggable={false} style={photoImgStyle(photo, ratio)} /> : placeholder ? <span className="pw-ph">Your photo</span> : null}
         </div>
         <canvas ref={cv} className="pw-mist" aria-label="Wipe the mirror to see the photo" onPointerDown={wipe} onPointerMove={wipe} onPointerUp={() => { last.current = null; }} onPointerLeave={() => { last.current = null; }} onPointerCancel={() => { last.current = null; }} />
+        {!touched && <span className="pw-ripples" aria-hidden="true"><i /><i /><i /></span>}
       </div>
-      {!touched && <span className="pw-ripples" aria-hidden="true"><i /><i /><i /></span>}
       <img className="pw-mirror-frame" src={`${IMG}/mirror-frame.webp`} alt="" draggable={false} />
     </div>
   );
   /* eslint-enable @next/next/no-img-element */
 }
 
-export function WebsiteExperience({ content: c, mode = "public", calendarHref, rsvpSlug, fill, startAt = "envelope", frameSize, backHref, coverOnly, autoHeight, ghosts, stillVideo }: { content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; fill?: boolean; startAt?: View; frameSize?: { w: number; h: number }; backHref?: string; coverOnly?: boolean; autoHeight?: boolean; ghosts?: boolean; stillVideo?: boolean }) {
+export function WebsiteExperience({ slug, content: c, mode = "public", calendarHref, rsvpSlug, fill, startAt = "envelope", frameSize, backHref, coverOnly, autoHeight, ghosts, stillVideo }: { slug?: string; content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; fill?: boolean; startAt?: View; frameSize?: { w: number; h: number }; backHref?: string; coverOnly?: boolean; autoHeight?: boolean; ghosts?: boolean; stillVideo?: boolean }) {
+  const T = websiteTheme(slug); // the design: where the pieces lie, which pictures it uses
+  const IMG = `/templates/${T.dir}/v1`;
+  const POS = T.pos, STAGE = T.stage;
   const ph = mode === "preview";
   const root = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
   const [view, setView] = useState<View>(startAt);
   const [opening, setOpening] = useState(false);
+  const [leaving, setLeaving] = useState(false); // the envelope fades away while the page of cards fades in (no hard cut)
+  const [ready, setReady] = useState(false); // the guest has looked at the envelope for a moment: time to prepare the page of cards
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 1400);
+    return () => clearTimeout(t);
+  }, []);
+  // every picture is decoded in advance, so that nothing is decoded in the middle of an animation
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    el.querySelectorAll("img").forEach((i) => { void i.decode?.().catch(() => {}); });
+  }, [ready]);
   const [music, setMusic] = useState<"none" | "on" | "off">("none");
   // empty until the page has been measured: nothing is shown before that (class pw-wait), so the page never appears at a guessed size and then jumps to the real one
   const [dim, setDim] = useState<{ w: number; h: number } | null>(null);
@@ -298,7 +300,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
     }, { root: scroller, threshold: 0.08 });
     void stage.offsetHeight; // the hidden start state is set without a transition, so the slide-in is seen
     items.forEach((n) => { n.style.transition = ""; });
-    const raf = requestAnimationFrame(() => requestAnimationFrame(() => items.forEach((n) => io.observe(n))));
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => { if (view === "home" || startAt === "home") items.forEach((n) => io.observe(n)); }));
     return () => { cancelAnimationFrame(raf); io.disconnect(); };
   }, [view, size.w]);
 
@@ -333,13 +335,14 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
     startMusic();
     setOpening(true);
     const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setTimeout(() => setView("home"), reduce ? 0 : 2900);
+    setTimeout(() => { setView("home"); if (!reduce) { setLeaving(true); setTimeout(() => setLeaving(false), 900); } }, reduce ? 0 : 2900);
   }
   function backToEnvelope() {
     setOpening(false);
     setView("envelope");
   }
 
+  const warm = view === "envelope" && !coverOnly && ready; // the page of cards waits behind the envelope, invisible but ready
   const first = c.couple.first || (ph ? "Beloved" : "");
   const second = c.couple.second || (ph ? "Beloved" : "");
   const t = c.texts;
@@ -400,11 +403,11 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
   }, [first, second, view, size.w]);
 
   /* eslint-disable @next/next/no-img-element */
-  const deco = (k: string, file: string, cls = "") => <img className={`pw-el pw-deco ${cls}`} style={box(k)} src={`${IMG}/${file}.webp`} alt="" draggable={false} />;
+  const deco = (d: { k: string; file: string; cls?: string; z?: number }) => <img key={d.k} className={`pw-el pw-deco ${d.cls ?? ""}`} style={{ ...box(d.k), ...(d.z ? { zIndex: d.z } : {}) }} src={`${IMG}/${d.file}.webp`} alt="" draggable={false} />;
 
   const countdownBanner = (
     <div className="pw-banner" data-pv="banner">
-      <LoopVideo className="pw-banner-bg" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "home"} still={stillVideo} />
+      {T.banner.video ? <LoopVideo className="pw-banner-bg" src={`${IMG}/${T.banner.video}`} poster={`${IMG}/${T.banner.poster}`} active={view === "home"} still={stillVideo} /> : <img className="pw-banner-bg pw-kenburns" src={`${IMG}/${T.banner.image}`} alt="" draggable={false} />}
       <div className="pw-banner-in">
         <p className="pw-banner-script">{PW_DEFAULTS.bannerTitle}</p>
         <Countdown to={when} />
@@ -418,27 +421,27 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
     <div
       ref={root}
       className={`pw ${mode === "public" || fill ? "pw-fill" : "pw-box"}${coverOnly ? " pw-cover-only" : ""}${autoHeight && view === "home" ? " pw-tall" : ""}${autoHeight && view === "details" ? " pw-tall-d" : ""} pw-v-${view} pw-narrow${dim ? "" : " pw-wait"}`}
-      data-template="peach-website"
+      data-template={T.slug}
       style={{ "--u": u, "--ue": ue, ...(autoHeight && view === "home" ? { height: STAGE.h * u + 400 } : {}), ...(frameSize ? { width: frameSize.w, height: frameSize.h, borderRadius: 0, boxShadow: "none" } : {}) } as CSSProperties}
     >
       {/* the way back to the editor (in the preview only): it stays on every screen, before and after the envelope is opened */}
       {backHref && <a className="pw-editor-back" href={backHref}>← Back to editor</a>}
 
       {/* 1 — the envelope */}
-      <section className="pw-page pw-envelope" data-pv="cover" aria-hidden={view !== "envelope"} hidden={view !== "envelope"}>
+      <section className={`pw-page pw-envelope${leaving ? " pw-leaving" : ""}`} data-pv="cover" aria-hidden={view !== "envelope"} hidden={view !== "envelope" && !leaving}>
         <button type="button" className={`pw-envbtn${opening ? " is-opening" : ""}`} onClick={openEnvelope} aria-label="Open the invitation" disabled={opening || coverOnly}>
           <span className="pw-env-top">{lead}</span>
           <span className="pw-env-names">{[first, second].filter(Boolean).join(" & ")}</span>
-          <span className="pw-env-box"><PeachEnvelope open={opening} /></span>
+          <span className="pw-env-box"><PeachEnvelope open={opening} img={IMG} /></span>
           <span className="pw-env-hint">{opening ? " " : "Click the envelope to open"}</span>
         </button>
       </section>
 
       {/* 2 — the page */}
-      <section className="pw-page pw-home" aria-hidden={view !== "home"} hidden={view !== "home"}>
+      <section className={`pw-page pw-home${warm ? " pw-prewarm" : ""}`} aria-hidden={view !== "home"} hidden={view === "details" || (view === "envelope" && !warm)}>
         <div className="pw-scroll">
           <div className="pw-stage" style={{ width: STAGE.w * u, height: STAGE.h * u, marginLeft: dx }}>
-            <div className="pw-el pw-envstill" style={box("env")}><PeachEnvelope open still /></div>
+            <div className="pw-el pw-envstill" style={box("env")}><PeachEnvelope open still img={IMG} /></div>
 
             <div className="pw-el pw-green" data-pv="date" style={box("green")}>
               <Fit className="pw-green-in">
@@ -472,10 +475,10 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
             )}
 
             {(
-              <button type="button" className="pw-el pw-peach" data-pv="peach" style={box("peach")} onClick={() => setView("details")} aria-label={W("detailsButton")}>
-                <img src={`${IMG}/peach.webp`} alt="" draggable={false} />
+              <button type="button" className="pw-el pw-peach" data-pv="peach" style={box("peach")} onClick={() => setView("details")} aria-label={PW_DEFAULTS.detailsButton}>
+                <img src={`${IMG}/${T.detailsImg}.webp`} alt="" draggable={false} />
                 <span className="pw-peach-hit" aria-hidden="true" />
-                <span className="pw-peach-text">{W("detailsButton")}</span>
+                <span className="pw-peach-text">{PW_DEFAULTS.detailsButton}</span>
               </button>
             )}
 
@@ -483,21 +486,15 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
               <div className="pw-el pw-photo" data-pv="photo" style={box("photo")}>
                 <div className="pw-photo-card">
                 <div className="pw-photo-in">
-                  {c.photo ? <img src={c.photo.url} alt={c.photo.alt || ""} draggable={false} style={photoImgStyle(c.photo, PHOTO_RATIO)} /> : ph ? <span className="pw-ph">Your photo</span> : null}
+                  {c.photo ? <img src={c.photo.url} alt={c.photo.alt || ""} draggable={false} style={photoImgStyle(c.photo, T.photoRatio)} /> : ph ? <span className="pw-ph">Your photo</span> : null}
                 </div>
                 </div>
               </div>
             )}
 
-            {deco("spray", "spray", "pw-d-spray")}
-            <Mirror photo={c.secretPhoto ?? c.photo} placeholder={ph} style={box("mirror")} />
-            {deco("bq", "bouquet", "pw-d-bq")}
-            {deco("lavender", "lavender", "pw-d-back")}
-            {deco("small", "small")}
-            {deco("rose", "rose")}
-            {deco("key", "key", "pw-d-key")}
-            {deco("lilac", "lilac")}
-            {deco("dragon", "dragonfly")}
+            {T.before.map(deco)}
+            <Mirror photo={c.secretPhoto ?? c.photo} placeholder={ph} style={{ ...box("mirror"), ...(T.mirror.vars as CSSProperties) }} img={IMG} ratio={T.mirror.ratio} />
+            {T.after.map(deco)}
           </div>
           {countdownBanner}
         </div>
@@ -508,7 +505,7 @@ export function WebsiteExperience({ content: c, mode = "public", calendarHref, r
       <section className="pw-page pw-details" aria-hidden={view !== "details"} hidden={view !== "details"}>
         <div className="pw-details-scroll">
           <header className="pw-details-head" data-pv="d-top">
-            <LoopVideo className="pw-details-video" src={`${IMG}/garden.mp4`} poster={`${IMG}/garden-poster.webp`} active={view === "details"} still={stillVideo} />
+            {T.banner.video ? <LoopVideo className="pw-details-video" src={`${IMG}/${T.banner.video}`} poster={`${IMG}/${T.banner.poster}`} active={view === "details"} still={stillVideo} /> : <img className="pw-details-video pw-kenburns" src={`${IMG}/${T.banner.image}`} alt="" draggable={false} />}
             <button type="button" className="pw-back" onClick={() => setView("home")}><span aria-hidden="true">←</span> {PW_DEFAULTS.goBackText}</button>
             <h2>{W("detailsTitle")}</h2>
           </header>

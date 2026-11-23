@@ -1,0 +1,92 @@
+/* Burgundy Olive Website: the colours and the finishing touches over the shared website stylesheet (peach-website.css). The pieces' places are in lib/website-themes.ts. */
+.pw[data-template="burgundy-olive-website"] {
+  --pw-plum:#6a1b32; --pw-terra:#66733a; --pw-peach:#a8505f; --pw-cream:#f7efe4; --pw-lilac:#8a9a55;
+  --pw-shadow:0 1px 2px rgba(50,15,25,.28), 0 10px 16px rgba(50,15,25,.22), 0 26px 40px rgba(50,15,25,.18);
+  --gold:#e3c98f;
+}
+.pw[data-template="burgundy-olive-website"] .pw-env-top { color:#7a3a4b; }
+.pw[data-template="burgundy-olive-website"] .pw-env-hint { color:#7d6a3e; }
+.pw[data-template="burgundy-olive-website"] .pw-envbtn:not(:disabled):hover .pw-env-hint { color:var(--pw-plum); }
+.pw[data-template="burgundy-olive-website"] .pw-pe-seal { top:60%; width:27%; }
+
+/* the date and place card: a leather book */
+.pw[data-template="burgundy-olive-website"] .pw-green { background:transparent url(/templates/burgundy-olive-website/v1/book.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(40,10,20,.32)) drop-shadow(0 14px 16px rgba(40,10,20,.28)); }
+.pw[data-template="burgundy-olive-website"] .pw-green::before { display:none; }
+.pw[data-template="burgundy-olive-website"] .pw-green-in { inset:17% 17% 15% 19%; border:0; padding:0; }
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit p,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit p.pw-month,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit p.pw-at,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit p.pw-venue,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit p.pw-addr,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit a.pw-dir { color:var(--gold); text-shadow:0 1px 2px rgba(30,5,12,.6); }
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit a.pw-dir { text-decoration-color:var(--gold); }
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit a.pw-dir:hover,
+.pw[data-template="burgundy-olive-website"] .pw-green-in .pw-fit a.pw-dir:focus-visible { color:#fff; }
+
+/* the names card */
+.pw[data-template="burgundy-olive-website"] .pw-ornate-in { inset:18% 16%; color:var(--pw-plum); }
+.pw[data-template="burgundy-olive-website"] .pw-name { color:var(--pw-plum); }
+.pw[data-template="burgundy-olive-website"] .pw-amp { color:#66733a; }
+
+/* the burgundy paper with the RSVP */
+.pw[data-template="burgundy-olive-website"] .pw-rsvp { background:transparent url(/templates/burgundy-olive-website/v1/paper.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(40,10,20,.3)) drop-shadow(0 14px 16px rgba(40,10,20,.26)); }
+.pw[data-template="burgundy-olive-website"] .pw-rsvp-btn span,
+.pw[data-template="burgundy-olive-website"] .pw-rsvp-btn em { color:var(--gold); }
+.pw[data-template="burgundy-olive-website"] .pw-rsvp-btn strong { color:#f5e8d0; }
+
+/* the terracotta oval: the button of the details */
+.pw[data-template="burgundy-olive-website"] .pw-peach:hover,
+.pw[data-template="burgundy-olive-website"] .pw-peach:focus-visible,
+.pw[data-template="burgundy-olive-website"] .pw-peach.pw-rv.is-in:hover,
+.pw[data-template="burgundy-olive-website"] .pw-peach.pw-rv.is-in:focus-visible { scale:1.06; rotate:-2deg; }
+.pw[data-template="burgundy-olive-website"] .pw-peach-text { left:50%; top:50%; font-size:21cqw; color:#fbf0e2; text-shadow:0 1px 3px rgba(70,25,15,.6), 0 3px 12px rgba(70,25,15,.4); }
+.pw[data-template="burgundy-olive-website"] .pw-peach-hit { left:12%; top:14%; width:76%; height:72%; border-radius:50%; }
+
+/* the garden under the page is a painting that drifts slowly */
+@keyframes pw-kb { from { transform:scale(1.02) translate3d(0,0,0); } to { transform:scale(1.12) translate3d(-1.5%,-1%,0); } }
+.pw[data-template="burgundy-olive-website"] .pw-kenburns { object-fit:cover; animation:pw-kb 22s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .pw[data-template="burgundy-olive-website"] .pw-kenburns { animation:none; } }
+.pw[data-template="burgundy-olive-website"] .pw-banner-script { color:#f0d9a8; }
+
+/* the details page and the RSVP form */
+.pw[data-template="burgundy-olive-website"] .pw-a { color:var(--pw-terra); }
+.pw[data-template="burgundy-olive-website"] .pw-tl li::after { box-shadow:none; background:var(--pw-plum); }
+.pw[data-template="burgundy-olive-website"] .pw-cal .pw-a { background:var(--pw-plum); color:#fff; box-shadow:0 6px 16px rgba(106,27,50,.35), 0 1px 3px rgba(106,27,50,.35); }
+.pw[data-template="burgundy-olive-website"] .pw-back:hover,
+.pw[data-template="burgundy-olive-website"] .pw-back:focus-visible { background:var(--pw-plum); }
+/* the reply form: the colour #6a1b32 */
+.pw[data-template="burgundy-olive-website"] .rsvp-sheet { background:#fbf4ee; color:#6a1b32; }
+.pw[data-template="burgundy-olive-website"] .rsvp-sheet-title { color:#6a1b32; }
+.pw[data-template="burgundy-olive-website"] .rsvp-field > span { color:#6a1b32; }
+.pw[data-template="burgundy-olive-website"] .rsvp-field input,
+.pw[data-template="burgundy-olive-website"] .rsvp-field textarea,
+.pw[data-template="burgundy-olive-website"] .rsvp-choice { border-color:rgba(106,27,50,.65); color:#6a1b32; }
+.pw[data-template="burgundy-olive-website"] .rsvp-field input:focus,
+.pw[data-template="burgundy-olive-website"] .rsvp-field textarea:focus { outline:2px solid rgba(106,27,50,.5); }
+.pw[data-template="burgundy-olive-website"] .rsvp-choice[aria-checked="true"] { background:#6a1b32; border-color:#6a1b32; color:#fff; }
+.pw[data-template="burgundy-olive-website"] .rsvp-count button { border-color:rgba(106,27,50,.65); color:#6a1b32; }
+.pw[data-template="burgundy-olive-website"] .rsvp-send { background:#6a1b32; color:#fff; }
+.pw[data-template="burgundy-olive-website"] .rsvp-x { color:#6a1b32; }
+
+/* the closed flap lies exactly over the body (it was a little to the left) */
+.pw[data-template="burgundy-olive-website"] .pw-pe-closed { left:0; width:100%; }
+/* while it is closed, the tip of the body's side fold that peeks out above the flap's slanted corner is hidden (the margins keep the shadow) */
+.pw[data-template="burgundy-olive-website"] .pw-penv:not(.is-open) .pw-pe-body { clip-path:polygon(-40% -40%, 98.9% -40%, 98.9% 0.2%, 100.2% 3.2%, 140% 3.2%, 140% 140%, -40% 140%); }
+
+/* the flowers lie on the paper: a contact shadow, a soft one and a long one */
+.pw[data-template="burgundy-olive-website"] .pw-deco { filter:drop-shadow(0 1px 1.5px rgba(40,10,20,.5)) drop-shadow(0 6px 7px rgba(40,10,20,.34)) drop-shadow(0 16px 18px rgba(40,10,20,.26)); }
+
+/* the envelope lies on the table: a tight contact shadow and a wide soft one. The shadow is cast by the whole envelope (after the corner of the body is trimmed), so it has no square edge */
+.pw[data-template="burgundy-olive-website"] .pw-penv { filter:drop-shadow(0 1px 2px rgba(50,12,25,.45)) drop-shadow(0 12px 14px rgba(50,12,25,.28)) drop-shadow(0 34px 38px rgba(50,12,25,.24)); }
+.pw[data-template="burgundy-olive-website"] .pw-pe-body, .pw[data-template="burgundy-olive-website"] .pw-pe-closed, .pw[data-template="burgundy-olive-website"] .pw-pe-open { filter:none; }
+
+/* the orange scalloped card of the details button: a contact shadow and a deep soft one */
+.pw[data-template="burgundy-olive-website"] .pw-peach img { filter:drop-shadow(0 1px 2px rgba(50,15,10,.5)) drop-shadow(0 8px 9px rgba(50,15,10,.34)) drop-shadow(0 22px 24px rgba(50,15,10,.28)); }
+
+/* the details page: a light tint of #6a1b32 */
+.pw[data-template="burgundy-olive-website"] .pw-details { background:radial-gradient(90% 80% at 50% 20%,#fbf8f6,#f0e9e6 82%); }
+
+/* the dress code palette: tall rectangles */
+.pw[data-template="burgundy-olive-website"] .pw-dots { gap:12px; }
+.pw[data-template="burgundy-olive-website"] .pw-dots i { width:30px; height:62px; border-radius:3px; box-shadow:0 1px 3px rgba(70,20,40,.18); border:1px solid rgba(0,0,0,.1); }

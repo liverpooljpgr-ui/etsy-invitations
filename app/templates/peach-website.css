@@ -175,12 +175,12 @@ body:has(.pw-fill) { overflow:hidden; }
 /* the mirror: the misted glass lies over the photo; the frame (with a clear glass) lies on top */
 .pw-mirror { z-index:5; filter:drop-shadow(0 3px 4px rgba(70,35,50,.3)) drop-shadow(0 18px 22px rgba(70,35,50,.28)); container-type:inline-size; }
 .pw-mirror-frame { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; user-select:none; }
-.pw-glass { position:absolute; inset:0; clip-path:polygon(22.9% 21.5%,35% 19%,50% 17.6%,65% 19%,78.2% 21.5%,78.2% 84.5%,22.9% 84.5%); background:#e8d9d2; }
+.pw-glass { position:absolute; inset:0; clip-path:var(--glass-clip, polygon(22.9% 21.5%,35% 19%,50% 17.6%,65% 19%,78.2% 21.5%,78.2% 84.5%,22.9% 84.5%)); background:#e8d9d2; }
 .pw-glass > img { user-select:none; pointer-events:none; }
 .pw-mist { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:crosshair; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
-.pw-glass { touch-action:none; }   /* a finger on the mirror glass wipes it, the page stays still */
+.pw-glass { touch-action:none; -webkit-mask-image:var(--glass-mask,none); mask-image:var(--glass-mask,none); -webkit-mask-size:100% 100%; mask-size:100% 100%; }   /* a finger on the mirror glass wipes it, the page stays still */
 /* waves that pulse on the misted glass until it is touched: they show that it can be wiped */
-.pw-ripples { position:absolute; left:22.9%; top:17.6%; width:55.3%; height:66.9%; z-index:2; pointer-events:none; display:none; place-items:center; overflow:hidden; clip-path:polygon(0 4%,22% 0,100% 4%,100% 100%,0 100%); }
+.pw-ripples { position:absolute; left:var(--gl,22.9%); top:var(--gt,17.6%); width:var(--gw,55.3%); height:var(--gh,66.9%); z-index:2; pointer-events:none; display:none; place-items:center; overflow:hidden; clip-path:polygon(0 4%,22% 0,100% 4%,100% 100%,0 100%); }
 .pw-ripples i { grid-area:1/1; width:34%; aspect-ratio:1; border-radius:50%; border:2px solid rgba(255,255,255,.8); box-shadow:0 0 12px rgba(255,255,255,.55), inset 0 0 12px rgba(255,255,255,.35); opacity:0; }
 @media (prefers-reduced-motion:no-preference) {
   .pw-ripples { display:grid; }
@@ -189,7 +189,7 @@ body:has(.pw-fill) { overflow:hidden; }
   .pw-ripples i:nth-child(3) { animation-delay:2.4s; }
 }
 @keyframes pw-ripple { 0% { transform:scale(.25); opacity:0; } 14% { opacity:.75; } 100% { transform:scale(2.6); opacity:0; } }
-.pw-glass-photo { position:absolute; left:22.9%; top:17.6%; width:55.3%; height:66.9%; overflow:hidden; }
+.pw-glass-photo { position:absolute; left:var(--gl,22.9%); top:var(--gt,17.6%); width:var(--gw,55.3%); height:var(--gh,66.9%); overflow:hidden; }
 .pw-deco.pw-d-back { z-index:2; }
 
 .pw-deco.pw-d-key { z-index:4; }
@@ -467,3 +467,21 @@ body:has(.pw-fill) { overflow:hidden; }
 .pw-green-in .pw-fit, .pw-green-in .pw-fit p, .pw-green-in .pw-fit p.pw-month, .pw-green-in .pw-fit a.pw-dir { color:var(--pw-plum); text-shadow:none; }
 .pw-green-in .pw-fit p.pw-at { font-size:7cqw; font-weight:700; letter-spacing:.05em; }   /* the time: bigger and bolder */
 .pw-rsvp-btn span, .pw-rsvp-btn em, .pw-rsvp-btn strong { color:#fff; text-shadow:0 1px 3px rgba(120,45,30,.28); }
+
+/* the page of cards waits behind the envelope (painted but invisible), then fades in: opening the envelope does not have to build it */
+.pw-home { transition:opacity .7s ease; }
+.pw-home:not([hidden]) { animation:none; }
+.pw-prewarm { opacity:.001; pointer-events:none; }
+
+/* the flaps and the seal are moved by the graphics card only: they are prepared before the opening starts */
+.pw-envbtn .pw-pe-open, .pw-envbtn .pw-pe-closed, .pw-envbtn .pw-pe-seal { will-change:transform; backface-visibility:hidden; }
+.pw-envbtn .pw-pe-open { visibility:visible; opacity:.01; }
+.pw-envbtn .pw-penv.is-open .pw-pe-open { opacity:1; }
+
+/* the envelope fades away while the page of cards fades in */
+@keyframes pw-out { from { opacity:1; } to { opacity:0; } }
+.pw-envelope.pw-leaving { pointer-events:none; animation:pw-out .7s ease both; }
+
+/* the flap that opens stays unseen (it is only prewarmed) until the closed flap has swung away: an edge-on sliver of its lining showed above the envelope while the closing flap turned */
+.pw-envbtn .pw-penv.is-open .pw-pe-open { transition:transform 1.4s cubic-bezier(.12,.5,.3,1) .9s, visibility 0s linear .9s, opacity 0s linear .9s; }
+.pw-envbtn .pw-penv.is-still.is-open .pw-pe-open { transition:none !important; }
