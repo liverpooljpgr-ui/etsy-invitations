@@ -48,7 +48,7 @@ export async function GET(request: Request, ctx: { params: Promise<{ slug: strin
   const template = await templateOfSlug(slug);
   if (isWebsiteTemplate(template)) {
     try {
-      const jpg = await peachShareCard(new URL(request.url).origin, c);
+      const jpg = await peachShareCard(new URL(request.url).origin, c, template);
       return new Response(new Uint8Array(jpg), { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" } });
     } catch { return generic(); }
   }

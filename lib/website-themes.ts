@@ -12,6 +12,7 @@ export type WebsiteTheme = {
   after: Deco[]; // pieces drawn after the mirror (on top)
   detailsImg: string; // the picture of the button that opens the details page
   banner: { video?: string; poster: string; image?: string }; // the garden under the page: a moving picture, or a painting
+  share: { sealW: number; sealY: number; bg: [string, string]; ink: string; caps: string }; // the link-preview picture: the seal (width and height as a part of the envelope), the paper and the colours of the words
   mirror: { vars: Record<string, string>; ratio: number }; // the glass: its shape (clip-path) and its box in the mirror picture
 };
 
@@ -49,6 +50,7 @@ const PEACH: WebsiteTheme = {
   ],
   detailsImg: "peach",
   banner: { video: "garden.mp4", poster: "garden-poster.webp" },
+  share: { sealW: 0.57, sealY: 0.64, bg: ["#faf0eb", "#f2e1d9"], ink: "#59394f", caps: "#7b5a6e" },
   mirror: { vars: {}, ratio: 0.69 },
 };
 
@@ -91,6 +93,7 @@ const BURGUNDY: WebsiteTheme = {
   ],
   detailsImg: "oval",
   banner: { image: "banner.webp", poster: "banner.webp" },
+  share: { sealW: 0.27, sealY: 0.6, bg: ["#f9f0ec", "#efdfd9"], ink: "#6a1b32", caps: "#7a3a4b" },
   mirror: {
     // the glass is the real opening of the frame (found in the picture: mirror-glass.png), its box is in percent of the mirror picture
     vars: { "--glass-clip": "none", "--glass-mask": "url(/templates/burgundy-olive-website/v1/mirror-glass.png)", "--gl": "12.91%", "--gt": "8.95%", "--gw": "73.84%", "--gh": "82.59%" },

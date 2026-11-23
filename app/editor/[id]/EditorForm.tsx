@@ -727,7 +727,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                   <div className="wiz-off">This part is switched off.<br />Guests won’t see it.</div>
                 ) : (
                   <div key={pvPage} className="wiz-pv-page">
-                    <WebsiteExperience content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} startAt={pvPage === "cover" ? "envelope" : pvPage} coverOnly={pvPage === "cover"} autoHeight={pvPage !== "cover"} ghosts stillVideo />
+                    <WebsiteExperience slug={template} content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} startAt={pvPage === "cover" ? "envelope" : pvPage} coverOnly={pvPage === "cover"} autoHeight={pvPage !== "cover"} ghosts stillVideo />
                   </div>
                 )}
               </div>

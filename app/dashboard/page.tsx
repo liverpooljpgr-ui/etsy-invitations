@@ -67,7 +67,7 @@ export default async function Dashboard() {
                 <Link href={`/editor/${i.id}`} className="dash-card">
                   <span className="dash-thumb" aria-hidden="true">
                     {c && isWebsiteTemplate(tplOf.get(i.id)) && (
-                      <span className="dash-thumb-inner dash-thumb-web"><WebsiteExperience content={c} mode="preview" startAt="envelope" coverOnly stillVideo /></span>
+                      <span className="dash-thumb-inner dash-thumb-web"><WebsiteExperience slug={tplOf.get(i.id)} content={c} mode="preview" startAt="envelope" coverOnly stillVideo /></span>
                     )}
                     {c && !isWebsiteTemplate(tplOf.get(i.id)) && (
                       <span className="inv dash-thumb-inner" data-template={tplOf.get(i.id) === "christmas-velvet" ? "christmas-party" : tplOf.get(i.id)} data-design={tplOf.get(i.id)}>
