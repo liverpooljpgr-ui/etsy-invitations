@@ -1,4 +1,4 @@
-/* Burgundy Olive Website: the colours and the finishing touches over the shared website stylesheet (peach-website.css). The pieces' places are in lib/website-themes.ts. */
+/* Burgundy Peach Website: the colours and the finishing touches over the shared website stylesheet (peach-website.css). The pieces' places are in lib/website-themes.ts. */
 .pw[data-template="burgundy-olive-website"] {
   --pw-plum:#6a1b32; --pw-terra:#66733a; --pw-peach:#a8505f; --pw-cream:#f7efe4; --pw-lilac:#8a9a55;
   --pw-shadow:0 1px 2px rgba(50,15,25,.28), 0 10px 16px rgba(50,15,25,.22), 0 26px 40px rgba(50,15,25,.18);

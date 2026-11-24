@@ -1,5 +1,15 @@
 import { defaultContent, type Content } from "@/lib/content/schema";
 
+/** The address of a demo can differ from the internal name of a design (the internal name of Burgundy Peach is still "burgundy-olive-website", because guest links and files use it). */
+const DEMO_ADDRESS: Record<string, string> = { "burgundy-olive-website": "burgundy-peach-website" };
+const DEMO_DESIGN: Record<string, string> = Object.fromEntries(Object.entries(DEMO_ADDRESS).map(([design, address]) => [address, design]));
+/** "/demo/burgundy-peach-website" for a design */
+export const demoPath = (design: string) => `/demo/${DEMO_ADDRESS[design] ?? design}`;
+/** The design that a demo address stands for (the same text when it has no special address) */
+export const designOfDemo = (address: string) => DEMO_DESIGN[address] ?? address;
+/** The address that replaced the old one, or null when this address is the current one */
+export const newerDemoAddress = (address: string) => (DEMO_ADDRESS[address] && DEMO_ADDRESS[address] !== address ? DEMO_ADDRESS[address] : null);
+
 /** The sample wedding that every demo shows. The date is always in the future (about 9 months ahead), so the countdown and the "reply by" line look alive. */
 export function demoContent(now = new Date()): Content {
   const day = (months: number) => { const d = new Date(now); d.setMonth(d.getMonth() + months); return d.toISOString().slice(0, 10); };

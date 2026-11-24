@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Experience } from "@/components/invitation/Experience";
-import { demoContent } from "@/lib/demo";
+import { demoContent, designOfDemo, newerDemoAddress } from "@/lib/demo";
 import { TEMPLATES, type TemplateSlug } from "@/lib/templates";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -14,15 +14,19 @@ async function nameOf(slug: string): Promise<string | null> {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ template: string }> }): Promise<Metadata> {
-  const { template } = await params;
+  const { template: address } = await params;
+  const template = designOfDemo(address);
   const name = (TEMPLATES as readonly string[]).includes(template) ? await nameOf(template) : null;
   return { title: name ? `${name} · demo` : "Demo", description: "A live demo of the invitation. Nothing is saved or sent.", robots: { index: false, follow: false } };
 }
 
 /** A demo of one design for anyone with the link: the real invitation with sample names, no login, nothing to edit, nothing sent. */
 export default async function DemoPage({ params, searchParams }: { params: Promise<{ template: string }>; searchParams: Promise<{ bare?: string }> }) {
-  const { template } = await params;
+  const { template: address } = await params;
   const { bare } = await searchParams;
+  const newer = newerDemoAddress(address); // an old demo address goes to the new one
+  if (newer) redirect(`/demo/${newer}${bare ? `?bare=${encodeURIComponent(bare)}` : ""}`);
+  const template = designOfDemo(address);
   if (!(TEMPLATES as readonly string[]).includes(template) || !(await nameOf(template))) notFound();
   return (
     <main className="px-4 py-6">
@@ -34,7 +38,7 @@ export default async function DemoPage({ params, searchParams }: { params: Promi
           ← All demos
         </Link>
       )}
-      <Experience content={demoContent()} mode="public" template={template as TemplateSlug} />
+      <Experience content={demoContent()} mode="public" calendarHref={`/demo/calendar.ics?t=${template}`} template={template as TemplateSlug} />
     </main>
   );
 }

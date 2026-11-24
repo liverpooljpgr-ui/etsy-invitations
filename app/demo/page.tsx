@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { demoPath } from "@/lib/demo";
 import { CopyLink } from "./CopyLink";
 
 export const dynamic = "force-dynamic";
@@ -20,8 +21,8 @@ export default async function DemoGallery() {
             <h2 className="mb-1 font-serif text-xl">{t.name}</h2>
             <p className="mb-4 flex-1 text-sm text-stone-600">{t.description}</p>
             <div className="flex flex-wrap gap-2">
-              <Link href={`/demo/${t.slug}`} className="rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700">Open demo</Link>
-              <CopyLink path={`/demo/${t.slug}`} />
+              <Link href={demoPath(t.slug)} className="rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700">Open demo</Link>
+              <CopyLink path={demoPath(t.slug)} />
             </div>
           </li>
         ))}
