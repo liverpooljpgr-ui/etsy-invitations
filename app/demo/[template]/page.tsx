@@ -38,7 +38,7 @@ export default async function DemoPage({ params, searchParams }: { params: Promi
           ← All demos
         </Link>
       )}
-      <Experience content={demoContent()} mode="public" calendarHref={`/demo/calendar.ics?t=${template}`} template={template as TemplateSlug} />
+      <Experience content={demoContent(new Date(), template)} mode="public" calendarHref={`/demo/calendar.ics?t=${template}`} template={template as TemplateSlug} />
     </main>
   );
 }

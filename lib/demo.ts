@@ -1,7 +1,17 @@
 import { defaultContent, type Content } from "@/lib/content/schema";
+import { isPartyTemplate } from "@/lib/templates";
 
-/** The address of a demo can differ from the internal name of a design (the internal name of Burgundy Peach is still "burgundy-olive-website", because guest links and files use it). */
-const DEMO_ADDRESS: Record<string, string> = { "burgundy-olive-website": "burgundy-peach-website" };
+/** The address of a demo is the name of the design as customers know it ("Pure Jasmin" is /demo/pure-jasmin), not its internal name (which stays "white-roses", because guest links and files use it). The old addresses go to the new ones. */
+const DEMO_ADDRESS: Record<string, string> = {
+  "sage-story": "wild-flowers",
+  "white-roses": "pure-jasmin",
+  "mono-script": "ivory-roses",
+  "cupid-script": "cupid-trumpets",
+  "lilac-script": "lilac-blossom",
+  "sage-forest": "sage-garden",
+  "christmas-velvet": "purple-vintage-christmas",
+  "burgundy-olive-website": "burgundy-peach-website",
+};
 const DEMO_DESIGN: Record<string, string> = Object.fromEntries(Object.entries(DEMO_ADDRESS).map(([design, address]) => [address, design]));
 /** "/demo/burgundy-peach-website" for a design */
 export const demoPath = (design: string) => `/demo/${DEMO_ADDRESS[design] ?? design}`;
@@ -11,12 +21,15 @@ export const designOfDemo = (address: string) => DEMO_DESIGN[address] ?? address
 export const newerDemoAddress = (address: string) => (DEMO_ADDRESS[address] && DEMO_ADDRESS[address] !== address ? DEMO_ADDRESS[address] : null);
 
 /** The sample wedding that every demo shows. The date is always in the future (about 9 months ahead), so the countdown and the "reply by" line look alive. */
-export function demoContent(now = new Date()): Content {
+export function demoContent(now = new Date(), template?: string): Content {
   const day = (months: number) => { const d = new Date(now); d.setMonth(d.getMonth() + months); return d.toISOString().slice(0, 10); };
   const photo = { url: "/demo/couple.webp", alt: "", ar: 1.5, cx: 0.38, cy: 0.5, zoom: 1 };
+  const party = isPartyTemplate(template);
   return {
     ...defaultContent,
-    couple: { first: "Anna", second: "Daniel" },
+    couple: party ? { first: "The Martins", second: "" } : { first: "Anna", second: "Daniel" },
+    // the Christmas party is a party, not a wedding: its own words
+    texts: party ? { ...defaultContent.texts, coverIntro: "you are invited to a", coverTop: "Christmas", headline: "Dinner Party", saveTheDate: "Join us for dinner", closing: "We are waiting for you:", closingNote: "come hungry, come merry and be ready to have fun!" } : defaultContent.texts,
     event: { date: day(9), time: "4:00 PM", venue: "Villa Rosa Garden", address: "12 Lakeview Road\nLake Como, Italy", mapUrl: "https://maps.google.com" },
     photo,
     secretPhoto: photo,
