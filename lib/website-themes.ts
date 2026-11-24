@@ -1,7 +1,7 @@
 /** The designs of the website type: where every piece of the collage lies (in the units of an 800-wide reference picture), which pictures it uses and the shape of the mirror's glass.
  *  One page component (components/website) draws every website design from its theme; the colours and the finishing touches are in the design's own stylesheet (app/templates/*.css). */
 export type Box = { x: number; y: number; w: number; h: number; r?: number };
-export type Deco = { k: string; file: string; cls?: string; z?: number };
+export type Deco = { k: string; file: string; cls?: string; z?: number; clip?: string }; // clip: a clip-path, to show only a part of the picture
 export type WebsiteTheme = {
   slug: string;
   dir: string; // /templates/<dir>/v1
@@ -10,9 +10,10 @@ export type WebsiteTheme = {
   pos: Record<string, Box>;
   before: Deco[]; // pieces drawn before the mirror
   after: Deco[]; // pieces drawn after the mirror (on top)
+  rsvpTiers?: boolean; // the RSVP words lie on the tiers of a cake-shaped card: "Please RSVP" on the second, the date (or "RSVP here") on the third
   detailsImg: string; // the picture of the button that opens the details page
   banner: { video?: string; poster: string; image?: string }; // the garden under the page: a moving picture, or a painting
-  share: { sealW: number; sealY: number; bg: [string, string]; ink: string; caps: string }; // the link-preview picture: the seal (width and height as a part of the envelope), the paper and the colours of the words
+  share: { sealW: number; sealY: number; bg: [string, string]; ink: string; caps: string; flap?: { w: number; x: number; y: number } }; // the link-preview picture: the seal (width and height as a part of the envelope), the paper and the colours of the words
   mirror: { vars: Record<string, string>; ratio: number }; // the glass: its shape (clip-path) and its box in the mirror picture
 };
 
@@ -101,5 +102,52 @@ const BURGUNDY: WebsiteTheme = {
   },
 };
 
-export const WEBSITE_THEMES: Record<string, WebsiteTheme> = { [PEACH.slug]: PEACH, [BURGUNDY.slug]: BURGUNDY };
+
+const CHANDELIER: WebsiteTheme = {
+  slug: "chandelier-garden-website",
+  dir: "chandelier-garden-website",
+  stage: { w: 800, h: 1580, x0: 34, cw: 732 },
+  photoRatio: 0.77,
+  pos: {
+    env: { x: 222, y: 252, w: 356, h: 239 }, // the green envelope with a lining
+    ornate: { x: 30, y: 378, w: 312, h: 400 }, // the names card
+    green: { x: 362, y: 446, w: 400, h: 274 }, // the date and place card: the blue card
+    rsvp: { x: 62, y: 776, w: 324, h: 309 }, // the mauve cake-shaped card
+    peach: { x: 436, y: 708, w: 288, h: 286 }, // the plates: the button of the details
+    photo: { x: 92, y: 1090, w: 300, h: 400, r: -3 }, // a wide print border, with room for a word at the bottom left
+    mirror: { x: 325, y: 985, w: 435, h: 507 },
+    champagne: { x: 136, y: 274, w: 124, h: 113 },
+    chandelier: { x: 245, y: 545, w: 232, h: 255 }, // hangs on a long chain from under the envelope (the canopy of the picture is not drawn)
+    chain: { x: 355, y: 440, w: 12, h: 150 }, // the chain: from behind the envelope (its bottom is at y 491) down to the crown of the chandelier
+    corner: { x: 530, y: 378, w: 228, h: 255 },
+    orchid: { x: 74, y: 722, w: 100, h: 102 },
+    olive: { x: 306, y: 790, w: 146, h: 243 },
+    tulip: { x: 378, y: 780, w: 94, h: 195 },
+    queen: { x: 668, y: 722, w: 96, h: 96 },
+    seal: { x: 452, y: 112, w: 150, h: 75 }, // the wax seal on the lining of the opened envelope
+  },
+  before: [],
+  after: [
+    { k: "seal", file: "seal" },
+    { k: "olive", file: "olive", z: 5 },
+    { k: "tulip", file: "tulip" },
+    { k: "champagne", file: "champagne" },
+    { k: "chain", file: "chain", cls: "pw-d-nosh", z: 2 },
+    { k: "chandelier", file: "chandelier", cls: "pw-d-nosh", clip: "inset(13% 0 0 0)" },
+    { k: "corner", file: "corner", cls: "pw-d-bq" },
+    { k: "orchid", file: "orchid" },
+    { k: "queen", file: "queen" },
+  ],
+  rsvpTiers: true,
+  detailsImg: "plates",
+  banner: { image: "banner.webp", poster: "banner.webp" },
+  share: { sealW: 0.46, sealY: 0.61, bg: ["#ffffff", "#f6f4ee"], ink: "#46627f", caps: "#6f7f8f", flap: { w: 1.062, x: -0.031, y: -0.002 } },
+  mirror: {
+    // the glass is the real oval of the wreath mirror (found in the picture: mirror-glass.png)
+    vars: { "--glass-clip": "none", "--glass-mask": "url(/templates/chandelier-garden-website/v1/mirror-glass.png)", "--gl": "26.92%", "--gt": "23.73%", "--gw": "50.11%", "--gh": "55.78%" },
+    ratio: 0.7706,
+  },
+};
+
+export const WEBSITE_THEMES: Record<string, WebsiteTheme> = { [PEACH.slug]: PEACH, [BURGUNDY.slug]: BURGUNDY, [CHANDELIER.slug]: CHANDELIER };
 export const websiteTheme = (slug?: string | null): WebsiteTheme => (slug && WEBSITE_THEMES[slug]) || PEACH;

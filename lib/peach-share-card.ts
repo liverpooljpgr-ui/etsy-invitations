@@ -37,9 +37,9 @@ export async function peachShareCard(origin: string, c: Content, slug?: string):
   ]);
 
   // the envelope: the same layers and proportions as on the cover page of the website
-  const ew = 560, eh = Math.round(ew * 1197 / 1600);
+  const ew = 560, bm = await sharp(body).metadata(), eh = Math.round(ew * (bm.height ?? 1197) / (bm.width ?? 1600));
   const ex = 56, ey = Math.round((H - eh) / 2);
-  const flapW = Math.round(ew * 1.006), flapB = await sharp(flap).resize({ width: flapW }).toBuffer();
+  const FL = SH.flap ?? { w: 1.006, x: -0.003, y: -0.004 }, flapW = Math.round(ew * FL.w), flapB = await sharp(flap).resize({ width: flapW }).toBuffer();
   const sealW = Math.round(ew * SH.sealW), sealB = await sharp(seal).resize({ width: sealW }).toBuffer();
   const sealH = (await sharp(sealB).metadata()).height ?? 0;
   const bodyB = await sharp(body).resize({ width: ew }).toBuffer();
@@ -66,7 +66,7 @@ export async function peachShareCard(origin: string, c: Content, slug?: string):
   const layers: OverlayOptions[] = [
     { input: shadow, left: ex - 60, top: ey - 50 },
     { input: bodyB, left: ex, top: ey },
-    { input: flapB, left: ex - Math.round(ew * 0.003), top: ey - Math.round(eh * 0.004) },
+    { input: flapB, left: ex + Math.round(ew * FL.x), top: ey + Math.round(eh * FL.y) },
     { input: sealB, left: ex + Math.round(ew / 2 - sealW / 2), top: ey + Math.round(eh * SH.sealY - sealH / 2) },
     { input: wordsPng, left: 0, top: 0 },
   ];

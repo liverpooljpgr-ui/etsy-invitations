@@ -403,7 +403,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
   }, [first, second, view, size.w]);
 
   /* eslint-disable @next/next/no-img-element */
-  const deco = (d: { k: string; file: string; cls?: string; z?: number }) => <img key={d.k} className={`pw-el pw-deco ${d.cls ?? ""}`} style={{ ...box(d.k), ...(d.z ? { zIndex: d.z } : {}) }} src={`${IMG}/${d.file}.webp`} alt="" draggable={false} />;
+  const deco = (d: { k: string; file: string; cls?: string; z?: number; clip?: string }) => <img key={d.k} className={`pw-el pw-deco ${d.cls ?? ""}`} style={{ ...box(d.k), ...(d.z ? { zIndex: d.z } : {}), ...(d.clip ? { clipPath: d.clip } : {}) }} src={`${IMG}/${d.file}.webp`} alt="" draggable={false} />;
 
   const countdownBanner = (
     <div className="pw-banner" data-pv="banner">
@@ -445,9 +445,12 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
 
             <div className="pw-el pw-green" data-pv="date" style={box("green")}>
               <Fit className="pw-green-in">
-                <p className="pw-day">{day || "00"}</p>
-                <p className="pw-month">{month || "Month"}</p>
-                <p className="pw-year">{year || "0000"}</p>
+                {(() => {
+                  const yearP = <p className="pw-year">{year || "0000"}</p>;
+                  return T.rsvpTiers // some designs write the day and the month in one line, the year below
+                    ? <><div className="pw-dateline"><p className="pw-day">{day || "00"}</p><p className="pw-month">{month || "Month"}</p></div>{yearP}</>
+                    : <><p className="pw-day">{day || "00"}</p><p className="pw-month">{month || "Month"}</p>{yearP}</>;
+                })()}
                 <p className="pw-at">{c.event.time ? `At ${c.event.time}` : ""}</p>
                 <p className="pw-venue">{c.event.venue}</p>
                 {addr[0] && <p className="pw-addr">{addr.join(", ")}</p>}
@@ -469,7 +472,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
             {(
               <div className="pw-el pw-rsvp" data-pv="rsvp" style={box("rsvp")}>
                 {(
-                  <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} contactEmail={c.rsvp.email} hostSelector=".pw" triggerClassName="pw-rsvp-btn" trigger={<><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "Here"}</em></>} />
+                  <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} contactEmail={c.rsvp.email} hostSelector=".pw" triggerClassName="pw-rsvp-btn" trigger={T.rsvpTiers ? (replyBy ? <><span className="pw-rsvp-l2"><i>Please</i> <b>RSVP</b></span><em className="pw-rsvp-l3">{replyBy}</em></> : <><span className="pw-rsvp-l2"><i>Please</i></span><em className="pw-rsvp-l3"><b>RSVP</b></em></>) : <><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "Here"}</em></>} />
                 )}
               </div>
             )}
