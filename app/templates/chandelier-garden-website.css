@@ -43,6 +43,8 @@
 .pw[data-template="chandelier-garden-website"] .pw-green-in .pw-addr { font-size:4.8cqw; margin-top:-.9cqw !important; line-height:1.2; }
 .pw[data-template="chandelier-garden-website"] .pw-green-in .pw-venue { line-height:1.18; }
 .pw[data-template="chandelier-garden-website"] .pw-green-in .pw-dir { font-size:4.6cqw; }
+@media (min-width:600px) { .pw[data-template="chandelier-garden-website"] .pw-green-in .pw-fit p.pw-at { font-size:5.6cqw; } }   /* the time is smaller on a computer */
+@media (min-width:600px) { .pw[data-template="chandelier-garden-website"] .pw-green-in .pw-dir { font-size:3.5cqw; letter-spacing:.1em; } }   /* "Get directions" is smaller on a computer */
 
 /* the names card */
 .pw[data-template="chandelier-garden-website"] .pw-ornate-in { inset:18% 16%; color:#46627f; }
