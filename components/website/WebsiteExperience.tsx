@@ -234,7 +234,6 @@ function Mirror({ photo, placeholder, style, img: IMG, ratio }: { photo: Content
 export function WebsiteExperience({ slug, content: c, mode = "public", calendarHref, rsvpSlug, fill, startAt = "envelope", frameSize, backHref, coverOnly, autoHeight, ghosts, stillVideo }: { slug?: string; content: Content; mode?: "public" | "preview"; calendarHref?: string; rsvpSlug?: string; fill?: boolean; startAt?: View; frameSize?: { w: number; h: number }; backHref?: string; coverOnly?: boolean; autoHeight?: boolean; ghosts?: boolean; stillVideo?: boolean }) {
   const T = websiteTheme(slug); // the design: where the pieces lie, which pictures it uses
   const IMG = `/templates/${T.dir}/v1`;
-  const POS = T.pos, STAGE = T.stage;
   const ph = mode === "preview";
   const root = useRef<HTMLDivElement>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
@@ -256,6 +255,8 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
   // empty until the page has been measured: nothing is shown before that (class pw-wait), so the page never appears at a guessed size and then jumps to the real one
   const [dim, setDim] = useState<{ w: number; h: number } | null>(null);
   const size = dim ?? { w: 390, h: 760 };
+  const mobileLayout = !!T.mobile && size.w < 600; // a phone: the pieces lie in one column, bigger
+  const POS = mobileLayout ? T.mobile!.pos : T.pos, STAGE = mobileLayout ? T.mobile!.stage : T.stage;
 
   // the width and height of the page decide the layout and the scale
   useLayoutEffect(() => {
@@ -309,7 +310,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
   const air = size.w < 600 ? 0.97 : 1; // on a phone the collage leaves some space at the sides of the screen
   const u = (col * air) / STAGE.cw;
   const ue = Math.min(col / 390, size.h / 660); // the envelope page has to fit the width and the height of the screen
-  const dx = (size.w - col * air) / 2 - STAGE.x0 * u + (size.w < 600 ? -2.7 * u : 0); // on a phone the pieces sit a little to the left: the big mirror on the right makes the collage look heavy at that side
+  const dx = (size.w - col * air) / 2 - STAGE.x0 * u + (size.w < 600 && !mobileLayout ? -2.7 * u : 0); // on a phone the pieces sit a little to the left: the big mirror on the right makes the collage look heavy at that side
   const box = (k: string): CSSProperties => {
     const b = POS[k];
     return { left: b.x * u, top: b.y * u, width: b.w * u, height: b.h * u, transform: b.r ? `rotate(${b.r}deg)` : undefined };
@@ -403,7 +404,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
   }, [first, second, view, size.w]);
 
   /* eslint-disable @next/next/no-img-element */
-  const deco = (d: { k: string; file: string; cls?: string; z?: number; clip?: string }) => <img key={d.k} className={`pw-el pw-deco ${d.cls ?? ""}`} style={{ ...box(d.k), ...(d.z ? { zIndex: d.z } : {}), ...(d.clip ? { clipPath: d.clip } : {}) }} src={`${IMG}/${d.file}.webp`} alt="" draggable={false} />;
+  const deco = (d: { k: string; file: string; cls?: string; z?: number; clip?: string }) => !POS[d.k] ? null : <img key={d.k} className={`pw-el pw-deco ${d.cls ?? ""}`} style={{ ...box(d.k), ...(d.z ? { zIndex: d.z } : {}), ...(d.clip ? { clipPath: d.clip } : {}) }} src={`${IMG}/${d.file}.webp`} alt="" draggable={false} />;
 
   const countdownBanner = (
     <div className="pw-banner" data-pv="banner">
@@ -471,6 +472,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
 
             {(
               <div className="pw-el pw-rsvp" data-pv="rsvp" style={box("rsvp")}>
+                {T.rsvpImg && <img className="pw-rsvp-art" src={`${IMG}/${T.rsvpImg}.webp`} alt="" draggable={false} />}
                 {(
                   <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} contactEmail={c.rsvp.email} hostSelector=".pw" triggerClassName="pw-rsvp-btn" trigger={T.rsvpTiers ? (replyBy ? <><span className="pw-rsvp-l2"><i>Please</i> <b>RSVP</b></span><em className="pw-rsvp-l3">{replyBy}</em></> : <><span className="pw-rsvp-l2"><i>Please</i></span><em className="pw-rsvp-l3"><b>RSVP</b></em></>) : <><span>Kindly</span><strong>RSVP</strong><em>{replyBy || "Here"}</em></>} />
                 )}
@@ -497,7 +499,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
 
             {T.before.map(deco)}
             <Mirror photo={c.secretPhoto ?? c.photo} placeholder={ph} style={{ ...box("mirror"), ...(T.mirror.vars as CSSProperties) }} img={IMG} ratio={T.mirror.ratio} />
-            {T.after.map(deco)}
+            {(mobileLayout ? T.mobile!.after ?? T.after : T.after).map(deco)}
           </div>
           {countdownBanner}
         </div>

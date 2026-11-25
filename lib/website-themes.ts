@@ -10,10 +10,12 @@ export type WebsiteTheme = {
   pos: Record<string, Box>;
   before: Deco[]; // pieces drawn before the mirror
   after: Deco[]; // pieces drawn after the mirror (on top)
+  rsvpImg?: string; // the RSVP card as a picture of its own (so its shadow follows its shape), not a background
   rsvpTiers?: boolean; // the RSVP words lie on the tiers of a cake-shaped card: "Please RSVP" on the second, the date (or "RSVP here") on the third
   detailsImg: string; // the picture of the button that opens the details page
   banner: { video?: string; poster: string; image?: string }; // the garden under the page: a moving picture, or a painting
   share: { sealW: number; sealY: number; bg: [string, string]; ink: string; caps: string; flap?: { w: number; x: number; y: number } }; // the link-preview picture: the seal (width and height as a part of the envelope), the paper and the colours of the words
+  mobile?: { stage: { w: number; h: number; x0: number; cw: number }; pos: Record<string, Box>; after?: Deco[] }; // a phone: the pieces in one column (a piece missing from pos is not drawn)
   mirror: { vars: Record<string, string>; ratio: number }; // the glass: its shape (clip-path) and its box in the mirror picture
 };
 
@@ -138,9 +140,43 @@ const CHANDELIER: WebsiteTheme = {
     { k: "orchid", file: "orchid" },
     { k: "queen", file: "queen" },
   ],
+  rsvpImg: "card-cake",
   rsvpTiers: true,
   detailsImg: "plates",
   banner: { image: "banner.webp", poster: "banner.webp" },
+  mobile: {
+    // on a phone: one column, the pieces bigger and set left and right in turn; two pieces are in view at a time
+    stage: { w: 400, h: 2400, x0: 0, cw: 400 },
+    pos: {
+      env: { x: 60, y: 253, w: 279, h: 187 },
+      seal: { x: 212, y: 170, w: 129, h: 64 }, // on the lining of the opened envelope
+      champagne: { x: 4, y: 378, w: 117, h: 107 },
+      chandelier: { x: 226, y: 442, w: 172, h: 189 },
+      chain: { x: 307, y: 400, w: 9, h: 64 },
+      ornate: { x: 8, y: 452, w: 284, h: 364 },
+      green: { x: 40, y: 832, w: 346, h: 237 },
+      corner: { x: 216, y: 762, w: 172, h: 193 },
+      orchid: { x: 24, y: 832, w: 84, h: 86 }, // on the top left corner of the blue card
+      rsvp: { x: 6, y: 1076, w: 326, h: 311 },
+      olive: { x: 300, y: 1090, w: 100, h: 167 },
+      tulip: { x: 15, y: 1438, w: 111, h: 230, r: -18 }, // the tulip and the hydrangeas at the plates: turned -18 degrees, 10% bigger, 10 up
+      peach: { x: 70, y: 1360, w: 326, h: 324 },
+      queen: { x: 326, y: 1330, w: 74, h: 74 },
+      photo: { x: 14, y: 1640, w: 270, h: 360, r: -3 }, // goes a little under the plates
+      mirror: { x: 80, y: 1966, w: 320, h: 373 },
+    },
+    after: [
+      { k: "seal", file: "seal" },
+      { k: "olive", file: "olive", z: 5 },
+      { k: "tulip", file: "tulip" },
+      { k: "champagne", file: "champagne" },
+      { k: "chain", file: "chain", cls: "pw-d-nosh", z: 2 },
+      { k: "chandelier", file: "chandelier", cls: "pw-d-nosh", clip: "inset(13% 0 0 0)" },
+      { k: "corner", file: "corner", cls: "pw-d-bq" },
+      { k: "orchid", file: "orchid" },
+      { k: "queen", file: "queen" },
+    ],
+  },
   share: { sealW: 0.46, sealY: 0.61, bg: ["#ffffff", "#f6f4ee"], ink: "#46627f", caps: "#6f7f8f", flap: { w: 1.062, x: -0.031, y: -0.002 } },
   mirror: {
     // the glass is the real oval of the wreath mirror (found in the picture: mirror-glass.png)

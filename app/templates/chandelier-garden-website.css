@@ -11,14 +11,14 @@
 .pw[data-template="chandelier-garden-website"] .pw-envbtn:not(:disabled):hover .pw-env-hint { color:#46627f; }
 
 /* the envelope: green, a little wider than the peach one; its flaps follow its own proportions */
-.pw[data-template="chandelier-garden-website"] .pw-penv { aspect-ratio:1984 / 1334; filter:drop-shadow(0 1px 2px rgba(30,40,35,.4)) drop-shadow(0 12px 14px rgba(30,40,35,.26)) drop-shadow(0 34px 38px rgba(30,40,35,.22)); }
+.pw[data-template="chandelier-garden-website"] .pw-penv { aspect-ratio:1984 / 1334; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 10px 11px rgba(0,0,0,.3)); }
 .pw[data-template="chandelier-garden-website"] .pw-pe-body, .pw[data-template="chandelier-garden-website"] .pw-pe-closed, .pw[data-template="chandelier-garden-website"] .pw-pe-open { filter:none; }
 .pw[data-template="chandelier-garden-website"] .pw-pe-open { top:-79.2%; }
 .pw[data-template="chandelier-garden-website"] .pw-pe-closed { max-width:none; left:-3.1%; top:-.2%; width:106.2%; }
 .pw[data-template="chandelier-garden-website"] .pw-pe-seal { top:61%; left:48.5%; width:46%; }
 
 /* the date and place card: the blue card */
-.pw[data-template="chandelier-garden-website"] .pw-green { background:transparent url(/templates/chandelier-garden-website/v1/card-blue.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(30,40,55,.3)) drop-shadow(0 14px 16px rgba(30,40,55,.26)); }
+.pw[data-template="chandelier-garden-website"] .pw-green { background:transparent url(/templates/chandelier-garden-website/v1/card-blue.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
 .pw[data-template="chandelier-garden-website"] .pw-green::before { display:none; }
 .pw[data-template="chandelier-garden-website"] .pw-green-in { inset:12% 13% 8% 13%; border:0; padding:0; }
 .pw[data-template="chandelier-garden-website"] .pw-green-in .pw-fit,
@@ -52,7 +52,10 @@
 .pw[data-template="chandelier-garden-website"] .pw-more { color:#6f7f8f; }
 
 /* the RSVP: a mauve cake-shaped card */
-.pw[data-template="chandelier-garden-website"] .pw-rsvp { background:transparent url(/templates/chandelier-garden-website/v1/card-cake.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(50,35,45,.3)) drop-shadow(0 14px 16px rgba(50,35,45,.26)); }
+.pw[data-template="chandelier-garden-website"] .pw-rsvp { background:none; box-shadow:none; filter:none; }
+.pw[data-template="chandelier-garden-website"] .pw-rsvp-art { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; pointer-events:none; user-select:none; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); transition:filter .2s ease; }   /* the cake is a picture: the shadow follows its shape, also when hovered */
+.pw[data-template="chandelier-garden-website"] .pw-rsvp-btn:hover, .pw[data-template="chandelier-garden-website"] .pw-rsvp-btn:focus-visible { background:transparent; }
+.pw[data-template="chandelier-garden-website"] .pw-rsvp:has(.pw-rsvp-btn:hover) .pw-rsvp-art, .pw[data-template="chandelier-garden-website"] .pw-rsvp:has(.pw-rsvp-btn:focus-visible) .pw-rsvp-art { filter:drop-shadow(0 2px 3px rgba(0,0,0,.55)) drop-shadow(0 10px 11px rgba(0,0,0,.34)) brightness(1.05); }
 .pw[data-template="chandelier-garden-website"] .pw-rsvp-btn { padding:0; }
 .pw[data-template="chandelier-garden-website"] .pw-rsvp-l2,
 .pw[data-template="chandelier-garden-website"] .pw-rsvp-l3 { position:absolute; left:6%; right:6%; text-align:center; font-style:normal; font-weight:400; color:#fff; text-shadow:0 1px 2px rgba(70,45,62,.7), 0 0 6px rgba(70,45,62,.45); white-space:nowrap; line-height:1; }
@@ -69,7 +72,7 @@
 .pw[data-template="chandelier-garden-website"] .pw-peach:focus-visible,
 .pw[data-template="chandelier-garden-website"] .pw-peach.pw-rv.is-in:hover,
 .pw[data-template="chandelier-garden-website"] .pw-peach.pw-rv.is-in:focus-visible { scale:1.05; rotate:-3deg; }
-.pw[data-template="chandelier-garden-website"] .pw-peach img { filter:drop-shadow(0 1px 2px rgba(40,40,30,.4)) drop-shadow(0 10px 12px rgba(40,40,30,.28)) drop-shadow(0 22px 24px rgba(40,40,30,.2)); }
+.pw[data-template="chandelier-garden-website"] .pw-peach img { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
 .pw[data-template="chandelier-garden-website"] .pw-peach-text { left:50%; top:50%; font-size:22cqw; color:#5b6e82; text-shadow:0 1px 1px rgba(255,255,255,.7); }
 .pw[data-template="chandelier-garden-website"] .pw-peach-hit { left:10%; top:10%; width:80%; height:80%; border-radius:50%; }
 
@@ -77,9 +80,13 @@
 .pw[data-template="chandelier-garden-website"] .pw-photo-card { padding:calc(var(--u) * 17px) calc(var(--u) * 17px) calc(var(--u) * 40px); }
 .pw[data-template="chandelier-garden-website"] .pw-photo::after { content:"forever"; position:absolute; left:6.5%; bottom:2.2%; z-index:3; font-family:var(--font-imperial),var(--pw-script); font-size:8.6cqw; line-height:1; color:#555; letter-spacing:.01em; pointer-events:none; }
 
+/* every piece casts the same neutral dark grey shadow (no colour), fairly close and sharp */
+.pw[data-template="chandelier-garden-website"] .pw-ornate { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
+.pw[data-template="chandelier-garden-website"] .pw-photo { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); box-shadow:none; }
+
 /* the flowers lie on the paper */
-.pw[data-template="chandelier-garden-website"] .pw-deco { filter:drop-shadow(0 1px 1.5px rgba(35,45,40,.45)) drop-shadow(0 6px 7px rgba(35,45,40,.3)) drop-shadow(0 16px 18px rgba(35,45,40,.22)); }
-.pw[data-template="chandelier-garden-website"] .pw-mirror { filter:drop-shadow(0 3px 4px rgba(35,45,40,.3)) drop-shadow(0 18px 22px rgba(35,45,40,.26)); }
+.pw[data-template="chandelier-garden-website"] .pw-deco { filter:drop-shadow(0 1px 2px rgba(0,0,0,.55)) drop-shadow(0 4px 5px rgba(0,0,0,.3)); }
+.pw[data-template="chandelier-garden-website"] .pw-mirror { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
 
 /* the chandelier hangs without a shadow (a shadow would be cut to a rectangle by the part hidden under the envelope) */
 .pw[data-template="chandelier-garden-website"] .pw-deco.pw-d-nosh { filter:none; }
