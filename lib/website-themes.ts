@@ -16,6 +16,7 @@ export type WebsiteTheme = {
   banner: { video?: string; poster: string; image?: string }; // the garden under the page: a moving picture, or a painting
   share: { sealW: number; sealY: number; bg: [string, string]; ink: string; caps: string; flap?: { w: number; x: number; y: number } }; // the link-preview picture: the seal (width and height as a part of the envelope), the paper and the colours of the words
   mobile?: { stage: { w: number; h: number; x0: number; cw: number }; pos: Record<string, Box>; before?: Deco[]; after?: Deco[] }; // a phone: the pieces in one column (a piece missing from pos is not drawn)
+  phoneCrop?: { x0: number; cw: number }; // a phone with the computer layout: the part of the stage stretched over the screen (narrower than cw = the pieces bigger; the outer flowers may go past the edges)
   mirror: { vars: Record<string, string>; ratio: number }; // the glass: its shape (clip-path) and its box in the mirror picture
 };
 
@@ -185,5 +186,51 @@ const CHANDELIER: WebsiteTheme = {
   },
 };
 
-export const WEBSITE_THEMES: Record<string, WebsiteTheme> = { [PEACH.slug]: PEACH, [BURGUNDY.slug]: BURGUNDY, [CHANDELIER.slug]: CHANDELIER };
+const DAHLIA: WebsiteTheme = {
+  slug: "dahlia-village-website",
+  dir: "dahlia-village-website",
+  stage: { w: 800, h: 1600, x0: 6, cw: 750 },
+  photoRatio: 0.77,
+  pos: {
+    env: { x: 226, y: 241, w: 345, h: 231 }, // the pink envelope with the arch painting in its lining
+    ornate: { x: 66, y: 465, w: 359, h: 460 }, // the names card
+    green: { x: 431, y: 432, w: 311, h: 415 }, // the date and place card: the green card with a bow
+    rsvp: { x: 407, y: 842, w: 305, h: 206 }, // the yellow card with hearts
+    peach: { x: 112, y: 930, w: 350, h: 187 }, // the cup: the button of the details
+    photo: { x: 114, y: 1100, w: 326, h: 424, r: -3 },
+    mirror: { x: 405, y: 1015, w: 352, h: 539 },
+    jar: { x: 120, y: 216, w: 127, h: 320 },
+    vase: { x: 500, y: 222, w: 201, h: 260 },
+    bunting: { x: 320, y: 322, w: 425, h: 209 },
+    bow: { x: 218, y: 92, w: 150, h: 142 }, // the bow lies over the opened envelope
+    gerbera: { x: 28, y: 520, w: 89, h: 160 },
+    eucalyptusWhite: { x: 345, y: 430, w: 130, h: 293 },
+    bunch: { x: 0, y: 895, w: 220, h: 152 },
+    eucalyptusLily: { x: -10, y: 1310, w: 280, h: 270 },
+    dahliaPink: { x: 662, y: 1000, w: 85, h: 190 },
+  },
+  before: [],
+  after: [
+    { k: "gerbera", file: "gerbera", z: 3 },
+    { k: "jar", file: "jar", z: 4 },
+    { k: "vase", file: "vase", z: 3 },
+    { k: "bunch", file: "bunch", z: 5 },
+    { k: "eucalyptusWhite", file: "eucalyptus-center", z: 5 },
+    { k: "bunting", file: "bunting" },
+    { k: "bow", file: "bow", z: 6 },
+    { k: "eucalyptusLily", file: "eucalyptus-photo", z: 2 },
+    { k: "dahliaPink", file: "dahlia-pink", z: 4 },
+  ],
+  detailsImg: "cup",
+  banner: { image: "banner.webp", poster: "banner.webp" },
+  phoneCrop: { x0: 68, cw: 680 }, // on a phone the pieces are about 10% bigger
+  share: { sealW: 0.38, sealY: 0.77, bg: ["#ffffff", "#f7f1ee"], ink: "#3f5f3a", caps: "#8a5a4a", flap: { w: 1.062, x: -0.031, y: -0.002 } },
+  mirror: {
+    // the glass is the real oval of the mirror on its stand (found in the picture: mirror-glass.png)
+    vars: { "--glass-clip": "none", "--glass-mask": "url(/templates/dahlia-village-website/v1/mirror-glass.png)", "--gl": "22.47%", "--gt": "10.49%", "--gw": "57.78%", "--gh": "62.1%" },
+    ratio: 0.6077,
+  },
+};
+
+export const WEBSITE_THEMES: Record<string, WebsiteTheme> = { [PEACH.slug]: PEACH, [BURGUNDY.slug]: BURGUNDY, [CHANDELIER.slug]: CHANDELIER, [DAHLIA.slug]: DAHLIA };
 export const websiteTheme = (slug?: string | null): WebsiteTheme => (slug && WEBSITE_THEMES[slug]) || PEACH;

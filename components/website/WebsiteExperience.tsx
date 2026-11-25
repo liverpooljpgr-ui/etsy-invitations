@@ -308,9 +308,10 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
   // always one vertical column: a phone fills its screen, a computer shows the same column in the middle (MAXW pixels wide) and the page scrolls
   const col = Math.min(size.w, MAXW);
   const air = size.w < 600 ? 0.97 : 1; // on a phone the collage leaves some space at the sides of the screen
-  const u = (col * air) / STAGE.cw;
+  const crop = size.w < 600 && !mobileLayout && T.phoneCrop ? T.phoneCrop : STAGE; // a design may show its pieces bigger on a phone
+  const u = (col * air) / crop.cw;
   const ue = Math.min(col / 390, size.h / 660); // the envelope page has to fit the width and the height of the screen
-  const dx = (size.w - col * air) / 2 - STAGE.x0 * u + (size.w < 600 && !mobileLayout ? -2.7 * u : 0); // on a phone the pieces sit a little to the left: the big mirror on the right makes the collage look heavy at that side
+  const dx = (size.w - col * air) / 2 - crop.x0 * u + (size.w < 600 && !mobileLayout ? -2.7 * u : 0); // on a phone the pieces sit a little to the left: the big mirror on the right makes the collage look heavy at that side
   const box = (k: string): CSSProperties => {
     const b = POS[k];
     return { left: b.x * u, top: b.y * u, width: b.w * u, height: b.h * u, transform: b.r ? `rotate(${b.r}deg)` : undefined };

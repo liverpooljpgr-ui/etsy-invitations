@@ -11,6 +11,7 @@ const DEMO_ADDRESS: Record<string, string> = {
   "sage-forest": "sage-garden",
   "christmas-velvet": "purple-vintage-christmas",
   "burgundy-olive-website": "burgundy-peach-website",
+  "dahlia-village-website": "country-dahlia-wedding-website",
 };
 const DEMO_DESIGN: Record<string, string> = Object.fromEntries(Object.entries(DEMO_ADDRESS).map(([design, address]) => [address, design]));
 /** "/demo/burgundy-peach-website" for a design */

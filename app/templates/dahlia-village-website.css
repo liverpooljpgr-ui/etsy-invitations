@@ -1,0 +1,99 @@
+/* Country Dahlia Wedding Website: pink, green and autumn orange, over the shared website stylesheet (peach-website.css). The pieces' places are in lib/website-themes.ts. */
+.pw[data-template="dahlia-village-website"] {
+  --pw-plum:#3f5f3a; --pw-terra:#c0366a; --pw-peach:#e07a3a; --pw-cream:#fff; --pw-lilac:#c0366a;
+  --pw-shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 14px rgba(0,0,0,.2);
+  --cream:#fff6e4;
+  background:#fff;
+}
+.pw[data-template="dahlia-village-website"] .pw-env-top { color:#9a5a4a; }
+.pw[data-template="dahlia-village-website"] .pw-env-names { color:#3a3a3a; }
+.pw[data-template="dahlia-village-website"] .pw-env-hint { color:#8a7a5a; }
+.pw[data-template="dahlia-village-website"] .pw-envbtn:not(:disabled):hover .pw-env-hint { color:#c0366a; }
+
+/* the envelope: pink, with a painting in its lining */
+.pw[data-template="dahlia-village-website"] .pw-penv { aspect-ratio:1984 / 1334; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 10px 11px rgba(0,0,0,.3)); }
+.pw[data-template="dahlia-village-website"] .pw-pe-body, .pw[data-template="dahlia-village-website"] .pw-pe-closed, .pw[data-template="dahlia-village-website"] .pw-pe-open { filter:none; }
+.pw[data-template="dahlia-village-website"] .pw-pe-open { top:-79.2%; }
+.pw[data-template="dahlia-village-website"] .pw-pe-closed { max-width:none; left:-3.1%; top:-.2%; width:106.2%; }
+.pw[data-template="dahlia-village-website"] .pw-pe-seal { left:calc(50% - 4px); top:77%; width:38%; }
+
+/* the date and place card: the green card with a bow (the words lie above the bow) */
+.pw[data-template="dahlia-village-website"] .pw-green { z-index:6; background:transparent url(/templates/dahlia-village-website/v1/card-green.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
+.pw[data-template="dahlia-village-website"] .pw-green::before { display:none; }
+.pw[data-template="dahlia-village-website"] .pw-green-in { inset:21% 12% 25% 12%; border:0; padding:0; }
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit p,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit p.pw-month,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit p.pw-at,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit p.pw-venue,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit p.pw-addr,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit a.pw-dir { color:var(--cream); text-shadow:0 1px 2px rgba(20,40,20,.5); }
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit a.pw-dir { text-decoration-color:var(--cream); }
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit a.pw-dir:hover,
+.pw[data-template="dahlia-village-website"] .pw-green-in .pw-fit a.pw-dir:focus-visible { color:#fff; }
+
+/* the names card */
+.pw[data-template="dahlia-village-website"] .pw-ornate-in { inset:18% 16%; color:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .pw-lead { color:#7a6a5a; padding:0 calc(var(--u) * 20px); box-sizing:border-box; }
+@media (min-width: 600px) { .pw[data-template="dahlia-village-website"] .pw-lead { padding:0 calc(var(--u) * 30px); } }
+.pw[data-template="dahlia-village-website"] .pw-name { color:#3a3a3a; }
+.pw[data-template="dahlia-village-website"] .pw-amp { color:#c0366a; }
+.pw[data-template="dahlia-village-website"] .pw-more { color:#7a6a5a; }
+
+/* the RSVP: a yellow card with hearts */
+.pw[data-template="dahlia-village-website"] .pw-rsvp { background:transparent url(/templates/dahlia-village-website/v1/card-yellow.webp) center/100% 100% no-repeat; box-shadow:none; filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
+.pw[data-template="dahlia-village-website"] .pw-rsvp-btn span,
+.pw[data-template="dahlia-village-website"] .pw-rsvp-btn em { color:#9a3a2a; }
+.pw[data-template="dahlia-village-website"] .pw-rsvp-btn strong { color:#6a3a1a; }
+
+/* the cup: the button of the details */
+.pw[data-template="dahlia-village-website"] .pw-peach:hover,
+.pw[data-template="dahlia-village-website"] .pw-peach:focus-visible,
+.pw[data-template="dahlia-village-website"] .pw-peach.pw-rv.is-in:hover,
+.pw[data-template="dahlia-village-website"] .pw-peach.pw-rv.is-in:focus-visible { scale:1.05; rotate:-2deg; }
+.pw[data-template="dahlia-village-website"] .pw-peach img { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
+.pw[data-template="dahlia-village-website"] .pw-peach-text { left:50%; top:44.8%; font-size:16cqw; color:#c0366a; text-shadow:0 1px 1px rgba(255,255,255,.8); }
+.pw[data-template="dahlia-village-website"] .pw-peach-hit { left:6%; top:6%; width:88%; height:88%; border-radius:42%; }
+
+/* every piece casts the same neutral dark grey shadow, fairly close and sharp */
+.pw[data-template="dahlia-village-website"] .pw-ornate { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
+.pw[data-template="dahlia-village-website"] .pw-photo { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); box-shadow:none; }
+.pw[data-template="dahlia-village-website"] .pw-deco { filter:drop-shadow(0 1px 2px rgba(0,0,0,.55)) drop-shadow(0 4px 5px rgba(0,0,0,.3)); }
+.pw[data-template="dahlia-village-website"] .pw-mirror { filter:drop-shadow(0 2px 3px rgba(0,0,0,.5)) drop-shadow(0 8px 9px rgba(0,0,0,.3)); }
+
+/* the garden under the page is a painting that drifts slowly */
+@keyframes pw-kb-dv { from { transform:scale(1.02) translate3d(0,0,0); } to { transform:scale(1.12) translate3d(-1.5%,-1%,0); } }
+.pw[data-template="dahlia-village-website"] .pw-kenburns { object-fit:cover; animation:pw-kb-dv 22s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .pw[data-template="dahlia-village-website"] .pw-kenburns { animation:none; } }
+.pw[data-template="dahlia-village-website"] .pw-banner-script { color:#fff1d8; }
+
+/* the details page and the reply form */
+.pw[data-template="dahlia-village-website"] .pw-details { background:#fff; }
+.pw[data-template="dahlia-village-website"] .pw-a { color:var(--pw-terra); }
+.pw[data-template="dahlia-village-website"] .pw-tl li::after { box-shadow:none; background:#c0366a; }
+.pw[data-template="dahlia-village-website"] .pw-tl li::before { background:rgba(192,54,106,.45); }
+.pw[data-template="dahlia-village-website"] .pw-tl li b { color:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .pw-cal .pw-a { background:#3f5f3a; color:#fff; box-shadow:0 6px 16px rgba(63,95,58,.35), 0 1px 3px rgba(63,95,58,.35); }
+.pw[data-template="dahlia-village-website"] .pw-back:hover,
+.pw[data-template="dahlia-village-website"] .pw-back:focus-visible { background:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .pw-dots { gap:12px; }
+.pw[data-template="dahlia-village-website"] .pw-dots i { width:30px; height:62px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,.18); border:1px solid rgba(0,0,0,.1); }
+.pw[data-template="dahlia-village-website"] .pw-card h3 { color:#c0366a; }
+.pw[data-template="dahlia-village-website"] .rsvp-sheet { background:#fffaf2; color:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .rsvp-sheet-title { color:#c0366a; }
+.pw[data-template="dahlia-village-website"] .rsvp-field > span { color:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .rsvp-field input,
+.pw[data-template="dahlia-village-website"] .rsvp-field textarea,
+.pw[data-template="dahlia-village-website"] .rsvp-choice { border-color:rgba(63,95,58,.55); color:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .rsvp-field input:focus,
+.pw[data-template="dahlia-village-website"] .rsvp-field textarea:focus { outline:2px solid rgba(192,54,106,.45); }
+.pw[data-template="dahlia-village-website"] .rsvp-choice[aria-checked="true"] { background:#3f5f3a; border-color:#3f5f3a; color:#fff; }
+.pw[data-template="dahlia-village-website"] .rsvp-count button { border-color:rgba(63,95,58,.55); color:#3f5f3a; }
+.pw[data-template="dahlia-village-website"] .rsvp-send { background:#c0366a; color:#fff; }
+.pw[data-template="dahlia-village-website"] .rsvp-x { color:#3f5f3a; }
+
+
+/* on a computer the word on the cup is 2px bigger and 5px lower */
+@media (min-width: 600px) {
+  .pw[data-template="dahlia-village-website"] .pw-peach-text { top:46.3%; font-size:16.2cqw; }
+}
