@@ -485,3 +485,7 @@ body:has(.pw-fill) { overflow:hidden; }
 /* the flap that opens stays unseen (it is only prewarmed) until the closed flap has swung away: an edge-on sliver of its lining showed above the envelope while the closing flap turned */
 .pw-envbtn .pw-penv.is-open .pw-pe-open { transition:transform 1.4s cubic-bezier(.12,.5,.3,1) .9s, visibility 0s linear .9s, opacity 0s linear .9s; }
 .pw-envbtn .pw-penv.is-still.is-open .pw-pe-open { transition:none !important; }
+
+/* Peach Website: a white website (the cover, the page of cards and the details page) */
+.pw[data-template="peach-website"] { background:#fff; }
+.pw[data-template="peach-website"] .pw-details { background:#fff; }

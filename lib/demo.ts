@@ -15,6 +15,21 @@ const DEMO_ADDRESS: Record<string, string> = {
 const DEMO_DESIGN: Record<string, string> = Object.fromEntries(Object.entries(DEMO_ADDRESS).map(([design, address]) => [address, design]));
 /** "/demo/burgundy-peach-website" for a design */
 export const demoPath = (design: string) => `/demo/${DEMO_ADDRESS[design] ?? design}`;
+/** The Etsy listing of each design (key = internal design name). A demo shows the "see it on Etsy" button only for a design that has a link here. */
+const ETSY_LISTING: Record<string, string> = {
+  "sage-story": "https://pixelinvitedigital.etsy.com/listing/4615797375/animated-digital-wedding-invitation", // Wild Flowers
+  "white-roses": "https://pixelinvitedigital.etsy.com/listing/4619705848/animated-wedding-invitation-digital-card", // Pure Jasmin
+  "mono-script": "https://pixelinvitedigital.etsy.com/listing/4613983905/animated-digital-wedding-invitation", // Ivory Roses
+  "cupid-script": "https://pixelinvitedigital.etsy.com/listing/4621239559/animated-wedding-invitation-digital-card", // Cupid Trumpets
+  "lilac-script": "https://pixelinvitedigital.etsy.com/listing/4617772945/animated-wedding-invitation-digital-card", // Lilac Blossom
+  "sage-forest": "https://pixelinvitedigital.etsy.com/listing/4615750882/animated-digital-wedding-invitation-sage", // Sage Garden
+  "christmas-party": "https://pixelinvitedigital.etsy.com/listing/4616674385/christmas-party-invitation-digital", // Christmas Party
+  "christmas-velvet": "https://pixelinvitedigital.etsy.com/listing/4618643258/christmas-party-invitation-animated", // Purple Vintage Christmas
+  "peach-website": "https://pixelinvitedigital.etsy.com/listing/4622672188/wedding-website-with-animated-envelope", // Peach Website
+  "burgundy-olive-website": "https://pixelinvitedigital.etsy.com/listing/4624111553/wedding-website-with-animated-envelope", // Burgundy Peach Website
+  "chandelier-garden-website": "https://pixelinvitedigital.etsy.com/listing/4624581372/wedding-website-with-animated-envelope", // Chandelier Garden Website
+};
+export const etsyListing = (design: string): string | null => ETSY_LISTING[design] ?? null;
 /** The design that a demo address stands for (the same text when it has no special address) */
 export const designOfDemo = (address: string) => DEMO_DESIGN[address] ?? address;
 /** The address that replaced the old one, or null when this address is the current one */

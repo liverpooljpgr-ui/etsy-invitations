@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Experience } from "@/components/invitation/Experience";
-import { demoContent, designOfDemo, newerDemoAddress } from "@/lib/demo";
+import { demoContent, designOfDemo, etsyListing, newerDemoAddress } from "@/lib/demo";
 import { TEMPLATES, type TemplateSlug } from "@/lib/templates";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -28,6 +28,7 @@ export default async function DemoPage({ params, searchParams }: { params: Promi
   if (newer) redirect(`/demo/${newer}${bare ? `?bare=${encodeURIComponent(bare)}` : ""}`);
   const template = designOfDemo(address);
   if (!(TEMPLATES as readonly string[]).includes(template) || !(await nameOf(template))) notFound();
+  const etsy = etsyListing(template);
   return (
     <main className="px-4 py-6">
       {!bare && (
@@ -37,6 +38,16 @@ export default async function DemoPage({ params, searchParams }: { params: Promi
         >
           ← All demos
         </Link>
+      )}
+      {!bare && etsy && (
+        <a
+          href={etsy}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ position: "fixed", top: 10, right: 10, zIndex: 60, width: "max-content", maxWidth: "calc(100vw - 130px)", padding: "8px 14px", borderRadius: 999, background: "#F1641E", color: "#fff", font: "700 11px/1.2 system-ui, sans-serif", letterSpacing: ".05em", textAlign: "center", textDecoration: "none", boxShadow: "0 3px 12px rgba(0,0,0,.28)" }}
+        >
+          CLICK HERE TO SEE IT ON ETSY
+        </a>
       )}
       <Experience content={demoContent(new Date(), template)} mode="public" calendarHref={`/demo/calendar.ics?t=${template}`} template={template as TemplateSlug} />
     </main>

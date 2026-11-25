@@ -53,7 +53,7 @@ const PEACH: WebsiteTheme = {
   ],
   detailsImg: "peach",
   banner: { video: "garden.mp4", poster: "garden-poster.webp" },
-  share: { sealW: 0.57, sealY: 0.64, bg: ["#faf0eb", "#f2e1d9"], ink: "#59394f", caps: "#7b5a6e" },
+  share: { sealW: 0.57, sealY: 0.64, bg: ["#ffffff", "#f7f1ee"], ink: "#59394f", caps: "#7b5a6e" },
   mirror: { vars: {}, ratio: 0.69 },
 };
 
