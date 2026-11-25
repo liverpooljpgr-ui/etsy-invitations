@@ -497,7 +497,7 @@ export function WebsiteExperience({ slug, content: c, mode = "public", calendarH
               </div>
             )}
 
-            {T.before.map(deco)}
+            {(mobileLayout ? T.mobile!.before ?? T.before : T.before).map(deco)}
             <Mirror photo={c.secretPhoto ?? c.photo} placeholder={ph} style={{ ...box("mirror"), ...(T.mirror.vars as CSSProperties) }} img={IMG} ratio={T.mirror.ratio} />
             {(mobileLayout ? T.mobile!.after ?? T.after : T.after).map(deco)}
           </div>

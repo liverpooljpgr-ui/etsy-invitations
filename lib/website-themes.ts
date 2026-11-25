@@ -15,7 +15,7 @@ export type WebsiteTheme = {
   detailsImg: string; // the picture of the button that opens the details page
   banner: { video?: string; poster: string; image?: string }; // the garden under the page: a moving picture, or a painting
   share: { sealW: number; sealY: number; bg: [string, string]; ink: string; caps: string; flap?: { w: number; x: number; y: number } }; // the link-preview picture: the seal (width and height as a part of the envelope), the paper and the colours of the words
-  mobile?: { stage: { w: number; h: number; x0: number; cw: number }; pos: Record<string, Box>; after?: Deco[] }; // a phone: the pieces in one column (a piece missing from pos is not drawn)
+  mobile?: { stage: { w: number; h: number; x0: number; cw: number }; pos: Record<string, Box>; before?: Deco[]; after?: Deco[] }; // a phone: the pieces in one column (a piece missing from pos is not drawn)
   mirror: { vars: Record<string, string>; ratio: number }; // the glass: its shape (clip-path) and its box in the mirror picture
 };
 
@@ -121,12 +121,12 @@ const CHANDELIER: WebsiteTheme = {
     champagne: { x: 136, y: 274, w: 124, h: 113 },
     chandelier: { x: 245, y: 545, w: 232, h: 255 }, // hangs on a long chain from under the envelope (the canopy of the picture is not drawn)
     chain: { x: 355, y: 440, w: 12, h: 150 }, // the chain: from behind the envelope (its bottom is at y 491) down to the crown of the chandelier
-    corner: { x: 530, y: 378, w: 228, h: 255 },
+    corner: { x: 561, y: 390, w: 205, h: 230 }, // the flowers on the corner of the blue card: 20 to the right, 10% smaller
     orchid: { x: 74, y: 722, w: 100, h: 102 },
     olive: { x: 306, y: 790, w: 146, h: 243 },
     tulip: { x: 378, y: 780, w: 94, h: 195 },
     queen: { x: 668, y: 722, w: 96, h: 96 },
-    seal: { x: 452, y: 112, w: 150, h: 75 }, // the wax seal on the lining of the opened envelope
+    seal: { x: 407, y: 195, w: 168, h: 84 }, // the wax seal on the lining of the opened envelope (10% bigger, moved onto the lining)
   },
   before: [],
   after: [
@@ -155,7 +155,7 @@ const CHANDELIER: WebsiteTheme = {
       chain: { x: 307, y: 400, w: 9, h: 64 },
       ornate: { x: 8, y: 452, w: 284, h: 364 },
       green: { x: 40, y: 832, w: 346, h: 237 },
-      corner: { x: 216, y: 762, w: 172, h: 193 },
+      corner: { x: 244, y: 772, w: 155, h: 174 }, // the flowers on the corner of the blue card: 20 to the right, 10% smaller
       orchid: { x: 24, y: 832, w: 84, h: 86 }, // on the top left corner of the blue card
       rsvp: { x: 6, y: 1076, w: 326, h: 311 },
       olive: { x: 300, y: 1090, w: 100, h: 167 },
