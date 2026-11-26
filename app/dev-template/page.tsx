@@ -30,7 +30,7 @@ const sample: Content = {
     { label: "Gift list 2", url: "https://example.com/gifts-2" },
   ],
   extraBlocks: [{ title: "Kids", text: "We love your little ones, and they are very welcome to celebrate with us. A children's corner with games and snacks will be ready, and a nanny will look after the kids during the evening." }],
-  dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"] },
+  dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"], note: "" },
   hotel: { name: "The White Plains Hotel", address: "90 Pine Street, Miami, FL\nBook with code ADELE-OLIVER" },
   rsvp: { deadline: "2027-07-16", email: "adele@mail.com", note: "Please include the names of all guests attending in your RSVP.", online: true, maxParty: 6 },
 };

@@ -1090,6 +1090,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
               <div className="ui-field">
                 {(template === "sage-forest" || template === "white-roses") && (<Field label="Heading of the dress code block"><input className={inputCls} maxLength={30} {...tp("detailsDressCode")} /></Field>)}
                 <Field label="Dress code"><input className={inputCls} maxLength={26} placeholder="Formal attire" value={draft.dressCode.label} onChange={(e) => set("dressCode", { ...draft.dressCode, label: e.target.value })} /></Field>
+                {party && (<Field label="Dress code description (a sentence in regular text, optional)"><textarea className={inputCls} rows={2} maxLength={160} placeholder="Warm knits, velvet and a touch of red" value={draft.dressCode.note ?? ""} onChange={(e) => set("dressCode", { ...draft.dressCode, note: e.target.value })} /></Field>)}
                 <div className="ui-colors">
                   {draft.dressCode.colors.map((c, i) => (
                     <span key={i} className="ui-row-line" style={{ gap: 0 }}>

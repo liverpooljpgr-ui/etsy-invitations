@@ -100,7 +100,7 @@ export const contentSchema = z.object({
   music: z.object({ url: musicUrl, name: text(80) }).nullable().default(null),
   timeline: z.array(z.object({ time: text(20), label: text(60), icon: z.string().max(20).optional() })).max(10),
   registry: z.array(z.object({ label: text(40), url: optUrl })).max(2),
-  dressCode: z.object({ label: text(60), colors: z.array(hex).max(4) }),
+  dressCode: z.object({ label: text(60), colors: z.array(hex).max(4), note: text(160).default("") }), // note: a sentence about the dress code, in regular text (the Christmas designs)
   hotel: z.object({ name: text(100), address: text(200) }),
   parking: text(100).default(""),
   /** blocks of the host's own on the details page of a website design (as many as they like: gifts, kids, transport…) */
@@ -168,7 +168,7 @@ export const defaultContent: Content = {
     { time: "", label: "Reception" },
   ],
   registry: [],
-  dressCode: { label: "", colors: [] },
+  dressCode: { label: "", colors: [], note: "" },
   hotel: { name: "", address: "" },
   parking: "",
   extraBlocks: [],
@@ -202,7 +202,7 @@ export function applyPlan(c: Content, f: PlanFeatures): Content {
     ...c,
     timeline: f.schedule ? c.timeline : [],
     registry: f.registry ? c.registry : [],
-    dressCode: f.dress_code ? c.dressCode : { label: "", colors: [] },
+    dressCode: f.dress_code ? c.dressCode : { label: "", colors: [], note: "" },
   };
 }
 
@@ -231,7 +231,7 @@ export function defaultContentFor(slug: string | null | undefined): Content {
       closing: "We are waiting for you:",
       closingNote: "come hungry, come merry and be ready to have fun!",
     },
-    dressCode: { label: "Cozy & festive", colors: ["#6b7048", "#b5434b", "#c9a96b"] },
+    dressCode: { label: "Cozy & festive", colors: ["#6b7048", "#b5434b", "#c9a96b"], note: "" },
     rsvp: { ...defaultContent.rsvp, note: "Please let us know how many of you are coming." },
   };
 }

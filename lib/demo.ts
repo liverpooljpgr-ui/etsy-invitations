@@ -62,7 +62,7 @@ export function demoContent(now = new Date(), template?: string): Content {
       { label: "Gift list 2", url: "https://example.com/gifts-2" },
     ],
     extraBlocks: [{ title: "Kids", text: "We love your little ones, and they are very welcome to celebrate with us. A children's corner with games and snacks will be ready, and a nanny will look after the kids during the evening." }],
-    dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"] },
+    dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"], note: "" },
     hotel: { name: "Grand Hotel Lakeside", address: "5 Via Roma, Lake Como, Italy\nBook with code ANNA-DANIEL" },
     rsvp: { deadline: day(7), email: "hello@example.com", note: "", online: true, maxParty: 6 },
     ...(template === "christmas-party" ? christmasPartyDemo(now) : {}),
@@ -89,7 +89,7 @@ function christmasPartyDemo(now: Date): Partial<Content> {
     },
     event: { date: `${y}-12-20`, time: "7:00 PM", venue: "The Martins' Home", address: "18 Holly Lane\nYork, United Kingdom", mapUrl: "https://maps.google.com" },
     hotel: { name: "", address: "" },
-    dressCode: { label: "Cozy & festive: warm knits, velvet and a touch of red", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"] },
+    dressCode: { label: "Cozy & festive", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"], note: "Warm knits, velvet and a touch of red are very welcome." },
     registry: [],
     rsvp: { deadline: `${y}-12-13`, email: "hello@example.com", note: "Please let us know how many of you are coming and any food wishes.", online: true, maxParty: 6 },
   };

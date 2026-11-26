@@ -131,7 +131,7 @@ export function Invitation({
   const second = c.couple.second || (ph ? "Beloved" : "");
   const d = parts(c.event.date);
   const registry = c.registry.filter((r) => r.url);
-  const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0);
+  const hasDress = !!(c.dressCode.label || c.dressCode.colors.length > 0 || c.dressCode.note);
   const vel = template === "christmas-velvet"; // Purple Vintage Christmas: the Christmas Party layout with plum and gold pictures (corners at the top, candles at the bottom)
   const party = !!PARTY_TEMPLATES[template]; // the Christmas party: cover, dinner (date, time, place), details, RSVP, closing
   const hasExtra1 = (template === "sage-forest" || template === "white-roses" || party) && !!(c.texts.detailsExtraTitle || c.texts.detailsExtraText);
@@ -296,6 +296,7 @@ export function Invitation({
                         {c.dressCode.colors.map((col, i) => <i key={i} style={{ background: col }} />)}
                       </p>
                       {c.dressCode.label && <p className="val sm">{c.dressCode.label}</p>}
+                      {c.dressCode.note && <p className="dtl-text dtl-dress-note">{c.dressCode.note}</p>}
                     </div>
                   </div>
                 )}

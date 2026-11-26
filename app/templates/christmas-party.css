@@ -652,7 +652,7 @@
    and when a screen is too tall for the phone only the gaps and the pictures shrink (--fit, set by FitScreens), never the text ───────── */
 .inv[data-design="christmas-party"] { --kf:max(var(--k,1), 1); }
 .inv[data-design="christmas-party"] .xm-sheet { gap:calc(30px * var(--k,1) * var(--fit,1)); }
-.inv[data-design="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(24px * var(--k,1) * var(--fit,1)); top:calc(-18px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(8px * var(--k,1) * var(--fit,1)); top:calc(-4px * var(--k,1) * var(--fit,1)); }   /* "Join us for dinner" close to the date */
 .inv[data-design="christmas-party"] .xm-sec .xm-dir { margin-top:calc(12px * var(--k,1) * var(--fit,1)); }
 .inv[data-design="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 12cqw * var(--fit,1)); width:calc(24cqw * var(--fit,1)); }
 .inv[data-design="christmas-party"] .xm-bow { left:calc(50% - 37.5% * var(--fit,1)); width:calc(75% * var(--fit,1)); }
@@ -682,17 +682,21 @@
   .inv[data-design="christmas-party"][data-phase] .stage { margin-top:max(0px, calc((100svh - 722px * var(--k,1)) / 2 - 24px)); }
 }
 
-/* ───────── 102. Both Christmas designs on a short phone: the pictures at the bottom of the screens are half their size (they shrink towards the bottom edge),
-   and the room kept free for them under the text is halved too ───────── */
+/* ───────── 102. Both Christmas designs on a short phone: the pictures at the bottom of the screens are three quarters of their size (they shrink towards the bottom edge),
+   and the room kept free for them under the text shrinks with them ───────── */
 @media (max-height: 700px) {
-  .inv[data-design="christmas-party"] :is(.card-sheet .xm-glass, .xm-table, .card-rsvp .xm-rsvp-art, .xm-tree) { scale:.5; transform-origin:50% 100%; }
-  .inv[data-design="christmas-party"] .card-details .dtl-in { padding-bottom:calc(11cqh * var(--fit,1)); }
-  .inv[data-design="christmas-party"] .card-closing .closing-in { padding-bottom:calc(15cqh * var(--fit,1)); }
-  .inv.inv[data-template][data-design="christmas-velvet"] :is(.card-sheet .xv-house, .card-details .xv-bell, .card-closing .xv-candles) { scale:.5; transform-origin:50% 100%; }
-  .inv.inv[data-template][data-design="christmas-velvet"] .card-sheet .sheet-in { padding-bottom:calc(10cqh + 22.7cqw) !important; }
-  .inv.inv[data-template][data-design="christmas-velvet"] .card-details .dtl-in { padding-bottom:calc(10cqh + 14.3cqw) !important; }
-  .inv.inv[data-template][data-design="christmas-velvet"] .card-closing .closing-in { padding-bottom:calc(10cqh + 18.5cqw) !important; }
+  .inv[data-design="christmas-party"] :is(.card-sheet .xm-glass, .xm-table, .card-rsvp .xm-rsvp-art, .xm-tree) { scale:.75; transform-origin:50% 100%; }
+  .inv[data-design="christmas-party"] .card-details .dtl-in { padding-bottom:calc(16.5cqh * var(--fit,1)); }
+  .inv[data-design="christmas-party"] .card-closing .closing-in { padding-bottom:calc(22.5cqh * var(--fit,1)); }
+  .inv.inv[data-template][data-design="christmas-velvet"] :is(.card-sheet .xv-house, .card-details .xv-bell, .card-closing .xv-candles) { scale:.75; transform-origin:50% 100%; }
+  .inv.inv[data-template][data-design="christmas-velvet"] .card-sheet .sheet-in { padding-bottom:calc(10cqh + 34cqw) !important; }
+  .inv.inv[data-template][data-design="christmas-velvet"] .card-details .dtl-in { padding-bottom:calc(10cqh + 21.5cqw) !important; }
+  .inv.inv[data-template][data-design="christmas-velvet"] .card-closing .closing-in { padding-bottom:calc(10cqh + 27.8cqw) !important; }
 }
 
 /* ───────── 103. "Dinner Party" on the cover 10px further from CHRISTMAS (10px -> 20px) ───────── */
 .inv[data-design="christmas-party"] .xm-join + .xm-title { margin-top:calc(20px * var(--k,1)); }
+
+/* ───────── 104. the glasses on the RSVP screen cast a soft shadow; the dress code description is a sentence in regular text (not capitals) under the colours ───────── */
+.inv[data-design="christmas-party"] .card-rsvp .xm-rsvp-art { filter:drop-shadow(0 2px 2px rgba(60,20,20,.25)) drop-shadow(0 8px 10px rgba(60,20,20,.22)); }
+.inv[data-template="christmas-party"] .dtl-dress .dtl-dress-note { order:3; margin:calc(2px * var(--k,1)) 0 0; text-transform:none; font-variant:normal; font-family:var(--font-xm-garamond), Georgia, serif; }
