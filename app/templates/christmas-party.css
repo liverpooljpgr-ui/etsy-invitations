@@ -24,38 +24,38 @@
 /* ───────── 1. Cover: the wreath, "Join us for", the title ───────── */
 .inv[data-template="christmas-party"] .cover { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(6px * var(--k,1)); padding:calc(34px * var(--k,1)) calc(34px * var(--k,1)) calc(40px * var(--k,1)); }
 .inv[data-template="christmas-party"] .xm-wreath { position:relative; z-index:2; display:block; width:84%; height:auto; margin:0 auto calc(4px * var(--k,1)); filter:drop-shadow(0 6px 8px rgba(70,50,30,.14)); }
-.inv[data-template="christmas-party"] .xm-join { position:relative; z-index:2; display:block; font-family:var(--xm-script); font-size:calc(34px * var(--k,1)); line-height:1; color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .xm-title { position:relative; z-index:2; display:block; max-width:92%; font-family:var(--xm-head); font-weight:700; font-size:calc(25px * var(--k,1)); line-height:1.16; letter-spacing:.05em; color:var(--xm-tan); text-wrap:balance; }
+.inv[data-template="christmas-party"] .xm-join { position:relative; z-index:2; display:block; font-family:var(--xm-script); font-size:calc(34px * var(--kf,var(--k,1))); line-height:1; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-title { position:relative; z-index:2; display:block; max-width:92%; font-family:var(--xm-head); font-weight:700; font-size:calc(25px * var(--kf,var(--k,1))); line-height:1.16; letter-spacing:.05em; color:var(--xm-tan); text-wrap:balance; }
 .inv[data-template="christmas-party"] .xm-title::first-line { color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .env-hint { position:relative; z-index:2; margin-top:calc(14px * var(--k,1)); font-family:var(--xm-head); font-weight:700; font-size:calc(12px * var(--k,1)); letter-spacing:.3em; text-transform:uppercase; color:var(--xm-olive) !important; opacity:1; }
+.inv[data-template="christmas-party"] .env-hint { position:relative; z-index:2; margin-top:calc(14px * var(--k,1)); font-family:var(--xm-head); font-weight:700; font-size:calc(12px * var(--kf,var(--k,1))); letter-spacing:.3em; text-transform:uppercase; color:var(--xm-olive) !important; opacity:1; }
 
 /* ───────── 2. Dinner page: hanging ornaments, "Join us for dinner", date and time, host, place, champagne ───────── */
 .inv[data-template="christmas-party"] .card-sheet { container-type:size; padding:0; justify-content:flex-start; }
 .inv[data-template="christmas-party"] .xm-sheet { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1cqh; padding:0 12cqw; }
 .inv[data-template="christmas-party"] .xm-orn { position:absolute; top:7.5cqh; left:calc(50% - 22cqw); width:44cqw; height:auto; z-index:0; }
 .inv[data-template="christmas-party"] .xm-glass { position:absolute; bottom:6.5cqh; left:calc(50% - 15cqw); width:30cqw; height:auto; z-index:0; }
-.inv[data-template="christmas-party"] .xm-script { margin:19cqh 0 .6cqh; font-family:var(--xm-script); font-size:calc(31px * var(--k,1)); line-height:1.05; color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .xm-month { margin:0; font-family:var(--xm-head); font-weight:700; font-size:calc(14px * var(--k,1)); letter-spacing:.2em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-script { margin:19cqh 0 .6cqh; font-family:var(--xm-script); font-size:calc(31px * var(--kf,var(--k,1))); line-height:1.05; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-month { margin:0; font-family:var(--xm-head); font-weight:700; font-size:calc(14px * var(--kf,var(--k,1))); letter-spacing:.2em; text-transform:uppercase; color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .xm-day { margin:0; display:flex; align-items:center; justify-content:center; gap:calc(10px * var(--k,1)); width:100%; }
 .inv[data-template="christmas-party"] .xm-rule { flex:1; height:0; border-top:calc(1px * var(--k,1)) solid var(--xm-tan); max-width:calc(36px * var(--k,1)); }
-.inv[data-template="christmas-party"] .xm-daytext { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); white-space:nowrap; }
-.inv[data-template="christmas-party"] .xm-daytext b { font-weight:700; font-size:calc(30px * var(--k,1)); color:var(--xm-red); letter-spacing:0; line-height:.9; vertical-align:-.06em; padding:0 .08em; }
+.inv[data-template="christmas-party"] .xm-daytext { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--kf,var(--k,1))); letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); white-space:nowrap; }
+.inv[data-template="christmas-party"] .xm-daytext b { font-weight:700; font-size:calc(30px * var(--kf,var(--k,1))); color:var(--xm-red); letter-spacing:0; line-height:.9; vertical-align:-.06em; padding:0 .08em; }
 .inv[data-template="christmas-party"] .xm-daytext sup { font-size:.36em; letter-spacing:.04em; vertical-align:1.25em; font-weight:700; }
-.inv[data-template="christmas-party"] .xm-hosted { margin:1.2cqh 0 0; font-family:var(--xm-head); font-weight:600; font-size:calc(11px * var(--k,1)); letter-spacing:.22em; text-transform:uppercase; color:var(--xm-tan); }
-.inv[data-template="christmas-party"] .xm-host { margin:0; font-family:var(--xm-script); font-size:calc(30px * var(--k,1)); line-height:1; color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .xm-place { margin:1.4cqh 0 0; font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--k,1)); line-height:1.2; letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); text-wrap:balance; }
-.inv[data-template="christmas-party"] .xm-addr { margin:0; font-family:var(--xm-head); font-weight:600; font-size:calc(13.5px * var(--k,1)); line-height:1.35; letter-spacing:.07em; text-transform:uppercase; color:var(--xm-tan); white-space:pre-line; }
-.inv[data-template="christmas-party"] .xm-dir { margin-top:.6cqh; font-family:var(--xm-head); font-weight:700; font-size:calc(11px * var(--k,1)); letter-spacing:.24em; text-transform:uppercase; color:var(--xm-olive); }
+.inv[data-template="christmas-party"] .xm-hosted { margin:1.2cqh 0 0; font-family:var(--xm-head); font-weight:600; font-size:calc(11px * var(--kf,var(--k,1))); letter-spacing:.22em; text-transform:uppercase; color:var(--xm-tan); }
+.inv[data-template="christmas-party"] .xm-host { margin:0; font-family:var(--xm-script); font-size:calc(30px * var(--kf,var(--k,1))); line-height:1; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-place { margin:1.4cqh 0 0; font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--kf,var(--k,1))); line-height:1.2; letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); text-wrap:balance; }
+.inv[data-template="christmas-party"] .xm-addr { margin:0; font-family:var(--xm-head); font-weight:600; font-size:calc(13.5px * var(--kf,var(--k,1))); line-height:1.35; letter-spacing:.07em; text-transform:uppercase; color:var(--xm-tan); white-space:pre-line; }
+.inv[data-template="christmas-party"] .xm-dir { margin-top:.6cqh; font-family:var(--xm-head); font-weight:700; font-size:calc(11px * var(--kf,var(--k,1))); letter-spacing:.24em; text-transform:uppercase; color:var(--xm-olive); }
 
 /* ───────── 3. Details: dress code and presents ───────── */
 .inv[data-template="christmas-party"] .card-details { container-type:size; padding:0; }
 .inv[data-template="christmas-party"] .dtl-in { justify-content:center; gap:3cqh; padding:12cqh 12cqw; }
-.inv[data-template="christmas-party"] .tl-title, .inv[data-template="christmas-party"] .script.tl-title { font-family:var(--xm-script) !important; font-weight:400 !important; text-transform:none !important; letter-spacing:0 !important; font-size:calc(44px * var(--k,1)) !important; line-height:1 !important; color:var(--xm-brown) !important; margin:0 0 1cqh !important; }
+.inv[data-template="christmas-party"] .tl-title, .inv[data-template="christmas-party"] .script.tl-title { font-family:var(--xm-script) !important; font-weight:400 !important; text-transform:none !important; letter-spacing:0 !important; font-size:calc(44px * var(--kf,var(--k,1))) !important; line-height:1 !important; color:var(--xm-brown) !important; margin:0 0 1cqh !important; }
 .inv[data-template="christmas-party"] .dtl-row { gap:4.2cqh; flex:none; justify-content:center; }
 .inv[data-template="christmas-party"] .dtl-blk { gap:calc(8px * var(--k,1)); align-items:center; text-align:center; }
-.inv[data-template="christmas-party"] .caps, .inv[data-template="christmas-party"] .tiny { font-family:var(--xm-head); font-weight:700; font-size:calc(11.5px * var(--k,1)); letter-spacing:.26em; text-transform:uppercase; color:var(--xm-tan); }
-.inv[data-template="christmas-party"] .val, .inv[data-template="christmas-party"] .val.sm { font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--k,1)); letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .dtl-text, .inv[data-template="christmas-party"] .sub { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); line-height:1.45; letter-spacing:.05em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .caps, .inv[data-template="christmas-party"] .tiny { font-family:var(--xm-head); font-weight:700; font-size:calc(11.5px * var(--kf,var(--k,1))); letter-spacing:.26em; text-transform:uppercase; color:var(--xm-tan); }
+.inv[data-template="christmas-party"] .val, .inv[data-template="christmas-party"] .val.sm { font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--kf,var(--k,1))); letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .dtl-text, .inv[data-template="christmas-party"] .sub { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--kf,var(--k,1))); line-height:1.45; letter-spacing:.05em; color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .dtl-custom .dtl-text { max-width:100%; white-space:pre-line; }
 .inv[data-template="christmas-party"] .dots i { border-color:rgba(75,61,51,.25); }
 .inv[data-template="christmas-party"] .qrbox { color:var(--xm-brown); font-family:var(--xm-head); font-weight:600; }
@@ -63,19 +63,19 @@
 /* ───────── 4. RSVP ───────── */
 .inv[data-template="christmas-party"] .card-rsvp { container-type:size; padding:0; }
 .inv[data-template="christmas-party"] .rsvp-in { justify-content:center; padding:10cqh 12cqw; }
-.inv[data-template="christmas-party"] .rsvp-lead { font-family:var(--xm-script) !important; font-size:calc(40px * var(--k,1)) !important; color:var(--xm-brown) !important; text-transform:none !important; letter-spacing:0 !important; }
-.inv[data-template="christmas-party"] .rsvp-big { font-family:var(--xm-head) !important; font-weight:700 !important; font-size:calc(46px * var(--k,1)) !important; letter-spacing:.16em !important; color:var(--xm-tan) !important; }
-.inv[data-template="christmas-party"] .rsvp-by { font-family:var(--xm-head); font-weight:700; font-size:calc(16px * var(--k,1)); letter-spacing:.14em; text-transform:uppercase; color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .rsvp-mail, .inv[data-template="christmas-party"] .rsvp-or { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); letter-spacing:.06em; color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .rsvp-note { font-family:var(--xm-head); font-weight:600; font-size:calc(13.5px * var(--k,1)); letter-spacing:.05em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-lead { font-family:var(--xm-script) !important; font-size:calc(40px * var(--kf,var(--k,1))) !important; color:var(--xm-brown) !important; text-transform:none !important; letter-spacing:0 !important; }
+.inv[data-template="christmas-party"] .rsvp-big { font-family:var(--xm-head) !important; font-weight:700 !important; font-size:calc(46px * var(--kf,var(--k,1))) !important; letter-spacing:.16em !important; color:var(--xm-tan) !important; }
+.inv[data-template="christmas-party"] .rsvp-by { font-family:var(--xm-head); font-weight:700; font-size:calc(16px * var(--kf,var(--k,1))); letter-spacing:.14em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-mail, .inv[data-template="christmas-party"] .rsvp-or { font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--kf,var(--k,1))); letter-spacing:.06em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-note { font-family:var(--xm-head); font-weight:600; font-size:calc(13.5px * var(--kf,var(--k,1))); letter-spacing:.05em; color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .rsvp-open, .inv[data-template="christmas-party"] .rsvp-send { background:var(--xm-olive); color:#f3ecdb; border:1px solid var(--xm-olive); border-radius:999px; font-family:var(--xm-head); font-weight:700; letter-spacing:.24em; text-transform:uppercase; }
 
 /* ───────── 5. Closing: the wreath, the waiting-for-you line, add to calendar ───────── */
 .inv[data-template="christmas-party"] .card-closing { container-type:size; padding:0; }
 .inv[data-template="christmas-party"] .closing-in { justify-content:center; gap:2.4cqh; padding:12cqh 13cqw; }
 .inv[data-template="christmas-party"] .xm-closing-art { display:block; width:62%; height:auto; }
-.inv[data-template="christmas-party"] .closing-text { margin:0; font-family:var(--xm-script); font-size:calc(31px * var(--k,1)); line-height:1.18; letter-spacing:0; color:var(--xm-brown); text-wrap:balance; }
-.inv[data-template="christmas-party"] .closing-cal, .inv[data-template="christmas-party"] .venue-link { font-family:var(--xm-head); font-weight:700; font-size:calc(11px * var(--k,1)); letter-spacing:.24em; text-transform:uppercase; color:var(--xm-olive); }
+.inv[data-template="christmas-party"] .closing-text { margin:0; font-family:var(--xm-script); font-size:calc(31px * var(--kf,var(--k,1))); line-height:1.18; letter-spacing:0; color:var(--xm-brown); text-wrap:balance; }
+.inv[data-template="christmas-party"] .closing-cal, .inv[data-template="christmas-party"] .venue-link { font-family:var(--xm-head); font-weight:700; font-size:calc(11px * var(--kf,var(--k,1))); letter-spacing:.24em; text-transform:uppercase; color:var(--xm-olive); }
 .inv[data-template="christmas-party"] .swipe-hint { color:var(--xm-olive); }
 .inv[data-template="christmas-party"] .music-btn { color:var(--xm-olive); }
 
@@ -91,8 +91,8 @@
 /* ───────── 20. COVER WITH ENVELOPE: wreath at the top, the title, then the envelope (red, with a snowflake wax seal). On tap the flap opens and a second card rises out of the envelope, grows and lands as the next page ───────── */
 .inv[data-template="christmas-party"] .cover { justify-content:flex-start; gap:calc(4px * var(--k,1)); padding:calc(26px * var(--k,1)) calc(30px * var(--k,1)) calc(34px * var(--k,1)); }
 .inv[data-template="christmas-party"] .xm-wreath { width:56%; margin:0 auto 0; }
-.inv[data-template="christmas-party"] .xm-join { font-size:calc(30px * var(--k,1)); }
-.inv[data-template="christmas-party"] .xm-title { font-size:calc(23px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-join { font-size:calc(30px * var(--kf,var(--k,1))); }
+.inv[data-template="christmas-party"] .xm-title { font-size:calc(23px * var(--kf,var(--k,1))); }
 .inv[data-template="christmas-party"] .env-hint { display:none !important; }
 .inv[data-template="christmas-party"] .cover-env { position:relative; z-index:2; width:100%; aspect-ratio:1986/1342; margin:auto 0 calc(6px * var(--k,1)); box-shadow:0 7px 12px rgba(70,35,25,.28); border-radius:1.2% / 1.7%; }
 .inv[data-template="christmas-party"] .env-art { width:100%; aspect-ratio:1986/1342; }
@@ -129,8 +129,8 @@
 .inv[data-template="christmas-party"][data-phase="opening"] .env-btn { transform:none !important; transition:opacity .9s ease 2.9s !important; }
 
 /* ───────── 21. COVER WORDS: "Christmas" big, red capitals (Elsie Swash Caps); under it "dinner party" in black WindSong ───────── */
-.inv[data-template="christmas-party"] .xm-join { font-family:var(--font-xm-big),var(--xm-head),serif; font-weight:900; text-transform:uppercase; font-size:calc(40px * var(--k,1)); line-height:1.05; letter-spacing:.02em; color:var(--xm-red); margin-top:auto; }
-.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-xm-wind),var(--xm-script),cursive; font-weight:500; font-size:calc(44px * var(--k,1)); line-height:1; letter-spacing:0; color:#3a3a3a; margin-bottom:auto; }
+.inv[data-template="christmas-party"] .xm-join { font-family:var(--font-xm-big),var(--xm-head),serif; font-weight:900; text-transform:uppercase; font-size:calc(40px * var(--kf,var(--k,1))); line-height:1.05; letter-spacing:.02em; color:var(--xm-red); margin-top:auto; }
+.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-xm-wind),var(--xm-script),cursive; font-weight:500; font-size:calc(44px * var(--kf,var(--k,1))); line-height:1; letter-spacing:0; color:#3a3a3a; margin-bottom:auto; }
 .inv[data-template="christmas-party"] .xm-title::first-line { color:#3a3a3a; }
 .inv[data-template="christmas-party"] .cover-env { margin-top:calc(8px * var(--k,1)); margin-bottom:calc(6px * var(--k,1)); }
 
@@ -157,19 +157,19 @@
 
 /* ───────── 25. FONTS FROM THE REFERENCE: Playfair Display capitals (deep red) for the big word, Allison for all the scripts, Cormorant SC for the small spaced capitals ───────── */
 .inv[data-template="christmas-party"] { --xm-script:var(--font-allison),cursive; --xm-red:#9b1f2f; }
-.inv[data-template="christmas-party"] .xm-join { font-family:var(--font-sf-serif),Georgia,serif; font-weight:500; font-size:calc(38px * var(--k,1)); letter-spacing:.03em; line-height:1.05; color:var(--xm-red); }
-.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-allison),cursive; font-weight:400; font-size:calc(62px * var(--k,1)); line-height:.9; color:#3a3a3a; }
-.inv[data-template="christmas-party"] .xm-script { font-size:calc(42px * var(--k,1)); }
-.inv[data-template="christmas-party"] .xm-host { font-size:calc(40px * var(--k,1)); }
-.inv[data-template="christmas-party"] :is(.tl-title, .script.tl-title) { font-size:calc(58px * var(--k,1)) !important; }
-.inv[data-template="christmas-party"] .rsvp-lead { font-size:calc(52px * var(--k,1)) !important; }
-.inv[data-template="christmas-party"] .closing-text { font-size:calc(42px * var(--k,1)); line-height:1.08; }
+.inv[data-template="christmas-party"] .xm-join { font-family:var(--font-sf-serif),Georgia,serif; font-weight:500; font-size:calc(38px * var(--kf,var(--k,1))); letter-spacing:.03em; line-height:1.05; color:var(--xm-red); }
+.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-allison),cursive; font-weight:400; font-size:calc(62px * var(--kf,var(--k,1))); line-height:.9; color:#3a3a3a; }
+.inv[data-template="christmas-party"] .xm-script { font-size:calc(42px * var(--kf,var(--k,1))); }
+.inv[data-template="christmas-party"] .xm-host { font-size:calc(40px * var(--kf,var(--k,1))); }
+.inv[data-template="christmas-party"] :is(.tl-title, .script.tl-title) { font-size:calc(58px * var(--kf,var(--k,1))) !important; }
+.inv[data-template="christmas-party"] .rsvp-lead { font-size:calc(52px * var(--kf,var(--k,1))) !important; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(42px * var(--kf,var(--k,1))); line-height:1.08; }
 
 /* ───────── 26. COVER: small capitals line + Christmas separator above the big word; "dinner party" smaller ───────── */
-.inv[data-template="christmas-party"] .xm-intro { position:relative; z-index:2; display:block; margin-top:auto; font-family:var(--xm-head); font-weight:600; font-size:calc(13px * var(--k,1)); letter-spacing:.26em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-intro { position:relative; z-index:2; display:block; margin-top:auto; font-family:var(--xm-head); font-weight:600; font-size:calc(13px * var(--kf,var(--k,1))); letter-spacing:.26em; text-transform:uppercase; color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .xm-sep { position:relative; z-index:2; display:block; width:58%; height:auto; margin:calc(4px * var(--k,1)) auto calc(6px * var(--k,1)); }
 .inv[data-template="christmas-party"] .xm-intro ~ .xm-join { margin-top:0; }
-.inv[data-template="christmas-party"] .xm-title { font-size:calc(46px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-title { font-size:calc(46px * var(--kf,var(--k,1))); }
 .inv[data-template="christmas-party"] :is(.xm-intro, .xm-sep) { transition:opacity .4s ease; }
 .inv[data-template="christmas-party"][data-phase="opening"] :is(.xm-intro, .xm-sep) { opacity:0; }
 
@@ -253,8 +253,8 @@
 
 /* ───────── 37. cover texts: CHRISTMAS regular weight (400); small line 2px smaller (13 -> 11px); "dinner party" in Mrs Saint Delafield, 5px below the big word ───────── */
 .inv[data-template="christmas-party"] .xm-join { font-weight:400; }
-.inv[data-template="christmas-party"] .xm-intro { font-size:calc(11px * var(--k,1)); }
-.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-ms-script),cursive; font-weight:400; font-size:calc(52px * var(--k,1)); margin-top:calc(5px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-intro { font-size:calc(11px * var(--kf,var(--k,1))); }
+.inv[data-template="christmas-party"] .xm-title { font-family:var(--font-ms-script),cursive; font-weight:400; font-size:calc(52px * var(--kf,var(--k,1))); margin-top:calc(5px * var(--k,1)); }
 .inv[data-template="christmas-party"] .xm-title { margin-top:calc(15px * var(--k,1)); }
 .inv[data-template="christmas-party"] .xm-intro { margin-bottom:calc(5px * var(--k,1)); letter-spacing:.2em; }
 .inv[data-template="christmas-party"] .cover { padding-bottom:calc(140px * var(--k,1)); }   /* block 30px higher than the 80px version (50px up, then 20px down) */
@@ -327,7 +327,7 @@
 .inv[data-template="christmas-party"] .xm-deco { top:calc(-40px * var(--k,1)); }   /* ornament another 20px higher */
 .inv[data-template="christmas-party"] .xm-deco { top:calc(-50px * var(--k,1)); }   /* ornament another 10px higher */
 .inv[data-template="christmas-party"] .cover { padding-bottom:calc(140px * var(--k,1)); }   /* text + envelope block 20px higher (was 100px) */
-.inv[data-template="christmas-party"] .xm-intro { font-size:calc(12px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-intro { font-size:calc(12px * var(--kf,var(--k,1))); }
 .inv[data-template="christmas-party"] .cover { padding-bottom:calc(150px * var(--k,1)); }   /* block 5px higher (was 140px) */
 .inv[data-template="christmas-party"] .cover-env { width:88%; }   /* envelope 10% bigger (80% -> 88%); the flap and the seal scale with it */
 
@@ -351,7 +351,7 @@
 .inv[data-template="christmas-party"] .rsvp-in { padding-top:12cqh; padding-bottom:12cqh; }
 .inv[data-template="christmas-party"] .closing-in { padding-top:12cqh; padding-bottom:12cqh; }
 .inv[data-template="christmas-party"] :is(.dtl-in, .rsvp-in, .closing-in) { box-sizing:border-box; min-height:100%; justify-content:center; }
-.inv[data-template="christmas-party"] .xm-title { font-size:calc(49px * var(--k,1)); }   /* "dinner party" 49px */
+.inv[data-template="christmas-party"] .xm-title { font-size:calc(49px * var(--kf,var(--k,1))); }   /* "dinner party" 49px */
 
 /* ───────── 55. SEPARATOR AT THE BOTTOM OF THE COVER: a golden poinsettia in the centre, a fir branch on each side and a thin line out to the ends ───────── */
 .inv[data-template="christmas-party"] .xm-foot { position:absolute; left:8%; bottom:calc(34px * var(--k,1)); width:84%; max-width:none; height:auto; z-index:1; pointer-events:none; transition:opacity .4s ease; }
@@ -379,12 +379,12 @@
 .inv[data-template="christmas-party"] .rsvp-in .rsvp-or { margin-top:calc(14px * var(--k,1)); }   /* "or answer by e-mail" now sits under the Reply now button */
 
 /* ───────── 61. CLOSING: the first line stays script, the second line is regular text ───────── */
-.inv[data-template="christmas-party"] .closing-note { margin:0; max-width:92%; font-family:var(--xm-head); font-weight:600; font-size:calc(15px * var(--k,1)); line-height:1.5; letter-spacing:.06em; color:var(--xm-brown); text-wrap:balance; }
-.inv[data-template="christmas-party"] .closing-text { font-size:calc(46px * var(--k,1)); }
+.inv[data-template="christmas-party"] .closing-note { margin:0; max-width:92%; font-family:var(--xm-head); font-weight:600; font-size:calc(15px * var(--kf,var(--k,1))); line-height:1.5; letter-spacing:.06em; color:var(--xm-brown); text-wrap:balance; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(46px * var(--kf,var(--k,1))); }
 
 /* ───────── 62. the baubles ornament on the closing screen is removed; the script line is a little smaller so it fits on one line ───────── */
 .inv[data-template="christmas-party"] .xm-closing-art { display:none !important; }
-.inv[data-template="christmas-party"] .closing-text { font-size:calc(40px * var(--k,1)); }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(40px * var(--kf,var(--k,1))); }
 
 /* ───────── 63. DINNER SCREEN in three sections with gaps between them: (1) "Join us for dinner" + the date, (2) hosted by, (3) the place and address ───────── */
 .inv[data-template="christmas-party"] .xm-sheet { gap:calc(30px * var(--k,1)); }
@@ -399,50 +399,50 @@
 .inv[data-template="christmas-party"] .rsvp-in .rsvp-or { margin-top:calc(16px * var(--k,1)); }
 
 /* ───────── 65. "Join us for dinner": red capitals in the same font as CHRISTMAS on the cover, smaller ───────── */
-.inv[data-template="christmas-party"] .xm-script { font-family:var(--font-sf-serif),Georgia,serif; font-weight:400; font-size:calc(21px * var(--k,1)); line-height:1.15; letter-spacing:.05em; text-transform:uppercase; color:var(--xm-red); text-wrap:balance; }
+.inv[data-template="christmas-party"] .xm-script { font-family:var(--font-sf-serif),Georgia,serif; font-weight:400; font-size:calc(21px * var(--kf,var(--k,1))); line-height:1.15; letter-spacing:.05em; text-transform:uppercase; color:var(--xm-red); text-wrap:balance; }
 
 /* ───────── 66. the time in the date line is bigger ───────── */
-.inv[data-template="christmas-party"] .xm-time { font-size:calc(20px * var(--k,1)); font-weight:700; letter-spacing:.06em; vertical-align:-.05em; }
+.inv[data-template="christmas-party"] .xm-time { font-size:calc(20px * var(--kf,var(--k,1))); font-weight:700; letter-spacing:.06em; vertical-align:-.05em; }
 
 /* ───────── 67. the street address: small regular text (not capitals); more space under "Join us for dinner" ───────── */
-.inv[data-template="christmas-party"] .xm-addr { font-family:var(--xm-head); font-weight:500; font-size:calc(13px * var(--k,1)); line-height:1.45; letter-spacing:.03em; text-transform:none; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-addr { font-family:var(--xm-head); font-weight:500; font-size:calc(13px * var(--kf,var(--k,1))); line-height:1.45; letter-spacing:.03em; text-transform:none; color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(18px * var(--k,1)); }
 .inv[data-template="christmas-party"] .xm-sec .xm-script { font-weight:600; }   /* "Join us for dinner" semi-bold (600) */
 
 /* ───────── 68. "Join us for dinner": elegant script (Allison) in black; the host's name: red capitals in the CHRISTMAS font, weight 400 ───────── */
-.inv[data-template="christmas-party"] .xm-sec .xm-script { font-family:var(--font-allison),cursive; font-weight:400; font-size:calc(42px * var(--k,1)); line-height:1; letter-spacing:0; text-transform:none; color:#1c1c1c; }
-.inv[data-template="christmas-party"] .xm-host { font-family:var(--font-sf-serif),Georgia,serif; font-weight:400; font-size:calc(24px * var(--k,1)); line-height:1.15; letter-spacing:.05em; text-transform:uppercase; color:var(--xm-red); }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-family:var(--font-allison),cursive; font-weight:400; font-size:calc(42px * var(--kf,var(--k,1))); line-height:1; letter-spacing:0; text-transform:none; color:#1c1c1c; }
+.inv[data-template="christmas-party"] .xm-host { font-family:var(--font-sf-serif),Georgia,serif; font-weight:400; font-size:calc(24px * var(--kf,var(--k,1))); line-height:1.15; letter-spacing:.05em; text-transform:uppercase; color:var(--xm-red); }
 
 /* ───────── 69. ONE SCRIPT FONT EVERYWHERE: the one on the cover ("dinner party": Mrs Saint Delafield) replaces Allison on the other screens; sizes tuned for it ───────── */
 .inv[data-template="christmas-party"] { --xm-script:var(--font-ms-script),"Brush Script MT",cursive; }
-.inv[data-template="christmas-party"] .xm-sec .xm-script { font-family:var(--font-ms-script),cursive; font-size:calc(44px * var(--k,1)); }
-.inv[data-template="christmas-party"] :is(.tl-title, .script.tl-title) { font-size:calc(56px * var(--k,1)) !important; }
-.inv[data-template="christmas-party"] .rsvp-lead { font-size:calc(52px * var(--k,1)) !important; }
-.inv[data-template="christmas-party"] .closing-text { font-size:calc(40px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-family:var(--font-ms-script),cursive; font-size:calc(44px * var(--kf,var(--k,1))); }
+.inv[data-template="christmas-party"] :is(.tl-title, .script.tl-title) { font-size:calc(56px * var(--kf,var(--k,1))) !important; }
+.inv[data-template="christmas-party"] .rsvp-lead { font-size:calc(52px * var(--kf,var(--k,1))) !important; }
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(40px * var(--kf,var(--k,1))); }
 .inv[data-template="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 13.5cqw); width:27cqw; }   /* dinner glasses 27cqw wide, centred */
-.inv[data-template="christmas-party"] .closing-text { font-size:calc(51px * var(--k,1)); color:var(--xm-red); }   /* "We are waiting for you:" 51px, red */
+.inv[data-template="christmas-party"] .closing-text { font-size:calc(51px * var(--kf,var(--k,1))); color:var(--xm-red); }   /* "We are waiting for you:" 51px, red */
 
 /* ───────── 70. regular text: Cormorant SC (Quattrocento was tried and dropped) ───────── */
 .inv[data-template="christmas-party"] { --xm-head:var(--font-xm-head),"Cormorant Garamond",Georgia,serif; }
 
 /* ───────── 71. the host's name looks like the place name: same font, weight, size, spacing and colour ───────── */
-.inv[data-template="christmas-party"] .xm-host { font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--k,1)); line-height:1.2; letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-host { font-family:var(--xm-head); font-weight:700; font-size:calc(17px * var(--kf,var(--k,1))); line-height:1.2; letter-spacing:.1em; text-transform:uppercase; color:var(--xm-brown); }
 
 /* ───────── 72. DINNER SCREEN laid out like the reference: the date row (WEEKDAY | big day number | MONTH, each word between two thin lines), "HOSTED BY NAME" on ONE line, then "At 6:00 PM", the place name and the address ───────── */
 .inv[data-template="christmas-party"] .xm-dayrow { margin:0; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; column-gap:calc(12px * var(--k,1)); width:100%; }
-.inv[data-template="christmas-party"] .xm-wd, .inv[data-template="christmas-party"] .xm-mo { display:block; padding:calc(7px * var(--k,1)) 0; border-top:calc(1px * var(--k,1)) solid var(--xm-tan); border-bottom:calc(1px * var(--k,1)) solid var(--xm-tan); text-align:center; font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--k,1)); letter-spacing:.12em; text-transform:uppercase; color:var(--xm-brown); white-space:nowrap; }
-.inv[data-template="christmas-party"] .xm-num { font-family:var(--xm-head); font-weight:700; font-size:calc(50px * var(--k,1)); line-height:1; letter-spacing:0; color:var(--xm-red); padding:0 calc(2px * var(--k,1)); }
-.inv[data-template="christmas-party"] .xm-hostline { margin:0; text-align:center; font-family:var(--xm-head); font-size:calc(17px * var(--k,1)); line-height:1.25; letter-spacing:.1em; text-transform:uppercase; }
+.inv[data-template="christmas-party"] .xm-wd, .inv[data-template="christmas-party"] .xm-mo { display:block; padding:calc(7px * var(--k,1)) 0; border-top:calc(1px * var(--k,1)) solid var(--xm-tan); border-bottom:calc(1px * var(--k,1)) solid var(--xm-tan); text-align:center; font-family:var(--xm-head); font-weight:600; font-size:calc(14px * var(--kf,var(--k,1))); letter-spacing:.12em; text-transform:uppercase; color:var(--xm-brown); white-space:nowrap; }
+.inv[data-template="christmas-party"] .xm-num { font-family:var(--xm-head); font-weight:700; font-size:calc(50px * var(--kf,var(--k,1))); line-height:1; letter-spacing:0; color:var(--xm-red); padding:0 calc(2px * var(--k,1)); }
+.inv[data-template="christmas-party"] .xm-hostline { margin:0; text-align:center; font-family:var(--xm-head); font-size:calc(17px * var(--kf,var(--k,1))); line-height:1.25; letter-spacing:.1em; text-transform:uppercase; }
 .inv[data-template="christmas-party"] .xm-hostline .xm-hosted { display:inline; margin:0; font-size:inherit; font-weight:600; letter-spacing:.1em; color:var(--xm-tan); }
 .inv[data-template="christmas-party"] .xm-hostline .xm-host { display:inline; margin:0; font-size:inherit; }
-.inv[data-template="christmas-party"] .xm-at { margin:0; font-family:var(--xm-head); font-weight:700; font-size:calc(20px * var(--k,1)); line-height:1.2; letter-spacing:.04em; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .xm-at { margin:0; font-family:var(--xm-head); font-weight:700; font-size:calc(20px * var(--kf,var(--k,1))); line-height:1.2; letter-spacing:.04em; color:var(--xm-brown); }
 
 /* ───────── 73. REGULAR TEXT: Cormorant Garamond in CAPITALS with LINING figures (digits as tall as the letters; Cormorant SC has small, uneven digits) ───────── */
 .inv[data-template="christmas-party"] { --xm-head:var(--font-xm-garamond),"Cormorant Garamond",Georgia,serif; font-feature-settings:"lnum" 1, "kern" 1; font-variant-numeric:lining-nums; }
 .inv[data-template="christmas-party"] :is(.xm-addr, .xm-at, .dtl-text, .sub, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note, .xm-dir, .closing-cal, .xm-hostline, .xm-month, .rsvp-by, .val) { text-transform:uppercase; }
 .inv[data-template="christmas-party"] :is(.xm-addr, .dtl-text, .sub, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-weight:600; letter-spacing:.07em; }
-.inv[data-template="christmas-party"] .xm-at { font-size:calc(17px * var(--k,1)); text-transform:uppercase; }   /* the time: 17px */
-.inv[data-template="christmas-party"] .xm-addr { text-transform:none; font-weight:600; font-size:calc(14.5px * var(--k,1)); letter-spacing:.03em; }   /* the street address: regular text, not capitals */
+.inv[data-template="christmas-party"] .xm-at { font-size:calc(17px * var(--kf,var(--k,1))); text-transform:uppercase; }   /* the time: 17px */
+.inv[data-template="christmas-party"] .xm-addr { text-transform:none; font-weight:600; font-size:calc(14.5px * var(--kf,var(--k,1))); letter-spacing:.03em; }   /* the street address: regular text, not capitals */
 .inv[data-template="christmas-party"] .xm-sec .xm-script { color:#555; }   /* "Join us for dinner" in #555 */
 
 /* ───────── 74. the regular capitals text: weight 400 and a little less letter-spacing ───────── */
@@ -458,22 +458,22 @@
 
 /* ───────── 75. the regular capitals text: weight back to 500, size 16px (the small labels — DRESS CODE, HOSTED…, weekday / month, GET DIRECTIONS — keep their small sizes) ───────── */
 .inv[data-template="christmas-party"] :is(.xm-wd, .xm-mo, .xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .xm-month, .xm-dir, .caps, .tiny, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note, .closing-cal, .xm-intro) { font-weight:500; }
-.inv[data-template="christmas-party"] :is(.xm-hostline, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-size:calc(16px * var(--k,1)); }
+.inv[data-template="christmas-party"] :is(.xm-hostline, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-size:calc(16px * var(--kf,var(--k,1))); }
 
 /* ───────── 76. the regular capitals text (the 16px lines): weight 600, letter-spacing .055em ───────── */
 .inv[data-template="christmas-party"] :is(.xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { font-weight:600; letter-spacing:.055em; }
 .inv[data-template="christmas-party"] .xm-sec .xm-dir { margin-top:calc(12px * var(--k,1)); }   /* space above "Get directions" */
-.inv[data-template="christmas-party"] .dtl-custom-text { text-transform:none; font-size:calc(17px * var(--k,1)); letter-spacing:.03em; line-height:1.45; }   /* the text of your own blocks (Presents ...): normal case, not capitals */
+.inv[data-template="christmas-party"] .dtl-custom-text { text-transform:none; font-size:calc(17px * var(--kf,var(--k,1))); letter-spacing:.03em; line-height:1.45; }   /* the text of your own blocks (Presents ...): normal case, not capitals */
 .inv[data-template="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 12cqw); width:24cqw; }   /* dinner glasses a bit smaller: 27cqw -> 24cqw */
-.inv[data-template="christmas-party"] .xm-sec .xm-script { font-size:calc(49px * var(--k,1)); }   /* "Join us for party" 49px */
-.inv[data-template="christmas-party"] .xm-sec .xm-script { font-size:calc(45px * var(--k,1)); margin-bottom:calc(10px * var(--k,1)); }   /* "Join us for party": 45px, 10px space under it */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-size:calc(49px * var(--kf,var(--k,1))); }   /* "Join us for party" 49px */
+.inv[data-template="christmas-party"] .xm-sec .xm-script { font-size:calc(45px * var(--kf,var(--k,1))); margin-bottom:calc(10px * var(--k,1)); }   /* "Join us for party": 45px, 10px space under it */
 
 /* ───────── 77. DETAILS SCREEN: the laid dinner table with two chairs and bows stands at the bottom, with a soft shadow on the floor (the shadow is part of the picture) ───────── */
 .inv[data-template="christmas-party"] .xm-table { position:absolute; left:calc(50% - 38cqw); bottom:3cqh; width:76cqw; max-width:none; height:auto; z-index:0; pointer-events:none; }
 .inv[data-template="christmas-party"] .card-details .dtl-in { padding-bottom:26cqh; }
 
 /* ───────── 78. "Please let us know how many of you are coming.": the same font as the venue address (regular case, 600, 14.5px) ───────── */
-.inv[data-template="christmas-party"] .rsvp-note { font-family:var(--xm-head); font-weight:600; font-size:calc(14.5px * var(--k,1)); letter-spacing:.03em; text-transform:none; line-height:1.45; color:var(--xm-brown); }
+.inv[data-template="christmas-party"] .rsvp-note { font-family:var(--xm-head); font-weight:600; font-size:calc(14.5px * var(--kf,var(--k,1))); letter-spacing:.03em; text-transform:none; line-height:1.45; color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .card-details :is(.caps, .tiny) { font-weight:700; }   /* the headings of the Details blocks (DRESS CODE, PRESENTS ...) heavier */
 .inv[data-template="christmas-party"] .xm-table { left:calc(50% - 31cqw); width:62cqw; }   /* table smaller: 76cqw -> 62cqw */
 .inv[data-template="christmas-party"] .card-details .dtl-in { padding-bottom:22cqh; }
@@ -484,22 +484,22 @@
 .inv[data-template="christmas-party"] :is(.xm-addr, .dtl-custom-text, .rsvp-note) { letter-spacing:.01em; }   /* normal-case text: less letter-spacing */
 
 /* ───────── 80. button text: the CHRISTMAS font (Playfair Display), small ───────── */
-.inv[data-template="christmas-party"] :is(.rsvp-open, .rsvp-send) { font-family:var(--font-sf-serif),Georgia,serif; font-weight:500; font-size:calc(13px * var(--k,1)); letter-spacing:.14em; text-transform:uppercase; }
+.inv[data-template="christmas-party"] :is(.rsvp-open, .rsvp-send) { font-family:var(--font-sf-serif),Georgia,serif; font-weight:500; font-size:calc(13px * var(--kf,var(--k,1))); letter-spacing:.14em; text-transform:uppercase; }
 .inv[data-template="christmas-party"] .xm-sec { gap:calc(2px * var(--k,1)); }   /* gap between the lines inside each dinner section: 2px */
 .inv[data-template="christmas-party"] .xm-addr { padding-left:calc(20px * var(--k,1)); padding-right:calc(20px * var(--k,1)); box-sizing:border-box; }   /* address: 20px padding left and right */
 .inv[data-template="christmas-party"] :is(.rsvp-note, .dtl-custom-text) { line-height:1.3em; letter-spacing:.03em; }   /* "Please let us know how many of you are coming." and your own Details blocks */
 .inv[data-template="christmas-party"] .xm-addr { color:#a9822f; }   /* the street address in gold */
 
 /* ───────── 82. "or answer by e-mail …": gold, the same font as the venue address (normal case, 600, 14.5px) ───────── */
-.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-family:var(--xm-head); font-weight:600; font-size:calc(14.5px * var(--k,1)); letter-spacing:.01em; text-transform:none; line-height:1.3; color:#a9822f; }
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-family:var(--xm-head); font-weight:600; font-size:calc(14.5px * var(--kf,var(--k,1))); letter-spacing:.01em; text-transform:none; line-height:1.3; color:#a9822f; }
 .inv[data-template="christmas-party"] .xm-addr { color:var(--xm-tan); }   /* venue address: the tan of the labels */
 .inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { color:var(--xm-tan); }   /* the e-mail line matches it */
-.inv[data-template="christmas-party"] .dtl-custom-text { font-size:calc(13px * var(--k,1)); letter-spacing:.03em; }   /* texts of your own Details blocks: 13px */
+.inv[data-template="christmas-party"] .dtl-custom-text { font-size:calc(13px * var(--kf,var(--k,1))); letter-spacing:.03em; }   /* texts of your own Details blocks: 13px */
 
 /* ───────── 83. overrides the .055em of section 76: letter-spacing .03em on the same lines (weight stays 600) ───────── */
 .inv[data-template="christmas-party"] :is(.xm-hostline, .xm-hostline .xm-hosted, .xm-hostline .xm-host, .xm-at, .xm-place, .val, .val.sm, .dtl-text, .sub, .rsvp-by, .rsvp-note, .rsvp-or, .rsvp-mail, .closing-note) { letter-spacing:.03em; }
 .inv[data-template="christmas-party"] .rsvp-big { margin-top:calc(-10px * var(--k,1)); }   /* RSVP: 10px closer to "Please" */
-.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-size:calc(14px * var(--k,1)); }   /* "or answer by e-mail …": 14px */
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-size:calc(14px * var(--kf,var(--k,1))); }   /* "or answer by e-mail …": 14px */
 .inv[data-template="christmas-party"] .rsvp-open { margin-top:calc(50px * var(--k,1)); }   /* Reply now: 50px below the sentence */
 
 /* ───────── 84. the golden snowflake divider from the cover, under the Details heading and under RSVP ───────── */
@@ -512,24 +512,24 @@
 .inv[data-template="christmas-party"] .rsvp-title { margin-bottom:calc(25px * var(--k,1)); }   /* RSVP title: 25px below (the divider under it now sits 25px from it) */
 .inv[data-template="christmas-party"] .card-rsvp .xm-sep3 { margin-top:0; }
 .inv[data-template="christmas-party"] .rsvp-title { margin-bottom:calc(10px * var(--k,1)); }   /* RSVP title: 10px below; the divider follows right after */
-.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-size:calc(12px * var(--k,1)); }   /* "or answer by e-mail …": 12px */
+.inv[data-template="christmas-party"] :is(.rsvp-or, .rsvp-mail) { font-size:calc(12px * var(--kf,var(--k,1))); }   /* "or answer by e-mail …": 12px */
 
 /* ───────── 86. FIX: several size rules above were being overridden by the longer selector lists of sections 75–76 (a longer list wins over a later short rule). The ".card" in front makes these win. ───────── */
-.inv[data-template="christmas-party"] .card .xm-at { font-size:calc(17px * var(--k,1)); }                                   /* the time: 17px */
-.inv[data-template="christmas-party"] .card .rsvp-note { font-size:calc(14.5px * var(--k,1)); text-transform:none; }          /* the sentence above Reply now: like the address */
-.inv[data-template="christmas-party"] .card :is(.rsvp-or, .rsvp-mail) { font-size:calc(12px * var(--k,1)); }                 /* "or answer by e-mail …": 12px */
-.inv[data-template="christmas-party"] .card .dtl-custom-text { font-size:calc(13px * var(--k,1)); }                          /* your own Details blocks: 13px */
+.inv[data-template="christmas-party"] .card .xm-at { font-size:calc(17px * var(--kf,var(--k,1))); }                                   /* the time: 17px */
+.inv[data-template="christmas-party"] .card .rsvp-note { font-size:calc(14.5px * var(--kf,var(--k,1))); text-transform:none; }          /* the sentence above Reply now: like the address */
+.inv[data-template="christmas-party"] .card :is(.rsvp-or, .rsvp-mail) { font-size:calc(12px * var(--kf,var(--k,1))); }                 /* "or answer by e-mail …": 12px */
+.inv[data-template="christmas-party"] .card .dtl-custom-text { font-size:calc(13px * var(--kf,var(--k,1))); }                          /* your own Details blocks: 13px */
 
 /* ───────── 87. RSVP texts: the e-mail line 14px; the sentence above Reply now 16px; "or answer by e-mail" in the regular brown (the address itself stays tan) ───────── */
-.inv[data-template="christmas-party"] .card :is(.rsvp-or, .rsvp-mail) { font-size:calc(14px * var(--k,1)); }
-.inv[data-template="christmas-party"] .card .rsvp-note { font-size:calc(16px * var(--k,1)); }
+.inv[data-template="christmas-party"] .card :is(.rsvp-or, .rsvp-mail) { font-size:calc(14px * var(--kf,var(--k,1))); }
+.inv[data-template="christmas-party"] .card .rsvp-note { font-size:calc(16px * var(--kf,var(--k,1))); }
 .inv[data-template="christmas-party"] .card .rsvp-or { color:var(--xm-brown); }
 .inv[data-template="christmas-party"] .card .rsvp-or .rsvp-mail { color:var(--xm-tan); }
 
 /* ───────── 88. the venue address: not tan, just a little greyer than the regular text; the e-mail address: the regular colour ───────── */
 .inv[data-template="christmas-party"] .card .xm-addr { color:#6d625b; }
 .inv[data-template="christmas-party"] .card .rsvp-or .rsvp-mail, .inv[data-template="christmas-party"] .card .rsvp-mail { color:var(--xm-brown); }
-.inv[data-template="christmas-party"] .card .dtl-custom-text { font-size:calc(16px * var(--k,1)); }   /* the text of your own Details blocks: 16px */
+.inv[data-template="christmas-party"] .card .dtl-custom-text { font-size:calc(16px * var(--kf,var(--k,1))); }   /* the text of your own Details blocks: 16px */
 
 /* ───────── 89. CLOSING SCREEN: a decorated tree under strings of lights at the bottom, wider than the card (the card clips the ends of the strings) ───────── */
 .inv[data-template="christmas-party"] .card-closing { overflow:hidden; }
@@ -647,3 +647,24 @@
 .inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-addr { animation:xm-fade-up .9s var(--e1) 7.49s both; }
 .inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .xm-dir { animation:xm-fade-up .9s var(--e1) 7.66s both; }
 .inv[data-template="christmas-party"][data-phase]:not([data-phase="closed"]) .card-sheet .sheet-in > .xm-glass { animation:xm-glass-in 1.5s var(--e1) 8.2s both !important; }
+
+/* ───────── 99. Christmas Party (not Purple Vintage, which shares this sheet): the text never gets smaller than its design size on a small phone,
+   and when a screen is too tall for the phone only the gaps and the pictures shrink (--fit, set by FitScreens), never the text ───────── */
+.inv[data-design="christmas-party"] { --kf:max(var(--k,1), 1); }
+.inv[data-design="christmas-party"] .xm-sheet { gap:calc(30px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .xm-sec .xm-script { margin-bottom:calc(24px * var(--k,1) * var(--fit,1)); top:calc(-18px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .xm-sec .xm-dir { margin-top:calc(12px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .card-sheet .xm-glass { left:calc(50% - 12cqw * var(--fit,1)); width:calc(24cqw * var(--fit,1)); }
+.inv[data-design="christmas-party"] .xm-bow { left:calc(50% - 37.5% * var(--fit,1)); width:calc(75% * var(--fit,1)); }
+.inv[data-design="christmas-party"] .card-details .dtl-in { gap:calc(3cqh * var(--fit,1)); padding-top:calc(12cqh * var(--fit,1)); padding-bottom:calc(22cqh * var(--fit,1)); }
+.inv[data-design="christmas-party"] .dtl-row { gap:calc(4.2cqh * var(--fit,1)); }
+.inv[data-design="christmas-party"] .dtl-blk { gap:calc(8px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .xm-table { left:calc(50% - 31cqw * var(--fit,1)); width:calc(62cqw * var(--fit,1)); }
+.inv[data-design="christmas-party"] .rsvp-in { padding-top:calc(12cqh * var(--fit,1)); padding-bottom:calc(12cqh * var(--fit,1)); }
+.inv[data-design="christmas-party"] .rsvp-title { margin-bottom:calc(10px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .rsvp-by { margin-bottom:calc(18px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .rsvp-open { margin-top:calc(50px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .rsvp-in .rsvp-or { margin-top:calc(14px * var(--k,1) * var(--fit,1)); }
+.inv[data-design="christmas-party"] .card-rsvp .xm-rsvp-art { left:calc(50% - 15cqw * var(--fit,1)); width:calc(30cqw * var(--fit,1)); }
+.inv[data-design="christmas-party"] .card-closing .closing-in { gap:calc(2.4cqh * var(--fit,1)); padding-top:calc(12cqh * var(--fit,1)); padding-bottom:calc(30cqh * var(--fit,1)); }
+.inv[data-design="christmas-party"] .xm-tree { left:calc(50% - 70% * var(--fit,1)); width:calc(140% * var(--fit,1)); }

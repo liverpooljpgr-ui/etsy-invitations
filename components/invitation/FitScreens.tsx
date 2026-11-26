@@ -18,17 +18,27 @@ export function FitScreens() {
     const fit = () => {
       const k = parseFloat(getComputedStyle(root).getPropertyValue("--k")) || 1;
       const reserve = 54 * k; // room kept free at the top and at the bottom (the arrow)
+      const gapsOnly = root.getAttribute("data-design") === "christmas-party"; // this design keeps its text size: only the gaps and the pictures get smaller (CSS var --fit)
       root.querySelectorAll<HTMLElement>(WRAPPERS).forEach((w) => {
         w.style.scale = "";
         const card = w.closest<HTMLElement>(".card");
         if (!card) return;
-        let top = Infinity, bottom = -Infinity;
-        for (const c of Array.from(w.children) as HTMLElement[]) {
-          if (getComputedStyle(c).position === "absolute") continue;
-          top = Math.min(top, c.offsetTop);
-          bottom = Math.max(bottom, c.offsetTop + c.offsetHeight + (parseFloat(getComputedStyle(c).marginBottom) || 0));
+        const measure = () => {
+          let top = Infinity, bottom = -Infinity;
+          for (const c of Array.from(w.children) as HTMLElement[]) {
+            if (getComputedStyle(c).position === "absolute") continue;
+            top = Math.min(top, c.offsetTop);
+            bottom = Math.max(bottom, c.offsetTop + c.offsetHeight + (parseFloat(getComputedStyle(c).marginBottom) || 0));
+          }
+          return bottom - top;
+        };
+        const room = card.clientHeight - 2 * reserve;
+        if (gapsOnly) {
+          card.style.removeProperty("--fit");
+          for (let f = 0.95; f >= 0.3 && room > 0 && measure() > room * 1.01; f -= 0.05) card.style.setProperty("--fit", f.toFixed(2));
+          return;
         }
-        const content = bottom - top, room = card.clientHeight - 2 * reserve;
+        const content = measure();
         if (content > 0 && room > 0 && content > room * 1.01) w.style.scale = String(Math.max(0.55, room / content));
       });
     };
