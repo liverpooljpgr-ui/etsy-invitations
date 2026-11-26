@@ -1,10 +1,13 @@
 /** The invitation designs we sell (and the Peach Website, a one-page wedding website). The slug is what the `templates` table stores; the page paints itself from it. */
-export const TEMPLATES = ["sage-story", "white-roses", "mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party", "christmas-velvet", "peach-website", "burgundy-olive-website", "chandelier-garden-website", "dahlia-village-website"] as const;
+export const TEMPLATES = ["sage-story", "white-roses", "mono-script", "cupid-script", "lilac-script", "sage-forest", "christmas-party", "christmas-velvet", "peach-website", "burgundy-olive-website", "chandelier-garden-website", "country-dahlia-wedding-website"] as const;
 export type TemplateSlug = (typeof TEMPLATES)[number];
 export const DEFAULT_TEMPLATE: TemplateSlug = "sage-story";
 
+/** Old internal names of designs that were renamed: a database row may still carry one */
+const OLD_NAMES: Record<string, TemplateSlug> = { "dahlia-village-website": "country-dahlia-wedding-website" };
 export function templateSlug(v: unknown): TemplateSlug {
-  return (TEMPLATES as readonly string[]).includes(v as string) ? (v as TemplateSlug) : DEFAULT_TEMPLATE;
+  const s = OLD_NAMES[v as string] ?? v;
+  return (TEMPLATES as readonly string[]).includes(s as string) ? (s as TemplateSlug) : DEFAULT_TEMPLATE;
 }
 
 /** Where each design keeps its envelope pictures (and their file type). White Roses has its own envelope pictures (made from the files in assets/white-roses). */
@@ -20,15 +23,15 @@ export const ENVELOPE_ART: Record<TemplateSlug, { base: string; ext: "webp" | "s
   "peach-website": { base: "/templates/forest/v1", ext: "webp" },
   "burgundy-olive-website": { base: "/templates/forest/v1", ext: "webp" }, // the wedding website uses the Sage Garden pictures
   "chandelier-garden-website": { base: "/templates/forest/v1", ext: "webp" },
-  "dahlia-village-website": { base: "/templates/forest/v1", ext: "webp" },
+  "country-dahlia-wedding-website": { base: "/templates/forest/v1", ext: "webp" },
 };
 
 /** The shape the couple's photo is shown in: the first design uses an arch, White Roses an oval. */
 export type PhotoShape = "arch" | "oval" | "rect";
-export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-script": "rect", "cupid-script": "rect", "lilac-script": "rect", "sage-forest": "arch", "christmas-party": "rect", "christmas-velvet": "rect", "peach-website": "rect", "burgundy-olive-website": "rect", "chandelier-garden-website": "rect", "dahlia-village-website": "rect" };
+export const PHOTO_SHAPE: Record<TemplateSlug, PhotoShape> = { "sage-story": "arch", "white-roses": "oval", "mono-script": "rect", "cupid-script": "rect", "lilac-script": "rect", "sage-forest": "arch", "christmas-party": "rect", "christmas-velvet": "rect", "peach-website": "rect", "burgundy-olive-website": "rect", "chandelier-garden-website": "rect", "country-dahlia-wedding-website": "rect" };
 
 /** Width / height of the photo frame (the crop tool and the invitation use the same one). 3 / 4 unless a design says otherwise. */
-export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-script": 12 / 13, "cupid-script": 12 / 13, "lilac-script": 12 / 13, "sage-forest": 13 / 16, "christmas-party": 3 / 4, "christmas-velvet": 3 / 4, "peach-website": 3 / 4, "burgundy-olive-website": 0.81, "chandelier-garden-website": 0.77, "dahlia-village-website": 0.77 };
+export const PHOTO_FRAME: Record<TemplateSlug, number> = { "sage-story": 3 / 4, "white-roses": 3 / 4, "mono-script": 12 / 13, "cupid-script": 12 / 13, "lilac-script": 12 / 13, "sage-forest": 13 / 16, "christmas-party": 3 / 4, "christmas-velvet": 3 / 4, "peach-website": 3 / 4, "burgundy-olive-website": 0.81, "chandelier-garden-website": 0.77, "country-dahlia-wedding-website": 0.77 };
 
 /** A wax seal picture lying on the closed envelope (it dissolves when the envelope is tapped). Only the designs listed here have one. */
 export const ENVELOPE_SEAL: Partial<Record<TemplateSlug, string>> = { "mono-script": "/templates/script/v1/seal.webp", "cupid-script": "/templates/cupid/v1/seal.webp", "lilac-script": "/templates/lilac/v1/seal.webp", "sage-forest": "/templates/forest/v1/seal.webp", "christmas-party": "/templates/christmas/v1/seal.webp", "christmas-velvet": "/templates/christmas-velvet/v1/seal.webp" };
@@ -57,7 +60,7 @@ export function coverBottomText(template: TemplateSlug | undefined, value: strin
 
 /** The Christmas party design is not a wedding: its host is one name ("The Martins"), its pages are cover, dinner (date, time, place), details, RSVP and closing. */
 /** Website-type designs: not an invitation but a one-page wedding website (the envelope, a page of cards, a details page). They have their own editor, with the sections in the order of the website, and their own page (components/website). */
-export const WEBSITE_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "peach-website": true, "burgundy-olive-website": true, "chandelier-garden-website": true, "dahlia-village-website": true };
+export const WEBSITE_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "peach-website": true, "burgundy-olive-website": true, "chandelier-garden-website": true, "country-dahlia-wedding-website": true };
 export const isWebsiteTemplate = (t: TemplateSlug | string | null | undefined): boolean => !!t && !!(WEBSITE_TEMPLATES as Record<string, true | undefined>)[t];
 
 export const PARTY_TEMPLATES: Partial<Record<TemplateSlug, true>> = { "christmas-party": true, "christmas-velvet": true };

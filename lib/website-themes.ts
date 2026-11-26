@@ -187,8 +187,8 @@ const CHANDELIER: WebsiteTheme = {
 };
 
 const DAHLIA: WebsiteTheme = {
-  slug: "dahlia-village-website",
-  dir: "dahlia-village-website",
+  slug: "country-dahlia-wedding-website",
+  dir: "country-dahlia-wedding-website",
   stage: { w: 800, h: 1600, x0: 6, cw: 750 },
   photoRatio: 0.77,
   pos: {
@@ -227,7 +227,7 @@ const DAHLIA: WebsiteTheme = {
   share: { sealW: 0.38, sealY: 0.77, bg: ["#ffffff", "#f7f1ee"], ink: "#3f5f3a", caps: "#8a5a4a", flap: { w: 1.062, x: -0.031, y: -0.002 } },
   mirror: {
     // the glass is the real oval of the mirror on its stand (found in the picture: mirror-glass.png)
-    vars: { "--glass-clip": "none", "--glass-mask": "url(/templates/dahlia-village-website/v1/mirror-glass.png)", "--gl": "22.47%", "--gt": "10.49%", "--gw": "57.78%", "--gh": "62.1%" },
+    vars: { "--glass-clip": "none", "--glass-mask": "url(/templates/country-dahlia-wedding-website/v1/mirror-glass.png)", "--gl": "22.47%", "--gt": "10.49%", "--gw": "57.78%", "--gh": "62.1%" },
     ratio: 0.6077,
   },
 };

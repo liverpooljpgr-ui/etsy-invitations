@@ -11,7 +11,6 @@ const DEMO_ADDRESS: Record<string, string> = {
   "sage-forest": "sage-garden",
   "christmas-velvet": "purple-vintage-christmas",
   "burgundy-olive-website": "burgundy-peach-website",
-  "dahlia-village-website": "country-dahlia-wedding-website",
 };
 const DEMO_DESIGN: Record<string, string> = Object.fromEntries(Object.entries(DEMO_ADDRESS).map(([design, address]) => [address, design]));
 /** "/demo/burgundy-peach-website" for a design */
@@ -34,7 +33,9 @@ export const etsyListing = (design: string): string | null => ETSY_LISTING[desig
 /** The design that a demo address stands for (the same text when it has no special address) */
 export const designOfDemo = (address: string) => DEMO_DESIGN[address] ?? address;
 /** The address that replaced the old one, or null when this address is the current one */
-export const newerDemoAddress = (address: string) => (DEMO_ADDRESS[address] && DEMO_ADDRESS[address] !== address ? DEMO_ADDRESS[address] : null);
+/** Designs whose internal name changed: the old demo address leads to the new one */
+const RENAMED: Record<string, string> = { "dahlia-village-website": "country-dahlia-wedding-website" };
+export const newerDemoAddress = (address: string) => RENAMED[address] ?? (DEMO_ADDRESS[address] && DEMO_ADDRESS[address] !== address ? DEMO_ADDRESS[address] : null);
 
 /** The sample wedding that every demo shows. The date is always in the future (about 9 months ahead), so the countdown and the "reply by" line look alive. */
 export function demoContent(now = new Date(), template?: string): Content {
@@ -64,5 +65,33 @@ export function demoContent(now = new Date(), template?: string): Content {
     dressCode: { label: "Formal attire", colors: ["#7b7f6a", "#b8964f", "#efe3c9"] },
     hotel: { name: "Grand Hotel Lakeside", address: "5 Via Roma, Lake Como, Italy\nBook with code ANNA-DANIEL" },
     rsvp: { deadline: day(7), email: "hello@example.com", note: "", online: true, maxParty: 6 },
+    ...(template === "christmas-party" ? christmasPartyDemo(now) : {}),
+  };
+}
+
+/** The Christmas Party demo: every part of the invitation filled in (a dinner party on the next 20 December, replies a week before). */
+function christmasPartyDemo(now: Date): Partial<Content> {
+  const y = now.getMonth() === 11 && now.getDate() > 20 ? now.getFullYear() + 1 : now.getFullYear();
+  return {
+    texts: {
+      ...defaultContent.texts,
+      coverIntro: "you are invited to a",
+      coverTop: "Christmas",
+      headline: "Dinner Party",
+      saveTheDate: "Join us for dinner",
+      detailsTitle: "Details",
+      detailsAccommodation: "Stay the night",
+      detailsDressCode: "Dress code",
+      detailsExtraTitle: "Secret Santa",
+      detailsExtraText: "A small wrapped gift (up to $20) for our gift exchange.",
+      rsvpTitle: "please RSVP",
+      closing: "We are waiting for you:",
+      closingNote: "come hungry, come merry and be ready to have fun!",
+    },
+    event: { date: `${y}-12-20`, time: "7:00 PM", venue: "The Martins' Home", address: "18 Holly Lane\nYork, United Kingdom", mapUrl: "https://maps.google.com" },
+    hotel: { name: "Snowy Pines Inn", address: "2 Holly Lane, York" },
+    dressCode: { label: "Cozy & festive", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"] },
+    registry: [],
+    rsvp: { deadline: `${y}-12-13`, email: "hello@example.com", note: "Please let us know how many of you are coming and any food wishes.", online: true, maxParty: 6 },
   };
 }
