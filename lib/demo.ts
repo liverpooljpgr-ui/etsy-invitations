@@ -80,7 +80,6 @@ function christmasPartyDemo(now: Date): Partial<Content> {
       headline: "Dinner Party",
       saveTheDate: "Join us for dinner",
       detailsTitle: "Details",
-      detailsAccommodation: "Stay the night",
       detailsDressCode: "Dress code",
       detailsExtraTitle: "Secret Santa",
       detailsExtraText: "A small wrapped gift (up to $20) for our gift exchange.",
@@ -89,8 +88,8 @@ function christmasPartyDemo(now: Date): Partial<Content> {
       closingNote: "come hungry, come merry and be ready to have fun!",
     },
     event: { date: `${y}-12-20`, time: "7:00 PM", venue: "The Martins' Home", address: "18 Holly Lane\nYork, United Kingdom", mapUrl: "https://maps.google.com" },
-    hotel: { name: "Snowy Pines Inn", address: "2 Holly Lane, York" },
-    dressCode: { label: "Cozy & festive", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"] },
+    hotel: { name: "", address: "" },
+    dressCode: { label: "Cozy & festive: warm knits, velvet and a touch of red", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"] },
     registry: [],
     rsvp: { deadline: `${y}-12-13`, email: "hello@example.com", note: "Please let us know how many of you are coming and any food wishes.", online: true, maxParty: 6 },
   };
