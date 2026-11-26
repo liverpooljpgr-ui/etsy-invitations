@@ -103,7 +103,9 @@ function InvitationExperience({ content, mode = "public", calendarHref, rsvpSlug
       if (st && st.offsetWidth && st.offsetHeight) el.style.setProperty("--card-wh", String(st.offsetWidth / st.offsetHeight)); // shape of a screen (the card that leaves the envelope has the same one)
       // the Christmas party screens were designed for a taller card (722 px at 340 wide) than the other designs (567 px): shorter phones scale it down by height
       const designH = template === "christmas-party" || template === "christmas-velvet" ? 722 : 567;
-      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / designH, 1.9))) : "1");
+      // on a computer the Christmas Party shows its own tall 340 x 722 card, as big as the window's height allows
+      const deskK = template === "christmas-party" ? Math.max(0.85, Math.min(1.3, (window.innerHeight - 40) / designH)) : 1;
+      el.style.setProperty("--k", phone ? String(Math.max(0.8, Math.min(w / 340, tallest / designH, 1.9))) : String(deskK));
     };
     fit();
     window.addEventListener("resize", fit);

@@ -668,3 +668,16 @@
 .inv[data-design="christmas-party"] .card-rsvp .xm-rsvp-art { left:calc(50% - 15cqw * var(--fit,1)); width:calc(30cqw * var(--fit,1)); }
 .inv[data-design="christmas-party"] .card-closing .closing-in { gap:calc(2.4cqh * var(--fit,1)); padding-top:calc(12cqh * var(--fit,1)); padding-bottom:calc(30cqh * var(--fit,1)); }
 .inv[data-design="christmas-party"] .xm-tree { left:calc(50% - 70% * var(--fit,1)); width:calc(140% * var(--fit,1)); }
+
+/* ───────── 100. Christmas Party cover on a smaller phone (a short screen): the decoration at the top 30px higher, the first line 14px, CHRISTMAS 2px bigger ───────── */
+@media (max-height: 700px) {
+  .inv[data-design="christmas-party"] .xm-deco { top:calc(-80px * var(--k,1)); }
+  .inv[data-design="christmas-party"] .xm-intro { font-size:calc(14px * var(--kf,var(--k,1))); }
+  .inv[data-design="christmas-party"] .xm-join { font-size:calc(40px * var(--kf,var(--k,1))); }
+}
+
+/* ───────── 101. Christmas Party on a computer: its own tall card (the screens were designed at 340 x 722), as big as the window's height allows (--k) ───────── */
+@media (min-width: 641px) {
+  .inv[data-design="christmas-party"] :is(.card, .cover, .stage) { width:calc(340px * var(--k,1)); max-width:none; aspect-ratio:340 / 722; }
+  .inv[data-design="christmas-party"][data-phase] .stage { margin-top:max(0px, calc((100svh - 722px * var(--k,1)) / 2 - 24px)); }
+}
