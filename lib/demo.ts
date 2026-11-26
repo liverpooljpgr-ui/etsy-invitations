@@ -51,11 +51,11 @@ export function demoContent(now = new Date(), template?: string): Content {
     photo,
     secretPhoto: photo,
     timeline: [
-      { time: "3:30 PM", label: "Guests arrive" },
-      { time: "4:00 PM", label: "Ceremony" },
-      { time: "5:30 PM", label: "Cocktails" },
-      { time: "7:00 PM", label: "Dinner" },
-      { time: "9:00 PM", label: "First dance" },
+      { time: "3:30 PM", label: "Guests arrive", icon: "car" },
+      { time: "4:00 PM", label: "Ceremony", icon: "rings" },
+      { time: "5:30 PM", label: "Cocktails", icon: "cocktail" },
+      { time: "7:00 PM", label: "Dinner", icon: "dinner" },
+      { time: "9:00 PM", label: "First dance", icon: "dancing" },
     ],
     registry: [
       { label: "Gift list 1", url: "https://example.com/gifts-1" },
