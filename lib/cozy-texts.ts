@@ -4,7 +4,7 @@ export const CZ_DEFAULTS = {
   // the cover: the present
   czCoverTop: "You have received",
   czCoverTitle: "a Christmas invitation",
-  czCoverHint: "Tap the present to open it",
+  czCoverHint: "Tap the box",
   // the street, first screen: the invitation
   czIntro: "You are invited to a",
   czTitle: "Christmas Dinner",

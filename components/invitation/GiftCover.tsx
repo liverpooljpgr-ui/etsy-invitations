@@ -43,7 +43,7 @@ function ringBells() {
  * while a magic shine rises above it like smoke and fades away; its shadow lies under it.
  * Tapped, it wobbles faster, then whirls round while growing until it fills the screen, and vanishes: `onOpen` is called then.
  */
-export function GiftCover({ img, bell, onOpen, top = "You have received", title = "a Christmas invitation", hint = "Tap the present to open it" }: { img: string; bell?: string; onOpen?: () => void; top?: string; title?: string; hint?: string }) {
+export function GiftCover({ img, bell, onOpen, top = "You have received", title = "a Christmas invitation", hint = "Tap the box" }: { img: string; bell?: string; onOpen?: () => void; top?: string; title?: string; hint?: string }) {
   const [phase, setPhase] = useState<"idle" | "shake" | "whirl" | "gone">("idle");
   const done = useRef(false);
   useEffect(() => {

@@ -541,3 +541,17 @@
   .gs-p3 .gs-link, .gs-p4 .gs-link { font-size:13px; } /* "Get directions" and "Add to calendar": 3px bigger */
 }
 .gs-lamp::before { display:none; } /* the street lamps are not lit: no warm glow around them */
+
+/* the words of every screen appear one after another (rise a little and fade in) each time their screen is reached;
+   "backwards" only: once shown, the screen's own rules take over again (the cover's words still fade out when the present whirls) */
+@keyframes gx-rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.gc-top { animation:gx-rise .8s cubic-bezier(.2,.7,.3,1) .25s backwards; }
+.gc-title { animation:gx-rise .8s cubic-bezier(.2,.7,.3,1) .45s backwards; }
+.gc-hint { animation:gx-rise .8s cubic-bezier(.2,.7,.3,1) .9s backwards, gc-hint 2.4s ease-in-out 1.7s infinite; }
+.gs-text > :nth-child(1) { --k:0; } .gs-text > :nth-child(2) { --k:1; } .gs-text > :nth-child(3) { --k:2; } .gs-text > :nth-child(4) { --k:3; }
+.gs-text > :nth-child(5) { --k:4; } .gs-text > :nth-child(6) { --k:5; } .gs-text > :nth-child(7) { --k:6; } .gs-text > :nth-child(8) { --k:7; }
+.gs[data-page="2"] .gs-p2 > *, .gs[data-page="3"] .gs-p3 > *, .gs[data-page="5"] .gs-p5 > *, .gs[data-page="4"] .gs-p4 > * {
+  animation:gx-rise .8s cubic-bezier(.2,.7,.3,1) backwards; animation-delay:calc(var(--b, .3s) + var(--k, 0) * .14s);
+}
+.gs-p2 { --b:.35s; } .gs-p3 { --b:.55s; } .gs-p5 { --b:.75s; } .gs-p4 { --b:3.2s; } /* after the view has moved there (the sky: after the star has risen) */
+@media (prefers-reduced-motion: reduce) { .gc-top, .gc-title, .gs-text > * { animation:none !important; } .gc-hint { animation:none !important; } }
