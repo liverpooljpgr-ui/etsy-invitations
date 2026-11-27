@@ -1153,6 +1153,14 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
                 </select>
               </Field>
             )}
+            {draft.rsvp.online && party && (
+              <>
+                <p className="ui-label" style={{ margin: "6px 0 0" }}>Headings of the reply form</p>
+                <Field label="Food question"><input className={inputCls} maxLength={60} placeholder="Food allergy, if any" value={draft.texts.rsvpFoodLabel ?? ""} onChange={(e) => set("texts", { ...draft.texts, rsvpFoodLabel: e.target.value })} /></Field>
+                <Field label="Message field"><input className={inputCls} maxLength={60} placeholder="A message to the host (optional)" value={draft.texts.rsvpMessageLabel ?? ""} onChange={(e) => set("texts", { ...draft.texts, rsvpMessageLabel: e.target.value })} /></Field>
+                <Field label="Line under the button"><input className={inputCls} maxLength={120} placeholder="Only the host will see your reply." value={draft.texts.rsvpPrivacy ?? ""} onChange={(e) => set("texts", { ...draft.texts, rsvpPrivacy: e.target.value })} /></Field>
+              </>
+            )}
             <p className="ui-help">Guests can reply here, or by email, until the “Reply by” date. After that day the reply form closes. You will see every reply in the Guest link tab once the invitation is published.</p>
           </Section>
 

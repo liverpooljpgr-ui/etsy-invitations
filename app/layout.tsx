@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Ephesis, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield, Alex_Brush, Mea_Culpa, Playfair_Display, Cormorant_SC, Elsie_Swash_Caps, WindSong, Allison, Cormorant_Garamond, Imperial_Script } from "next/font/google";
+import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Ephesis, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield, Alex_Brush, Mea_Culpa, Playfair_Display, Cormorant_SC, Elsie_Swash_Caps, WindSong, Allison, Cormorant_Garamond, Imperial_Script, Lora } from "next/font/google";
 import "./globals.css";
 import "./templates/mono-script.css";
 import "./templates/cupid-script.css";
@@ -11,6 +11,7 @@ import "./templates/peach-website.css";
 import "./templates/burgundy-olive-website.css";
 import "./templates/chandelier-garden-website.css";
 import "./templates/country-dahlia-wedding-website.css";
+import "./templates/christmas-gift.css";
 
 const serif = Oranienbaum({ variable: "--font-serif", subsets: ["latin", "latin-ext", "cyrillic"], weight: "400" });
 const script = Pinyon_Script({ variable: "--font-script", subsets: ["latin"], weight: "400" });
@@ -40,6 +41,8 @@ const allison = Allison({ variable: "--font-allison", subsets: ["latin"], weight
 // Peach Website: Imperial Script for the title and the section names of the details page
 const imperial = Imperial_Script({ variable: "--font-imperial", subsets: ["latin"], weight: "400" });
 const xmGaramond = Cormorant_Garamond({ variable: "--font-xm-garamond", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"], style: ["normal", "italic"] });
+// the Christmas gift invitation: Lora for all its words (except the Amore Christmas titles)
+const lora = Lora({ variable: "--font-lora", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"], style: ["normal", "italic"] });
 const alexBrush = Alex_Brush({ variable: "--font-alex-brush", subsets: ["latin", "latin-ext"], weight: "400" });
 
 export const metadata: Metadata = {
@@ -50,7 +53,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${imperial.variable} ${xmWind.variable} ${sfSerif.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${imperial.variable} ${xmWind.variable} ${sfSerif.variable} ${lora.variable}`}>
       <body>{children}</body>
     </html>
   );

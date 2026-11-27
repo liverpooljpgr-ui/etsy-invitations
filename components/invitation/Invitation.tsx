@@ -3,6 +3,7 @@ import { InkHeart } from "./InkHeart";
 import { FitScreens } from "./FitScreens";
 import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES, layoutTemplate, isWebsiteTemplate } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
+import { CozyCity } from "./CozyCity";
 import { WebsiteExperience } from "@/components/website/WebsiteExperience";
 import { photoImgStyle } from "@/lib/photo-crop";
 import type { Content } from "@/lib/content/schema";
@@ -114,6 +115,8 @@ export function Invitation({
   template?: TemplateSlug;
 }) {
   const template = templateSlug(templateProp); // unknown / missing design names fall back to the default design
+  // Cozy Blue City: the present and the snowy street are one live page; the editor shows it in a phone-shaped box (tap through it there)
+  if (template === "cozy-blue-city") return <CozyCity content={c} rsvpSlug={rsvpSlug} calendarHref={calendarHref} fill={false} />;
   // the wedding website (Peach Website) is a page of its own (in the editor it shows the page itself, in the size of the preview)
   if (isWebsiteTemplate(template)) {
     // the editor shows the two pages of the website one under the other: the cover with the envelope (it has fields to edit) and the page itself
@@ -349,7 +352,7 @@ export function Invitation({
               ? <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>
               : <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a>)}
             {c.rsvp.note && <p className="rsvp-note">{c.rsvp.note}</p>}
-            {c.rsvp.online && <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} />}
+            {c.rsvp.online && <RsvpForm slug={rsvpSlug} deadline={c.rsvp.deadline} maxParty={c.rsvp.maxParty} party={party} labels={{ food: c.texts.rsvpFoodLabel, message: c.texts.rsvpMessageLabel, privacy: c.texts.rsvpPrivacy }} />}
             {/* the Christmas party: "or answer by e-mail …" comes AFTER the Reply now button */}
             {party && c.rsvp.email && <p className="rsvp-or">or answer by e-mail <a className="rsvp-mail" href={`mailto:${c.rsvp.email}`}>{c.rsvp.email}</a></p>}
           </div>

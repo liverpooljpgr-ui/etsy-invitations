@@ -56,6 +56,10 @@ export const contentSchema = z.object({
     rsvpTitle: text(30).default("please RSVP"),
     closing: text(80).default(""),
     closingNote: text(120).default(""), // second line of the closing screen (the Christmas party: regular text under the script line)
+    // the headings of the reply form (empty: the form's own words). The Christmas party designs show them in the editor.
+    rsvpFoodLabel: text(60).default(""),
+    rsvpMessageLabel: text(60).default(""),
+    rsvpPrivacy: text(120).default(""),
     saveTheDate: text(40).default("Save the Date"),
     saveSubtitle: text(60).default("to celebrate a big day"),
     venueTitle: text(40).default("Celebration"),
@@ -122,6 +126,9 @@ export const defaultContent: Content = {
     rsvpTitle: "please RSVP",
     closing: "",
     closingNote: "",
+    rsvpFoodLabel: "",
+    rsvpMessageLabel: "",
+    rsvpPrivacy: "",
     saveTheDate: "Save the Date",
     saveSubtitle: "to celebrate a big day",
     venueTitle: "Celebration",

@@ -1,0 +1,490 @@
+/* The Christmas gift invitation: its cover (components/invitation/GiftCover.tsx). A present wobbles every two seconds under a rising magic shine;
+   tapped, it wobbles faster, whirls and grows until it fills the screen, then vanishes. */
+@font-face { font-family:"Amore Christmas"; src:url(/fonts/AmoreChristmas.otf) format("opentype"); font-display:swap; }
+.gc { --ink:#5a1420; --gold:#b8924a; position:relative; width:100%; height:100%; min-height:100svh; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:linear-gradient(to top, #e7f1f7 0%, #eef5f9 55%, #f8fbfd 100%); /* soft blue, a little whiter towards the top */ color:var(--ink); text-align:center; padding:24px 16px; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+.gc-top { margin:0; font-family:var(--font-lora), Georgia, serif; font-weight:600; font-size:16px; letter-spacing:.28em; text-transform:uppercase; color:#7e8997; }
+.gc-title { margin:6px 0 0; font-family:"Amore Christmas", var(--font-lora), Georgia, serif; font-style:normal; font-weight:400; font-size:43px; line-height:1.1; color:#8e1a2a; }
+.gc-hint { margin:0; font-family:var(--font-lora), Georgia, serif; font-weight:600; font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#7e8997; animation:gc-hint 2.4s ease-in-out infinite; }
+@keyframes gc-hint { 0%, 100% { opacity:.55; } 50% { opacity:1; } }
+
+/* the present, its shadow on the table and the shine above it */
+.gc-box { position:relative; display:block; width:min(66.6vw, 297px); margin:min(14vh, 110px) 0 min(9vh, 70px); padding:0; border:0; background:none; cursor:pointer; outline:none; }
+.gc-box:focus-visible .gc-img { outline:2px solid var(--gold); outline-offset:8px; border-radius:12px; }
+.gc-spin { position:relative; z-index:2; display:block; transform-origin:50% 88%; animation:gc-wobble 2s ease-in-out infinite; }
+.gc-img { display:block; width:100%; height:auto; pointer-events:none; filter:drop-shadow(0 2px 2px rgba(60,30,20,.22)); }
+.gc-shadow { position:absolute; z-index:1; left:6%; right:2%; bottom:-5%; height:16%; border-radius:50%; background:radial-gradient(closest-side, rgba(40,52,70,.45), rgba(40,52,70,.2) 55%, rgba(40,52,70,0)); filter:blur(4px); animation:gc-shadow 2s ease-in-out infinite; }
+/* a little wobble at the end of every two seconds, the box resting the rest of the time */
+@keyframes gc-wobble {
+  0%, 62% { transform:none; }
+  68% { transform:translateY(-5%) rotate(-5deg); }
+  75% { transform:translateY(-2%) rotate(4deg); }
+  82% { transform:translateY(-1%) rotate(-2.5deg); }
+  89% { transform:rotate(1.2deg); }
+  95%, 100% { transform:none; }
+}
+@keyframes gc-shadow { 0%, 62% { transform:none; opacity:1; } 68% { transform:scaleX(.86); opacity:.7; } 82% { transform:scaleX(.95); opacity:.9; } 95%, 100% { transform:none; opacity:1; } }
+
+.gc-shine { position:absolute; z-index:3; left:50%; bottom:58%; width:70%; height:150%; translate:-50% 0; pointer-events:none; }
+.gc-spark { position:absolute; left:calc(50% + var(--x) * .6); bottom:4%; width:7px; height:7px; border-radius:50%; opacity:0;
+  background:radial-gradient(circle, #fff 0, #fff3cf 35%, #e6b450 65%, rgba(230,180,80,0) 75%); box-shadow:0 0 5px 1.5px rgba(232,178,72,.7);
+  animation:gc-spark var(--d) ease-out var(--dl) infinite; }
+/* each spark twinkles while it rises: a little four-pointed glint that flashes on and off */
+.gc-spark::after { content:""; position:absolute; left:50%; top:50%; width:340%; height:340%; translate:-50% -50%;
+  background:linear-gradient(90deg, transparent 44%, rgba(255,248,225,.95) 50%, transparent 56%), linear-gradient(0deg, transparent 44%, rgba(255,248,225,.95) 50%, transparent 56%);
+  -webkit-mask:radial-gradient(closest-side, #000 0, transparent 100%); mask:radial-gradient(closest-side, #000 0, transparent 100%);
+  animation:gc-twinkle var(--tw) ease-in-out infinite alternate; }
+@keyframes gc-twinkle { 0% { opacity:.15; transform:scale(.5) rotate(0deg); } 100% { opacity:1; transform:scale(1.1) rotate(25deg); } }
+@keyframes gc-spark {
+  0% { transform:translate(0, 0) scale(var(--s)); opacity:0; }
+  10% { opacity:1; }
+  70% { opacity:.8; }
+  100% { transform:translate(calc(var(--x) * .3), calc(-1 * var(--h))) scale(calc(var(--s) * .25)); opacity:0; }
+}
+/* the screen behind the present flashes softly when it vanishes */
+.gc-flash { position:absolute; inset:0; z-index:5; pointer-events:none; opacity:0; background:radial-gradient(circle at 50% 50%, #fff 0, #eef4f8 45%, #d4e3ec 100%); }
+
+/* tapped: a fast wobble, then it whirls and grows to fill the screen, and vanishes */
+.gc[data-phase="shake"] .gc-spin { animation:gc-shake .22s ease-in-out 5; }
+.gc[data-phase="shake"] .gc-shadow { animation:gc-shadow-fast .22s ease-in-out 5; }
+@keyframes gc-shake { 0%, 100% { transform:rotate(0); } 25% { transform:translateY(-3%) rotate(-7deg); } 75% { transform:translateY(-3%) rotate(7deg); } }
+@keyframes gc-shadow-fast { 0%, 100% { transform:none; } 50% { transform:scaleX(.85); opacity:.75; } }
+.gc[data-phase="whirl"] .gc-spin, .gc[data-phase="gone"] .gc-spin { transform-origin:50% 50%; animation:gc-whirl 1.5s cubic-bezier(.55,0,.35,1) forwards; }
+@keyframes gc-whirl {
+  0% { transform:none; opacity:1; }
+  70% { opacity:1; }
+  100% { transform:rotate(900deg) scale(6); opacity:0; }
+}
+.gc[data-phase="whirl"] .gc-shadow, .gc[data-phase="gone"] .gc-shadow { transition:opacity .4s ease; opacity:0; animation:none; }
+.gc[data-phase="whirl"] .gc-shine, .gc[data-phase="gone"] .gc-shine { transition:opacity .5s ease; opacity:0; }
+.gc[data-phase="whirl"] :is(.gc-top, .gc-title, .gc-hint), .gc[data-phase="gone"] :is(.gc-top, .gc-title, .gc-hint) { transition:opacity .45s ease, transform .6s ease; opacity:0; transform:translateY(-8px); }
+.gc[data-phase="whirl"] .gc-flash { animation:gc-flash 1.5s ease-in forwards; }
+.gc[data-phase="gone"] .gc-flash { opacity:1; }
+@keyframes gc-flash { 0%, 55% { opacity:0; } 100% { opacity:1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-spin, .gc-shadow, .gc-spark, .gc-hint { animation:none !important; }
+}
+
+/* the bell hangs from the knot of the bow (its top middle) and swings */
+.gc-bell { position:absolute; left:39%; top:21.92%; width:11.3%; height:auto; pointer-events:none; transform-origin:50% 6%; animation:gc-bell-swing 2s ease-in-out infinite; }
+@keyframes gc-bell-swing {
+  0%, 62% { transform:none; }
+  68% { transform:rotate(14deg); }
+  75% { transform:rotate(-12deg); }
+  82% { transform:rotate(8deg); }
+  89% { transform:rotate(-4deg); }
+  95%, 100% { transform:none; }
+}
+.gc[data-phase="shake"] .gc-bell { animation:gc-bell-jingle .11s ease-in-out 10 alternate; }
+@keyframes gc-bell-jingle { from { transform:rotate(-20deg); } to { transform:rotate(20deg); } }
+@media (prefers-reduced-motion: reduce) { .gc-bell { animation:none !important; } }
+
+/* ───────── the screen: a phone fills it; anything bigger shows at most a tablet (3 : 4, up to 768 x 1024), and a computer shows it in a screen border ───────── */
+.gx-stage { position:fixed; inset:0; display:grid; place-items:center; background:#e7eef3; }
+.gx-screen { position:relative; width:min(100vw, 768px); height:min(100svh, 1024px); overflow:hidden; container-type:size; background:#e7f1f7; }
+@media (min-width: 820px) {
+  .gx-stage { background:radial-gradient(120% 90% at 50% 40%, #f3f6f9, #d9e2ea); }
+  .gx-screen { height:min(calc(100svh - 48px), 1024px); width:calc(min(calc(100svh - 48px), 1024px) * .75); border:14px solid #1c1f24; border-radius:40px; box-shadow:0 30px 60px rgba(30,40,55,.28), 0 0 0 2px #3a3f47 inset; }
+}
+.gx-screen .gc { min-height:0; height:100%; }
+.gx-screen .gc-box { width:min(66.6cqw, 297px); margin:min(14cqh, 110px) 0 min(9cqh, 70px); }
+.gx-page { position:absolute; inset:0; }
+.gx-page.gx-in { animation:gx-in 1s ease both; }
+@keyframes gx-in { from { opacity:0; } to { opacity:1; } }
+
+/* ───────── the street pages: a world two screens wide; the view slides right (page 3) and then up into the sky (page 4) ───────── */
+.gs { position:absolute; inset:0; overflow:hidden; container-type:size; background:linear-gradient(to bottom, #b9d6e6 0%, #cfe3ee 45%, #e4eff5 70%, #eef5f9 100%); }
+.gs-world { position:absolute; left:0; top:0; width:300cqw; height:100cqh; transition:transform 1.6s cubic-bezier(.65,0,.3,1); will-change:transform; }
+.gs[data-page="3"] .gs-world { transform:translateX(-100cqw); }
+.gs[data-page="5"] .gs-world { transform:translateX(-200cqw); }
+.gs[data-page="4"] .gs-world { transform:translate(-200cqw, 78cqh); }
+.gs-ground { position:absolute; left:0; right:0; bottom:-80cqh; height:calc(80cqh + 21cqh); background:linear-gradient(to bottom, #f4f8fa 0, #fbfdfe 30%, #fff 100%); box-shadow:0 -1px 0 rgba(160,185,200,.25); }
+/* the houses: one picture across the two screens, standing on the snow */
+.gs-houses { position:absolute; z-index:1; left:0; width:200cqw; bottom:calc(15cqh - 20px); height:min(calc(196cqw / 2.136), 40cqh); display:flex; justify-content:flex-start; align-items:flex-end; gap:.8cqw; overflow:visible; }
+.gs-houses img { display:block; flex:none; height:100%; width:auto; }
+.gs-tree { position:absolute; z-index:1; bottom:9cqh; height:min(30cqh, 62cqw); width:auto; }
+.gs-t1 { left:-3cqw; }
+.gs-t2 { left:calc(100cqw - 9cqw); height:min(34cqh, 70cqw); }
+.gs-t3 { left:calc(200cqw - 22cqw); }
+/* the clouds drift slowly to and fro; the ones high above are seen on the sky page */
+.gs-cloud { position:absolute; width:min(40cqw, 300px); height:auto; animation:gs-drift 14s ease-in-out infinite alternate; }
+.gs-c1 { left:5cqw; top:1cqh; width:min(28cqw, 220px); }
+.gs-c2 { left:calc(100cqw + 67cqw); top:1cqh; width:min(28cqw, 220px); animation-duration:17s; }
+.gs-c3 { left:67cqw; top:min(36cqh, calc(100cqh - 15cqh - 40cqh - 7cqh)); width:min(28cqw, 200px); animation-duration:19s; animation-delay:-6s; z-index:0; }
+.gs-c4 { left:calc(100cqw + 5cqw); top:min(33cqh, calc(100cqh - 15cqh - 40cqh - 8cqh)); width:min(34cqw, 240px); animation-duration:15s; animation-delay:-4s; }
+.gs-c5 { left:calc(200cqw + 4cqw); top:-72cqh; width:min(24cqw, 180px); animation-duration:18s; }
+.gs-c6 { left:calc(200cqw + 70cqw); top:-62cqh; width:min(25cqw, 190px); animation-delay:-8s; }
+.gs-c7 { left:calc(200cqw + 30cqw); top:-12cqh; width:min(30cqw, 230px); animation-duration:21s; }
+@keyframes gs-drift { from { transform:translateX(-4cqw); } to { transform:translateX(4cqw); } }
+/* people walk along the street, from left to right, with a little bob of every step */
+.gs-walk { position:absolute; z-index:1; bottom:5cqh; left:0; height:min(21cqh, 46cqw); animation:gs-walk linear infinite; }
+.gs-walk img { display:block; height:100%; width:auto; animation:gs-step .55s ease-in-out infinite alternate; }
+.gs-w2 { bottom:10cqh; height:min(13cqh, 29cqw); animation-duration:42s; animation-delay:-28s; } /* further away on the street, so smaller */
+@keyframes gs-walk { from { transform:translateX(-50cqw); } to { transform:translateX(210cqw); } }
+@keyframes gs-step { from { transform:translateY(0); } to { transform:translateY(-1.2%); } }
+/* the words on the sky, in the middle of their screen */
+.gs-text { position:absolute; z-index:2; top:7cqh; width:100cqw; padding:0 10cqw; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; transition:opacity .6s ease; }
+.gs-p2 { left:0; }
+.gs-p3 { left:100cqw; }
+.gs-p4 { left:200cqw; top:calc(-78cqh + 24cqh); }
+.gs[data-page="2"] :is(.gs-p3, .gs-p4, .gs-p5), .gs[data-page="3"] :is(.gs-p2, .gs-p4, .gs-p5), .gs[data-page="5"] :is(.gs-p2, .gs-p3, .gs-p4), .gs[data-page="4"] :is(.gs-p2, .gs-p3, .gs-p5) { opacity:0; pointer-events:none; }
+.gs-small { margin:0; font-family:var(--font-lora), Georgia, serif; font-weight:600; font-size:clamp(14px, 3.6cqw, 22px); letter-spacing:.26em; text-transform:uppercase; color:#6f7c8c; }
+.gs-title { margin:2px 0; font-family:"Amore Christmas", var(--font-lora), serif; font-weight:400; font-size:clamp(38px, 11cqw, 70px); line-height:1.05; color:#8e1a2a; }
+.gs-title-sm { font-size:clamp(28px, 8cqw, 60px); }
+.gs-line { margin:0; font-family:var(--font-lora), Georgia, serif; font-style:italic; font-size:clamp(19px, 4.6cqw, 30px); color:#4d5866; }
+.gs-when { margin:0; font-family:var(--font-lora), Georgia, serif; font-weight:600; font-size:clamp(14px, 3.8cqw, 24px); letter-spacing:.1em; white-space:nowrap; text-transform:uppercase; color:#3f4a58; }
+.gs-btn { margin-top:14px; padding:12px 30px; border:0; border-radius:999px; background:#8e1a2a; color:#fff; font-family:var(--font-lora), Georgia, serif; font-weight:700; font-size:clamp(14px, 3.4cqw, 20px); letter-spacing:.2em; text-transform:uppercase; cursor:pointer; box-shadow:0 6px 16px rgba(110,20,35,.3); transition:transform .2s ease, background .2s ease; }
+.gs-btn:hover, .gs-btn:focus-visible { background:#a3202f; transform:translateY(-2px); outline:none; }
+.gs-link { font-family:var(--font-lora), Georgia, serif; font-weight:600; font-size:13px; letter-spacing:.24em; text-transform:uppercase; color:#5c6a7a; text-underline-offset:4px; }
+.gs-back { margin-top:10px; border:0; background:none; font-family:var(--font-lora), serif; font-style:italic; font-size:16px; color:#5c6a7a; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.gs-snow { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+@media (prefers-reduced-motion: reduce) { .gs-cloud, .gs-walk, .gs-walk img { animation:none !important; } .gs-world { transition:none; } }
+
+/* the people walking along the street, put together from their parts */
+.gs-w3, .gs-w4 { display:flex; align-items:flex-end; gap:0; }
+.gs-w3 { height:min(19cqh, 42cqw); bottom:4cqh; animation-duration:58s; animation-delay:-14s; }
+.gs-w4 { height:min(16cqh, 36cqw); bottom:2cqh; animation-duration:46s; animation-delay:-38s; }
+.gw { position:relative; display:block; height:100%; flex:none; }
+.gw-boy { height:84%; margin-right:-4%; }
+.gw-grandma { margin-right:-6%; }
+.gw img { position:absolute; display:block; max-width:none; animation:none; }
+.gw .gw-body { z-index:2; animation:gw-bob .65s ease-in-out infinite alternate; }
+.gw .gw-cane { z-index:3; transform-origin:30% 4%; animation:gw-cane 1.3s ease-in-out infinite; }
+.gw .gw-back, .gw .gw-front { z-index:1; transform-origin:50% 6%; }
+.gw .gw-front { animation:gw-leg-a 1.3s ease-in-out infinite; }
+.gw .gw-back { animation:gw-leg-b 1.3s ease-in-out infinite; }
+@keyframes gw-leg-a { 0%, 100% { transform:rotate(2deg); } 50% { transform:rotate(-30deg); } } /* the leg drawn in front swings back past the other one, and returns */
+@keyframes gw-leg-b { 0%, 100% { transform:rotate(-2deg); } 50% { transform:rotate(27deg); } } /* the leg drawn behind swings forward at the same time */
+@keyframes gw-bob { from { transform:translateY(0); } to { transform:translateY(-1.6%); } }
+@keyframes gw-cane { 0%, 100% { transform:rotate(5deg); } 50% { transform:rotate(-12deg); } }
+.gw-grandma img, .gw-girl img { animation-delay:-.4s !important; }
+@media (prefers-reduced-motion: reduce) { .gw img { animation:none !important; } }
+
+/* the snow the town stands on and the people walk on: one painted strip across the two screens, its uneven top just over the foot of the houses */
+.gs-snowground { position:absolute; z-index:1; left:0; bottom:0; width:300cqw; height:18cqh; object-fit:cover; object-position:50% 0; pointer-events:none; }
+
+/* the first street page: a darker first line, a slightly smaller title, the date and under it the time in bold Lora */
+.gs-p2 .gs-small { color:#25395a; margin-bottom:-6px; }
+.gs-p2 .gs-title { font-size:clamp(34px, 9.6cqw, 62px); }
+.gs-date { font-family:var(--font-lora), Georgia, serif; font-weight:700; text-transform:none; letter-spacing:.02em; font-size:clamp(14px, calc(4.1cqw - 2px), 24px); line-height:1.15; color:#3f4a58; }
+.gs-time { margin-top:-5px; }
+.gs-p2 .gs-line { margin-top:15px; } /* 15px more room between the title and "hosted by" */
+
+/* the third screen: the Christmas tree in the snow, the details on the sky above it, Santa flying across now and then */
+.gs-p5 { left:200cqw; gap:6px; }
+.gs-detail { display:flex; flex-direction:column; align-items:center; gap:2px; margin-top:6px; }
+.gs-detail .gs-line { font-size:clamp(17px, 4.2cqw, 26px); line-height:1.3; }
+.gs-xtree { position:absolute; z-index:2; left:250cqw; bottom:4cqh; height:var(--th); width:auto; translate:-50% 0; filter:drop-shadow(0 6px 8px rgba(60,80,100,.18)); }
+.gs-santa { position:absolute; z-index:2; left:0; top:min(34cqh, calc(100cqh - 15cqh - 40cqh - 11cqh)); width:min(34cqw, 260px); animation:gs-santa 44s linear infinite; }
+.gs-santa img { display:block; width:100%; height:auto; animation:gs-santa-bob 1.6s ease-in-out infinite alternate; }
+/* Santa flies over all the screens: from the far right to the far left (he faces left), turns round, and flies back */
+@keyframes gs-santa {
+  0% { transform:translateX(305cqw) scaleX(1); }
+  48% { transform:translateX(-45cqw) scaleX(1); }
+  50% { transform:translateX(-45cqw) scaleX(-1); }
+  98% { transform:translateX(305cqw) scaleX(-1); }
+  100% { transform:translateX(305cqw) scaleX(1); }
+}
+@keyframes gs-santa-bob { from { transform:translateY(0) rotate(-2deg); } to { transform:translateY(-12%) rotate(2deg); } }
+@media (prefers-reduced-motion: reduce) { .gs-santa, .gs-santa img { animation:none !important; } .gs-santa { transform:translateX(30cqw); } }
+.gs-c8 { left:calc(200cqw + 5cqw); top:min(47cqh, calc(100cqh - 4cqh - 38cqh - 10cqh)); width:min(26cqw, 190px); animation-duration:16s; }
+.gs-c9 { left:calc(200cqw + 70cqw); top:min(50cqh, calc(100cqh - 4cqh - 38cqh - 7cqh)); width:min(24cqw, 180px); animation-duration:20s; animation-delay:-7s; }
+
+/* the second screen: the bridge over the canal lies in front of the street, along the bottom of the screen */
+.gs-bridge { position:absolute; z-index:3; left:100cqw; bottom:0; width:100cqw; height:auto; pointer-events:none; }
+
+/* the couple and the children cross the second screen over the bridge: up the snowy ramp, over the arch and down the other ramp
+   (the wall's top lies at 64% of the bridge picture's height from its foot, the top of the arch at 77%; the bridge picture is 22.56cqw high) */
+.gs-w3 { --b:4cqh; z-index:2; animation-name:gs-walk-bridge; } /* behind the bridge: on it their feet are hidden by its front */
+.gs-w4 { --b:2cqh; z-index:2; animation-name:gs-walk-bridge; }
+@keyframes gs-walk-bridge {
+  0% { transform:translate(-50cqw, 0); }
+  54.6% { transform:translate(92cqw, 0); }
+  57.7% { transform:translate(100cqw, calc((var(--b) - 14.4cqw) * .5)); }
+  60.8% { transform:translate(108cqw, calc(var(--b) - 14.4cqw)); }
+  69.2% { transform:translate(130cqw, calc(var(--b) - 17.4cqw)); }
+  77.7% { transform:translate(152cqw, calc(var(--b) - 14.4cqw)); }
+  80.8% { transform:translate(160cqw, calc((var(--b) - 14.4cqw) * .5)); }
+  83.8% { transform:translate(168cqw, 0); }
+  100% { transform:translate(210cqw, 0); }
+}
+/* the address on the second street screen: 5cqw; "Get directions" underlined */
+.gs-p3 .gs-title-sm { font-size:5cqw; }
+.gs-link { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+.gs-p3 .gs-small { color:#25395a; } /* "At our home": dark blue, as on the first street screen */
+.gs-p5 .gs-title { font-size:clamp(35px, calc(11cqw - 3px), 67px); } /* "Details": the same letters and size as "Please reply" */
+
+/* the star of the Christmas tree (its own picture, so it can fly): 7.6% of the tree's height wide, its middle 5.2% from the tree's top */
+.gs { --th:min(38cqh, 66cqw); }
+.gs-treestar { position:absolute; z-index:2; left:250cqw; top:calc(100cqh - 4cqh - var(--th) * .986); width:calc(var(--th) * .076); height:auto; translate:-50% 0; filter:drop-shadow(0 0 4px rgba(255,214,120,.7)); animation:gs-star-glow 2.4s ease-in-out infinite alternate; }
+@keyframes gs-star-glow { from { filter:drop-shadow(0 0 3px rgba(255,214,120,.55)); } to { filter:drop-shadow(0 0 9px rgba(255,222,140,.95)); } }
+.gs[data-page="4"] .gs-treestar { opacity:0; }
+/* the flying star: it starts exactly where the tree's star is, and goes up and grows to the top of the sky page while the view rises with it */
+.gs-flystar { position:absolute; z-index:4; display:none; left:50cqw; top:calc(100cqh - 4cqh - var(--th) * .986); width:calc(var(--th) * .076); height:auto; translate:-50% 0; pointer-events:none; }
+.gs[data-page="4"] .gs-flystar { display:block; animation:gs-star-fly 3.4s cubic-bezier(.45,0,.3,1) forwards, gs-star-shine 2.4s ease-in-out 3.4s infinite alternate; }
+@keyframes gs-star-fly {
+  0% { top:calc(100cqh - 4cqh - var(--th) * .986); width:calc(var(--th) * .076); filter:drop-shadow(0 0 4px rgba(255,214,120,.7)) brightness(1); }
+  25% { filter:drop-shadow(0 0 18px rgba(255,226,150,1)) brightness(1.25); }
+  100% { top:12cqh; width:min(40cqw, 280px); filter:drop-shadow(0 0 26px rgba(255,226,150,.95)) brightness(1.15); }
+}
+@keyframes gs-star-shine { from { filter:drop-shadow(0 0 18px rgba(255,226,150,.75)) brightness(1.08); } to { filter:drop-shadow(0 0 34px rgba(255,232,165,1)) brightness(1.2); } }
+/* the view rises as slowly as the star; the reply appears when the star has arrived, under it */
+.gs[data-page="4"] .gs-world { transition-duration:3.4s; transition-timing-function:cubic-bezier(.45,0,.3,1); }
+.gs-p4 { top:calc(-78cqh + 12cqh + min(40cqw, 280px) + 4cqh); }
+.gs[data-page="4"] .gs-p4 { transition:opacity .9s ease 3.1s; }
+@media (prefers-reduced-motion: reduce) { .gs[data-page="4"] .gs-flystar { animation:none; top:12cqh; width:min(40cqw, 280px); } .gs-treestar { animation:none; } }
+
+/* the reply form: a window over the sky of the invitation (inside its screen), in the colours of the invitation */
+.gs .rsvp-bg { position:absolute; z-index:20; background:rgba(30,45,70,.38); backdrop-filter:blur(2px); }
+.gs .rsvp-sheet { background:#f8fbfd; color:#2c3a4e; font-family:var(--font-lora), Georgia, serif; font-size:17px; border-radius:22px 22px 0 0; }
+@container (min-width: 600px) { .gs .rsvp-bg { align-items:center; } .gs .rsvp-sheet { border-radius:22px; } }
+.gs .rsvp-sheet-title { font-family:"Amore Christmas", var(--font-lora), serif; font-size:32px; letter-spacing:0; color:#8e1a2a; }
+.gs .rsvp-field > span { font-family:var(--font-lora), Georgia, serif; font-weight:600; letter-spacing:.16em; text-transform:uppercase; font-size:12px; color:#25395a; }
+.gs .rsvp-field input, .gs .rsvp-field textarea, .gs .rsvp-choice { border-color:rgba(37,57,90,.4); color:#25395a; font-family:var(--font-lora), Georgia, serif; }
+.gs .rsvp-field input:focus, .gs .rsvp-field textarea:focus { outline:2px solid rgba(142,26,42,.35); }
+.gs .rsvp-choice[aria-checked="true"] { background:#25395a; border-color:#25395a; color:#fff; }
+.gs .rsvp-count button { border-color:rgba(37,57,90,.4); color:#25395a; }
+.gs .rsvp-send { background:#8e1a2a; color:#fff; font-family:var(--font-lora), Georgia, serif; font-weight:700; letter-spacing:.18em; text-transform:uppercase; }
+.gs .rsvp-x { color:#25395a; }
+
+/* the sky page: the reply-by date in bold Lora; the bottom cloud low on the screen, clear of the buttons; "Back to the street" with an arrow, not underlined */
+.gs-p4 .gs-when { font-family:var(--font-lora), Georgia, serif; font-weight:700; text-transform:none; letter-spacing:.02em; font-size:clamp(15px, 4cqw, 24px); }
+.gs-c7 { left:calc(200cqw + 34cqw); top:8cqh; width:min(30cqw, 230px); }
+.gs-back { text-decoration:none; font-style:normal; display:inline-flex; align-items:center; gap:6px; }
+.gs-back::before { content:"↙"; font-size:1.15em; line-height:1; }
+
+/* the reply form: compact, so it fits a phone screen without scrolling, and not too big on a tablet */
+.gs .rsvp-sheet { width:min(100%, 400px); max-height:calc(100% - 12px); padding:16px 18px 14px; font-size:15px; }
+.gs .rsvp-sheet-title { font-size:26px; margin:0 0 8px; }
+.gs .rsvp-field { margin-bottom:8px; gap:4px; }
+.gs .rsvp-field > span { font-size:11px; }
+.gs .rsvp-field input, .gs .rsvp-field textarea { padding:8px 12px; font-size:15px; min-height:0; }
+.gs .rsvp-field textarea { height:58px; }
+.gs .rsvp-choices { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin:4px 0 10px; }
+.gs .rsvp-choice { padding:8px 6px; font-size:13px; line-height:1.2; text-align:center; min-height:0; }
+.gs .rsvp-count { margin:0 0 8px; }
+.gs .rsvp-count button { width:34px; height:34px; }
+.gs .rsvp-send { padding:11px 18px; margin-top:4px; }
+.gs .rsvp-sheet small, .gs .rsvp-sheet .rsvp-small { font-size:12px; }
+.gs .rsvp-fine { margin:6px 0 0; font-size:11.5px; }
+.gs .rsvp-count b { font-size:18px; }
+.gs .rsvp-count { gap:12px; }
+/* the buttons: Lora in regular weight */
+.gs-btn, .gs .rsvp-send { font-weight:400; }
+.gs-btn { font-size:clamp(12px, calc(3.4cqw - 2px), 18px); }
+.gs .rsvp-send { font-size:11px; }
+/* the sky page: "Add to calendar" and "Back to the street" sit lower, apart from the reply button */
+.gs-p4 .gs-link { margin-top:26px; }
+.gs-p4 .gs-back { margin-top:44px; color:#8a97a8; font-size:14px; }
+.gs-p4 .gs-title { font-size:clamp(35px, calc(11cqw - 3px), 67px); } /* "Please reply": 3px smaller */
+
+/* the people's layer: the street only (two screens), behind the bridge and in front of the houses; the second walk of each group starts half a walk later */
+.gs-people { position:absolute; z-index:2; left:0; top:0; width:200cqw; height:100cqh; overflow:hidden; pointer-events:none; }
+.gs-w2.gs-later { animation-delay:-7s; }
+.gs-w3.gs-later { animation-delay:-43s; }
+.gs-w4.gs-later { animation-delay:-15s; }
+/* the details: their text 15px, 50px of room on both sides */
+.gs-p5 { padding-left:50px; padding-right:50px; }
+.gs-p5 .gs-detail .gs-line { font-size:15px; }
+.gs-p5 .gs-detail .gs-small { font-size:14px; } /* the headings of the details: 14px */
+/* the words stand in the middle of the free sky: on the street screens between the top and the roofs, on the tree screen between the top and the tree's star */
+.gs-p2, .gs-p3 { top:0; height:calc(100cqh - (15cqh - 20px) - min(calc(196cqw / 2.136), 40cqh) - 3cqh); justify-content:center; }
+.gs-p5 { top:0; height:calc(100cqh - 4cqh - var(--th) - 2cqh); justify-content:center; }
+.gs-c8 { top:calc(100cqh - 4cqh - var(--th) + 3cqh); } .gs-c9 { top:calc(100cqh - 4cqh - var(--th) + 9cqh); } /* the tree screen clouds beside the tree, clear of the button */
+.gs-line { padding:0 40px; }
+.gs-c8 { top:1cqh; left:calc(200cqw + 4cqw); } .gs-c9 { top:3cqh; left:calc(200cqw + 72cqw); } /* the tree screen clouds at the very top */
+.gs .rsvp-bg { padding:0 8px 10px; box-sizing:border-box; } .gs .rsvp-sheet { border-radius:22px; max-height:calc(100% - 22px); } /* the reply window floats, with all its corners rounded */
+.gs-p2 .gs-line { font-size:16px; } /* "hosted by": 16px */
+.gs-p2 .gs-date { font-size:clamp(12px, calc(4.1cqw - 4px), 22px); } /* the date and the time: 2px smaller */
+.gs-p4 .gs-when { font-size:clamp(12px, calc(4.1cqw - 4px), 22px); } /* the reply-by date: the same size as the date and the time */
+.gs-p5 .gs-detail { margin-top:18px; } /* more room between the detail sections */
+
+/* in the editor: the invitation lives in a phone-shaped box (340 x 700) instead of the whole window */
+.gx-embed { position:relative; width:340px; max-width:100%; aspect-ratio:340 / 700; margin:0 auto; border-radius:22px; overflow:hidden; box-shadow:0 0 0 1px rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.12); }
+.gx-embed .gx-screen { width:100%; height:100%; border:0; border-radius:0; box-shadow:none; }
+.gs-c8, .gs-c9 { transition:opacity .8s ease; } .gs[data-page="4"] :is(.gs-c8, .gs-c9) { opacity:0; } /* the tree screen clouds are not seen at the foot of the sky page */
+.gs-p2 .gs-small { font-size:14px; letter-spacing:.2em; } /* "You are invited to a" */
+.gs-p2 .gs-title { font-size:31px; } /* "Christmas Dinner" */
+.gs-p2 .gs-line { font-size:20px; } /* "hosted by": 20px */
+.gs-p2 { translate:0 20px; } /* the words of the first street screen 20px lower */
+/* the second street screen: the place's name in Amore Christmas, the address in plain Lora, "Get directions" further below it */
+.gs-p3 .gs-place { font-size:31px; }
+.gs-p3 .gs-address { font-family:var(--font-lora), Georgia, serif; font-style:normal; font-size:17px; color:#25395a; }
+.gs-p3 .gs-link { margin-top:16px; }
+.gs-p3 .gs-link { font-size:10px; } /* "Get directions" 3px smaller */
+.gs-p3 .gs-link { margin-top:2px; } .gs-p3 .gs-btn { margin-top:30px; } /* "Get directions" close under the address, more room above the button */
+.gs-p4 .gs-title { font-size:31px; } /* "Please RSVP": 31px */
+
+/* the street lamps: on the pavement in front of the houses, a warm glow around the lantern that breathes slowly */
+.gs-lamp { position:absolute; z-index:1; bottom:5cqh; height:min(30cqh, 62cqw); aspect-ratio:243 / 1000; translate:-50% 0; pointer-events:none; }
+.gs-lamp img { display:block; width:100%; height:100%; }
+.gs-lamp::before { content:""; position:absolute; left:50%; top:13%; width:330%; aspect-ratio:1; translate:-50% -50%; border-radius:50%; background:radial-gradient(closest-side, rgba(255,226,150,.55), rgba(255,214,130,.22) 45%, rgba(255,214,130,0) 75%); animation:gs-lamp-glow 3.2s ease-in-out infinite alternate; }
+@keyframes gs-lamp-glow { from { opacity:.75; scale:.94; } to { opacity:1; scale:1.04; } }
+.gs-l1 { left:62cqw; }
+.gs-l2 { left:120cqw; }
+@media (prefers-reduced-motion: reduce) { .gs-lamp::before { animation:none; } }
+.gs-people-far { z-index:1; } /* the far walkers: in front of the houses, behind the lamps (which come after them) */
+
+/* the family with the pram: legs stepping (one forward while the other goes back), the bodies bobbing a little */
+.gf { position:relative; display:block; height:100%; aspect-ratio:1.3117; }
+.gs-walk .gf img { position:absolute; display:block; max-width:none; height:auto; animation:none; }
+.gs-walk .gf .gf-body { left:0; top:0; width:100%; height:100%; z-index:2; animation:gw-bob .65s ease-in-out infinite alternate; }
+.gs-walk .gf .gf-leg { z-index:1; }
+.gs-walk .gf :is(.gf-dad-front, .gf-mum-back) { animation:gf-a 1.3s ease-in-out infinite; }
+.gs-walk .gf :is(.gf-dad-back, .gf-mum-front) { animation:gf-b 1.3s ease-in-out infinite; }
+.gs-walk .gf .gf-kid-front { animation:gf-kid 1s ease-in-out infinite; }
+@keyframes gf-a { 0%, 100% { transform:rotate(3deg); } 50% { transform:rotate(-18deg); } }
+@keyframes gf-b { 0%, 100% { transform:rotate(-3deg); } 50% { transform:rotate(16deg); } }
+@keyframes gf-kid { 0%, 100% { transform:rotate(2deg); } 50% { transform:rotate(-12deg); } }
+@media (prefers-reduced-motion: reduce) { .gs-walk .gf img { animation:none !important; } }
+
+/* calmer steps for everyone: narrower and slower */
+.gw .gw-front, .gw .gw-back, .gw .gw-cane, .gs-walk .gf :is(.gf-dad-front, .gf-mum-back, .gf-dad-back, .gf-mum-front) { animation-duration:1.9s; }
+.gw .gw-body, .gs-walk .gf .gf-body { animation-duration:.95s; }
+.gs-walk .gf .gf-kid-front { animation-duration:1.5s; }
+@keyframes gw-leg-a { 0%, 100% { transform:rotate(1deg); } 50% { transform:rotate(-17deg); } }
+@keyframes gw-leg-b { 0%, 100% { transform:rotate(-1deg); } 50% { transform:rotate(15deg); } }
+@keyframes gw-cane { 0%, 100% { transform:rotate(3deg); } 50% { transform:rotate(-7deg); } }
+@keyframes gf-a { 0%, 100% { transform:rotate(2deg); } 50% { transform:rotate(-10deg); } }
+@keyframes gf-b { 0%, 100% { transform:rotate(-2deg); } 50% { transform:rotate(9deg); } }
+@keyframes gf-kid { 0%, 100% { transform:rotate(1deg); } 50% { transform:rotate(-7deg); } }
+/* the family with the pram walks twice as slowly: along the street and in their steps */
+.gs-w2 { animation-duration:84s; animation-delay:-56s; }
+.gs-w2.gs-later { animation-delay:-14s; }
+.gs-walk .gf :is(.gf-dad-front, .gf-mum-back, .gf-dad-back, .gf-mum-front) { animation-duration:3.8s; }
+.gs-walk .gf .gf-kid-front { animation-duration:3s; }
+.gs-walk .gf .gf-body { animation-duration:1.9s; }
+/* the family's steps: short and a little quicker than their slow walk along the street */
+.gs-walk .gf :is(.gf-dad-front, .gf-mum-back, .gf-dad-back, .gf-mum-front) { animation-duration:2.4s; }
+.gs-walk .gf .gf-kid-front { animation-duration:2s; }
+.gs-walk .gf .gf-body { animation-duration:1.2s; }
+.gs-walk .gf :is(.gf-dad-front, .gf-mum-back) { animation-name:gf-a-short; }
+.gs-walk .gf :is(.gf-dad-back, .gf-mum-front) { animation-name:gf-b-short; }
+.gs-walk .gf .gf-kid-front { animation-name:gf-kid-short; }
+@keyframes gf-a-short { 0%, 100% { transform:rotate(1deg); } 50% { transform:rotate(-6deg); } }
+@keyframes gf-b-short { 0%, 100% { transform:rotate(-1deg); } 50% { transform:rotate(5deg); } }
+@keyframes gf-kid-short { 0%, 100% { transform:rotate(1deg); } 50% { transform:rotate(-5deg); } }
+
+/* ───────── the walking cycle (all people): straight, rigid legs that only turn at the hip, like pendulums. The leg drawn in front swings back
+   while the one drawn behind swings forward, then they swing back again: one full cycle is two steps. The foot that comes forward is lifted a little
+   on the way. The pelvis turns very slightly from side to side and the body rises a touch at every step, when the legs pass each other. ───────── */
+.gw { --cyc:2.6s; --sw:24deg; --lift:-1.4%; }
+.gf { --cyc:2.6s; --sw:13deg; --lift:-1%; }
+.gw .gw-front, .gs-walk .gf :is(.gf-dad-front, .gf-mum-front, .gf-kid-front) { animation:walk-front var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+.gw .gw-back, .gs-walk .gf :is(.gf-dad-back, .gf-mum-back) { animation:walk-back var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+.gw .gw-body, .gs-walk .gf .gf-body { transform-origin:50% 100%; animation:walk-body var(--cyc) ease-in-out infinite; }
+.gw .gw-cane { animation:walk-cane var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+.gs-walk .gf .gf-mum-front, .gs-walk .gf .gf-mum-back { animation-delay:calc(var(--cyc) * -.5); } /* the mother steps half a step after the father */
+.gs-walk .gf .gf-kid-front { animation-delay:calc(var(--cyc) * -.25); }
+.gw-grandma img, .gw-girl img { animation-delay:calc(var(--cyc) * -.5) !important; }
+/* the leg drawn in front: from its pose (forward) back past the other, then forward again, lifted a little on the way forward */
+@keyframes walk-front {
+  0%, 100% { transform:rotate(0deg) translateY(0); }
+  50% { transform:rotate(var(--sw)) translateY(0); }
+  75% { transform:rotate(calc(var(--sw) * .5)) translateY(var(--lift)); }
+}
+/* the leg drawn behind: forward (lifted on the way) while the other goes back, then back again */
+@keyframes walk-back {
+  0%, 100% { transform:rotate(0deg) translateY(0); }
+  25% { transform:rotate(calc(var(--sw) * -.5)) translateY(var(--lift)); }
+  50% { transform:rotate(calc(var(--sw) * -1)) translateY(0); }
+}
+/* the body: highest when the legs pass each other (twice a cycle), a very slight turn of the pelvis to one side and then the other */
+@keyframes walk-body {
+  0%, 100% { transform:translateY(0) rotate(-.6deg); }
+  25% { transform:translateY(-1%) rotate(0deg); }
+  50% { transform:translateY(0) rotate(.6deg); }
+  75% { transform:translateY(-1%) rotate(0deg); }
+}
+@keyframes walk-cane { 0%, 100% { transform:rotate(0deg); } 50% { transform:rotate(10deg); } }
+@media (prefers-reduced-motion: reduce) { .gw img, .gs-walk .gf img { animation:none !important; } }
+
+/* ───────── the legs trade places: each person's legs swing by the angle between them as drawn (measured from the pictures),
+   so at half a cycle the leg that was behind is exactly where the front one was, and the other way round; then they swing back.
+   The leg on its way forward is lifted a little. Rotations only at the hip: the legs stay straight. ───────── */
+.gw-grandpa { --d:18.6deg; } .gw-grandma { --d:26.9deg; } .gw-girl { --d:30.5deg; } .gw-boy { --d:31.4deg; }
+.gf { --d-dad:27.7deg; --d-mum:19.3deg; }
+/* in these drawings the leg called "front" is the one pointing back, so it goes forward first */
+.gw .gw-front { --sw:calc(var(--d) * -1); animation:walk-fwd-first var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+.gw .gw-back { --sw:var(--d); animation:walk-fwd-second var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+/* the family: the "front" leg points forward, so it goes back first */
+.gs-walk .gf .gf-dad-front { --sw:var(--d-dad); animation:walk-fwd-second var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+.gs-walk .gf .gf-dad-back { --sw:calc(var(--d-dad) * -1); animation:walk-fwd-first var(--cyc) cubic-bezier(.45,.05,.55,.95) infinite; }
+.gs-walk .gf .gf-mum-front { --sw:var(--d-mum); animation:walk-fwd-second var(--cyc) cubic-bezier(.45,.05,.55,.95) calc(var(--cyc) * -.5) infinite; }
+.gs-walk .gf .gf-mum-back { --sw:calc(var(--d-mum) * -1); animation:walk-fwd-first var(--cyc) cubic-bezier(.45,.05,.55,.95) calc(var(--cyc) * -.5) infinite; }
+.gs-walk .gf .gf-kid-front { --sw:14deg; animation:walk-fwd-second var(--cyc) cubic-bezier(.45,.05,.55,.95) calc(var(--cyc) * -.25) infinite; }
+@keyframes walk-fwd-first {
+  0%, 100% { transform:rotate(0deg) translateY(0); }
+  25% { transform:rotate(calc(var(--sw) * .5)) translateY(var(--lift)); }
+  50% { transform:rotate(var(--sw)) translateY(0); }
+}
+@keyframes walk-fwd-second {
+  0%, 100% { transform:rotate(0deg) translateY(0); }
+  50% { transform:rotate(var(--sw)) translateY(0); }
+  75% { transform:rotate(calc(var(--sw) * .5)) translateY(var(--lift)); }
+}
+/* the cane swings with the leg on its side */
+@keyframes walk-cane { 0%, 100% { transform:rotate(0deg); } 50% { transform:rotate(-9deg); } }
+.gw-grandma img, .gw-girl img { animation-delay:calc(var(--cyc) * -.5) !important; }
+/* everyone walks at a pace of their own */
+.gw-grandpa { --cyc:3.1s; } .gw-grandma { --cyc:2.7s; } .gw-girl { --cyc:2.3s; } .gw-boy { --cyc:1.95s; }
+.gf { --cyc:2.6s; }
+.gs-walk .gf :is(.gf-mum-front, .gf-mum-back) { animation-duration:2.95s; }
+.gs-walk .gf .gf-kid-front { animation-duration:2.1s; }
+.gs-p5 .gs-title { font-size:31px; } /* "Details": 31px, like the other titles */
+.gs-p5 .gs-detail .gs-small { font-size:12px; } /* the headings of the details: 2px smaller */
+.gs-p3 .gs-address { font-size:15px; } /* the address: 2px smaller */
+
+/* the bridge screen: its lamp stands in front of the people walking there (and behind the bridge) */
+.gs-l2 { z-index:3; }
+.gs-bridge { z-index:4; }
+/* the couple and the children follow the bridge's real shape: the snowy ramp that starts at u = 6% of the bridge's width, climbs (an eased curve)
+   to the top of the wall (14.4cqw above the ground) by 28%, over the arch (17.4cqw at the middle), and down again from 72% to 94%.
+   The path is given for the middle of the group's feet (--cx from the group's left edge); --b is how high their feet are when on the street. */
+.gs-w3 { --cx:22cqw; }
+.gs-w4 { --cx:17cqw; }
+@keyframes gs-walk-bridge {
+  0% { transform:translate(calc(-50cqw - var(--cx)), 0); }
+  60% { transform:translate(calc(106cqw - var(--cx)), 0); }
+  64.2% { transform:translate(calc(117cqw - var(--cx)), min(0px, calc(var(--b) - 7.2cqw))); }
+  66.5% { transform:translate(calc(123cqw - var(--cx)), calc(var(--b) - 12.66cqw)); }
+  68.5% { transform:translate(calc(128cqw - var(--cx)), calc(var(--b) - 14.4cqw)); }
+  72.7% { transform:translate(calc(139cqw - var(--cx)), calc(var(--b) - 15.9cqw)); }
+  76.9% { transform:translate(calc(150cqw - var(--cx)), calc(var(--b) - 17.4cqw)); }
+  81.2% { transform:translate(calc(161cqw - var(--cx)), calc(var(--b) - 15.9cqw)); }
+  85.4% { transform:translate(calc(172cqw - var(--cx)), calc(var(--b) - 14.4cqw)); }
+  87.3% { transform:translate(calc(177cqw - var(--cx)), calc(var(--b) - 12.66cqw)); }
+  89.6% { transform:translate(calc(183cqw - var(--cx)), min(0px, calc(var(--b) - 7.2cqw))); }
+  93.8% { transform:translate(calc(194cqw - var(--cx)), 0); }
+  100% { transform:translate(calc(210cqw - var(--cx)), 0); }
+}
+/* the climb onto the bridge is long and gentle: from the street at the screen's left edge straight up to the top of the wall (30% of the bridge),
+   over the arch, and down just as gently to the street at the screen's right edge */
+@keyframes gs-walk-bridge {
+  0% { transform:translate(calc(-50cqw - var(--cx)), 0); }
+  55.8% { transform:translate(calc(95cqw - var(--cx)), 0); }
+  62.3% { transform:translate(calc(112cqw - var(--cx)), calc((var(--b) - 14.4cqw) * .49)); }
+  69.2% { transform:translate(calc(130cqw - var(--cx)), calc(var(--b) - 14.4cqw)); }
+  72.7% { transform:translate(calc(139cqw - var(--cx)), calc(var(--b) - 15.9cqw)); }
+  76.9% { transform:translate(calc(150cqw - var(--cx)), calc(var(--b) - 17.4cqw)); }
+  81.2% { transform:translate(calc(161cqw - var(--cx)), calc(var(--b) - 15.9cqw)); }
+  84.6% { transform:translate(calc(170cqw - var(--cx)), calc(var(--b) - 14.4cqw)); }
+  91.5% { transform:translate(calc(188cqw - var(--cx)), calc((var(--b) - 14.4cqw) * .49)); }
+  98.1% { transform:translate(calc(205cqw - var(--cx)), 0); }
+  100% { transform:translate(calc(210cqw - var(--cx)), 0); }
+}
+/* friendlier wording: a small line above the place ("We have reserved a table at") and a warm closing line on the reply page */
+.gs-p3 .gs-place-intro { color:#25395a; margin-bottom:-4px; }
+.gs-p4 .gs-closing { font-style:italic; font-size:16px; color:#4b5767; margin-top:4px; }
+.gs-p3 .gs-place-intro { font-size:12px; letter-spacing:.14em; } /* one line on a phone */
+
+/* the guests round the Christmas tree: two groups further back (smaller, standing higher on the snow, behind the tree),
+   two close in front (bigger, lower); every group sways a little, at its own pace */
+.gs-guests { position:absolute; width:auto; pointer-events:none; transform-origin:50% 100%; animation:gs-guest-sway 4.2s ease-in-out infinite alternate; }
+.gs-g2 { z-index:1; left:calc(200cqw + 3cqw); bottom:14cqh; height:calc(var(--th) * .5); animation-duration:5.1s; }
+.gs-g4 { z-index:1; left:calc(200cqw + 70cqw); bottom:13cqh; height:calc(var(--th) * .48); animation-duration:4.6s; animation-delay:-1.3s; }
+.gs-g1 { z-index:3; left:calc(200cqw + 1cqw); bottom:1cqh; height:calc(var(--th) * .74); animation-duration:3.9s; animation-delay:-.7s; }
+.gs-g3 { z-index:3; left:calc(200cqw + 73cqw); bottom:0; height:calc(var(--th) * .77); animation-duration:4.4s; animation-delay:-2.1s; }
+@keyframes gs-guest-sway { from { transform:rotate(-.6deg) scaleY(1); } to { transform:rotate(.6deg) scaleY(1.008); } }
+@media (prefers-reduced-motion: reduce) { .gs-guests { animation:none; } }
