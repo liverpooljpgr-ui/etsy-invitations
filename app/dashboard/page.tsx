@@ -69,7 +69,12 @@ export default async function Dashboard() {
                     {c && isWebsiteTemplate(tplOf.get(i.id)) && (
                       <span className="dash-thumb-inner dash-thumb-web"><WebsiteExperience slug={tplOf.get(i.id)} content={c} mode="preview" startAt="envelope" coverOnly stillVideo /></span>
                     )}
-                    {c && !isWebsiteTemplate(tplOf.get(i.id)) && (
+                    {c && tplOf.get(i.id) === "cozy-blue-city" && (
+                      // Cozy Blue City: the present on its cover, as a picture
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src="/templates/christmas-gift/v1/thumb.webp" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                    )}
+                    {c && !isWebsiteTemplate(tplOf.get(i.id)) && tplOf.get(i.id) !== "cozy-blue-city" && (
                       <span className="inv dash-thumb-inner" data-template={tplOf.get(i.id) === "christmas-velvet" ? "christmas-party" : tplOf.get(i.id)} data-design={tplOf.get(i.id)}>
                         <span className="card cover cover-static"><CoverInner content={c} mode="preview" template={tplOf.get(i.id)} /></span>
                       </span>

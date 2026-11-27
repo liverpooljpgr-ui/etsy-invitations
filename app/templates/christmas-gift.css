@@ -511,3 +511,33 @@
 /* "Down to the street": almost at the very bottom of the sky screen (the screen's foot is 84cqh below the top of these words, less the star) */
 .gs-p4 .gs-back { position:absolute; left:50%; translate:-50% 0; top:calc(84cqh - min(40cqw, 280px) - 56px); margin:0; white-space:nowrap; }
 .gs-p2 .gs-small, .gs-p3 .gs-place-intro { font-size:13px; } /* "You are invited to a" and "We have reserved a table at" */
+/* on a tablet: more air between the parts of the text */
+@container (min-width: 600px) {
+  .gc-title { margin-top:16px; }
+  .gx-screen .gc-box { margin:min(14cqh, 130px) 0 min(9cqh, 90px); }
+  .gs-text { gap:18px; }
+  .gs-p2 .gs-line { margin-top:22px; }
+  .gs-p3 .gs-link { margin-top:16px; }
+  .gs-p5 .gs-detail { margin-top:30px; gap:12px; }
+  .gs-p4 .gs-closing { margin-top:10px; margin-bottom:22px; }
+  .gs-btn { margin-top:14px; }
+}
+/* a phone 700px tall or more: every button 25px further from the words above it */
+@container (max-width: 599px) and (min-height: 700px) {
+  .gs-btn { margin-top:25px; }
+}
+.gs .rsvp-bg { align-items:center; justify-content:center; padding:11px; } /* the reply window in the middle of the screen, on every screen size */
+/* on a tablet: "You are invited to a" 17px, the hosts' line 23px */
+@container (min-width: 600px) {
+  .gs-p2 .gs-small, .gs-p3 .gs-place-intro { font-size:17px; } /* "You are invited to a", "We have reserved a table at" */
+  .gs-p2 .gs-line { font-size:23px; }
+  .gs-p3 .gs-address { width:400px; max-width:100%; padding:0; box-sizing:border-box; } /* the address in a 400px column */
+  .gs-p5 .gs-detail .gs-small { font-size:14px; } /* the details' headings */
+  .gs-p5 .gs-detail .gs-line { font-size:19px; width:400px; max-width:100%; padding:0; box-sizing:border-box; } /* the details' text, in a 400px column */
+  .gs-p2 .gs-title { font-size:37px; } /* "Christmas Dinner" */
+  .gs-p5 .gs-title { font-size:37px; } /* "Details" */
+  .gs-p4 .gs-title { font-size:37px; } /* "Please RSVP" */
+  .gs-p4 .gs-closing { font-size:23px; } /* "We look forward to a cozy evening with you!" */
+  .gs-p3 .gs-link, .gs-p4 .gs-link { font-size:13px; } /* "Get directions" and "Add to calendar": 3px bigger */
+}
+.gs-lamp::before { display:none; } /* the street lamps are not lit: no warm glow around them */
