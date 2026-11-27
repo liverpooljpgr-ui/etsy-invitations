@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // a modern phone (iPhone 14 / 15) and a tablet (iPad): the page inside is a real screen of that size, so every media query and screen-height rule behaves as on the device
 const DEVICES = {
@@ -16,6 +16,10 @@ type Device = keyof typeof DEVICES;
 export function PhoneFrame({ src, embeddedSrc, backHref }: { src: string; embeddedSrc: string; backHref: string }) {
   const [scale, setScale] = useState<number | null>(null);
   const [device, setDevice] = useState<Device>("phone");
+  const [sound, setSound] = useState(true);
+  const frame = useRef<HTMLIFrameElement>(null);
+  // the sound switch: tells the invitation in the frame to pause or play its music
+  const toggleSound = () => { const next = !sound; setSound(next); const w = frame.current?.contentWindow as (Window & { __piSoundOff?: boolean }) | null | undefined; if (w) w.__piSoundOff = !next; w?.dispatchEvent(new CustomEvent("pi-sound", { detail: next ? "on" : "off" })); };
   const { W, H, bez, outer, inner } = DEVICES[device];
   useEffect(() => {
     if (window.matchMedia("(max-width: 640px)").matches) { window.location.replace(src); return; } // a phone: no frame, the real screen
@@ -35,10 +39,14 @@ export function PhoneFrame({ src, embeddedSrc, backHref }: { src: string; embedd
             {DEVICES[d].label}
           </button>
         ))}
+        <button type="button" onClick={toggleSound} aria-pressed={!sound}
+          style={{ padding: "7px 18px", borderRadius: 999, fontSize: 14, fontWeight: 600, border: "1px solid #d6d3db", background: "#fff", color: "#2b2233", cursor: "pointer", marginLeft: 10 }}>
+          {sound ? "🔊 Music on" : "🔇 Music off"}
+        </button>
       </div>
       <div style={{ width: (W + 2 * bez) * scale, height: (H + 2 * bez) * scale, margin: "0 auto" }}>
         <div style={{ width: W + 2 * bez, height: H + 2 * bez, transform: `scale(${scale})`, transformOrigin: "0 0", background: "#0b0b0c", borderRadius: outer, padding: bez, boxShadow: "0 24px 60px rgba(40,30,40,.35), inset 0 0 0 2px #3a3a3d" }}>
-          <iframe key={device} title={`${DEVICES[device].label} preview`} src={embeddedSrc} width={W} height={H} style={{ display: "block", border: 0, borderRadius: inner, background: "#fff" }} allow="autoplay" />
+          <iframe ref={frame} onLoad={() => { const w = frame.current?.contentWindow as (Window & { __piSoundOff?: boolean }) | null | undefined; if (w) w.__piSoundOff = !sound; }} key={device} title={`${DEVICES[device].label} preview`} src={embeddedSrc} width={W} height={H} style={{ display: "block", border: 0, borderRadius: inner, background: "#fff" }} allow="autoplay" />
         </div>
       </div>
     </main>

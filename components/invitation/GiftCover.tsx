@@ -43,7 +43,7 @@ function ringBells() {
  * while a magic shine rises above it like smoke and fades away; its shadow lies under it.
  * Tapped, it wobbles faster, then whirls round while growing until it fills the screen, and vanishes: `onOpen` is called then.
  */
-export function GiftCover({ img, bell, onOpen, onTap, top = "You have received", title = "a Christmas invitation", hint = "Tap the box" }: { img: string; bell?: string; onOpen?: () => void; /** called right at the tap (the host's music may only start then) */ onTap?: () => void; top?: string; title?: string; hint?: string }) {
+export function GiftCover({ img, bell, onOpen, onTap, starDots, top = "You have received", title = "a Christmas invitation", hint = "Tap the box" }: { img: string; bell?: string; /** the dots of the title's i and j are little stars (Christmas Paris) */ starDots?: boolean; onOpen?: () => void; /** called right at the tap (the host's music may only start then) */ onTap?: () => void; top?: string; title?: string; hint?: string }) {
   const [phase, setPhase] = useState<"idle" | "shake" | "whirl" | "gone">("idle");
   const done = useRef(false);
   useEffect(() => {
@@ -56,7 +56,7 @@ export function GiftCover({ img, bell, onOpen, onTap, top = "You have received",
   return (
     <div className="gc" data-phase={phase}>
       {top && <p className="gc-top">{top}</p>}
-      {title && <p className="gc-title">{title}</p>}
+      {title && <p className="gc-title">{starDots ? title.split(" ").flatMap((w, k) => [k ? " " : "", <span key={k} className="gc-word">{[...w].map((ch, i) => (ch === "i" || ch === "j" ? <span key={i} className="gc-dot">{ch === "i" ? "ı" : "ȷ"}<i aria-hidden="true">✦</i></span> : ch))}</span>]) : title}</p>}
       <button type="button" className="gc-box" onClick={open} aria-label={hint} disabled={phase !== "idle"}>
         <span className="gc-shadow" aria-hidden="true" />
         <span className="gc-shine" aria-hidden="true">

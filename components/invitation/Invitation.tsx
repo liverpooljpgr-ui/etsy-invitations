@@ -1,7 +1,7 @@
 import { TimelineIcon } from "./TimelineIcons";
 import { InkHeart } from "./InkHeart";
 import { FitScreens } from "./FitScreens";
-import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES, layoutTemplate, isWebsiteTemplate } from "@/lib/templates";
+import { DEFAULT_TEMPLATE, PHOTO_FRAME, templateSlug, type TemplateSlug, FLYING_PHOTO, PARTY_TEMPLATES, layoutTemplate, isWebsiteTemplate, isCozyTemplate } from "@/lib/templates";
 import { RsvpForm } from "./RsvpForm";
 import { CozyCity, type CozyScreen } from "./CozyCity";
 import { WebsiteExperience } from "@/components/website/WebsiteExperience";
@@ -119,7 +119,7 @@ export function Invitation({
 }) {
   const template = templateSlug(templateProp); // unknown / missing design names fall back to the default design
   // Christmas Amsterdam: the present and the snowy street are one live page; the editor shows it in a phone-shaped box (tap through it there)
-  if (template === "christmas-amsterdam") return <CozyCity content={c} rsvpSlug={rsvpSlug} calendarHref={calendarHref} fill={false} screen={cozyScreen} />;
+  if (isCozyTemplate(template)) return <CozyCity variant={template === "christmas-paris" ? "paris" : "amsterdam"} content={c} rsvpSlug={rsvpSlug} calendarHref={calendarHref} fill={false} screen={cozyScreen} />;
   // the wedding website (Peach Website) is a page of its own (in the editor it shows the page itself, in the size of the preview)
   if (isWebsiteTemplate(template)) {
     // the editor shows the two pages of the website one under the other: the cover with the envelope (it has fields to edit) and the page itself

@@ -69,12 +69,12 @@ export default async function Dashboard() {
                     {c && isWebsiteTemplate(tplOf.get(i.id)) && (
                       <span className="dash-thumb-inner dash-thumb-web"><WebsiteExperience slug={tplOf.get(i.id)} content={c} mode="preview" startAt="envelope" coverOnly stillVideo /></span>
                     )}
-                    {c && tplOf.get(i.id) === "christmas-amsterdam" && (
+                    {c && (tplOf.get(i.id) === "christmas-amsterdam" || tplOf.get(i.id) === "christmas-paris") && (
                       // Christmas Amsterdam: the present on its cover, as a picture
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src="/templates/christmas-gift/v1/thumb.webp" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                      <img src={tplOf.get(i.id) === "christmas-paris" ? "/templates/christmas-paris/v1/thumb.webp" : "/templates/christmas-gift/v1/thumb.webp"} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                     )}
-                    {c && !isWebsiteTemplate(tplOf.get(i.id)) && tplOf.get(i.id) !== "christmas-amsterdam" && (
+                    {c && !isWebsiteTemplate(tplOf.get(i.id)) && tplOf.get(i.id) !== "christmas-amsterdam" && tplOf.get(i.id) !== "christmas-paris" && (
                       <span className="inv dash-thumb-inner" data-template={tplOf.get(i.id) === "christmas-velvet" ? "christmas-party" : tplOf.get(i.id)} data-design={tplOf.get(i.id)}>
                         <span className="card cover cover-static"><CoverInner content={c} mode="preview" template={tplOf.get(i.id)} /></span>
                       </span>

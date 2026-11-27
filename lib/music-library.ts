@@ -17,5 +17,5 @@ export const MUSIC_LIBRARY: readonly LibrarySong[] = [
 
 /** The songs a design offers: the Christmas party only its own songs, every other design the general ones. */
 export function songsFor(template: string | undefined): LibrarySong[] {
-  return MUSIC_LIBRARY.filter((s) => (template === "christmas-party" || template === "christmas-velvet" || template === "christmas-amsterdam" ? s.only === "christmas-party" : !s.only));
+  return MUSIC_LIBRARY.filter((s) => (template === "christmas-party" || template === "christmas-velvet" || template === "christmas-amsterdam" || template === "christmas-paris" ? s.only === "christmas-party" : !s.only));
 }

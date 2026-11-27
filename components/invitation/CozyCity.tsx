@@ -58,7 +58,7 @@ export function cozyCityText(c: Content): StreetText {
  */
 export type CozyScreen = "cover" | "street" | "place" | "details" | "reply";
 const PAGE_OF: Record<Exclude<CozyScreen, "cover">, 2 | 3 | 5 | 4> = { street: 2, place: 3, details: 5, reply: 4 };
-export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOpen = false, screen }: { content: Content; rsvpSlug?: string; calendarHref?: string; fill?: boolean; startOpen?: boolean; screen?: CozyScreen }) {
+export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOpen = false, screen, variant = "amsterdam" }: { variant?: "amsterdam" | "paris"; content: Content; rsvpSlug?: string; calendarHref?: string; fill?: boolean; startOpen?: boolean; screen?: CozyScreen }) {
   const [open, setOpen] = useState(startOpen || (!!screen && screen !== "cover"));
   // the editor's preview goes to the screen being edited
   useEffect(() => { if (screen) setOpen(screen !== "cover"); }, [screen]);
@@ -71,17 +71,24 @@ export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOp
     a.loop = true; a.volume = 0.6;
     a.addEventListener("error", () => { audio.current = null; setMusic("none"); });
     audio.current = a;
+    if ((window as Window & { __piSoundOff?: boolean }).__piSoundOff) { setMusic("off"); return; } // the preview's sound switch is off
     a.play().then(() => setMusic("on")).catch(() => { if (audio.current === a) setMusic("off"); });
   };
   const toggleMusic = () => { const a = audio.current; if (!a) return; if (a.paused) a.play().then(() => setMusic("on")).catch(() => setMusic("off")); else { a.pause(); setMusic("off"); } };
   useEffect(() => () => { audio.current?.pause(); audio.current = null; }, []);
+  // the sound switch above the phone in "Preview animation"
+  useEffect(() => {
+    const on = (e: Event) => { const a = audio.current; if (!a) return; if ((e as CustomEvent).detail === "off") { a.pause(); setMusic("off"); } else { a.play().then(() => setMusic("on")).catch(() => setMusic("off")); } };
+    window.addEventListener("pi-sound", on);
+    return () => window.removeEventListener("pi-sound", on);
+  }, []);
   const view = (
-    <div className="gx-screen">
+    <div className={`gx-screen gx-${variant}`}>
       {!open ? (
-        <div className="gx-page"><GiftCover img={`${IMG}/gift.webp`} bell={`${IMG}/bell.webp`} onOpen={() => setOpen(true)} onTap={startMusic} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle")} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
+        <div className="gx-page"><GiftCover img={variant === "paris" ? "/templates/christmas-paris/v1/gift.webp" : `${IMG}/gift.webp`} bell={variant === "paris" ? undefined : `${IMG}/bell.webp`} onOpen={() => setOpen(true)} onTap={startMusic} starDots={variant === "paris"} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle", variant === "paris" ? "a Christmas Invitation" : undefined)} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
       ) : (
         <div className="gx-page gx-in">
-          <GiftStreet text={cozyCityText(content)} calendarHref={calendarHref} page={screen && screen !== "cover" ? PAGE_OF[screen] : undefined} rsvp={{ slug: rsvpSlug, deadline: content.rsvp.deadline, maxParty: content.rsvp.maxParty, email: content.rsvp.email, labels: { food: content.texts.rsvpFoodLabel } }} />
+          <GiftStreet variant={variant} text={cozyCityText(content)} calendarHref={calendarHref} page={screen && screen !== "cover" ? PAGE_OF[screen] : undefined} rsvp={{ slug: rsvpSlug, deadline: content.rsvp.deadline, maxParty: content.rsvp.maxParty, email: content.rsvp.email, labels: { food: content.texts.rsvpFoodLabel } }} />
         </div>
       )}
     </div>

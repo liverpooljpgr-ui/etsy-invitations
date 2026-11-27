@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ph = c?.photo;
   const v = ph ? createHash("sha1").update(`${ph.url}|${ph.cx}|${ph.cy}|${ph.zoom}`).digest("hex").slice(0, 8) : "";
   // the Christmas party has its own preview card (no beloved names, no wedding picture)
-  const images = [{ url: isParty ? (tpl === "christmas-velvet" ? "/share-card-velvet.jpg" : tpl === "christmas-amsterdam" ? "/share-card-christmas-amsterdam.jpg" : "/share-card-christmas.jpg") : ph || isWebsiteTemplate(tpl) ? `/${slug}/og?v=${v || "w"}${isWebsiteTemplate(tpl) ? "-" + createHash("sha1").update(`${first}|${second}|${c?.texts?.coverTop ?? ""}`).digest("hex").slice(0, 6) : ""}` : "/share-card.jpg", width: 1200, height: 630, alt: isParty ? "Christmas party invitation" : title }];
+  const images = [{ url: isParty ? (tpl === "christmas-velvet" ? "/share-card-velvet.jpg" : tpl === "christmas-amsterdam" ? "/share-card-christmas-amsterdam.jpg" : tpl === "christmas-paris" ? "/share-card-christmas-paris.jpg" : "/share-card-christmas.jpg") : ph || isWebsiteTemplate(tpl) ? `/${slug}/og?v=${v || "w"}${isWebsiteTemplate(tpl) ? "-" + createHash("sha1").update(`${first}|${second}|${c?.texts?.coverTop ?? ""}`).digest("hex").slice(0, 6) : ""}` : "/share-card.jpg", width: 1200, height: 630, alt: isParty ? "Christmas party invitation" : title }];
   return {
     title,
     description,

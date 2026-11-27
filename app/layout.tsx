@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Ephesis, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield, Alex_Brush, Mea_Culpa, Playfair_Display, Cormorant_SC, Elsie_Swash_Caps, WindSong, Allison, Cormorant_Garamond, Imperial_Script, Lora } from "next/font/google";
+import { Manrope, Libre_Caslon_Text, Rouge_Script, Jost, Oranienbaum, Pinyon_Script, Ephesis, Marcellus, Barlow_Semi_Condensed, Mrs_Saint_Delafield, Alex_Brush, Mea_Culpa, Playfair_Display, Cormorant_SC, Elsie_Swash_Caps, WindSong, Allison, Cormorant_Garamond, Imperial_Script, Lora, Birthstone_Bounce, Berkshire_Swash } from "next/font/google";
 import "./globals.css";
 import "./templates/mono-script.css";
 import "./templates/cupid-script.css";
@@ -43,6 +43,8 @@ const imperial = Imperial_Script({ variable: "--font-imperial", subsets: ["latin
 const xmGaramond = Cormorant_Garamond({ variable: "--font-xm-garamond", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"], style: ["normal", "italic"] });
 // the Christmas gift invitation: Lora for all its words (except the Amore Christmas titles)
 const lora = Lora({ variable: "--font-lora", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["400", "500", "600", "700"], style: ["normal", "italic"] });
+const bounce = Birthstone_Bounce({ variable: "--font-bounce", subsets: ["latin", "latin-ext"], weight: "500" }); // Christmas Paris: the cover title
+const berkshire = Berkshire_Swash({ variable: "--font-berkshire", subsets: ["latin", "latin-ext"], weight: "400" }); // Christmas Paris: the titles
 const alexBrush = Alex_Brush({ variable: "--font-alex-brush", subsets: ["latin", "latin-ext"], weight: "400" });
 
 export const metadata: Metadata = {
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${imperial.variable} ${xmWind.variable} ${sfSerif.variable} ${lora.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${serif.variable} ${script.variable} ${sans.variable} ${ui.variable} ${head.variable} ${accent.variable} ${wrScript.variable} ${wrHead.variable} ${wrBody.variable} ${msScript.variable} ${alexBrush.variable} ${meaCulpa.variable} ${xmHead.variable} ${xmBig.variable} ${xmGaramond.variable} ${allison.variable} ${imperial.variable} ${xmWind.variable} ${sfSerif.variable} ${lora.variable} ${bounce.variable} ${berkshire.variable}`}>
       <body>{children}</body>
     </html>
   );

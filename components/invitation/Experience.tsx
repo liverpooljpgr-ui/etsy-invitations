@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Content } from "@/lib/content/schema";
-import { isWebsiteTemplate, type TemplateSlug } from "@/lib/templates";
+import { isCozyTemplate, isWebsiteTemplate, type TemplateSlug } from "@/lib/templates";
 import { CoverInner } from "./Cover";
 import { Invitation } from "./Invitation";
 import { WebsiteExperience } from "@/components/website/WebsiteExperience";
@@ -20,7 +20,7 @@ const OPEN_MS_BY_TEMPLATE: Partial<Record<TemplateSlug, number>> = { "white-rose
  */
 /** The wedding website design (Peach Website) has its own page; every other design is the animated invitation. */
 export function Experience(props: Parameters<typeof InvitationExperience>[0]) {
-  if (props.template === "christmas-amsterdam") return <CozyCity content={props.content} rsvpSlug={props.rsvpSlug} calendarHref={props.calendarHref} />; // the present and the snowy street: a page of its own
+  if (isCozyTemplate(props.template)) return <CozyCity variant={props.template === "christmas-paris" ? "paris" : "amsterdam"} content={props.content} rsvpSlug={props.rsvpSlug} calendarHref={props.calendarHref} />; // the present and the snowy street: a page of its own
   return isWebsiteTemplate(props.template) ? <WebsiteExperience slug={props.template} content={props.content} mode={props.mode} calendarHref={props.calendarHref} rsvpSlug={props.rsvpSlug} backHref={props.backHref} fill /> : <InvitationExperience {...props} />;
 }
 
@@ -38,6 +38,7 @@ function InvitationExperience({ content, mode = "public", calendarHref, rsvpSlug
     a.volume = 0.6;
     a.addEventListener("error", () => { audio.current = null; setMusic("none"); });
     audio.current = a;
+    if ((window as Window & { __piSoundOff?: boolean }).__piSoundOff) { setMusic("off"); return; } // the preview's sound switch is off
     a.play().then(() => setMusic("on")).catch(() => { if (audio.current === a) setMusic("off"); });
   }
   function toggleMusic() {
@@ -46,6 +47,12 @@ function InvitationExperience({ content, mode = "public", calendarHref, rsvpSlug
     if (a.paused) { a.play().then(() => setMusic("on")).catch(() => setMusic("off")); } else { a.pause(); setMusic("off"); }
   }
   useEffect(() => () => { audio.current?.pause(); audio.current = null; }, []);
+  // the sound switch above the phone in "Preview animation"
+  useEffect(() => {
+    const on = (e: Event) => { const a = audio.current; if (!a) return; if ((e as CustomEvent).detail === "off") { a.pause(); setMusic("off"); } else { a.play().then(() => setMusic("on")).catch(() => setMusic("off")); } };
+    window.addEventListener("pi-sound", on);
+    return () => window.removeEventListener("pi-sound", on);
+  }, []);
 
   // The photo that slides out of the envelope must land exactly on the photo of the next screen: measure both (the next screen without its
   // "waiting" offset) and hand the distance and the size change to the stylesheet.

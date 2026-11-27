@@ -67,6 +67,7 @@ export function demoContent(now = new Date(), template?: string): Content {
     rsvp: { deadline: day(7), email: "hello@example.com", note: "", online: true, maxParty: 6 },
     ...(template === "christmas-party" ? christmasPartyDemo(now) : {}),
     ...(template === "christmas-amsterdam" ? christmasAmsterdamDemo(now) : {}),
+    ...(template === "christmas-paris" ? christmasAmsterdamDemo(now) : {}), // for now the same words as Christmas Amsterdam
   };
 }
 

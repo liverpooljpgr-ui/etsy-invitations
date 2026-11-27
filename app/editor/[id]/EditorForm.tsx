@@ -15,7 +15,7 @@ import { MapPicker } from "@/components/MapPicker";
 import { PhotoArchThumb, PhotoCrop } from "@/components/PhotoCrop";
 import { SongPicker } from "@/components/SongPicker";
 import { RsvpReplies } from "@/components/RsvpReplies";
-import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug , PARTY_TEMPLATES, isWebsiteTemplate } from "@/lib/templates";
+import { coverBottomText, DEFAULT_TEMPLATE, PHOTO_FRAME, PHOTO_SHAPE, TEMPLATE_COVER, type TemplateSlug , PARTY_TEMPLATES, isWebsiteTemplate, isCozyTemplate } from "@/lib/templates";
 import { isMapsLink } from "@/lib/maps-link";
 import { lookupPlaceFromLink } from "@/lib/maps-lookup";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
@@ -195,7 +195,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
   const website = isWebsiteTemplate(template); // a website-type design: its own order of screens and its own fields
-  const cozy = template === "christmas-amsterdam"; // Christmas Amsterdam: its own screens, every word editable
+  const cozy = isCozyTemplate(template); // Christmas Amsterdam: its own screens, every word editable
   const baseSteps: readonly Step[] = website ? WEBSITE_STEPS : cozy ? COZY_STEPS : STEPS;
   const guestIdx = baseSteps.length; // the index of the Guest link tab (it appears after publishing)
   const [step, setStep] = useState(() => Math.max(0, Math.min((initialStep ?? 1) - 1, initialStatus === "published" ? guestIdx : guestIdx - 1))); // phone wizard
@@ -956,7 +956,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           {/* Christmas Amsterdam: one step per screen, in the order guests see them. Every line can be written (an empty field shows the design's own words, in grey). */}
           <Section n={21} mobileHidden={step !== 0} title="1 · Cover · the present">
             <Field label="Small line at the top"><input className={inputCls} maxLength={60} {...cz("czCoverTop")} /></Field>
-            <Field label="Title"><input className={inputCls} maxLength={60} {...cz("czCoverTitle")} /></Field>
+            <Field label="Title"><input className={inputCls} maxLength={60} {...cz("czCoverTitle", template === "christmas-paris" ? "a Christmas Invitation" : undefined)} /></Field>
             <Field label="Line under the present"><input className={inputCls} maxLength={60} {...cz("czCoverHint")} /></Field>
             <div className="ui-field">
               <span className="ui-label">Background music (optional)</span>

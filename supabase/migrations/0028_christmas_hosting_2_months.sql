@@ -1,4 +1,4 @@
--- Christmas invitations (Christmas Party, Purple Vintage Christmas, Christmas Amsterdam) are hosted for 2 months from the first publish
+-- Christmas invitations (Christmas Party, Purple Vintage Christmas, Christmas Amsterdam, Christmas Paris) are hosted for 2 months from the first publish
 -- (a Christmas party is over within weeks); the other designs keep their plan's months. The 30 extra days stay the same.
 -- Invitations already published keep the dates they were given.
 create or replace function public.publish_invitation(p_actor uuid, p_invitation uuid, p_snapshot jsonb) returns void
@@ -17,7 +17,7 @@ begin
   if v_state = 'pending' then
     select hosting_months into v_months from public.plans where code = v.plan_code;
     select slug into v_slug from public.templates where id = v.template_id;
-    if v_slug in ('christmas-party', 'christmas-velvet', 'christmas-amsterdam', 'cozy-blue-city') then v_months := 2; end if;
+    if v_slug in ('christmas-party', 'christmas-velvet', 'christmas-amsterdam', 'cozy-blue-city', 'christmas-paris') then v_months := 2; end if;
     update public.hosting_entitlements set state = 'active', starts_at = now(),
       ends_at = now() + make_interval(months => v_months),
       grace_ends_at = now() + make_interval(months => v_months) + interval '30 days',
