@@ -34,7 +34,7 @@ export const etsyListing = (design: string): string | null => ETSY_LISTING[desig
 export const designOfDemo = (address: string) => DEMO_DESIGN[address] ?? address;
 /** The address that replaced the old one, or null when this address is the current one */
 /** Designs whose internal name changed: the old demo address leads to the new one */
-const RENAMED: Record<string, string> = { "dahlia-village-website": "country-dahlia-wedding-website" };
+const RENAMED: Record<string, string> = { "dahlia-village-website": "country-dahlia-wedding-website", "cozy-blue-city": "christmas-amsterdam" };
 export const newerDemoAddress = (address: string) => RENAMED[address] ?? (DEMO_ADDRESS[address] && DEMO_ADDRESS[address] !== address ? DEMO_ADDRESS[address] : null);
 
 /** The sample wedding that every demo shows. The date is always in the future (about 9 months ahead), so the countdown and the "reply by" line look alive. */
