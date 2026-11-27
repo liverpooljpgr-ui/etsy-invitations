@@ -55,8 +55,8 @@ export function GiftCover({ img, bell, onOpen, top = "You have received", title 
   const sparks = Array.from({ length: 96 }, (_, i) => ({ x: ((i * 37) % 150) - 75, d: 4 + ((i * 7) % 5) * 0.6, delay: i * 0.065, s: 0.6 + ((i * 5) % 4) * 0.25, h: 220 + ((i * 11) % 6) * 36, tw: 0.5 + ((i * 3) % 5) * 0.15 }));
   return (
     <div className="gc" data-phase={phase}>
-      <p className="gc-top">{top}</p>
-      <p className="gc-title">{title}</p>
+      {top && <p className="gc-top">{top}</p>}
+      {title && <p className="gc-title">{title}</p>}
       <button type="button" className="gc-box" onClick={open} aria-label={hint} disabled={phase !== "idle"}>
         <span className="gc-shadow" aria-hidden="true" />
         <span className="gc-shine" aria-hidden="true">
@@ -72,7 +72,7 @@ export function GiftCover({ img, bell, onOpen, top = "You have received", title 
           )}
         </span>
       </button>
-      <p className="gc-hint">{hint}</p>
+      {hint && <p className="gc-hint">{hint}</p>}
       <span className="gc-flash" aria-hidden="true" />
     </div>
   );

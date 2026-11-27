@@ -488,3 +488,26 @@
 .gs-g3 { z-index:3; left:calc(200cqw + 73cqw); bottom:0; height:calc(var(--th) * .77); animation-duration:4.4s; animation-delay:-2.1s; }
 @keyframes gs-guest-sway { from { transform:rotate(-.6deg) scaleY(1); } to { transform:rotate(.6deg) scaleY(1.008); } }
 @media (prefers-reduced-motion: reduce) { .gs-guests { animation:none; } }
+/* on a phone: the red script words 30px, the hosts' line and the date and time 17px */
+@container (max-width: 599px) {
+  .gs-p2 .gs-title { font-size:30px; }
+  .gs-p2 .gs-line { font-size:17px; }
+  .gs-p2 .gs-date { font-size:15px; } /* the date and the time */
+  .gs-p3 .gs-place { font-size:23px; } /* the place's name */
+  .gs-p3 .gs-address { font-size:13px; }
+  .gs-p5 .gs-title { font-size:30px; } /* "Details" */
+  .gs-p4 .gs-title { font-size:30px; } /* "Please RSVP" */
+  .gs-p4 .gs-when { font-size:17px; } /* the reply-by date */
+  .gc-title, .gs .rsvp-sheet-title { font-size:30px; } /* the red Amore Christmas words: the cover's title and the reply window's title, 30px like every other */
+  .gs-p5 .gs-detail .gs-line { font-size:14px; } /* the details' text */
+}
+.gs-p5 .gs-detail .gs-line { font-style:normal; } /* the details' text in regular Lora, not italic, on every screen size */
+.gs-p5 .gs-detail { gap:8px; } /* more room between a detail's heading and its text */
+.gs-p3 { translate:0 20px; } /* the words of the place screen 20px lower */
+.gs-p3 .gs-link { margin-top:10px; } /* "Get directions" 10px under the address */
+.gs-p4 .gs-link { font-size:10px; } /* "Add to calendar": the same size and look as "Get directions" */
+.gs-p4 .gs-closing { font-size:17px; } /* "We look forward to a cozy evening with you!" */
+.gs-p4 .gs-closing { margin-bottom:14px; } /* more room between "We look forward…" and the reply button */
+/* "Down to the street": almost at the very bottom of the sky screen (the screen's foot is 84cqh below the top of these words, less the star) */
+.gs-p4 .gs-back { position:absolute; left:50%; translate:-50% 0; top:calc(84cqh - min(40cqw, 280px) - 56px); margin:0; white-space:nowrap; }
+.gs-p2 .gs-small, .gs-p3 .gs-place-intro { font-size:13px; } /* "You are invited to a" and "We have reserved a table at" */

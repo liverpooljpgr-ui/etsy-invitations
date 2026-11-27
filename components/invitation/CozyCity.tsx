@@ -3,7 +3,8 @@
 import type { Content } from "@/lib/content/schema";
 import { GiftCover } from "./GiftCover";
 import { GiftStreet, type StreetText } from "./GiftStreet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { czHostDefault, czText, type CzKey } from "@/lib/cozy-texts";
 
 const IMG = "/templates/christmas-gift/v1";
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -15,36 +16,38 @@ const dayParts = (iso: string) => {
   return { weekday: DAYS[dt.getUTCDay()], day: +m[3], month: MONTHS[dt.getUTCMonth()] };
 };
 
-/** The words of the street pages, taken from the invitation's content (the same fields as the Christmas party design). */
+/** The words of every screen, from the invitation's content: each line has its own field (lib/cozy-texts.ts); an empty field gives the design's own wording.
+ *  The facts come from the usual fields: the hosts' name, the date and time, the place, the details and the reply-by date. */
 export function cozyCityText(c: Content): StreetText {
+  const t = c.texts as unknown as Record<string, string | undefined>;
+  const w = (k: CzKey) => czText(t, k);
   const d = dayParts(c.event.date), by = dayParts(c.rsvp.deadline);
-  const title = [c.texts.coverTop, c.texts.headline].filter(Boolean).join(" ").trim();
   const details = [
     { label: c.texts.detailsExtraTitle, text: c.texts.detailsExtraText },
     { label: c.texts.detailsDressCode || "Dress code", text: c.dressCode.note || c.dressCode.label },
-    { label: c.texts.detailsExtra2Title, text: c.texts.detailsExtra2Text },
   ].filter((x) => x.label && x.text);
   return {
-    intro: c.texts.coverIntro || "You are invited to a",
-    title: title || "Christmas Dinner",
-    // warm, friendly wording (after the Christmas invitation guides of Paperlust, Renty and Paper Divas): the hosts would love you at their table
-    host: c.couple.first ? `${c.couple.first.charAt(0).toUpperCase()}${c.couple.first.slice(1)} would love you at their table` : "",
+    intro: w("czIntro"),
+    title: w("czTitle"),
+    host: czText(t, "czHost", czHostDefault(c.couple.first)), // warm wording after the Christmas invitation guides: the hosts would love you at their table
     when: d ? `${d.weekday} · ${d.month} ${d.day}` : "Date", // the month first, then the day
-    time: c.event.time ? `from ${c.event.time}` : undefined,
-    where: "Where?",
-    placeIntro: c.texts.venueIntro && c.texts.venueIntro !== "ceremony will take place" ? c.texts.venueIntro : "", // e.g. "We have reserved a table at"
+    time: c.event.time ? [w("czTimeWord"), c.event.time].filter(Boolean).join(" ") : undefined,
+    where: w("czWhere"),
+    placeIntro: w("czPlaceIntro"),
     place: c.event.venue || "",
     address: (c.event.address || "").split("\n").filter(Boolean).join(", ") || "Address",
     mapUrl: c.event.mapUrl || undefined,
-    next: "Details",
-    detailsTitle: c.texts.detailsTitle || "Details",
+    directions: w("czDirections"),
+    next: w("czDetailsButton"),
+    detailsTitle: w("czDetailsTitle"),
     details,
-    detailsNext: "Will you come?",
-    replyTitle: "Please RSVP",
-    replyBy: by ? `by ${by.month} ${by.day}` : "",
-    reply: "Reply now",
-    calendar: "Add to calendar",
-    closing: c.texts.closingNote && !/come hungry/i.test(c.texts.closingNote) ? c.texts.closingNote : "We look forward to a cozy evening with you!",
+    detailsNext: w("czComeButton"),
+    replyTitle: w("czReplyTitle"),
+    replyBy: by ? [w("czReplyByWord"), `${by.month} ${by.day}`].filter(Boolean).join(" ") : "",
+    reply: w("czReplyButton"),
+    calendar: w("czCalendar"),
+    closing: w("czClosing"),
+    down: w("czDown"),
   };
 }
 
@@ -53,18 +56,22 @@ export function cozyCityText(c: Content): StreetText {
  * the Christmas tree with the details and the sky with the reply. `fill` makes it the whole page (a guest's link);
  * without it, it fills the box it is put in (the editor's preview).
  */
-export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOpen = false }: { content: Content; rsvpSlug?: string; calendarHref?: string; fill?: boolean; startOpen?: boolean }) {
-  const [open, setOpen] = useState(startOpen);
-  const screen = (
+export type CozyScreen = "cover" | "street" | "place" | "details" | "reply";
+const PAGE_OF: Record<Exclude<CozyScreen, "cover">, 2 | 3 | 5 | 4> = { street: 2, place: 3, details: 5, reply: 4 };
+export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOpen = false, screen }: { content: Content; rsvpSlug?: string; calendarHref?: string; fill?: boolean; startOpen?: boolean; screen?: CozyScreen }) {
+  const [open, setOpen] = useState(startOpen || (!!screen && screen !== "cover"));
+  // the editor's preview goes to the screen being edited
+  useEffect(() => { if (screen) setOpen(screen !== "cover"); }, [screen]);
+  const view = (
     <div className="gx-screen">
       {!open ? (
-        <div className="gx-page"><GiftCover img={`${IMG}/gift.webp`} bell={`${IMG}/bell.webp`} onOpen={() => setOpen(true)} /></div>
+        <div className="gx-page"><GiftCover img={`${IMG}/gift.webp`} bell={`${IMG}/bell.webp`} onOpen={() => setOpen(true)} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle")} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
       ) : (
         <div className="gx-page gx-in">
-          <GiftStreet text={cozyCityText(content)} calendarHref={calendarHref} rsvp={{ slug: rsvpSlug, deadline: content.rsvp.deadline, maxParty: content.rsvp.maxParty, email: content.rsvp.email, labels: { food: content.texts.rsvpFoodLabel, message: content.texts.rsvpMessageLabel, privacy: content.texts.rsvpPrivacy } }} />
+          <GiftStreet text={cozyCityText(content)} calendarHref={calendarHref} page={screen && screen !== "cover" ? PAGE_OF[screen] : undefined} rsvp={{ slug: rsvpSlug, deadline: content.rsvp.deadline, maxParty: content.rsvp.maxParty, email: content.rsvp.email, labels: { food: content.texts.rsvpFoodLabel, message: content.texts.rsvpMessageLabel, privacy: content.texts.rsvpPrivacy } }} />
         </div>
       )}
     </div>
   );
-  return fill ? <main className="gx-stage">{screen}</main> : <div className="gx-embed">{screen}</div>;
+  return fill ? <main className="gx-stage">{view}</main> : <div className="gx-embed">{view}</div>;
 }

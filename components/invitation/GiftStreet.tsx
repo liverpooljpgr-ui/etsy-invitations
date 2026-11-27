@@ -93,9 +93,9 @@ function Family() {
 
 export type StreetText = {
   intro: string; title: string; host: string; when: string; time?: string; where: string;
-  placeIntro?: string; place: string; address: string; mapUrl?: string; next: string;
+  placeIntro?: string; place: string; address: string; mapUrl?: string; directions?: string; next: string;
   detailsTitle: string; details: { label: string; text: string }[]; detailsNext: string;
-  replyTitle: string; replyBy: string; reply: string; calendar?: string; closing?: string;
+  replyTitle: string; replyBy: string; reply: string; calendar?: string; closing?: string; down?: string;
 };
 
 /**
@@ -103,8 +103,9 @@ export type StreetText = {
  * Page 2 shows the left half of the street; "Where?" swipes the view to the right, where the street goes on (page 3);
  * the next button lifts the view up into the sky with the clouds (page 4, the reply). People walk along the street, clouds drift, it snows.
  */
-export function GiftStreet({ text, rsvp, calendarHref }: { text: StreetText; rsvp?: { slug?: string; deadline: string; maxParty: number; email?: string; labels?: RsvpLabels }; calendarHref?: string }) {
-  const [page, setPage] = useState<2 | 3 | 5 | 4>(2); // 2 and 3: the street; 5: the Christmas tree with the details; 4: the sky with the reply
+export function GiftStreet({ text, rsvp, calendarHref, page: pageProp }: { page?: 2 | 3 | 5 | 4; text: StreetText; rsvp?: { slug?: string; deadline: string; maxParty: number; email?: string; labels?: RsvpLabels }; calendarHref?: string }) {
+  const [page, setPage] = useState<2 | 3 | 5 | 4>(pageProp ?? 2); // 2 and 3: the street; 5: the Christmas tree with the details; 4: the sky with the reply
+  useEffect(() => { if (pageProp) setPage(pageProp); }, [pageProp]); // the editor's preview follows the step being edited
   // the street is two screens long: only the houses that fit on it whole are shown (none is cut, none reaches the tree screen)
   const housesRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -169,8 +170,8 @@ export function GiftStreet({ text, rsvp, calendarHref }: { text: StreetText; rsv
 
         {/* the words, written on the sky of each page */}
         <section className="gs-text gs-p2" aria-hidden={page !== 2}>
-          <p className="gs-small">{text.intro}</p>
-          <h1 className="gs-title">{text.title}</h1>
+          {text.intro && <p className="gs-small">{text.intro}</p>}
+          {text.title && <h1 className="gs-title">{text.title}</h1>}
           {text.host && <p className="gs-line">{text.host}</p>}
           <p className="gs-when gs-date">{text.when}</p>
           {text.time && <p className="gs-when gs-date gs-time">{text.time}</p>}
@@ -181,11 +182,11 @@ export function GiftStreet({ text, rsvp, calendarHref }: { text: StreetText; rsv
           {text.placeIntro && <p className="gs-small gs-place-intro">{text.placeIntro}</p>}
           {text.place && <h2 className="gs-title gs-place">{text.place}</h2>}
           <p className="gs-line gs-address">{text.address}</p>
-          {text.mapUrl && <a className="gs-link" href={text.mapUrl} target="_blank" rel="noopener noreferrer" tabIndex={page === 3 ? 0 : -1}>Get directions</a>}
+          {text.mapUrl && text.directions && <a className="gs-link" href={text.mapUrl} target="_blank" rel="noopener noreferrer" tabIndex={page === 3 ? 0 : -1}>{text.directions}</a>}
           <button type="button" className="gs-btn" onClick={() => setPage(5)} tabIndex={page === 3 ? 0 : -1}>{text.next}</button>
         </section>
         <section className="gs-text gs-p5" aria-hidden={page !== 5}>
-          <h2 className="gs-title">{text.detailsTitle}</h2>
+          {text.detailsTitle && <h2 className="gs-title">{text.detailsTitle}</h2>}
           {text.details.slice(0, 2).map((d, i) => ( // two sections at most: more does not fit above the tree
             <div key={i} className="gs-detail">
               <p className="gs-small">{d.label}</p>
@@ -195,13 +196,13 @@ export function GiftStreet({ text, rsvp, calendarHref }: { text: StreetText; rsv
           <button type="button" className="gs-btn" onClick={() => setPage(4)} tabIndex={page === 5 ? 0 : -1}>{text.detailsNext}</button>
         </section>
         <section className="gs-text gs-p4" aria-hidden={page !== 4}>
-          <h2 className="gs-title">{text.replyTitle}</h2>
-          <p className="gs-when">{text.replyBy}</p>
+          {text.replyTitle && <h2 className="gs-title">{text.replyTitle}</h2>}
+          {text.replyBy && <p className="gs-when">{text.replyBy}</p>}
           {text.closing && <p className="gs-line gs-closing">{text.closing}</p>}
           {/* "Reply now" opens the reply form in a window over the sky (the same form as the other invitations: name, yes / no / not sure, how many, food, a note) */}
           <RsvpForm slug={rsvp?.slug} deadline={rsvp?.deadline ?? ""} maxParty={rsvp?.maxParty ?? 6} contactEmail={rsvp?.email} hostSelector=".gs" triggerClassName="gs-btn" trigger={text.reply} party labels={rsvp?.labels} />
           {text.calendar && calendarHref && <a className="gs-link" href={calendarHref} tabIndex={page === 4 ? 0 : -1}>{text.calendar}</a>}
-          <button type="button" className="gs-back" onClick={() => setPage(2)} tabIndex={page === 4 ? 0 : -1}>Down to the street</button>
+          <button type="button" className="gs-back" onClick={() => setPage(2)} tabIndex={page === 4 ? 0 : -1}>{text.down || "Down to the street"}</button>
         </section>
       </div>
       {/* "Will you come?": the star leaves the top of the tree, shining brighter and growing, and rises with the view into the sky, where the reply is written under it */}
