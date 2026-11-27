@@ -60,7 +60,7 @@ export const contentSchema = z.object({
     rsvpFoodLabel: text(60).default(""),
     rsvpMessageLabel: text(60).default(""),
     rsvpPrivacy: text(120).default(""),
-    // Cozy Blue City: every word of the invitation (lib/cozy-texts.ts; empty: the design's own wording)
+    // Christmas Amsterdam: every word of the invitation (lib/cozy-texts.ts; empty: the design's own wording)
     czCoverTop: text(60).default(""),
     czCoverTitle: text(60).default(""),
     czCoverHint: text(60).default(""),
@@ -80,7 +80,7 @@ export const contentSchema = z.object({
     czReplyButton: text(30).default(""),
     czCalendar: text(40).default(""),
     czDown: text(40).default(""),
-    czCleared: text(600).default(""), // Cozy Blue City: the lines the owner deleted (see lib/cozy-texts.ts)
+    czCleared: text(600).default(""), // Christmas Amsterdam: the lines the owner deleted (see lib/cozy-texts.ts)
     saveTheDate: text(40).default("Save the Date"),
     saveSubtitle: text(60).default("to celebrate a big day"),
     venueTitle: text(40).default("Celebration"),

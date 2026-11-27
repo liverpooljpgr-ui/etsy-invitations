@@ -1,4 +1,4 @@
-/** The words of the Cozy Blue City invitation, screen by screen. In the editor every field starts with the design's own wording;
+/** The words of the Christmas Amsterdam invitation, screen by screen. In the editor every field starts with the design's own wording;
  *  the owner can change it or delete it. A deleted line is listed in `czCleared` and is not shown (a button keeps the design's wording). */
 export const CZ_DEFAULTS = {
   // the cover: the present
@@ -8,8 +8,8 @@ export const CZ_DEFAULTS = {
   // the street, first screen: the invitation
   czIntro: "You are invited to a",
   czTitle: "Christmas Dinner",
-  czHost: "", // its own wording: "<the hosts' name> would love you at their table"
-  czTimeWord: "from",
+  czHost: "", // no longer used: the invitation says "Hosted by <the hosts' name>"
+  czTimeWord: "from", // no longer used: the time reads "at 7 PM"
   czWhere: "Where?",
   // the street, second screen: the place
   czPlaceIntro: "We have reserved a table at",
@@ -17,10 +17,10 @@ export const CZ_DEFAULTS = {
   czDetailsButton: "Details",
   // the Christmas tree: the details
   czDetailsTitle: "Details",
-  czComeButton: "Will you come?",
+  czComeButton: "Will you attend?",
   // the sky: the reply
   czReplyTitle: "Please RSVP",
-  czReplyByWord: "by",
+  czReplyByWord: "by", // no longer used: the date reads "by December 13"
   czClosing: "We look forward to a cozy evening with you!",
   czReplyButton: "Reply now",
   czCalendar: "Add to calendar",

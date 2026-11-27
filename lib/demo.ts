@@ -66,7 +66,7 @@ export function demoContent(now = new Date(), template?: string): Content {
     hotel: { name: "Grand Hotel Lakeside", address: "5 Via Roma, Lake Como, Italy\nBook with code ANNA-DANIEL" },
     rsvp: { deadline: day(7), email: "hello@example.com", note: "", online: true, maxParty: 6 },
     ...(template === "christmas-party" ? christmasPartyDemo(now) : {}),
-    ...(template === "cozy-blue-city" ? cozyBlueCityDemo(now) : {}),
+    ...(template === "christmas-amsterdam" ? christmasAmsterdamDemo(now) : {}),
   };
 }
 
@@ -96,8 +96,8 @@ function christmasPartyDemo(now: Date): Partial<Content> {
   };
 }
 
-/** The Cozy Blue City demo: a Christmas dinner at a restaurant, in warm, friendly words (the 20 December after today, replies a week before). */
-function cozyBlueCityDemo(now: Date): Partial<Content> {
+/** The Christmas Amsterdam demo: a Christmas dinner at a restaurant, in warm, friendly words (the 20 December after today, replies a week before). */
+function christmasAmsterdamDemo(now: Date): Partial<Content> {
   const base = christmasPartyDemo(now);
   return {
     ...base,

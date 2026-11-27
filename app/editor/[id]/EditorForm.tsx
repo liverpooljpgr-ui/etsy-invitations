@@ -1,7 +1,7 @@
 "use client";
 
 import { PW_DEFAULTS, pwStored, type PwKey } from "@/lib/website-texts";
-import { czField, czHostDefault, czSet, type CzKey } from "@/lib/cozy-texts";
+import { czField, czSet, type CzKey } from "@/lib/cozy-texts";
 import { TimelineIcon, TIMELINE_ICONS } from "@/components/invitation/TimelineIcons";
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
@@ -55,7 +55,7 @@ const WEBSITE_STEPS: readonly Step[] = [
   { n: 15, label: "Own blocks", pv: "d-own", page: "details" },
   { n: 14, label: "Photos & publish", pv: "photo", page: "home" },
 ];
-// Cozy Blue City: the order of its screens (the present, the two street screens, the tree, the sky)
+// Christmas Amsterdam: the order of its screens (the present, the two street screens, the tree, the sky)
 const COZY_STEPS: readonly Step[] = [
   { n: 21, label: "Cover" },
   { n: 22, label: "Invitation" },
@@ -195,7 +195,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
   const [saveError, setSaveError] = useState("");
   const [everSaved, setEverSaved] = useState(false); // "All changes saved" only means something after a real save in this session
   const website = isWebsiteTemplate(template); // a website-type design: its own order of screens and its own fields
-  const cozy = template === "cozy-blue-city"; // Cozy Blue City: its own screens, every word editable
+  const cozy = template === "christmas-amsterdam"; // Christmas Amsterdam: its own screens, every word editable
   const baseSteps: readonly Step[] = website ? WEBSITE_STEPS : cozy ? COZY_STEPS : STEPS;
   const guestIdx = baseSteps.length; // the index of the Guest link tab (it appears after publishing)
   const [step, setStep] = useState(() => Math.max(0, Math.min((initialStep ?? 1) - 1, initialStatus === "published" ? guestIdx : guestIdx - 1))); // phone wizard
@@ -600,7 +600,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
     placeholder: PW_DEFAULTS[k],
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => set("texts", { ...draft.texts, [k]: e.target.value }),
   });
-  // the words of Cozy Blue City: every field starts with the design's own wording; the owner changes it or deletes it
+  // the words of Christmas Amsterdam: every field starts with the design's own wording; the owner changes it or deletes it
   const cz = (k: CzKey | keyof Content["texts"], own?: string) => ({
     value: czField(draft.texts as unknown as Record<string, string | undefined>, k, own),
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => set("texts", czSet(draft.texts as unknown as Record<string, string | undefined>, k, e.target.value) as unknown as Content["texts"]),
@@ -953,7 +953,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           </Section>
           </>
           ) : cozy ? (<>
-          {/* Cozy Blue City: one step per screen, in the order guests see them. Every line can be written (an empty field shows the design's own words, in grey). */}
+          {/* Christmas Amsterdam: one step per screen, in the order guests see them. Every line can be written (an empty field shows the design's own words, in grey). */}
           <Section n={21} mobileHidden={step !== 0} title="1 · Cover · the present">
             <Field label="Small line at the top"><input className={inputCls} maxLength={60} {...cz("czCoverTop")} /></Field>
             <Field label="Title"><input className={inputCls} maxLength={60} {...cz("czCoverTitle")} /></Field>
@@ -963,13 +963,11 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <Section n={22} mobileHidden={step !== 1} title="2 · Invitation · the street">
             <Field label="Small line above the title"><input className={inputCls} maxLength={60} {...cz("czIntro")} /></Field>
             <Field label="Title"><input className={inputCls} maxLength={60} {...cz("czTitle")} /></Field>
-            <Field label="Hosts (name)"><input className={inputCls} maxLength={40} autoComplete="off" placeholder="The Martins" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
-            <Field label="Line with the hosts"><input className={inputCls} maxLength={100} {...cz("czHost", czHostDefault(draft.couple.first))} /></Field>
+            <Field label="Hosted by (the hosts' name)"><input className={inputCls} maxLength={40} autoComplete="off" placeholder="The Martins" value={draft.couple.first} onChange={(e) => set("couple", { ...draft.couple, first: e.target.value })} /></Field>
             <div className="ui-two">
               <Field label="Date"><DateInput order={dateOrder} value={draft.event.date} onChange={(date) => set("event", { ...draft.event, date })} /></Field>
               <Field label="Time"><TimeInput value={draft.event.time} onChange={(time) => set("event", { ...draft.event, time })} /></Field>
             </div>
-            <Field label="Word before the time"><input className={inputCls} maxLength={20} {...cz("czTimeWord")} /></Field>
             <Field label="Button"><input className={inputCls} maxLength={30} {...cz("czWhere")} /></Field>
           </Section>
 
@@ -1004,15 +1002,8 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
 
           <Section n={25} mobileHidden={step !== 4} title="5 · RSVP · under the star">
             <Field label="Title"><input className={inputCls} maxLength={40} {...cz("czReplyTitle")} /></Field>
-            <div className="ui-two">
-              <Field label="Reply by"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
-              <Field label="Word before the date"><input className={inputCls} maxLength={20} {...cz("czReplyByWord")} /></Field>
-            </div>
+            <Field label="Reply by"><DateInput order={dateOrder} value={draft.rsvp.deadline} onChange={(deadline) => set("rsvp", { ...draft.rsvp, deadline })} /></Field>
             <Field label="Warm line"><input className={inputCls} maxLength={140} {...cz("czClosing")} /></Field>
-            <div className="ui-two">
-              <Field label="Reply button"><input className={inputCls} maxLength={30} {...cz("czReplyButton")} /></Field>
-              <Field label="Calendar link"><input className={inputCls} maxLength={40} {...cz("czCalendar")} /></Field>
-            </div>
             <Field label="Link back to the street"><input className={inputCls} maxLength={40} {...cz("czDown")} /></Field>
             <Field label="Reply to (email)"><input type="email" className={inputCls} maxLength={200} value={draft.rsvp.email} onChange={(e) => set("rsvp", { ...draft.rsvp, email: e.target.value })} /></Field>
             <Field label="Most guests in one reply">
@@ -1022,8 +1013,6 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             </Field>
             <p className="ui-label" style={{ margin: "6px 0 0" }}>The reply form</p>
             <Field label="Food question"><input className={inputCls} maxLength={60} {...cz("rsvpFoodLabel", "Food allergy, if any")} /></Field>
-            <Field label="Message field"><input className={inputCls} maxLength={60} {...cz("rsvpMessageLabel", "A message to the host (optional)")} /></Field>
-            <Field label="Line under the button"><input className={inputCls} maxLength={120} {...cz("rsvpPrivacy", "Only the host will see your reply.")} /></Field>
             <p className="ui-help">Guests reply in the invitation until the “Reply by” date. After that day the form closes and guests see your e-mail address. You will see every reply in the Guest link tab once the invitation is published.</p>
           </Section>
           </>
@@ -1295,7 +1284,7 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
           <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
             <p className="ui-caption">Static preview · use “Preview animation” to test the envelope</p>
             {cozy ? (
-              // Cozy Blue City: every screen one under another in the preview column; editing a field scrolls to its screen (data-card, see Section)
+              // Christmas Amsterdam: every screen one under another in the preview column; editing a field scrolls to its screen (data-card, see Section)
               <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                 {(["cover", "street", "place", "details", "reply"] as const).map((sc, i) => (
                   <div key={sc} data-card={21 + i}><Invitation content={preview} mode="preview" calendarHref={`/preview/${id}/calendar.ics`} template={template} cozyScreen={sc} /></div>
