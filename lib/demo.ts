@@ -66,6 +66,7 @@ export function demoContent(now = new Date(), template?: string): Content {
     hotel: { name: "Grand Hotel Lakeside", address: "5 Via Roma, Lake Como, Italy\nBook with code ANNA-DANIEL" },
     rsvp: { deadline: day(7), email: "hello@example.com", note: "", online: true, maxParty: 6 },
     ...(template === "christmas-party" ? christmasPartyDemo(now) : {}),
+    ...(template === "cozy-blue-city" ? cozyBlueCityDemo(now) : {}),
   };
 }
 
@@ -92,5 +93,26 @@ function christmasPartyDemo(now: Date): Partial<Content> {
     dressCode: { label: "Cozy & festive", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"], note: "Warm knits, velvet and a touch of red are very welcome." },
     registry: [],
     rsvp: { deadline: `${y}-12-13`, email: "hello@example.com", note: "Please let us know how many of you are coming and any food wishes.", online: true, maxParty: 6 },
+  };
+}
+
+/** The Cozy Blue City demo: a Christmas dinner at a restaurant, in warm, friendly words (the 20 December after today, replies a week before). */
+function cozyBlueCityDemo(now: Date): Partial<Content> {
+  const base = christmasPartyDemo(now);
+  return {
+    ...base,
+    couple: { first: "The Martins", second: "" },
+    texts: {
+      ...base.texts!,
+      coverIntro: "You are invited to a",
+      coverTop: "Christmas",
+      headline: "Dinner",
+      venueIntro: "We have reserved a table at",
+      detailsExtraTitle: "Secret Santa",
+      detailsExtraText: "Bring one small wrapped gift, up to $20. Keep it small and thoughtful.",
+      closingNote: "We look forward to a cozy evening with you!",
+    },
+    event: { ...base.event!, time: "7 PM", venue: "The Ivy Market Grill", address: "1A Henrietta Street, Covent Garden\nLondon WC2E 8PS, United Kingdom", mapUrl: "https://www.google.com/maps/search/?api=1&query=The+Ivy+Market+Grill+1A+Henrietta+Street+London+WC2E+8PS" },
+    dressCode: { label: "Festive but comfortable", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"], note: "Festive but comfortable: warm knits, velvet and a touch of red." },
   };
 }
