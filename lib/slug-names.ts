@@ -55,3 +55,41 @@ export async function pickNameSlug(db: SupabaseClient, first: string, second: st
   }
   return null;
 }
+
+// Christmas words, used when two hosts have the same name
+const XMAS_WORDS = ["merry", "jolly", "cozy", "festive", "snowy", "starry", "holly", "cheer", "joy", "mistletoe", "tinsel", "sparkle", "glow", "winter", "carol"];
+
+/** "The Martins" -> "the-martins" (every word, latin letters and numbers only). */
+export function slugWords(name: string, max = 28): string {
+  const latin = name.toLowerCase().split("").map((ch) => CYRILLIC[ch] ?? ch).join("");
+  return latin.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, max).replace(/-+$/, "");
+}
+
+/**
+ * A readable guest-link address for a Christmas invitation from the hosts' name: "christmas-with-the-martins".
+ * If it is taken, a Christmas word is added ("christmas-with-the-martins-jolly"); after all of those, a number.
+ */
+export async function pickHostSlug(db: SupabaseClient, hosts: string): Promise<string | null> {
+  const h = slugWords(hosts);
+  if (!h) return null;
+  const base = `christmas-with-${h}`;
+  const free = async (slug: string) => {
+    if (slug.length < 3 || slug.length > 60) return false;
+    const [{ data: taken }, { data: reserved }] = await Promise.all([
+      db.from("invitations").select("id").eq("slug", slug).maybeSingle(),
+      db.from("reserved_slugs").select("slug").eq("slug", slug).maybeSingle(),
+    ]);
+    return !taken && !reserved;
+  };
+  if (await free(base)) return base;
+  const start = [...base].reduce((n, ch) => n + ch.charCodeAt(0), 0) % XMAS_WORDS.length;
+  for (let i = 0; i < XMAS_WORDS.length; i++) {
+    const s = `${base}-${XMAS_WORDS[(start + i) % XMAS_WORDS.length]}`;
+    if (await free(s)) return s;
+  }
+  for (let n = 2; n < 50; n++) {
+    const s = `${base}-${XMAS_WORDS[start]}-${n}`;
+    if (await free(s)) return s;
+  }
+  return null;
+}
