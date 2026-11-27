@@ -114,5 +114,6 @@ function christmasAmsterdamDemo(now: Date): Partial<Content> {
     },
     event: { ...base.event!, time: "7 PM", venue: "The Ivy Market Grill", address: "1A Henrietta Street, Covent Garden\nLondon WC2E 8PS, United Kingdom", mapUrl: "https://www.google.com/maps/search/?api=1&query=The+Ivy+Market+Grill+1A+Henrietta+Street+London+WC2E+8PS" },
     dressCode: { label: "Festive but comfortable", colors: ["#6b7048", "#b5434b", "#c9a96b", "#f1e6d2"], note: "Festive but comfortable: warm knits, velvet and a touch of red." },
+    music: { url: "/music/winter-glow.mp3", name: "Winter Glow" }, // the demo plays one of the Christmas songs when the present is tapped
   };
 }
