@@ -3,7 +3,7 @@
 import type { Content } from "@/lib/content/schema";
 import { GiftCover } from "./GiftCover";
 import { GiftStreet, type StreetText } from "./GiftStreet";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { czText, type CzKey } from "@/lib/cozy-texts";
 
 const IMG = "/templates/christmas-gift/v1";
@@ -62,10 +62,23 @@ export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOp
   const [open, setOpen] = useState(startOpen || (!!screen && screen !== "cover"));
   // the editor's preview goes to the screen being edited
   useEffect(() => { if (screen) setOpen(screen !== "cover"); }, [screen]);
+  // the host's music (one of the Christmas songs or their own MP3): browsers allow sound only after a tap, so it starts with the tap on the present
+  const audio = useRef<HTMLAudioElement | null>(null);
+  const [music, setMusic] = useState<"none" | "on" | "off">("none");
+  const startMusic = () => {
+    if (!fill || !content.music || audio.current) return; // a guest's page only (not the editor's preview)
+    const a = new Audio(content.music.url);
+    a.loop = true; a.volume = 0.6;
+    a.addEventListener("error", () => { audio.current = null; setMusic("none"); });
+    audio.current = a;
+    a.play().then(() => setMusic("on")).catch(() => { if (audio.current === a) setMusic("off"); });
+  };
+  const toggleMusic = () => { const a = audio.current; if (!a) return; if (a.paused) a.play().then(() => setMusic("on")).catch(() => setMusic("off")); else { a.pause(); setMusic("off"); } };
+  useEffect(() => () => { audio.current?.pause(); audio.current = null; }, []);
   const view = (
     <div className="gx-screen">
       {!open ? (
-        <div className="gx-page"><GiftCover img={`${IMG}/gift.webp`} bell={`${IMG}/bell.webp`} onOpen={() => setOpen(true)} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle")} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
+        <div className="gx-page"><GiftCover img={`${IMG}/gift.webp`} bell={`${IMG}/bell.webp`} onOpen={() => setOpen(true)} onTap={startMusic} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle")} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
       ) : (
         <div className="gx-page gx-in">
           <GiftStreet text={cozyCityText(content)} calendarHref={calendarHref} page={screen && screen !== "cover" ? PAGE_OF[screen] : undefined} rsvp={{ slug: rsvpSlug, deadline: content.rsvp.deadline, maxParty: content.rsvp.maxParty, email: content.rsvp.email, labels: { food: content.texts.rsvpFoodLabel } }} />
@@ -73,5 +86,13 @@ export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOp
       )}
     </div>
   );
-  return fill ? <main className="gx-stage">{view}</main> : <div className="gx-embed">{view}</div>;
+  const musicBtn = music !== "none" && (
+    <button type="button" className="music-btn gx-music" onClick={toggleMusic} aria-pressed={music === "on"} aria-label={music === "on" ? "Turn the music off" : "Turn the music on"}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M9 18V6l10-2v12" /><circle cx="6.5" cy="18" r="2.5" /><circle cx="16.5" cy="16" r="2.5" />
+        {music === "off" && <path d="M3 3l18 18" />}
+      </svg>
+    </button>
+  );
+  return fill ? <main className="gx-stage">{view}{musicBtn}</main> : <div className="gx-embed">{view}</div>;
 }

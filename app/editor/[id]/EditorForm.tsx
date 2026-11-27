@@ -958,6 +958,22 @@ export function EditorForm({ id, title, slug, status: initialStatus, features, i
             <Field label="Small line at the top"><input className={inputCls} maxLength={60} {...cz("czCoverTop")} /></Field>
             <Field label="Title"><input className={inputCls} maxLength={60} {...cz("czCoverTitle")} /></Field>
             <Field label="Line under the present"><input className={inputCls} maxLength={60} {...cz("czCoverHint")} /></Field>
+            <div className="ui-field">
+              <span className="ui-label">Background music (optional)</span>
+              <SongPicker currentUrl={draft.music?.url ?? null} template={template} onPick={(song) => set("music", { url: song.url, name: song.name })} />
+              <span className="ui-help">Or use your own song:</span>
+              <div className="ui-media">
+                <FilePick accept="audio/mpeg,.mp3" label={draft.music ? "Change song" : "Choose an MP3"} onFile={(f) => void onMusic(f)} />
+                {draft.music && <button type="button" onClick={() => set("music", null)} className="ui-btn ui-btn-danger ui-btn-sm">Remove</button>}
+              </div>
+              {draft.music && (
+                <>
+                  <p className="ui-help" style={{ color: "var(--ui-label)" }}>{draft.music.name || "Your song"}</p>
+                  <audio controls preload="none" src={draft.music.url} className="ui-audio" />
+                </>
+              )}
+              <p className="ui-help">Plays when your guest taps the present. Your own MP3 can be up to 4 MB; please use music you have the right to share.</p>
+            </div>
           </Section>
 
           <Section n={22} mobileHidden={step !== 1} title="2 · Invitation · the street">

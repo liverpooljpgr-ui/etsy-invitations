@@ -555,3 +555,5 @@
 }
 .gs-p2 { --b:.35s; } .gs-p3 { --b:.55s; } .gs-p5 { --b:.75s; } .gs-p4 { --b:3.2s; } /* after the view has moved there (the sky: after the star has risen) */
 @media (prefers-reduced-motion: reduce) { .gc-top, .gc-title, .gs-text > * { animation:none !important; } .gc-hint { animation:none !important; } }
+html:has(.gx-stage) { overflow:hidden; scrollbar-width:none; } html:has(.gx-stage)::-webkit-scrollbar { display:none; } /* the invitation fills the screen: no scroll bar on the right */
+.gx-music { position:fixed; z-index:40; border-color:rgba(142,26,42,.35); color:#8e1a2a; background:rgba(248,251,253,.92); } /* Christmas Amsterdam: the music button in its own red */

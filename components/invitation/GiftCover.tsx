@@ -43,14 +43,14 @@ function ringBells() {
  * while a magic shine rises above it like smoke and fades away; its shadow lies under it.
  * Tapped, it wobbles faster, then whirls round while growing until it fills the screen, and vanishes: `onOpen` is called then.
  */
-export function GiftCover({ img, bell, onOpen, top = "You have received", title = "a Christmas invitation", hint = "Tap the box" }: { img: string; bell?: string; onOpen?: () => void; top?: string; title?: string; hint?: string }) {
+export function GiftCover({ img, bell, onOpen, onTap, top = "You have received", title = "a Christmas invitation", hint = "Tap the box" }: { img: string; bell?: string; onOpen?: () => void; /** called right at the tap (the host's music may only start then) */ onTap?: () => void; top?: string; title?: string; hint?: string }) {
   const [phase, setPhase] = useState<"idle" | "shake" | "whirl" | "gone">("idle");
   const done = useRef(false);
   useEffect(() => {
     if (phase === "shake") { const t = setTimeout(() => setPhase("whirl"), 1100); return () => clearTimeout(t); }
     if (phase === "whirl") { const t = setTimeout(() => { setPhase("gone"); if (!done.current) { done.current = true; onOpen?.(); } }, 1500); return () => clearTimeout(t); }
   }, [phase, onOpen]);
-  const open = () => { if (phase === "idle") { ringBells(); setPhase("shake"); } };
+  const open = () => { if (phase === "idle") { ringBells(); onTap?.(); setPhase("shake"); } };
   // the shine: small golden sparks, each rising on its own time higher and higher, getting smaller, until it fades
   const sparks = Array.from({ length: 96 }, (_, i) => ({ x: ((i * 37) % 150) - 75, d: 4 + ((i * 7) % 5) * 0.6, delay: i * 0.065, s: 0.6 + ((i * 5) % 4) * 0.25, h: 220 + ((i * 11) % 6) * 36, tw: 0.5 + ((i * 3) % 5) * 0.15 }));
   return (
