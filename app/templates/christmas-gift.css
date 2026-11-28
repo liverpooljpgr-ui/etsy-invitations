@@ -817,3 +817,5 @@ html:has(.gx-stage) { overflow:hidden; scrollbar-width:none; } html:has(.gx-stag
 @keyframes gs-mk-wave { 0%, 50%, 100% { rotate:0deg; } 58% { rotate:-16deg; } 66% { rotate:6deg; } 74% { rotate:-14deg; } 82% { rotate:5deg; } 90% { rotate:-8deg; } }
 @media (prefers-reduced-motion: reduce) { .gs-pg-mankid .gs-mk-arm { animation:none; } }
 .gx-paris .gc-bell { left:46.46%; top:21.57%; width:14.02%; transform-origin:50% 7%; } /* Christmas Paris: the golden medallion hangs from the bow and swings and jingles with the box, like the Amsterdam bell */
+/* on a phone: the buttons a little bigger (easier to tap) */
+@container (max-width: 599px) { .gs-btn { padding:14px 36px; font-size:13px; } }
