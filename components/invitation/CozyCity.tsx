@@ -85,7 +85,7 @@ export function CozyCity({ content, rsvpSlug, calendarHref, fill = true, startOp
   const view = (
     <div className={`gx-screen gx-${variant}`}>
       {!open ? (
-        <div className="gx-page"><GiftCover img={variant === "paris" ? "/templates/christmas-paris/v1/gift.webp" : `${IMG}/gift.webp`} bell={variant === "paris" ? undefined : `${IMG}/bell.webp`} onOpen={() => setOpen(true)} onTap={startMusic} starDots={variant === "paris"} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle", variant === "paris" ? "a Christmas Invitation" : undefined)} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
+        <div className="gx-page"><GiftCover img={variant === "paris" ? "/templates/christmas-paris/v1/gift.webp" : `${IMG}/gift.webp`} bell={variant === "paris" ? "/templates/christmas-paris/v1/medal.webp" : `${IMG}/bell.webp`} onOpen={() => setOpen(true)} onTap={startMusic} starDots={variant === "paris"} top={czText(content.texts as unknown as Record<string, string>, "czCoverTop")} title={czText(content.texts as unknown as Record<string, string>, "czCoverTitle", variant === "paris" ? "a Christmas Invitation" : undefined)} hint={czText(content.texts as unknown as Record<string, string>, "czCoverHint")} /></div>
       ) : (
         <div className="gx-page gx-in">
           <GiftStreet variant={variant} text={cozyCityText(content)} calendarHref={calendarHref} page={screen && screen !== "cover" ? PAGE_OF[screen] : undefined} rsvp={{ slug: rsvpSlug, deadline: content.rsvp.deadline, maxParty: content.rsvp.maxParty, email: content.rsvp.email, labels: { food: content.texts.rsvpFoodLabel } }} />
